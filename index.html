@@ -30,6 +30,389 @@
   <h2>Área logada</h2>
 </div>
 
+<div id="modalEditarDisponibilidade" class="modal-editar">
+
+  <div class="conteudo-modal-editar">
+
+    <div class="cabecalho-modal">
+
+      <h3>Cique para alterar a sua disponbilidade</h3>
+
+      <button
+        class="fechar-modal-editar"
+        onclick="fecharModalEditarDisponibilidade()">
+        ❌
+      </button>
+
+    </div>
+
+    <button
+      id="btnEditarDisponibilidadeUsuario"
+      onclick="executarAcaoModalEditarDisponibilidade()"
+      class="botao editar"
+      style="width:100%;">
+
+      ✏️ Editar Disponibilidade
+
+    </button>
+
+  </div>
+
+</div>
+
+<!--<div id="modalEditarDisponibilidade" class="modal-editar">
+
+  <div class="conteudo-modal-editar">
+
+    <h3>Clique para editar sua Disponibilidade</h3>
+    
+    <button
+      class="fechar-modal-editar"
+      onclick="fecharModalEditarDisponibilidade()">
+      ❌
+    </button>
+
+    <button
+      id="btnEditarDisponibilidadeUsuario"
+      onclick="executarAcaoModalEditarDisponibilidade()"
+      class="botao editar"
+      style="width:100%;">
+
+      ✏️ Editar Disponibilidade
+
+    </button>
+
+  </div>
+
+</div>-->
+
+
+<div id="modalAlterarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>Alterar Treinador</h3>
+
+    <select id="listaNomesTrei">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <div style="margin-top:10px;">
+      <input type="text"
+             id="filtroBuscaTrei"
+             placeholder="Digite o nome para pesquisar...">
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+
+      <button type="button"
+              onclick="confirmarAlteracaoTreinador()">
+        Alterar
+      </button>
+
+      <button type="button"
+              onclick="fecharModalTreinador()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalComunicarAdministrador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Coordenador</h3>
+
+    <p>
+      Deseja comunicar o coordenador do TPE pelo WhatsApp?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button
+        type="button"
+        onclick="comunicarAdministrador()">
+
+        ✅ Sim
+
+      </button>
+
+      <button
+        type="button"
+        onclick="fecharModalAdministrador()">
+
+        ❌ Não
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalComunicarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Treinador</h3>
+
+    <p>
+      Deseja comunicar o novo treinador pelo WhatsApp?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button
+        type="button"
+        onclick="comunicarNovoTreinador()">
+
+        ✅ Sim
+
+      </button>
+
+      <button
+        type="button"
+        onclick="fecharModalComunicacao()">
+
+        ❌ Não
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📌 Confirmar Designação</h3>
+
+    <p>
+      Deseja realmente designar este treinador para o participante?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button onclick="confirmarDesignacao()">✅ Sim</button>
+      <button onclick="fecharModalDesignacao()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📲 Enviar WhatsApp</h3>
+
+    <p>
+      Deseja enviar mensagem para o treinador designado?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button onclick="enviarWhatsappDesignacao()">📤 Sim</button>
+      <button onclick="fecharModalWhatsapp()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="modalAcoesTreinamento" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>O que você quer fazer?</h3>
+
+    <button id="acaoConcluir">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button id="acaoDesistencia">
+      🚫 Registrar Desistência
+    </button>
+
+    <button id="acaoAlterarTreinador">
+      ✏️ Alterar Treinador
+    </button>
+
+    <button id="acaoLembrete">
+      🔔 Lembrete Para Treinador
+    </button>
+
+    <button onclick="fecharModalAcoesTreinamento()">
+      ❌ Fechar
+    </button>
+
+  </div>
+
+</div>
+
+<div id="modalAcoesTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>Q que você quer fazer?</h3>
+
+    <button id="acaoConcluirTreinador">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button id="acaoDesistenciaTreinador">
+      ❌ Registrar Desistência
+    </button>
+
+    <button onclick="fecharModalAcoesTreinador()">
+      Fechar
+    </button>
+
+  </div>
+
+</div>
+
+<div id="modalDesignados">
+
+    <div class="conteudo-modal">
+
+        <h3>Quem será substituído?</h3>
+
+        <div id="listaDesignados"></div>
+
+        <div style="Display:flex">
+        <button onclick="confirmarNenhumDesignados()">Ninguém</button>
+        <button onclick="fecharModalDesignados()">Cancelar</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="modalSubstituicao">
+  <div class="conteudo-modal">
+    <h3>Quem deve sair?</h3>
+
+    <div id="listaSubstituicao"></div>
+
+    <div style="display:flex">
+      <button onclick="confirmarNenhum()">Ninguém</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="modalParticipantes" class="modal-overlay oculto">
+
+  <div class="conteudo-modal">
+
+    <div class="modal-topo">
+      <h3>👤 Selecionar Participante</h3>
+
+      <!-- X pequeno no canto -->
+      <button
+        type="button"
+        class="btn-fechar-modal"
+        onclick="fecharModalParticipantes()">
+        ✖
+      </button>
+    </div>
+
+    <select id="selectModalParticipantes" size="5">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <h3>🔎 Filtrar participante</h3>
+
+    <input
+      type="text"
+      id="filtroModalParticipantes"
+      placeholder="Digite o nome para pesquisar...">
+
+    <div class="modal-botoes">
+
+      <button
+        type="button"
+        onclick="confirmarSelecaoParticipante()">
+        ✅ Selecionar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="confirmacaoGlobal" class="oculto">
+
+  <div class="conteudo-confirmacao">
+
+    <p id="confirmacaoMensagem"></p>
+
+    <div class="botoes-confirmacao">
+      <button id="confirmacaoBotaoOk">
+        Confirmar
+      </button>
+
+      <button id="confirmacaoBotaoCancelar">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="alertaGlobal" class="oculto">
+
+  <div class="conteudo-alerta">
+
+    <span id="alertaMensagem"></span>
+
+    <br><br>
+
+    <button class="alerta-btn" id="alertaBotaoOk">
+      Ok
+    </button>
+
+  </div>
+
+</div>
+
+<div id="spinnerGlobal" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+
+<div class="spinner"></div> <!-- <- Aqui você usa sua classe existente -->
+</div>
+
+<table class="organizadores"> <!-- Visível só para coordenação -->
+
+</table>
+
+<div class="escalas"> <!-- Visível só para escalas -->
+
+</div>
+
+
+
+
 <script src="login.js"></script>
 
 </body>

@@ -7,43 +7,32 @@ async function fazerLogin() {
   const msgErro = document.getElementById('msgLogin');
 
   msgErro.textContent = '';
-  /*mostrarSpinner();*/
+  mostrarSpinner();
 
   try {
 
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        acao: "login",
-        email,
-        senha
-      })
-    });
+    const url = `${API_URL}?acao=login&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`;
 
-    const data = await res.json();
+    const response = await fetch(url);
+    const res = await response.json();
 
     esconderSpinner();
 
-    if (data.sucesso) {
+    if (res.sucesso) {
 
-      perfilUsuario = data.perfil;
-      idUsuarioLogado = data.id;
+      alert("Login OK");
 
-      alert("Login OK ✔");
-
-      console.log(data);
+      document.getElementById("telaLogin").style.display = "none";
+      document.getElementById("conteudoProtegido").style.display = "block";
 
     } else {
-      msgErro.textContent = data.mensagem;
+      msgErro.textContent = res.mensagem;
     }
 
   } catch (err) {
 
     esconderSpinner();
-    msgErro.textContent = "Erro de conexão: " + err.message;
+    msgErro.textContent = "Erro: " + err.message;
 
   }
 }

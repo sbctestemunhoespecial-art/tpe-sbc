@@ -4,6 +4,13 @@ async function fazerLogin() {
 
   const email = document.getElementById('emailLogin').value.trim();
   const senha = document.getElementById('senhaLogin').value.trim();
+
+console.log("INPUT EMAIL:", document.getElementById('emailLogin'));
+console.log("INPUT SENHA:", document.getElementById('senhaLogin'));
+
+console.log("EMAIL VALUE:", document.getElementById('emailLogin').value);
+console.log("SENHA VALUE:", document.getElementById('senhaLogin').value);
+
   const msgErro = document.getElementById('msgLogin');
 
   msgErro.textContent = '';

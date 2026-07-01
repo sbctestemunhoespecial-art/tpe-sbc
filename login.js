@@ -7,7 +7,7 @@ async function fazerLogin() {
   const msgErro = document.getElementById('msgLogin');
 
   msgErro.textContent = '';
-  mostrarSpinner();
+  /*mostrarSpinner();*/
 
   try {
 

@@ -53,65 +53,64 @@ function fazerLogin() {
     .then(r => r.json())
     .then(res => {
 
-      if (!res || !res.perfil) {
+      if (res && res.perfil) {
+
+        perfilUsuario = res.perfil;
+        idUsuarioLogado = res.id;
+
+        const saudacaoEl = document.getElementById("saudacaoUsuario");
+        const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+        if (saudacaoEl) {
+            saudacaoEl.textContent = "Bem-vindo(a) 👋";
+        }
+
+        if (tipoAcessoEl) {
+            tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+        }
+
+        document.getElementById('emailLogin').value = '';
+        document.getElementById('senhaLogin').value = '';
+        msgErro.textContent = '';
+
+        localStorage.setItem("usuarioLogado", JSON.stringify({
+          id: res.id,
+          perfil: res.perfil,
+          timestamp: Date.now()
+        }));
+
+        document.getElementById('telaLogin').style.display = 'none';
+        document.getElementById('conteudoProtegido').style.display = 'block';
+
+        historico.length = 0;
+
+        document.querySelectorAll('.tela').forEach(el => {
+            el.classList.remove('aberta');
+        });
+
+        document.getElementById('menuCards')
+            ?.classList.add('aberta');
+
+        telaAtual = 'menuCards';
+
+        atualizarBotaoVoltar();
+
+        mostrarSecoesPorPerfil(res.perfil);
+
+        limparCamposUsuario();
+        restaurarCamposPerfil();
+
         esconderSpinner();
-        msgErro.textContent = res.mensagem || '❌ Erro ao fazer login.';
-        return;
+
+        verificarTreinamentoPendente();
+
+      } else {
+        esconderSpinner();
+        msgErro.textContent = res.mensagem || '❌ Erro desconhecido ao fazer login.';
       }
-
-      // =========================
-      // DADOS DO USUÁRIO (igual ao seu sistema)
-      // =========================
-
-      perfilUsuario = res.perfil;
-      idUsuarioLogado = res.id;
-      emailUsuario = email;
-
-      localStorage.setItem("usuarioLogado", JSON.stringify({
-        id: res.id,
-        perfil: res.perfil,
-        timestamp: Date.now()
-      }));
-
-      // =========================
-      // LIMPA LOGIN
-      // =========================
-
-      document.getElementById('emailLogin').value = '';
-      document.getElementById('senhaLogin').value = '';
-      msgErro.textContent = '';
-
-      // =========================
-      // TROCA DE TELA
-      // =========================
-
-      document.getElementById('telaLogin').style.display = 'none';
-      document.getElementById('conteudoProtegido').style.display = 'block';
-
-      document.querySelectorAll('.tela').forEach(el => el.classList.remove('aberta'));
-      document.getElementById('menuCards')?.classList.add('aberta');
-
-      // =========================
-      // SUA LÓGICA ORIGINAL (mantida)
-      // =========================
-
-      mostrarSecoesPorPerfil(res.perfil);
-      limparCamposUsuario();
-      restaurarCamposPerfil();
-
-      const saudacaoEl = document.getElementById("saudacaoUsuario");
-      const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
-
-      if (saudacaoEl) saudacaoEl.textContent = "Bem-vindo(a) 👋";
-      if (tipoAcessoEl) tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
-
-      esconderSpinner();
-
-      verificarTreinamentoPendente();
-
     })
     .catch(err => {
       esconderSpinner();
-      msgErro.textContent = '❌ Erro de conexão: ' + err.message;
+      msgErro.textContent = '❌ Erro ao fazer login: ' + err.message;
     });
 }

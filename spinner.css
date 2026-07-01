@@ -1,0 +1,9 @@
+.spinner {
+  border: 0.4em solid #f3f3f3;
+  border-top: 0.4em solid var(--cor-primaria);
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}

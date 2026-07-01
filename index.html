@@ -2,32 +2,280 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Painel TPE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="login.css">
+    <title>TPE SBC</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div id="telaLogin" class="quadro-centralizado">
+    <!-- LOGIN -->
 
-  <h3 class="titulo-login">TPE SBC</h3>
+    <div id="telaLogin" class="quadro-centralizado">
 
-  <label>E-mail do usuário:</label>
-  <input type="email" id="emailLogin" class="input-login">
+        <h3 class="titulo-login">TPE SBC</h3>
 
-  <label>Senha:</label>
-  <input type="password" id="senhaLogin" class="input-login">
+        <label>E-mail do usuário:</label>
+        <input type="email" id="emailLogin" class="input-login">
 
-  <button class="botao-login" onclick="fazerLogin()">Entrar</button>
+        <label>Senha:</label>
+        <input type="password" id="senhaLogin" class="input-login">
 
-  <p id="msgLogin" class="mensagem"></p>
+        <button class="botao-login" onclick="fazerLogin()">
+            Entrar
+        </button>
 
-</div>
+        <p id="msgLogin" class="mensagem"></p>
 
-<script src="utils.js"></script>
-<script src="login.js"></script>
+    </div>
+
+
+    <!-- CONTEÚDO DO SISTEMA -->
+
+    <div id="conteudoProtegido" style="display:none;">
+
+        <!-- CABEÇALHO -->
+
+        <div id="conteudoPrincipal" class="header-dashboard">
+
+            <div class="linha-sistema">
+
+                <div class="titulo-sistema">
+                    TPE SBC
+                </div>
+
+                <div class="subtitulo-sistema">
+                    Testemunho Público Especial
+                </div>
+
+            </div>
+
+            <div class="linha-usuario">
+
+                <div id="saudacaoUsuario" class="usuario">
+                    Bem-vindo(a)... 👋
+                </div>
+
+                <div id="tipoAcessoUsuario" class="acesso">
+                    Seu tipo de acesso é...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <div id="menuCards" class="tela aberta">
+
+            <div class="cards-menu">
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">👤</div>
+
+                    <div class="titulo">
+                        Meu Perfil
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🎓</div>
+
+                    <div class="titulo">
+                        Meus Treinamentos
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🕒</div>
+
+                    <div class="titulo">
+                        Disponibilidade Geral
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🕒</div>
+
+                    <div class="titulo">
+                        Minha Disponibilidade
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🎊</div>
+
+                    <div class="titulo">
+                        Eventos
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">📅</div>
+
+                    <div class="titulo">
+                        Escalas
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🌍</div>
+
+                    <div class="titulo">
+                        Mapas
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🧑‍🤝‍🧑</div>
+
+                    <div class="titulo">
+                        Participantes
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-escalas"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">⚠️</div>
+
+                    <div class="titulo">
+                        Participantes Sem Disponibilidade
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-admin"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🎓</div>
+
+                    <div class="titulo">
+                        Dias dos Candidatos para Treinamento
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-treinandos"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🎓</div>
+
+                    <div class="titulo">
+                        Meus Dias Para Treinamento
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-escalas"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">👥</div>
+
+                    <div class="titulo">
+                        Disponíveis
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-escalas"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">✅</div>
+
+                    <div class="titulo">
+                        Designar
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-admin"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">👨‍💼</div>
+
+                    <div class="titulo">
+                        Administração
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">🪑</div>
+
+                    <div class="titulo">
+                        Vagas
+                    </div>
+
+                </div>
+
+
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                    onclick="alert('Em migração')">
+
+                    <div class="icone">📈</div>
+
+                    <div class="titulo">
+                        Relatórios
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="login.js"></script>
 
 </body>
+
 </html>

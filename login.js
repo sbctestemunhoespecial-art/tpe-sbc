@@ -9,32 +9,34 @@ function fazerLogin() {
   msgErro.textContent = '';
   mostrarSpinner();
 
-  const script = document.createElement("script");
+  const callback = "cb_" + Date.now();
 
-  const callbackName = "loginCallback_" + Date.now();
-
-  window[callbackName] = function(res) {
+  window[callback] = function(res) {
 
     esconderSpinner();
 
     if (res.sucesso) {
-      alert("Login OK");
+
+      alert("Login OK ✔");
+
       document.getElementById("telaLogin").style.display = "none";
       document.getElementById("conteudoProtegido").style.display = "block";
+
     } else {
       msgErro.textContent = res.mensagem;
     }
 
-    delete window[callbackName];
-    document.body.removeChild(script);
+    delete window[callback];
   };
+
+  const script = document.createElement("script");
 
   script.src =
     API_URL +
     "?acao=login" +
     "&email=" + encodeURIComponent(email) +
     "&senha=" + encodeURIComponent(senha) +
-    "&callback=" + callbackName;
+    "&callback=" + callback;
 
   document.body.appendChild(script);
 }

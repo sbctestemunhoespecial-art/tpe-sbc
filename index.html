@@ -28,24 +28,410 @@
 
     <!-- LOGIN -->
 
-    <div id="telaLogin" class="quadro-centralizado">
+<div id="telaLogin" class="quadro-centralizado">
+  <h3 class="titulo-login">TPE SBC</h3>
 
-        <h3 class="titulo-login">TPE SBC</h3>
+  <label for="emailLogin">E-mail do usuário:</label>
+  <input type="email" id="emailLogin" class="input-login" required>
 
-        <label>E-mail do usuário:</label>
-        <input type="email" id="emailLogin" class="input-login">
+  <label for="senhaLogin">Senha:</label>
+  <input type="password" id="senhaLogin" class="input-login" required>
 
-        <label>Senha:</label>
-        <input type="password" id="senhaLogin" class="input-login">
+  <button type="button" class="botao-login" onclick="fazerLogin()">Entrar</button>
 
-        <button class="botao-login" onclick="fazerLogin()">
-            Entrar
-        </button>
+  <p id="msgLogin" class="mensagem"></p>
 
-        <p id="msgLogin" class="mensagem"></p>
+  <p>
+    <a href="#" onclick="mostrarTela('telaSolicitarCodigo'); return false;">
+      Esqueci minha senha
+    </a>
+  </p>
+</div>
+
+
+<div id="telaSolicitarCodigo" class="quadro-centralizado" style="display:none;">
+  <h3 class="titulo-login">ESQUECI A SENHA</h3>
+
+  <input type="email" id="emailCodigo" class="input-login" required>
+
+  <button type="button" class="botao-login" onclick="enviarCodigo()">
+    ENVIAR CÓDIGO
+  </button>
+
+  <p id="msgSolicitarCodigo" class="mensagem"></p>
+
+  <p>
+    <a href="#" onclick="mostrarTela('telaLogin'); return false;">
+      Voltar ao login
+    </a>
+  </p>
+</div>
+
+
+<div id="telaInserirCodigo" class="quadro-centralizado" style="display:none;">
+  <h3 class="titulo-login">DIGITE O CÓDIGO</h3>
+
+  <div id="inputsCodigo" style="display:flex; gap:5px; justify-content:center;">
+    <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
+    <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
+    <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
+    <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
+  </div>
+
+  <div id="inputsSenha" style="display:none; margin-top:15px;">
+    <input type="password" id="novaSenhaCodigo" class="input-login" required>
+    <input type="password" id="novaSenhaConfirma" class="input-login" required>
+
+    <button type="button" class="botao-login" onclick="redefinirSenha()">
+      REDEFINIR
+    </button>
+
+    <p id="msgConfirmarCodigo" class="mensagem"></p>
+  </div>
+</div>
+
+<div id="modalEditarDisponibilidade" class="modal-editar">
+
+  <div class="conteudo-modal-editar">
+
+    <div class="cabecalho-modal">
+
+      <h3>Clique para alterar a sua disponibilidade</h3>
+
+      <button
+        type="button"
+        class="fechar-modal-editar"
+        onclick="fecharModalEditarDisponibilidade()">
+        ❌
+      </button>
 
     </div>
 
+    <button
+      type="button"
+      id="btnEditarDisponibilidadeUsuario"
+      onclick="executarAcaoModalEditarDisponibilidade()"
+      class="botao editar"
+      style="width:100%;">
+
+      ✏️ Editar Disponibilidade
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="modalAlterarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>Alterar Treinador</h3>
+
+    <select id="listaNomesTrei">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <div style="margin-top:10px;">
+      <input type="text"
+             id="filtroBuscaTrei"
+             placeholder="Digite o nome para pesquisar...">
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+
+      <button type="button" onclick="confirmarAlteracaoTreinador()">
+        Alterar
+      </button>
+
+      <button type="button" onclick="fecharModalTreinador()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="modalComunicarAdministrador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Coordenador</h3>
+
+    <p>Deseja comunicar o coordenador do TPE pelo WhatsApp?</p>
+
+    <div class="botoes-modal">
+
+      <button type="button" onclick="comunicarAdministrador()">
+        ✅ Sim
+      </button>
+
+      <button type="button" onclick="fecharModalAdministrador()">
+        ❌ Não
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="modalComunicarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Treinador</h3>
+
+    <p>Deseja comunicar o novo treinador pelo WhatsApp?</p>
+
+    <div class="botoes-modal">
+
+      <button type="button" onclick="comunicarNovoTreinador()">
+        ✅ Sim
+      </button>
+
+      <button type="button" onclick="fecharModalComunicacao()">
+        ❌ Não
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📌 Confirmar Designação</h3>
+
+    <p>Deseja realmente designar este treinador para o participante?</p>
+
+    <div class="botoes-modal">
+
+      <button type="button" onclick="confirmarDesignacao()">✅ Sim</button>
+      <button type="button" onclick="fecharModalDesignacao()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+
+
+<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📲 Enviar WhatsApp</h3>
+
+    <p>Deseja enviar mensagem para o treinador designado?</p>
+
+    <div class="botoes-modal">
+
+      <button type="button" onclick="enviarWhatsappDesignacao()">📤 Sim</button>
+      <button type="button" onclick="fecharModalWhatsapp()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+
+
+<div id="modalAcoesTreinamento" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>O que você quer fazer?</h3>
+
+    <button type="button" id="acaoConcluir">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button type="button" id="acaoDesistencia">
+      🚫 Registrar Desistência
+    </button>
+
+    <button type="button" id="acaoAlterarTreinador">
+      ✏️ Alterar Treinador
+    </button>
+
+    <button type="button" id="acaoLembrete">
+      🔔 Lembrete Para Treinador
+    </button>
+
+    <button type="button" onclick="fecharModalAcoesTreinamento()">
+      ❌ Fechar
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="modalAcoesTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>O que você quer fazer?</h3>
+
+    <button type="button" id="acaoConcluirTreinador">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button type="button" id="acaoDesistenciaTreinador">
+      ❌ Registrar Desistência
+    </button>
+
+    <button type="button" onclick="fecharModalAcoesTreinador()">
+      Fechar
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="modalDesignados">
+
+  <div class="conteudo-modal">
+
+    <h3>Quem será substituído?</h3>
+
+    <div id="listaDesignados"></div>
+
+    <div style="display:flex">
+      <button type="button" onclick="confirmarNenhumDesignados()">Ninguém</button>
+      <button type="button" onclick="fecharModalDesignados()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="modalSubstituicao">
+
+  <div class="conteudo-modal">
+
+    <h3>Quem deve sair?</h3>
+
+    <div id="listaSubstituicao"></div>
+
+    <div style="display:flex">
+      <button type="button" onclick="confirmarNenhum()">Ninguém</button>
+      <button type="button" onclick="fecharModal()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="modalParticipantes" class="modal-overlay oculto">
+
+  <div class="conteudo-modal">
+
+    <div class="modal-topo">
+      <h3>👤 Selecionar Participante</h3>
+
+      <button
+        type="button"
+        class="btn-fechar-modal"
+        onclick="fecharModalParticipantes()">
+        ✖
+      </button>
+    </div>
+
+    <select id="selectModalParticipantes" size="5">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <h3>🔎 Filtrar participante</h3>
+
+    <input
+      type="text"
+      id="filtroModalParticipantes"
+      placeholder="Digite o nome para pesquisar...">
+
+    <div class="modal-botoes">
+
+      <button type="button" onclick="confirmarSelecaoParticipante()">
+        ✅ Selecionar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="confirmacaoGlobal" class="oculto">
+
+  <div class="conteudo-confirmacao">
+
+    <p id="confirmacaoMensagem"></p>
+
+    <div class="botoes-confirmacao">
+      <button type="button" id="confirmacaoBotaoOk">
+        Confirmar
+      </button>
+
+      <button type="button" id="confirmacaoBotaoCancelar">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="alertaGlobal" class="oculto">
+
+  <div class="conteudo-alerta">
+
+    <span id="alertaMensagem"></span>
+
+    <br><br>
+
+    <button type="button" class="alerta-btn" id="alertaBotaoOk">
+      Ok
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="spinnerGlobal" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+
+  <div class="spinner"></div>
+
+</div>
+
+
+<table class="organizadores"></table>
+
+<div class="escalas"></div>
+
+<section class="participantes"></section>
 
     <!-- CONTEÚDO DO SISTEMA -->
 
@@ -177,7 +563,7 @@
                 </div>
 
                 <div class="card-menu btn-relatoriosSubMenu so-escalas"
-                    onclick="alert('Em migração')">
+                    onclick="abrirTela('painelSemDisponibilidade', this)">
 
                     <div class="icone">⚠️</div>
 
@@ -269,6 +655,83 @@
         </div>
 
     </div>
+
+<div id="painelSemDisponibilidade" class="painel-exportar tela"> <!-- AQUI TERMINA O PAINEL PARTICIPANTES SEM DISPONIBILIDADE-->
+
+    <h3>📋 Participantes sem disponibilidade cadastrada</h3>
+
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+
+        <button
+            class="botao editar"
+            onclick="pesquisarParticipantesSemDisponibilidade();">
+
+            🔍 Localizar participantes
+
+        </button>
+
+        <button
+            class="botao salvar"
+            onclick="copiarEmailsSemDisponibilidade();">
+
+            📧 Copiar e-mails
+
+        </button>
+
+        <button
+            class="botao salvar"
+            onclick="copiarTelefonesSemDisponibilidade();">
+
+            📱 Copiar telefones
+
+        </button>
+
+    </div>
+
+    <div
+        id="totalSemDisponibilidade"
+        class="nome-pesquisado"
+        style="margin-bottom:15px;font-weight:bold;color:#c62828;">
+
+        Participantes sem disponibilidade: 0
+
+    </div>
+
+    <table
+        id="tabelaSemDisponibilidade"
+        class="tabela-sistema tabela-destaque">
+
+        <thead>
+
+            <tr>
+
+                <th style="width:90px;">
+                    ID
+                </th>
+
+                <th>
+                    Nome
+                </th>
+
+                <th>
+                    E-mail
+                </th>
+
+                <th style="width:220px;">
+                    WhatsApp
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tbodySemDisponibilidade">
+
+        </tbody>
+
+    </table>
+
+</div>
 
     <script src="utils.js"></script>
     <script src="api.js"></script>

@@ -310,7 +310,7 @@ window.addEventListener("DOMContentLoaded", () => {
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
 
-    document.getElementById("menuBtn").style.display = "inline-block";
+    //document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';
     document.getElementById('conteudoProtegido').style.display = 'block';
 
@@ -2562,7 +2562,7 @@ function cadastrarParticipante() {
   document.body.appendChild(script);
 }
 
-document.getElementById("telefone").addEventListener("input", function (e) {
+/*document.getElementById("telefone").addEventListener("input", function (e) {
   let input = e.target.value.replace(/\D/g, "").substring(0, 11);
   let formatted = "";
 
@@ -2571,7 +2571,7 @@ document.getElementById("telefone").addEventListener("input", function (e) {
   if (input.length >= 8) formatted += "-" + input.substring(7, 11);
 
   e.target.value = formatted;
-});
+});*/
 
 function parseDataBR(dataTexto) {
   if (!dataTexto) return null;

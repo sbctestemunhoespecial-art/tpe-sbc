@@ -1774,8 +1774,6 @@ function carregarDadosTP(dados) {
   }
 }
 
-let modoEdicaoAtivoTP = false;
-
 function alternarModoEdicaoTP() {
 
   modoEdicaoAtivoTP = !modoEdicaoAtivoTP;

@@ -354,6 +354,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+
 let participantesSemDisponibilidade = [];
  
 function pesquisarParticipantesSemDisponibilidade() {

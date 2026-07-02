@@ -29,6 +29,9 @@ function apiJSONP(acao, parametros = {}, callback) {
 
 }
 
+const historico = [];
+let telaAtual = 'menuCards';
+
 function abrirTela(idTela, card = null) {
 
     if (telaAtual) {

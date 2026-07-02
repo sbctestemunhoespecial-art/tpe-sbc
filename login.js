@@ -205,8 +205,8 @@ function fazerLogin() {
 
       mostrarSecoesPorPerfil(res.perfil);
 
-      limparCamposUsuario();
-      restaurarCamposPerfil();
+      /*limparCamposUsuario();
+      restaurarCamposPerfil();*/
 
       // 🔁 segundo request (nome do usuário)
       const cbNome = "cb_nome_" + Date.now();

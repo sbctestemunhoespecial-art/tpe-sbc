@@ -1,5 +1,132 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
+function apiJSONP(acao, parametros = {}, callback) {
+
+  const callbackName =
+    "cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+
+  window[callbackName] = function(resposta) {
+
+    callback(resposta);
+
+    delete window[callbackName];
+
+    script.remove();
+
+  };
+
+  const query = new URLSearchParams({
+    acao,
+    ...parametros,
+    callback: callbackName
+  });
+
+  const script = document.createElement("script");
+
+  script.src = API_URL + "?" + query.toString();
+
+  document.body.appendChild(script);
+
+}
+
+function abrirTela(idTela, card = null) {
+
+    if (telaAtual) {
+        historico.push(telaAtual);
+    }
+
+    // Esconde tudo
+    document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+    });
+
+    // Mostra apenas a tela desejada
+    document.getElementById(idTela)
+        ?.classList.add('aberta');
+
+    telaAtual = idTela;
+
+    document.querySelectorAll('.card-menu')
+        .forEach(c => c.classList.remove('ativo'));
+
+    //atualizarBotaoVoltar();
+}
+
+function voltar() {
+
+  console.log("ENTREI NA FUNÇÃO VOLTAR");
+
+  console.log("Histórico:", historico);
+  console.log("Tela recuperada:", telaAtual);
+
+    if (historico.length === 0) return;
+
+    document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+    });
+
+    telaAtual = historico.pop();
+
+    // ==========================
+    // LIMPA OS SWITCHES DE 2H/4H
+    // ==========================
+    [
+        "tipoDisponibilidade2h",
+        "tipoDisponibilidade4h"
+    ].forEach(id => {
+
+        const el = document.getElementById(id);
+
+        if (el) {
+            el.checked = false;
+        }
+
+    });
+
+    console.log("Tela recuperada:", telaAtual);
+
+    document.getElementById(telaAtual)
+        ?.classList.add('aberta');
+
+    // ==========================
+    // Carrega os dados da tela
+    // ==========================
+    switch (telaAtual) {
+
+      case "telaUsuarioLogado":
+        atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
+        break;
+
+    }
+
+    atualizarBotaoVoltar();
+}
+
+function atualizarBotaoVoltar() {
+
+    const btnVoltar = document.getElementById('btnVoltarMenu');
+
+    if (!btnVoltar) return;
+
+    if (historico.length === 0) {
+
+        btnVoltar.classList.add('oculto');
+
+    } else {
+
+        btnVoltar.classList.remove('oculto');
+
+        const destino = historico[historico.length - 1];
+
+        btnVoltar.innerHTML =
+            destino === 'menuCards'
+                ? '👈 Início'
+                : '👈 Voltar';
+
+    }
+
+}
+
 function mostrarTela(id) {
   document.querySelectorAll('.quadro-centralizado').forEach(div => {
     div.style.display = (div.id === id) ? 'block' : 'none';
@@ -228,14 +355,14 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 let participantesSemDisponibilidade = [];
-
+/** 
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
+*/
 function pesquisarParticipantesSemDisponibilidade() {
 
   mostrarSpinner();
 
-  const callback = "cb_semdisp_" + Date.now();
+  /*const callback = "cb_semdisp_" + Date.now();
 
   window[callback] = function(resultado) {
 
@@ -255,7 +382,20 @@ function pesquisarParticipantesSemDisponibilidade() {
     "?acao=buscarParticipantesSemDisponibilidade" +
     "&callback=" + callback;
 
-  document.body.appendChild(script);
+  document.body.appendChild(script);*/
+  apiJSONP(
+    "buscarParticipantesSemDisponibilidade",
+    {},
+    function(resultado) {
+
+      esconderSpinner();
+
+      participantesSemDisponibilidade = resultado || [];
+
+      preencherTabelaSemDisponibilidade();
+
+    }
+  );
 }
 
 
@@ -1924,7 +2064,7 @@ function carregarMapaQuandoClicar() {
   if (!mapScriptLoaded) {
     const script = document.createElement("script");
     script.src =
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
+      //"https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);

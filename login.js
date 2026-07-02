@@ -141,8 +141,8 @@ function limparMensagens() {
   });
 }
 
-let perfilUsuario = null;
-let idUsuarioLogado = null;
+/*let perfilUsuario = null;
+let idUsuarioLogado = null;*/
 let emailUsuario = null;
 
 function fazerLogin() {

@@ -184,7 +184,7 @@ function fazerLogin() {
         timestamp: Date.now()
       }));
 
-      document.getElementById("menuBtn").style.display = "inline-block";
+      //document.getElementById("menuBtn").style.display = "inline-block";
       document.getElementById('telaLogin').style.display = 'none';
       document.getElementById('conteudoProtegido').style.display = 'block';
 

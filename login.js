@@ -453,8 +453,6 @@ function preencherTabelaSemDisponibilidade() {
 
 }
 
-let participantesSemDisponibilidade = [];
-
 function salvarDisponibilidadeIdUsuarioLogado2h() {
 
   const jaTenhoDesignacao =

@@ -356,8 +356,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 let participantesSemDisponibilidade = [];
  
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function pesquisarParticipantesSemDisponibilidade() {
 
   mostrarSpinner();
@@ -454,8 +452,6 @@ function preencherTabelaSemDisponibilidade() {
   });
 
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 let participantesSemDisponibilidade = [];
 
@@ -669,8 +665,6 @@ function cancelarModoEdicaoUsuarioLogado2h() {
 
   pesquisarDisponibilidadeUsuarioLogado2h();
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 function habilitarCamposDisponibilidadeID() {
   const checkboxes = document.querySelectorAll('.dia-turno-id');
@@ -1847,8 +1841,6 @@ function pesquisarMinhaInfo() {
   document.body.appendChild(script);
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 let map;
 let todosOsPontos = [];
 let marcadoresFixos = [];
@@ -2074,8 +2066,6 @@ function carregarMapaQuandoClicar() {
   }
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function pesquisarTcs() {
 
   if (!participanteSelecionadoTcs) {
@@ -2236,8 +2226,6 @@ function salvartcs() {
 
   document.body.appendChild(script);
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 function pesquisarParticipante() {
 
@@ -2484,8 +2472,6 @@ function mostrarResultados(dados) {
   tDet.style.display = 'table';
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function cadastrarParticipante() {
 
   const campos = {
@@ -2703,8 +2689,6 @@ document.getElementById("dataBatismo").addEventListener("change", () => {
     calcularAnosBatismo(document.getElementById("dataBatismo").value);
 });
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function abrirNovoPonto() {
 
   const prefixoInput = document.getElementById('prefixo');
@@ -2764,8 +2748,6 @@ function abrirNovoPonto() {
 
   document.body.appendChild(script);
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 let participantesEncontrados = [];
 
@@ -6118,8 +6100,6 @@ function corrigirDesignacoesPorId() {
   );
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function buscarTreinando() {
   const resultadoDiv = document.getElementById('resultadoTreinando');
   const msg = document.getElementById('msgTreinando') || { textContent: () => {} };
@@ -6541,8 +6521,6 @@ function fecharModalWhatsapp() {
   document.getElementById('modalEnviarWhatsapp').classList.add('oculto');
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function buscarTreinamentosEmAndamento() {
 
   mostrarSpinner();
@@ -6931,8 +6909,6 @@ function comunicarLembreteTreinador(
   document.body.appendChild(script);
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function consultarMeuTreinamento() {
 
   mostrarSpinner();
@@ -7261,8 +7237,6 @@ function fecharModalAcoesTreinador() {
   document.getElementById('modalAcoesTreinador').classList.add('oculto');
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 let irregularesEncontrados = [];
 
 function buscarIrregulares() {
@@ -7550,8 +7524,6 @@ function pegarContatosDoUsuarioIr(nome) {
 
   document.body.appendChild(script);
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 let vagaContexto = {};
 
@@ -7893,8 +7865,6 @@ function mostrarVagasNaTabela(vagas) {
   });
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function pesquisarParticipantesPorCongregacao() {
 
   const select = document.getElementById('pesqCongregacao');
@@ -8030,8 +8000,6 @@ function carregarOpcoesCongregacoes() {
   document.body.appendChild(script);
 }
 
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
-
 function exportar() {
 
   const abaSelecionada = document.getElementById('aba').value;
@@ -8072,8 +8040,6 @@ function exportar() {
 
   document.body.appendChild(script);
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 function carregarResumo() {
 
@@ -8133,9 +8099,6 @@ function carregarResumo() {
 
   document.body.appendChild(script);
 }
-
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 function consultarPerfilAtual() {
 
@@ -8232,8 +8195,6 @@ function alterarPerfil() {
 
   document.body.appendChild(script);
 }
-
-//const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
 let participanteSelecionadoGA = null;
 

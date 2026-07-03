@@ -1,5 +1,12 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    esconderSpinner();
+  }, 1000);
+});
+
 function apiJSONP(acao, parametros = {}, callback, onError) {
 
   const callbackName =

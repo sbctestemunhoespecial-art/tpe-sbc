@@ -1,16 +1,21 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
-function apiJSONP(acao, parametros = {}, callback) {
+function apiJSONP(acao, parametros = {}, callback, onError) {
 
   const callbackName =
     "cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
 
   window[callbackName] = function(resposta) {
 
-    callback(resposta);
+    console.log("✅ Callback executado:", resposta);
+
+    if (resposta && resposta.sucesso === false) {
+      if (onError) onError(resposta);
+    } else {
+      callback(resposta);
+    }
 
     delete window[callbackName];
-
     script.remove();
 
   };
@@ -23,110 +28,77 @@ function apiJSONP(acao, parametros = {}, callback) {
 
   const script = document.createElement("script");
 
+  script.onload = function () {
+    console.log("📥 Script JSONP carregado.");
+  };
+
+  script.onerror = function (e) {
+    console.error("❌ Erro ao carregar o script JSONP:", e);
+  };
+
   script.src = API_URL + "?" + query.toString();
+
+  console.log("🌐 URL chamada:", script.src);
 
   document.body.appendChild(script);
 
 }
+function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  }
 
-const historico = [];
-let telaAtual = 'menuCards';
+  function mostrarPainel(idPainel) {
+    toggleMenu();
 
-function abrirTela(idTela, card = null) {
+    document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
 
-    if (telaAtual) {
-        historico.push(telaAtual);
-    }
+    const painel = document.getElementById(idPainel);
+    if (painel) painel.classList.add('ativo');
+  }
+  function mostrarPainelSemMenu(idPainel) {
 
-    // Esconde tudo
-    document.querySelectorAll('.tela').forEach(el => {
-        el.classList.remove('aberta');
-    });
+    document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
 
-    // Mostra apenas a tela desejada
-    document.getElementById(idTela)
-        ?.classList.add('aberta');
+    const painel = document.getElementById(idPainel);
+    if (painel) painel.classList.add('ativo');
+  }
 
-    telaAtual = idTela;
+  function sair() {
+    toggleMenu();
 
-    document.querySelectorAll('.card-menu')
-        .forEach(c => c.classList.remove('ativo'));
+    localStorage.removeItem("usuarioLogado");
+    perfilUsuario = null;
+    idUsuarioLogado = null;
 
-    //atualizarBotaoVoltar();
-}
-
-function voltar() {
-
-  console.log("ENTREI NA FUNÇÃO VOLTAR");
-
-  console.log("Histórico:", historico);
-  console.log("Tela recuperada:", telaAtual);
-
-    if (historico.length === 0) return;
+    historico.length = 0;
+    telaAtual = 'menuCards';
 
     document.querySelectorAll('.tela').forEach(el => {
         el.classList.remove('aberta');
     });
 
-    telaAtual = historico.pop();
-
-    // ==========================
-    // LIMPA OS SWITCHES DE 2H/4H
-    // ==========================
-    [
-        "tipoDisponibilidade2h",
-        "tipoDisponibilidade4h"
-    ].forEach(id => {
-
-        const el = document.getElementById(id);
-
-        if (el) {
-            el.checked = false;
-        }
-
-    });
-
-    console.log("Tela recuperada:", telaAtual);
-
-    document.getElementById(telaAtual)
+    document.getElementById('menuCards')
         ?.classList.add('aberta');
-
-    // ==========================
-    // Carrega os dados da tela
-    // ==========================
-    switch (telaAtual) {
-
-      case "telaUsuarioLogado":
-        atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
-        break;
-
-    }
 
     atualizarBotaoVoltar();
+
+    document.getElementById("menuBtn").style.display = "none";
+    document.getElementById('conteudoProtegido').style.display = 'none';
+    document.getElementById('telaLogin').style.display = 'block';
+
+    mostrarAlertaGlobal("Você saiu da conta.");
+
 }
 
-function atualizarBotaoVoltar() {
+let campoDestinoModal = null;
 
-    const btnVoltar = document.getElementById('btnVoltarMenu');
+function abrirModalParticipantes() {
+  document.getElementById("modalParticipantes").style.display = "flex";
+}
 
-    if (!btnVoltar) return;
-
-    if (historico.length === 0) {
-
-        btnVoltar.classList.add('oculto');
-
-    } else {
-
-        btnVoltar.classList.remove('oculto');
-
-        const destino = historico[historico.length - 1];
-
-        btnVoltar.innerHTML =
-            destino === 'menuCards'
-                ? '👈 Início'
-                : '👈 Voltar';
-
-    }
+function fecharModalParticipantes(){
+  document.getElementById("modalParticipantes").style.display = "none";
 
 }
 
@@ -148,7 +120,7 @@ function limparMensagens() {
 let idUsuarioLogado = null;*/
 let emailUsuario = null;
 
-function fazerLogin() {
+/*function fazerLogin() {
 
   const email = document.getElementById('emailLogin').value.trim();
   const senha = document.getElementById('senhaLogin').value.trim();
@@ -205,10 +177,9 @@ function fazerLogin() {
 
       mostrarSecoesPorPerfil(res.perfil);
 
-      /*limparCamposUsuario();
-      restaurarCamposPerfil();*/
+      //limparCamposUsuario();
+      //restaurarCamposPerfil();
 
-      // 🔁 segundo request (nome do usuário)
       const cbNome = "cb_nome_" + Date.now();
 
       window[cbNome] = function(resNome) {
@@ -261,6 +232,121 @@ function fazerLogin() {
     "&callback=" + callback;
 
   document.body.appendChild(script);
+}*/
+
+function fazerLogin() {
+
+  const email = document.getElementById('emailLogin').value.trim();
+  const senha = document.getElementById('senhaLogin').value.trim();
+  const msgErro = document.getElementById('msgLogin');
+
+  msgErro.textContent = '';
+  mostrarSpinner();
+
+  apiJSONP(
+    "login",
+    {
+      email,
+      senha
+    },
+    function(res) {
+
+      perfilUsuario = res.perfil;
+      idUsuarioLogado = res.id;
+
+      const saudacaoEl = document.getElementById("saudacaoUsuario");
+      const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+      if (saudacaoEl) {
+        saudacaoEl.textContent = "Bem-vindo(a) 👋";
+      }
+
+      if (tipoAcessoEl) {
+        tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+      }
+
+      document.getElementById('emailLogin').value = '';
+      document.getElementById('senhaLogin').value = '';
+      document.getElementById('msgLogin').textContent = '';
+
+      localStorage.setItem("usuarioLogado", JSON.stringify({
+        id: res.id,
+        perfil: res.perfil,
+        timestamp: Date.now()
+      }));
+
+      //document.getElementById("menuBtn").style.display = "inline-block";
+      document.getElementById('telaLogin').style.display = 'none';
+      document.getElementById('conteudoProtegido').style.display = 'block';
+
+      historico.length = 0;
+
+      document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+      });
+
+      document.getElementById('menuCards')?.classList.add('aberta');
+
+      telaAtual = 'menuCards';
+
+      atualizarBotaoVoltar();
+
+      mostrarSecoesPorPerfil(res.perfil);
+
+      /*limparCamposUsuario();
+      restaurarCamposPerfil();*/
+
+      // Buscar nome do usuário
+      apiJSONP(
+        "buscarNomeDoUsuario",
+        {
+          id: idUsuarioLogado
+        },
+        function(resNome) {
+
+          const saudacaoEl = document.getElementById("saudacaoUsuario");
+          const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+          if (!saudacaoEl) return;
+
+          if (resNome.sucesso && resNome.nome) {
+            saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;
+          } else {
+            saudacaoEl.textContent = "Bem-vindo(a) 👋";
+          }
+
+          if (tipoAcessoEl) {
+            tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+          }
+
+          esconderSpinner();
+          verificarTreinamentoPendente();
+
+        },
+        function(err) {
+
+          esconderSpinner();
+
+          if (tipoAcessoEl) {
+            tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+          }
+
+          msgErro.textContent = err.message || "❌ Erro ao buscar nome do usuário.";
+
+        }
+      );
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      msgErro.textContent =
+        err.message || "❌ Erro ao fazer login.";
+
+    }
+  );
+
 }
 
 function mostrarSecoesPorPerfil(perfil) {
@@ -364,27 +450,6 @@ function pesquisarParticipantesSemDisponibilidade() {
 
   mostrarSpinner();
 
-  /*const callback = "cb_semdisp_" + Date.now();
-
-  window[callback] = function(resultado) {
-
-    esconderSpinner();
-
-    participantesSemDisponibilidade = resultado || [];
-
-    preencherTabelaSemDisponibilidade();
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarParticipantesSemDisponibilidade" +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);*/
   apiJSONP(
     "buscarParticipantesSemDisponibilidade",
     {},
@@ -395,6 +460,13 @@ function pesquisarParticipantesSemDisponibilidade() {
       participantesSemDisponibilidade = resultado || [];
 
       preencherTabelaSemDisponibilidade();
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal("❌ " + err.message);
 
     }
   );
@@ -468,11 +540,12 @@ function salvarDisponibilidadeIdUsuarioLogado2h() {
   const somenteSubstituicao =
     document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade").checked;
 
-  const condicao = jaTenhoDesignacao
-    ? "Já possui designação"
-    : somenteSubstituicao
-      ? "Somente substituição"
-      : "Disponível para ponto fixo";
+  const condicao =
+    jaTenhoDesignacao
+      ? "Já possui designação"
+      : somenteSubstituicao
+        ? "Somente substituição"
+        : "Disponível para ponto fixo";
 
   const frequencia =
     frequenciaEl ? frequenciaEl.value.trim() : "";
@@ -484,9 +557,13 @@ function salvarDisponibilidadeIdUsuarioLogado2h() {
   let valid = true;
 
   if (!somenteSubstituicao && !jaTenhoDesignacao && !frequencia) {
+
     mostrarAlertaGlobal("⚠️ Informe a frequência.");
-    frequenciaEl.classList.add("erro-campo");
+
+    frequenciaEl?.classList.add("erro-campo");
+
     valid = false;
+
   }
 
   let diasTurnos = [];
@@ -500,82 +577,103 @@ function salvarDisponibilidadeIdUsuarioLogado2h() {
       .map(cb => `${cb.dataset.diaU} - ${cb.dataset.turnoU}`);
 
     if (diasTurnos.length === 0) {
-      mostrarAlertaGlobal("⚠️ Selecione pelo menos um dia e turno disponível.");
+
+      mostrarAlertaGlobal(
+        "⚠️ Selecione pelo menos um dia e turno disponível."
+      );
+
       valid = false;
+
     }
+
   }
 
   if (!valid) return;
 
   mostrarSpinner();
 
-  const callback = "cb_salvar_disp_" + Date.now();
+  apiJSONP(
+    "salvarDisponibilidade2h",
+    {
+      idParticipante: idUsuarioLogado,
+      condicao,
+      frequencia,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
+    function(res) {
 
-  window[callback] = function() {
+      esconderSpinner();
 
-    esconderSpinner();
+      mostrarAlertaGlobal(
+        res.mensagem ||
+        "✅ Disponibilidade atualizada com sucesso."
+      );
 
-    mostrarAlertaGlobal("✅ Disponibilidade atualizada com sucesso.");
+      cancelarModoEdicaoUsuarioLogado2h();
 
-    cancelarModoEdicaoUsuarioLogado2h();
+    },
+    function(err) {
 
-    delete window[callback];
-  };
+      esconderSpinner();
 
-  const script = document.createElement("script");
+      mostrarAlertaGlobal(
+        "❌ Erro ao registrar disponibilidade: " +
+        (err.mensagem || err.message)
+      );
 
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidade2h" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&condicao=" + encodeURIComponent(condicao) +
-    "&frequencia=" + encodeURIComponent(frequencia) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
+    }
+  );
 
-  document.body.appendChild(script);
 }
-
 
 function pesquisarDisponibilidadeUsuarioLogado2h() {
 
   console.log("pesquisarDisponibilidadeUsuarioLogado2h");
 
   if (!idUsuarioLogado) {
+
     mostrarAlertaGlobal("❌ Usuário não identificado.");
     return;
+
   }
 
   mostrarSpinner();
 
-  const callback = "cb_buscar_disp_" + Date.now();
+  apiJSONP(
+    "buscarDisponibilidade2h",
+    {
+      idParticipante: idUsuarioLogado
+    },
+    function(dados) {
 
-  window[callback] = function(dados) {
+      esconderSpinner();
 
-    esconderSpinner();
+      carregarDadosDisponibilidadeUsuarioLogado2h(dados);
 
-    carregarDadosDisponibilidadeUsuarioLogado2h(dados);
+      // 🔥 SÓ ABRE MODAL SE FOI SOLICITADO
+      if (abrirModalDepoisDaPesquisa) {
 
-    if (abrirModalDepoisDaPesquisa) {
-      abrirModalDepoisDaPesquisa = false;
+        abrirModalDepoisDaPesquisa = false;
 
-      abrirModalEditarDisponibilidade(
-        entrarModoEdicaoUsuarioLogado2h
+        abrirModalEditarDisponibilidade(
+          entrarModoEdicaoUsuarioLogado2h
+        );
+
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err.mensagem || err.message)
       );
+
     }
+  );
 
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidade2h" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 
@@ -668,6 +766,7 @@ function cancelarModoEdicaoUsuarioLogado2h() {
   pesquisarDisponibilidadeUsuarioLogado2h();
 }
 
+//Disponibilidade para o usuario logado 4h
 function habilitarCamposDisponibilidadeID() {
   const checkboxes = document.querySelectorAll('.dia-turno-id');
   checkboxes.forEach(cb => cb.disabled = false);
@@ -677,7 +776,7 @@ function habilitarCamposDisponibilidadeID() {
 
 function salvarDisponibilidadeIdUsuarioLogado4h() {
 
-  console.log('Entrou na função salvarDisponibilidaeIdUsuarioLogado, pelo botão somente substituição');
+  console.log('Entrou na função salvarDisponibilidadeIdUsuarioLogado4h');
 
   const jaTenhoDesignacao =
     document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade")?.checked;
@@ -690,15 +789,17 @@ function salvarDisponibilidadeIdUsuarioLogado4h() {
 
   const idUsuario = idUsuarioLogado;
 
-  const condicao = jaTenhoDesignacao
-    ? "Já possui designação"
-    : somenteSubstituicao
-      ? "Somente substituição"
-      : "Disponível para ponto fixo";
+  const condicao =
+    jaTenhoDesignacao
+      ? "Já possui designação"
+      : somenteSubstituicao
+        ? "Somente substituição"
+        : "Disponível para ponto fixo";
 
-  const frequencia = somenteSubstituicao
-    ? ""
-    : (frequenciaEl ? frequenciaEl.value.trim() : "");
+  const frequencia =
+    somenteSubstituicao
+      ? ""
+      : (frequenciaEl ? frequenciaEl.value.trim() : "");
 
   if (frequenciaEl) {
     frequenciaEl.classList.remove("erro-campo");
@@ -707,14 +808,23 @@ function salvarDisponibilidadeIdUsuarioLogado4h() {
   let valid = true;
 
   if (!idUsuario) {
+
     mostrarAlertaGlobal("❌ Usuário inválido.");
+
     valid = false;
+
   }
 
   if (!somenteSubstituicao && !jaTenhoDesignacao && !frequencia) {
-    mostrarAlertaGlobal("⚠️ Informe a frequência, pois ela é obrigatória para ponto fixo.");
-    frequenciaEl.classList.add("erro-campo");
+
+    mostrarAlertaGlobal(
+      "⚠️ Informe a frequência, pois ela é obrigatória para ponto fixo."
+    );
+
+    frequenciaEl?.classList.add("erro-campo");
+
     valid = false;
+
   }
 
   let diasTurnos = [];
@@ -728,49 +838,67 @@ function salvarDisponibilidadeIdUsuarioLogado4h() {
       .map(cb => `${cb.dataset.diaId} - ${cb.dataset.turnoId}`);
 
     if (diasTurnos.length === 0) {
-      mostrarAlertaGlobal("⚠️ Selecione pelo menos um dia e turno disponível.");
+
+      mostrarAlertaGlobal(
+        "⚠️ Selecione pelo menos um dia e turno disponível."
+      );
+
       valid = false;
+
     }
+
   }
 
   if (!valid) return;
 
   mostrarSpinner();
 
-  const callback = "cb_save_disp4h_" + Date.now();
+  apiJSONP(
+    "salvarDisponibilidade4h",
+    {
+      idParticipante: idUsuario,
+      condicao,
+      frequencia,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
+    function(res) {
 
-  window[callback] = function() {
+      esconderSpinner();
 
-    esconderSpinner();
+      mostrarAlertaGlobal(
+        res.mensagem ||
+        "✅ Disponibilidade atualizada com sucesso!"
+      );
 
-    mostrarAlertaGlobal("✅ Disponibilidade atualizada com sucesso!");
+      if (frequenciaEl) {
+        frequenciaEl.classList.remove("erro-campo");
+      }
 
-    if (frequenciaEl) {
-      frequenciaEl.classList.remove("erro-campo");
+      cancelarModoEdicaoUsuarioLogado4h();
+
+      if (jaTenhoDesignacao || somenteSubstituicao) {
+
+        sincronizarCardsComSwitch();
+
+        console.log(
+          "Chamando a função de sincronizar cards pelo botão somente Substituição!!!"
+        );
+
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao registrar a disponibilidade: " +
+        (err.mensagem || err.message)
+      );
+
     }
+  );
 
-    cancelarModoEdicaoUsuarioLogado4h();
-
-    if (jaTenhoDesignacao || somenteSubstituicao) {
-      sincronizarCardsComSwitch();
-      console.log('Chamando sincronizar cards pelo botão somente Substituição!!!');
-    }
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidade4h" +
-    "&id=" + encodeURIComponent(idUsuario) +
-    "&condicao=" + encodeURIComponent(condicao) +
-    "&frequencia=" + encodeURIComponent(frequencia) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 function alternarSomenteSubstituicaoID() {
@@ -848,34 +976,44 @@ function pesquisarDisponibilidadeUsuarioLogado4h() {
 
   mostrarSpinner();
 
-  const callback = "cb_buscar_disp4h_" + Date.now();
+  apiJSONP(
+    "buscarDisponibilidade4h",
+    {
+      id: idUsuarioLogado
+    },
 
-  window[callback] = function(dados) {
+    function(dados) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    carregarDadosDisponibilidadeUsuarioLogado4h(dados);
+      carregarDadosDisponibilidadeUsuarioLogado4h(dados);
 
-    if (abrirModalDepoisDaPesquisa) {
-      abrirModalDepoisDaPesquisa = false;
+      // 🔥 SÓ ABRE MODAL SE FOI SOLICITADO
+      if (abrirModalDepoisDaPesquisa) {
 
-      abrirModalEditarDisponibilidade(
-        entrarModoEdicaoUsuarioLogado4h
+        abrirModalDepoisDaPesquisa = false;
+
+        abrirModalEditarDisponibilidade(
+          entrarModoEdicaoUsuarioLogado4h
+        );
+
+      }
+
+    },
+
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err?.mensagem || err?.message || err)
       );
+
     }
 
-    delete window[callback];
-  };
+  );
 
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidade4h" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 function abrirCalendario4h() {
@@ -970,252 +1108,6 @@ function configurarCampoDisponibilidadeID() {
   pesquisarDisponibilidadeUsuarioLogado4h();
 }
 
-let modoEdicaoAtivoNovoPonto20 = false;
-
-function salvarDisponibilidade2h() {
-
-  const jaTenhoDesignacao =
-    document.getElementById("jaTenhoDesignacaoNovoPonto20")?.checked;
-
-  const somenteSubstituicao =
-    document.getElementById("somenteSubstituicaoNovoPonto20")?.checked;
-
-  const frequenciaEl =
-    document.getElementById("frequenciaDisponibilidadeNovoPonto20");
-
-  if (!participanteSelecionado2horas) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
-    return;
-  }
-
-  const idParticipante = participanteSelecionado2horas.id;
-  const nome = participanteSelecionado2horas.nome;
-
-  if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
-    return;
-  }
-
-  const isDesignacao = jaTenhoDesignacao === true;
-  const isSubstituicao = somenteSubstituicao === true;
-  const isPontoFixo = !isDesignacao && !isSubstituicao;
-
-  const condicao =
-    isDesignacao
-      ? "Já possui designação"
-      : isSubstituicao
-        ? "Somente substituição"
-        : "Disponível para ponto fixo";
-
-  const frequencia =
-    frequenciaEl ? frequenciaEl.value.trim() : "";
-
-  frequenciaEl?.classList.remove("erro-campo");
-
-  if (isPontoFixo && !frequencia) {
-    mostrarAlertaGlobal(
-      "⚠️ Informe a frequência, pois ela é obrigatória para ponto fixo."
-    );
-
-    frequenciaEl?.classList.add("erro-campo");
-    return;
-  }
-
-  let diasTurnos = [];
-
-  if (isPontoFixo) {
-
-    diasTurnos = Array.from(
-      document.querySelectorAll(".dia-turno-novoPonto20")
-    )
-      .filter(cb => cb.checked)
-      .map(cb => `${cb.dataset.diaN} - ${cb.dataset.turnoN}`);
-
-    if (diasTurnos.length === 0) {
-      mostrarAlertaGlobal(
-        "⚠️ Selecione pelo menos um dia e turno disponível."
-      );
-      return;
-    }
-  }
-
-  mostrarSpinner();
-
-  const callback = "cb_salvar_2h_novo_" + Date.now();
-
-  window[callback] = function(res) {
-
-    esconderSpinner();
-
-    mostrarAlertaGlobal(
-      `✅ Disponibilidade atualizada com sucesso para ${nome}!`
-    );
-
-    frequenciaEl?.classList.remove("erro-campo");
-
-    modoEdicaoAtivoNovoPonto20 = true;
-    alternarModoEdicaoNovoPonto20();
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidade2h" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&condicao=" + encodeURIComponent(condicao) +
-    "&frequencia=" + encodeURIComponent(frequencia) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-function alternarSomenteSubstituicaoNovoPonto20() {
-
-  const ativo =
-    document.getElementById("somenteSubstituicaoNovoPonto20")?.checked;
-
-  document.querySelectorAll(".dia-turno-novoPonto20").forEach(cb => {
-    cb.disabled = ativo;
-    if (ativo) cb.checked = false;
-  });
-
-  const freq =
-    document.getElementById("frequenciaDisponibilidadeNovoPonto20");
-
-  if (freq) {
-    freq.disabled = ativo;
-    if (ativo) freq.value = "";
-  }
-
-  if (ativo) {
-    salvarDisponibilidade2h();
-  }
-}
-
-function alternarDesignadoNovoPonto20() {
-
-  const ativo =
-    document.getElementById("jaTenhoDesignacaoNovoPonto20")?.checked;
-
-  document.querySelectorAll(".dia-turno-novoPonto20").forEach(cb => {
-    cb.disabled = ativo;
-    if (ativo) cb.checked = false;
-  });
-
-  const freq =
-    document.getElementById("frequenciaDisponibilidadeNovoPonto20");
-
-  if (freq) {
-    freq.disabled = ativo;
-    if (ativo) freq.value = "";
-  }
-
-  const substituicao2h =
-    document.getElementById("somenteSubstituicaoNovoPonto20");
-
-  if (substituicao2h) {
-    substituicao2h.disabled = ativo;
-  }
-
-  if (ativo) {
-    salvarDisponibilidade2h();
-  }
-}
-
-function pesquisarDisponibilidadeNovoPonto20() {
-
-  if (!participanteSelecionado2horas) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
-    return;
-  }
-
-  const idParticipante = participanteSelecionado2horas.id;
-
-  if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
-    return;
-  }
-
-  mostrarSpinner();
-
-  const callback = "cb_buscar_2h_novo_" + Date.now();
-
-  window[callback] = function(dados) {
-
-    esconderSpinner();
-
-    if (!dados) {
-      mostrarAlertaGlobal("⚠️ Nenhuma disponibilidade encontrada.");
-      return;
-    }
-
-    if (typeof carregarDadosDisponibilidadeNovoPonto20 === "function") {
-      carregarDadosDisponibilidadeNovoPonto20(dados);
-    } else {
-      console.error("Função carregarDadosDisponibilidadeNovoPonto20 não encontrada");
-    }
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidade2h" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-function alternarModoEdicaoNovoPonto20() {
-
-  modoEdicaoAtivoNovoPonto20 = !modoEdicaoAtivoNovoPonto20;
-
-  const container =
-    document.getElementById("disponibilidadeContainerNovoPonto20");
-
-  const checkboxes =
-    container.querySelectorAll('.dia-turno-novoPonto20');
-
-  checkboxes.forEach(cb =>
-    cb.disabled = !modoEdicaoAtivoNovoPonto20
-  );
-
-  const select =
-    document.getElementById('frequenciaDisponibilidadeNovoPonto20');
-
-  if (select) {
-    select.disabled = !modoEdicaoAtivoNovoPonto20;
-  }
-
-  const botao =
-    document.getElementById('btnEditarDisponibilidadeNovoPonto20');
-
-  botao.textContent = modoEdicaoAtivoNovoPonto20
-    ? '❌ Cancelar'
-    : '✏️ Editar Disponibilidade';
-
-  if (!modoEdicaoAtivoNovoPonto20) {
-    pesquisarDisponibilidadeNovoPonto20();
-  }
-}
-
-function carregarDadosDisponibilidadeNovoPonto20(dados) {
-
-  renderizarDisponibilidadeBase(dados, {
-    chkSubstituicao: "somenteSubstituicaoNovoPonto20",
-    chkDesignado: "jaTenhoDesignacaoNovoPonto20",
-    frequencia: "frequenciaDisponibilidadeNovoPonto20",
-    checkboxes: ".dia-turno-novoPonto20"
-  });
-}
-
 function coletarDiasTurnos(containerId) {
   const container = document.getElementById(containerId);
   return Array.from(container.querySelectorAll('.dia-turno'))
@@ -1235,8 +1127,10 @@ function salvarDisponibilidadeParticipante4h() {
     document.getElementById("frequenciaDisponibilidade");
 
   if (!participanteSelecionado4horas) {
+
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
     return;
+
   }
 
   const idParticipante =
@@ -1246,8 +1140,10 @@ function salvarDisponibilidadeParticipante4h() {
     participanteSelecionado4horas.nome;
 
   if (!idParticipante) {
+
     mostrarAlertaGlobal("❌ ID não encontrado.");
     return;
+
   }
 
   const isDesignacao = jaTenhoDesignacao === true;
@@ -1267,11 +1163,15 @@ function salvarDisponibilidadeParticipante4h() {
   frequenciaEl?.classList.remove("erro-campo");
 
   if (isPontoFixo && !frequencia) {
+
     mostrarAlertaGlobal(
       "⚠️ Informe a frequência, pois ela é obrigatória para ponto fixo."
     );
+
     frequenciaEl?.classList.add("erro-campo");
+
     return;
+
   }
 
   let diasTurnos = [];
@@ -1285,43 +1185,52 @@ function salvarDisponibilidadeParticipante4h() {
       .map(cb => `${cb.dataset.dia} - ${cb.dataset.turno}`);
 
     if (diasTurnos.length === 0) {
+
       mostrarAlertaGlobal(
         "⚠️ Selecione pelo menos um dia e turno disponível."
       );
+
       return;
+
     }
+
   }
 
   mostrarSpinner();
 
-  const callback = "cb_salvar_4h_" + Date.now();
+  apiJSONP(
+    "salvarDisponibilidade4h",
+    {
+      idParticipante,
+      condicao,
+      frequencia,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
+    function(res) {
 
-  window[callback] = function() {
+      esconderSpinner();
 
-    esconderSpinner();
+      mostrarAlertaGlobal(
+        res.mensagem ||
+        `✅ Disponibilidade atualizada com sucesso para ${nome}!`
+      );
 
-    mostrarAlertaGlobal(
-      `✅ Disponibilidade atualizada com sucesso para ${nome}!`
-    );
+      modoEdicaoAtivo = true;
 
-    modoEdicaoAtivo = true;
-    alternarModoEdicao();
+      alternarModoEdicao();
 
-    delete window[callback];
-  };
+    },
+    function(err) {
 
-  const script = document.createElement("script");
+      esconderSpinner();
 
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidade4h" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&condicao=" + encodeURIComponent(condicao) +
-    "&frequencia=" + encodeURIComponent(frequencia) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
+      mostrarAlertaGlobal(
+        "❌ " + (err.mensagem || err.message)
+      );
 
-  document.body.appendChild(script);
+    }
+  );
+
 }
 
 function alternarSomenteSubstituicao() {
@@ -1380,49 +1289,68 @@ function alternarDesignado() {
 function pesquisarDisponibilidade() {
 
   if (!participanteSelecionado4horas) {
+
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
     return;
+
   }
 
   const idParticipante =
     participanteSelecionado4horas.id;
 
   if (!idParticipante) {
+
     mostrarAlertaGlobal("❌ ID não encontrado.");
     return;
+
   }
 
   mostrarSpinner();
 
-  const callback = "cb_buscar_4h_" + Date.now();
+  apiJSONP(
+    "buscarDisponibilidade4h",
+    {
+      idParticipante
+    },
+    function(dados) {
 
-  window[callback] = function(dados) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (!dados) {
 
-    if (!dados) {
-      mostrarAlertaGlobal("⚠️ Nenhuma disponibilidade encontrada.");
-      return;
+        mostrarAlertaGlobal(
+          "⚠️ Nenhuma disponibilidade encontrada."
+        );
+
+        return;
+
+      }
+
+      if (typeof carregarDadosDisponibilidade === "function") {
+
+        carregarDadosDisponibilidade(dados);
+
+      } else {
+
+        console.error(
+          "Função carregarDadosDisponibilidade não encontrada"
+        );
+
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err.mensagem || err.message)
+      );
+
     }
+  );
 
-    if (typeof carregarDadosDisponibilidade === "function") {
-      carregarDadosDisponibilidade(dados);
-    } else {
-      console.error("Função carregarDadosDisponibilidade não encontrada");
-    }
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidade4h" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 function norm(str) {
@@ -1484,10 +1412,15 @@ function alternarModoEdicao() {
   }
 }
 
+//treinamento prático
 function salvarTP() {
 
   if (!participanteSelecionadoTreinamentoPratico) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
     return;
   }
 
@@ -1498,50 +1431,67 @@ function salvarTP() {
     participanteSelecionadoTreinamentoPratico.nome;
 
   if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
+
+    mostrarAlertaGlobal(
+      "❌ ID não encontrado."
+    );
+
     return;
   }
 
   const diasTurnos = Array.from(
-    document.querySelectorAll('.dia-turno-treinamentoPratico')
+    document.querySelectorAll(
+      '.dia-turno-treinamentoPratico'
+    )
   )
     .filter(cb => cb.checked)
     .map(cb => `${cb.dataset.diaT} - ${cb.dataset.turnoT}`);
 
   mostrarSpinner();
 
-  const callback = "cb_salvar_tp_" + Date.now();
+  apiJSONP(
+    "salvarDisponibilidadeNoSheetTPPorId",
+    {
+      id: idParticipante,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
 
-  window[callback] = function() {
+    function() {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    mostrarAlertaGlobal(
-      `✅ Disponibilidade atualizada com sucesso para ${nome}!`
-    );
+      mostrarAlertaGlobal(
+        `✅ Disponibilidade atualizada com sucesso para ${nome}!`
+      );
 
-    modoEdicaoAtivoTP = true;
-    alternarModoEdicaoTP();
+      modoEdicaoAtivoTP = true;
+      alternarModoEdicaoTP();
 
-    delete window[callback];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidadeNoSheetTPPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao registrar a disponibilidade!" +
+        (err?.mensagem ? "\n" + err.mensagem : "")
+      );
+
+    }
+
+  );
+
 }
 
 function pesquisarTP() {
 
   if (!participanteSelecionadoTreinamentoPratico) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
     return;
   }
 
@@ -1549,32 +1499,43 @@ function pesquisarTP() {
     participanteSelecionadoTreinamentoPratico.id;
 
   if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
+
+    mostrarAlertaGlobal(
+      "❌ ID não encontrado."
+    );
+
     return;
   }
 
   mostrarSpinner();
 
-  const callback = "cb_buscar_tp_" + Date.now();
+  apiJSONP(
+    "buscarDisponibilidadeNoSheetTPPorId",
+    {
+      id: idParticipante
+    },
 
-  window[callback] = function(dados) {
+    function(dados) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    carregarDadosTP(dados);
+      carregarDadosTP(dados);
 
-    delete window[callback];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidadeNoSheetTPPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err?.mensagem || err?.message || err)
+      );
+
+    }
+
+  );
+
 }
 
 function carregarDadosTP(dados) {
@@ -1648,111 +1609,115 @@ function alternarModoEdicaoTP() {
   }
 }
 
-function salvarTP() {
+function salvarTPPorId() {
 
-  if (!participanteSelecionadoTreinamentoPratico) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
-    return;
-  }
-
-  const idParticipante =
-    participanteSelecionadoTreinamentoPratico.id;
-
-  const nome =
-    participanteSelecionadoTreinamentoPratico.nome;
+  const idParticipante = idUsuarioLogado;
 
   if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
+    mostrarAlertaGlobal("❌ Usuário inválido.");
     return;
   }
 
   const diasTurnos = Array.from(
-    document.querySelectorAll('.dia-turno-treinamentoPratico')
+    document.querySelectorAll('.dia-turno-treinamentoPraticoId')
   )
-    .filter(cb => cb.checked)
-    .map(cb => `${cb.dataset.diaT} - ${cb.dataset.turnoT}`);
+  .filter(cb => cb.checked)
+  .map(cb => `${cb.dataset.diaTId} - ${cb.dataset.turnoTId}`);
 
   mostrarSpinner();
 
-  const callback = "cb_salvar_tp_" + Date.now();
+  apiJSONP(
+    "salvarDisponibilidadeNoSheetTPPorId",
+    {
+      id: idParticipante,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
 
-  window[callback] = function() {
+    function(res) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    mostrarAlertaGlobal(
-      `✅ Disponibilidade atualizada com sucesso para ${nome}!`
-    );
+      mostrarAlertaGlobal(
+        res.mensagem || "✅ Disponibilidade atualizada com sucesso!"
+      );
 
-    modoEdicaoAtivoTP = true;
-    alternarModoEdicaoTP();
+      modoEdicaoAtivoTPId = true;
+      alternarModoEdicaoTPId();
 
-    delete window[callback];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=salvarDisponibilidadeNoSheetTPPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&callback=" + callback;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao registrar a disponibilidade: " +
+        (err?.mensagem || err?.message || err)
+      );
+
+    }
+
+  );
+
 }
 
-function pesquisarTP() {
+function pesquisarTPPorId() {
 
-  if (!participanteSelecionadoTreinamentoPratico) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
-    return;
-  }
-
-  const idParticipante =
-    participanteSelecionadoTreinamentoPratico.id;
+  const idParticipante = idUsuarioLogado;
 
   if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
+    mostrarAlertaGlobal("❌ Usuário inválido.");
     return;
   }
 
   mostrarSpinner();
 
-  const callback = "cb_buscar_tp_" + Date.now();
+  apiJSONP(
+    "buscarDisponibilidadeNoSheetTPPorId",
+    {
+      id: idParticipante
+    },
 
-  window[callback] = function(dados) {
+    function(dados) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    carregarDadosTP(dados);
+      carregarDadosTPId(dados);
 
-    delete window[callback];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=buscarDisponibilidadeNoSheetTPPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err?.message || err?.mensagem || err)
+      );
+
+    }
+
+  );
+
 }
 
-function carregarDadosTP(dados) {
+function carregarDadosTPId(dados) {
 
   if (!dados) {
-    document.querySelectorAll('.dia-turno-treinamentoPratico')
-      .forEach(cb => {
-        cb.checked = false;
-        cb.disabled = false;
-      });
+
+    document
+      .querySelectorAll('.dia-turno-treinamentoPraticoId')
+      .forEach(cb => cb.checked = false);
+
+    document
+      .querySelectorAll('.dia-turno-treinamentoPraticoId')
+      .forEach(cb => cb.disabled = false);
+
     return;
   }
 
-  document.querySelectorAll('.dia-turno-treinamentoPratico')
+  document
+    .querySelectorAll('.dia-turno-treinamentoPraticoId')
     .forEach(cb => cb.checked = false);
 
   if (Array.isArray(dados.diasTurnos)) {
@@ -1760,86 +1725,1083 @@ function carregarDadosTP(dados) {
     dados.diasTurnos.forEach(item => {
 
       const partes = item.split(' - ');
+
       if (partes.length !== 2) return;
 
-      const diaT = partes[0];
-      const turnoT = partes[1];
+      const diaTId = partes[0];
+      const turnoTId = partes[1];
 
-      const checkbox =
-        Array.from(document.querySelectorAll('.dia-turno-treinamentoPratico'))
-          .find(cb =>
-            norm(cb.dataset.diaT) === norm(diaT) &&
-            norm(cb.dataset.turnoT) === norm(turnoT)
-          );
+      const checkbox = Array.from(
+        document.querySelectorAll('.dia-turno-treinamentoPraticoId')
+      ).find(cb => {
 
-      if (checkbox) checkbox.checked = true;
+        return (
+          norm(cb.dataset.diaTId) === norm(diaTId) &&
+          norm(cb.dataset.turnoTId) === norm(turnoTId)
+        );
+
+      });
+
+      if (checkbox) {
+        checkbox.checked = true;
+      }
+
     });
+
   }
-}
-
-function alternarModoEdicaoTP() {
-
-  modoEdicaoAtivoTP = !modoEdicaoAtivoTP;
-
-  const container =
-    document.getElementById("treinamentoPraticoContainer");
 
   const checkboxes =
-    container.querySelectorAll('.dia-turno-treinamentoPratico');
+    document.querySelectorAll('.dia-turno-treinamentoPraticoId');
 
-  checkboxes.forEach(cb =>
-    cb.disabled = !modoEdicaoAtivoTP
-  );
+  const algumMarcado =
+    Array.from(checkboxes).some(cb => cb.checked);
+
+  const habilitar = !algumMarcado;
+
+  checkboxes.forEach(cb => {
+    cb.disabled = !habilitar;
+  });
+}
+
+let modoEdicaoAtivoTPId = false;
+
+function alternarModoEdicaoTPId() {
+
+  modoEdicaoAtivoTPId = !modoEdicaoAtivoTPId;
+
+  const container =
+    document.getElementById("treinamentoPraticoContainerId");
+
+  const checkboxes =
+    container.querySelectorAll('.dia-turno-treinamentoPraticoId');
+
+  checkboxes.forEach(cb => {
+    cb.disabled = !modoEdicaoAtivoTPId;
+  });
 
   const botao =
-    document.getElementById('btnEditarTP');
+    document.getElementById('btnEditarTPId');
 
   botao.textContent =
-    modoEdicaoAtivoTP
+    modoEdicaoAtivoTPId
       ? '❌ Cancelar'
       : '✏️ Editar Disponibilidade';
 
-  if (!modoEdicaoAtivoTP) {
-
-    const idParticipante =
-      participanteSelecionadoTreinamentoPratico?.id;
-
-    if (idParticipante) {
-      pesquisarTP();
-    }
+  if (!modoEdicaoAtivoTPId) {
+    pesquisarTPPorId();
   }
 }
+
+
+
+
 
 function pesquisarMinhaInfo() {
 
   if (!idUsuarioLogado) {
-    mostrarAlertaGlobal('❌ Usuário não identificado.');
+    mostrarAlertaGlobal("❌ Usuário não identificado.");
     return;
   }
 
   mostrarSpinner();
 
-  const callback = "cb_" + Date.now();
+  apiJSONP(
+    "pesquisarMeuCadastro",
+    {
+      id: idUsuarioLogado
+    },
+    function(dados) {
 
-  window[callback] = function (dados) {
+      esconderSpinner();
 
-    esconderSpinner();
+      mostrarResultadosMinhaInfo(dados);
 
-    mostrarResultadosMinhaInfo(dados);
+    }
+  );
 
-    delete window[callback];
-  };
+  apiJSONP(
+    "pesquisarMinhasDesignacoes",
+    {
+      id: idUsuarioLogado
+    },
+    function(resultado) {
 
-  const script = document.createElement("script");
+      // Se essa função apenas atualiza alguma variável ou tela,
+      // coloque aqui o código que antes ficava no SuccessHandler.
 
-  script.src =
-    API_URL +
-    "?acao=pesquisarMeuCadastro" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&callback=" + callback;
+      console.log(resultado);
 
-  document.body.appendChild(script);
+    }
+  );
+
 }
+
+function mostrarResultadosMinhaInfo(dados) {
+    const tInfo = document.getElementById('tabelaInfoPessoalMinhaInfo'),
+          bInfo = document.getElementById('infoPessoalBodyMinhaInfo'),
+
+          tInfo2 = document.getElementById('tabelaInfoPessoal2MinhaInfo'),
+          bInfo2 = document.getElementById('infoPessoalBody2MinhaInfo'),
+
+          tClas = document.getElementById('tabelaClassificacaoMinhaInfo'),
+          bClas = document.getElementById('classificacaoBodyMinhaInfo'),
+
+          tDet = document.getElementById('tabelaDetalhesMinhaInfo'),
+          bDet = document.getElementById('detalhesBodyMinhaInfo');
+
+    bInfo.innerHTML = '';
+    bInfo2.innerHTML = '';
+    bClas.innerHTML = '';
+    bDet.innerHTML = '';
+
+    if (!dados || (dados.length === 0 && (!dados.participantes || dados.participantes.length === 0))) {
+      tInfo.style.display = 'none';
+      tInfo2.style.display = 'none';
+      tClas.style.display = 'none';
+      tDet.style.display = 'none';
+      document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
+      document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'none';
+      return;
+    }
+
+    let part = dados.participantes || dados,
+        privs = dados.privilegios || [];
+
+    if (Array.isArray(privs) && privs.length === 1 && Array.isArray(privs[0])) privs = privs[0];
+    if (privs.length === 1 && typeof privs[0] === 'string' && privs[0].includes(',')) privs = privs[0].split(',').map(p => p.trim());
+
+    part.forEach((linha, idx) => {
+
+      const trInfo = document.createElement('tr'),
+            trInfo2 = document.createElement('tr'),
+            trClas = document.createElement('tr'),
+            trDet = document.createElement('tr');
+
+      trDet.dataset.identificadorOriginal = (linha[14] || '').toString().trim();
+
+      linha.slice(0, 2).forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v || '';
+        trInfo.appendChild(td);
+      });
+
+      linha.slice(2, 4).forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v || '';
+        trInfo2.appendChild(td);
+      });
+
+      linha.slice(4, 7).forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v || '';
+        trClas.appendChild(td);
+      });
+
+      linha.slice(7, 8).forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v || '';
+        trDet.appendChild(td);
+      });
+
+      const tdA = document.createElement('td');
+      tdA.style.display = 'flex';
+      tdA.style.justifyContent = 'flex-end';
+      tdA.style.gap = '10px';
+
+      const btnE = document.createElement('button');
+      btnE.textContent = '✏️ Editar';
+      btnE.className = 'botao editar';
+      btnE.style.margin = '0';
+      btnE.onclick = () => {
+      tornarEditavelMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+      };
+
+      const btnS = document.createElement('button');
+      btnS.textContent = '💾 Salvar';
+      btnS.className = 'botao salvar';
+      btnS.style.display = 'none';
+      btnS.style.margin = '0';
+      btnS.onclick = () => salvarAlteracoesMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+
+      const btnC = document.createElement('button');
+      btnC.textContent = '❌ Cancelar';
+      btnC.className = 'botao cancel';
+      btnC.style.display = 'none';
+      btnC.style.margin = '0';
+      btnC.onclick = () => cancelarEdicaoMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+
+      const btnX = document.createElement('button');
+      btnX.textContent = '🗑️ Excluir';
+      btnX.className = 'botao excluir'; 
+      btnX.style.margin = '0';
+      btnX.onclick = () => {
+      const msg = document.getElementById("msgExcluirMinhaInfo");
+      mostrarAlertaGlobal("❌ Você não tem permissão para excluir participantes.\nPor favor, contate a administração.");
+      };
+
+      tdA.appendChild(btnE);
+      tdA.appendChild(btnS);
+      tdA.appendChild(btnC);
+      tdA.appendChild(btnX);
+      trDet.appendChild(tdA);
+
+      bInfo.appendChild(trInfo);
+      bInfo2.appendChild(trInfo2);
+      bClas.appendChild(trClas);
+      bDet.appendChild(trDet);
+    });
+
+    tInfo.style.display = 'table';
+    tInfo2.style.display = 'table';
+    tClas.style.display = 'table';
+    tDet.style.display = 'table';
+
+    const p0 = part[0];
+
+    if (p0) {
+
+        document.getElementById('campoIdentificacaoMi').textContent = p0[8] || '';
+
+        const designacoes = [
+            { id: 'campoDesignacao1Mi', valor: p0[9]  || '' },
+            { id: 'campoDesignacao2Mi', valor: p0[10] || '' },
+            { id: 'campoDesignacao3Mi', valor: p0[11] || '' },
+            { id: 'campoDesignacao4Mi', valor: p0[12] || '' },
+            { id: 'campoDesignacao5Mi', valor: p0[13] || '' }
+        ];
+
+        designacoes.forEach(({ id, valor }) => {
+
+            const span = document.getElementById(id);
+            span.textContent = valor;
+
+            span.closest('.card-info').style.display = valor ? '' : 'none';
+        });
+
+        document.getElementById('detalhesDesignacoesMinhaInfo').style.display =
+            designacoes.some(d => d.valor) ? 'block' : 'none';
+
+    } else {
+
+        document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
+
+    }
+
+    document.getElementById('campoPrivOrganizacaoMi').textContent = formatarPrivilegio(privs[0]);
+    document.getElementById('campoPrivAACMi').textContent         = formatarPrivilegio(privs[1]);
+    document.getElementById('campoPrivEscalasMi').textContent     = formatarPrivilegio(privs[2]);
+    document.getElementById('campoPrivEquipesMi').textContent     = formatarPrivilegio(privs[3]);
+    document.getElementById('campoPrivTreinadorMi').textContent   = formatarPrivilegio(privs[4]);
+
+    document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'block';
+
+    setTimeout(() => {
+        marcarUltimaLinhaTabelaMinhaInfo('detalhesBodyMinhaInfo');
+    }, 0);
+
+  }
+
+  function formatarPrivilegio(valor) {
+
+      const texto = String(valor || '').trim();
+
+      switch (texto.toLowerCase()) {
+
+          case 'sim':
+              return '✅ Sim';
+
+          case 'não':
+          case 'nao':
+              return '❌ Não';
+
+          default:
+              return texto;
+      }
+  }
+
+  function marcarUltimaLinhaTabelaMinhaInfo(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+
+    const linhas = [...tbody.querySelectorAll('tr')];
+    if (linhas.length === 0) return;
+
+    // Remove classes antigas
+    linhas.forEach(tr => {
+      const tds = tr.querySelectorAll('td');
+      tds.forEach(td => td.classList.remove('pequena', 'grande'));
+    });
+
+    const ultimaLinha = linhas[linhas.length - 1];
+    const tds = ultimaLinha.querySelectorAll('td');
+
+    if (tds.length >= 2) {
+      tds[0].classList.add('pequena'); // primeira célula
+      tds[tds.length - 1].classList.add('grande'); // última célula
+    }
+  }
+  // ✅ Função utilitária para criar <select> com valor original preservado
+  function criarSelectComValorAtualMinhaInfo(opcoes = [], valorOriginal = '') {
+    const select = document.createElement('select');
+    const valor = valorOriginal.trim();
+    const valorLower = valor.toLowerCase();
+
+    // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
+    const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
+
+    // Se não existir, adiciona o valor original como uma opção temporária
+    if (!existe && valor !== '') {
+      opcoes = [valor, ...opcoes];
+    }
+
+    opcoes.forEach(opcao => {
+      const opt = document.createElement('option');
+      opt.value = opcao;
+      opt.textContent = opcao;
+
+      if (opcao.trim().toLowerCase() === valorLower) {
+        opt.selected = true;
+      }
+
+      select.appendChild(opt);
+    });
+
+    select.defaultValue = valor;
+
+    return select;
+  }
+
+  // ✅ Função principal
+  function tornarEditavelMinhaInfo(trs, idx) {
+    if (!window.opcoesPrivilegios || Object.keys(window.opcoesPrivilegios).length === 0) {
+      mostrarAlertaGlobal('⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos.');
+      return;
+    }
+
+    const [trInfo, trInfo2, trClas, trDet] = trs;
+
+    // 🔷 Linha trInfo
+    const tds0 = trInfo.querySelectorAll('td');
+    tds0.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      if (index === 0) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valorOriginal;
+        input.defaultValue = valorOriginal;
+        td.appendChild(input);
+      } else if (index === 1) {
+        const select = criarSelectComValorAtualMinhaInfo(window.opcoesCongregacoes || [], valorOriginal);
+        td.appendChild(select);
+      }
+    });
+
+    // 🔷 Linha trInfo2
+    const tds = trInfo2.querySelectorAll('td');
+
+    tds.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = valorOriginal;
+      input.defaultValue = valorOriginal;
+
+      // ✅ Validação para telefone (1º campo)
+      if (index === 0) {
+        input.placeholder = '(11) 99217-3945';
+        //input.title = 'Digite o telefone no formato: (11) 992173945. Parênteses inseridos automaticamente. Sem hífens.';
+
+        input.addEventListener('input', () => {
+          let numeros = input.value.replace(/\D/g, '');
+
+          if (numeros.length > 11) numeros = numeros.slice(0, 11);
+
+          let formatado = '';
+
+          if (numeros.length >= 2) {
+            formatado = `(${numeros.slice(0, 2)}) `;
+
+            if (numeros.length >= 7) {
+              formatado += `${numeros.slice(2, 7)}-${numeros.slice(7)}`;
+            } else if (numeros.length > 2) {
+              formatado += numeros.slice(2);
+            }
+          } else {
+            formatado = numeros;
+          }
+
+          input.value = formatado;
+        });
+      }
+
+      // ✅ Validação para e-mail (2º campo)
+      if (index === 1) {
+        input.type = 'email';
+        input.placeholder = 'exemplo@email.com';
+        input.title = 'Digite um e-mail válido.';
+      }
+
+      td.appendChild(input);
+    });
+
+    // 🔷 Linha trClas (3 colunas: confirmacao, sexo, situacao)
+    const tdsClas = trClas.querySelectorAll('td');
+    tdsClas.forEach((td, index) => {
+      const valorAtual = td.textContent.trim();
+      td.textContent = '';
+
+      const opcoes = (index === 0)
+        ? (window.opcoesPrivilegios.confirmacao || [])
+        : (index === 1)
+          ? (window.opcoesPrivilegios.sexo || [])
+          : (index === 2)
+            ? (window.opcoesPrivilegios.situacao || [])
+            : [];
+
+      const select = criarSelectComValorAtualMinhaInfo(opcoes, valorAtual);
+      // Se for a terceira coluna, desabilita o select
+      if (index === 2) {
+        select.disabled = true;
+      }
+      td.appendChild(select);
+    });
+
+    // 🔷 Linha trDet (campo situação extra)
+    const situacaoTd = trDet.querySelector('td');
+    const valorSituacao = situacaoTd.textContent.trim();
+    const selectSituacao = criarSelectComValorAtualMinhaInfo(window.opcoesPrivilegios.confirmacao || [], valorSituacao);
+    selectSituacao.disabled = true; // 🔹 torna o select não editável
+    situacaoTd.textContent = '';
+    situacaoTd.appendChild(selectSituacao);
+
+    // 🔷 Substituição de spans com ids específicos por selects
+    const mapaIdsParaChaves = {
+      campoPrivOrganizacaoMi: 'organizacao',
+      campoPrivAACMi: 'aac',
+      campoPrivEscalasMi: 'escalas',
+      campoPrivEquipesMi: 'equipes',
+      campoPrivTreinadorMi: 'treinador'
+    };
+
+    // 🔷 Botões
+    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+    btnE.style.display = 'none';
+    btnS.style.display = 'inline-block';
+    btnC.style.display = 'inline-block';
+  }
+  //nova função para voltar os selects para o texto da tabela
+  function cancelarEdicaoMinhaInfo(trs, idx) {
+    const [trInfo, trInfo2, trClas, trDet] = trs;
+    const infoTds = trInfo.querySelectorAll('td'),
+          info2Tds = trInfo2.querySelectorAll('td'),
+          clasTds = trClas.querySelectorAll('td'),
+          detTds = trDet.querySelectorAll('td');
+
+    // c trInfo (apenas inputs)
+    infoTds.forEach(td => {
+      const input = td.querySelector('input');
+      const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 trInfo2 (agora apenas inputs)
+    info2Tds.forEach(td => {
+      const input = td.querySelector('input');
+      td.textContent = input ? input.defaultValue || '' : '';
+    });
+
+
+    // 🔁 trClas (dois selects)
+    clasTds.forEach(td => {
+      const select = td.querySelector('select');
+      if (select) td.textContent = select.defaultValue || '';
+    });
+
+    /*// 🔁 trDet (input de situação)
+    const input = detTds[0].querySelector('input');
+    if (input) detTds[0].textContent = input.defaultValue || '';*/
+
+    detTds.forEach(td => {
+    if (td.querySelector('button')) return; // pula o <td> com botões
+      const input = td.querySelector('input');
+      const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
+    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+    btnE.style.display = 'inline-block';
+    btnS.style.display = 'none';
+    btnC.style.display = 'none';
+  }
+
+  function salvarAlteracoesMinhaInfo(trs, idx) {
+
+  const [trInfo, trInfo2, trClas, trDet] = trs;
+
+  const infoTds = trInfo.querySelectorAll('td'),
+        info2Tds = trInfo2.querySelectorAll('td'),
+        clasTds = trClas.querySelectorAll('td'),
+        detTds = trDet.querySelectorAll('td');
+
+  const nd = [];
+
+  infoTds.forEach(td => {
+
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+
+    let valor = '';
+
+    if (input) valor = input.value;
+    else if (select) valor = select.value;
+    else valor = td.textContent.trim();
+
+    nd.push(valor);
+    td.textContent = valor;
+
+  });
+
+  // 🟩 trInfo2
+  info2Tds.forEach((td, index) => {
+
+    const input = td.querySelector('input');
+
+    let valor = '';
+
+    if (input) valor = input.value.trim();
+    else valor = td.textContent.trim();
+
+    if (input) {
+
+      input.classList.remove('erro-campo');
+
+      input.addEventListener('input', () => {
+        input.classList.remove('erro-campo');
+      }, { once: true });
+
+    }
+
+    if (index === 0) {
+
+      const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
+
+      if (!telefoneRegex.test(valor)) {
+
+        mostrarAlertaGlobal(
+          '⚠️ Telefone inválido. Use o formato: (11) 99217-3945'
+        );
+
+        if (input) {
+          input.classList.add('erro-campo');
+          input.focus();
+        }
+
+        throw new Error('Telefone inválido');
+      }
+    }
+
+    if (index === 1) {
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(valor)) {
+
+        mostrarAlertaGlobal('⚠️ E-mail inválido.');
+
+        if (input) {
+          input.classList.add('erro-campo');
+          input.focus();
+        }
+
+        throw new Error('Email inválido');
+      }
+    }
+
+    nd.push(valor);
+    td.textContent = valor;
+
+  });
+
+  // 🟨 trClas
+  clasTds.forEach(td => {
+
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+
+    let valor = '';
+
+    if (input) valor = input.value;
+    else if (select) valor = select.value;
+    else valor = td.textContent.trim();
+
+    nd.push(valor);
+    td.textContent = valor;
+
+  });
+
+  // 🟥 trDet
+  const situacaoTd = detTds[0];
+
+  const input = situacaoTd.querySelector('input');
+  const select = situacaoTd.querySelector('select');
+
+  let valor = '';
+
+  if (input) valor = input.value;
+  else if (select) valor = select.value;
+  else valor = situacaoTd.textContent.trim();
+
+  nd.push(valor);
+  situacaoTd.textContent = valor;
+
+  // 🧩 Privilégios
+  const campos = [
+    'campoPrivOrganizacaoMi',
+    'campoPrivAACMi',
+    'campoPrivEscalasMi',
+    'campoPrivEquipesMi',
+    'campoPrivTreinadorMi'
+  ];
+
+  const priv = [];
+
+  campos.forEach(id => {
+
+    const el = document.getElementById(id);
+
+    let valorSelecionado = '';
+
+    if (el && el.tagName.toLowerCase() === 'select') {
+
+      valorSelecionado = el.value;
+
+      const span = document.createElement('span');
+      span.id = el.id;
+      span.textContent = valorSelecionado;
+
+      el.replaceWith(span);
+
+    } else if (el) {
+
+      valorSelecionado = el.textContent.trim();
+
+    }
+
+    priv.push(valorSelecionado);
+
+  });
+
+  const idOrig = trDet.dataset.identificadorOriginal;
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "atualizarMinhaInfo",
+    {
+      dados: JSON.stringify({
+        primeiros8: nd,
+        privilegios: priv,
+        identificadorOriginal: idOrig
+      })
+    },
+    function(res) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        res.mensagem || '✅ Alterado com sucesso!'
+      );
+
+      carregarOpcoes();
+
+      document
+        .querySelectorAll('.erro-campo')
+        .forEach(el => el.classList.remove('erro-campo'));
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        '❌ Erro ao salvar: ' + (err.message || err.mensagem)
+      );
+
+      document
+        .querySelectorAll('.erro-campo')
+        .forEach(el => el.classList.remove('erro-campo'));
+
+    }
+  );
+
+  const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+
+  btnE.style.display = 'inline-block';
+  btnS.style.display = 'none';
+  btnC.style.display = 'none';
+
+}
+
+  function editarPrivilegiosMinhaInfo() {
+    const campos = [
+      { id: 'campoPrivOrganizacaoMi', chave: 'organizacao' },
+      { id: 'campoPrivAACMi', chave: 'aac' },
+      { id: 'campoPrivEscalasMi', chave: 'escalas' },
+      { id: 'campoPrivEquipesMi', chave: 'equipes' },
+      { id: 'campoPrivTreinadorMi', chave: 'treinador' }
+    ];
+
+    campos.forEach(({ id, chave }) => {
+      const span = document.getElementById(id);
+      if (!span) {
+        console.warn(`Elemento com ID ${id} não encontrado`);
+        return;
+      }
+
+      const valorAtual = span.textContent.trim();
+      const select = document.createElement('select');
+      select.id = id;
+
+      const optVazio = document.createElement('option');
+      optVazio.value = '';
+      optVazio.textContent = '- Selecione -';
+      select.appendChild(optVazio);
+
+      const opcoes = (window.opcoesPrivilegios?.[chave] || []);
+      opcoes.forEach(opcao => {
+        const option = document.createElement('option');
+        option.value = opcao;
+        option.textContent = opcao;
+        if (opcao === valorAtual) option.selected = true;
+        select.appendChild(option);
+      });
+
+      span.replaceWith(select);
+    });
+  }
+
+let modoEdicaoAtivoNovoPonto20 = false;
+
+function salvarDisponibilidade2h() {
+
+  const jaTenhoDesignacao =
+    document.getElementById("jaTenhoDesignacaoNovoPonto20")?.checked;
+
+  const somenteSubstituicao =
+    document.getElementById("somenteSubstituicaoNovoPonto20")?.checked;
+
+  const frequenciaEl =
+    document.getElementById("frequenciaDisponibilidadeNovoPonto20");
+
+  if (!participanteSelecionado2horas) {
+
+    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+    return;
+
+  }
+
+  const idParticipante =
+    participanteSelecionado2horas.id;
+
+  const nome =
+    participanteSelecionado2horas.nome;
+
+  if (!idParticipante) {
+
+    mostrarAlertaGlobal("❌ ID não encontrado.");
+    return;
+
+  }
+
+  // =========================
+  // NORMALIZAÇÃO DE ESTADO
+  // =========================
+  const isDesignacao = jaTenhoDesignacao === true;
+  const isSubstituicao = somenteSubstituicao === true;
+  const isPontoFixo = !isDesignacao && !isSubstituicao;
+
+  const condicao =
+    isDesignacao
+      ? "Já possui designação"
+      : isSubstituicao
+        ? "Somente substituição"
+        : "Disponível para ponto fixo";
+
+  const frequencia =
+    frequenciaEl ? frequenciaEl.value.trim() : "";
+
+  frequenciaEl?.classList.remove("erro-campo");
+
+  // =========================
+  // VALIDAÇÃO FREQUÊNCIA
+  // =========================
+  if (isPontoFixo && !frequencia) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Informe a frequência, pois ela é obrigatória para ponto fixo."
+    );
+
+    frequenciaEl?.classList.add("erro-campo");
+
+    return;
+
+  }
+
+  // =========================
+  // VALIDAÇÃO DIAS / TURNOS
+  // =========================
+  let diasTurnos = [];
+
+  if (isPontoFixo) {
+
+    diasTurnos = Array.from(
+      document.querySelectorAll(".dia-turno-novoPonto20")
+    )
+      .filter(cb => cb.checked)
+      .map(cb => `${cb.dataset.diaN} - ${cb.dataset.turnoN}`);
+
+    if (diasTurnos.length === 0) {
+
+      mostrarAlertaGlobal(
+        "⚠️ Selecione pelo menos um dia e turno disponível."
+      );
+
+      return;
+
+    }
+
+  }
+
+  // =========================
+  // SALVAR
+  // =========================
+  mostrarSpinner();
+
+  apiJSONP(
+    "salvarDisponibilidade2h",
+    {
+      idParticipante,
+      condicao,
+      frequencia,
+      diasTurnos: JSON.stringify(diasTurnos)
+    },
+    function(res) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        res.mensagem ||
+        `✅ Disponibilidade atualizada com sucesso para ${nome}!`
+      );
+
+      frequenciaEl?.classList.remove("erro-campo");
+
+      modoEdicaoAtivoNovoPonto20 = true;
+
+      alternarModoEdicaoNovoPonto20();
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ " + (err.mensagem || err.message)
+      );
+
+    }
+  );
+
+}
+
+function alternarSomenteSubstituicaoNovoPonto20() {
+
+  const ativo =
+    document.getElementById("somenteSubstituicaoNovoPonto20")
+      ?.checked;
+
+  document.querySelectorAll(".dia-turno-novoPonto20")
+    .forEach(cb => {
+
+      cb.disabled = ativo;
+
+      if (ativo) {
+        cb.checked = false;
+      }
+    });
+
+  const freq =
+    document.getElementById(
+      "frequenciaDisponibilidadeNovoPonto20"
+    );
+
+  if (freq) {
+
+    freq.disabled = ativo;
+
+    if (ativo) {
+      freq.value = "";
+    }
+  }
+
+    if (ativo) {
+    salvarDisponibilidade2h();
+    }
+  }
+  function alternarDesignadoNovoPonto20() {
+
+  const ativo =
+    document.getElementById("jaTenhoDesignacaoNovoPonto20")
+      ?.checked;
+
+  document.querySelectorAll(".dia-turno-novoPonto20")
+    .forEach(cb => {
+
+      cb.disabled = ativo;
+
+      if (ativo) {
+        cb.checked = false;
+      }
+    });
+
+  const freq =
+    document.getElementById(
+      "frequenciaDisponibilidadeNovoPonto20"
+    );
+
+  if (freq) {
+
+    freq.disabled = ativo;
+
+    if (ativo) {
+      freq.value = "";
+    }
+  }
+
+    const substituicao2h = document.getElementById("somenteSubstituicaoNovoPonto20");
+    if (substituicao2h) {
+      substituicao2h.disabled = ativo;
+    }
+
+    if (ativo) {
+    salvarDisponibilidade2h();
+    }
+  }
+
+function pesquisarDisponibilidadeNovoPonto20() {
+
+  if (!participanteSelecionado2horas) {
+
+    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+    return;
+
+  }
+
+  const idParticipante =
+    participanteSelecionado2horas.id;
+
+  if (!idParticipante) {
+
+    mostrarAlertaGlobal("❌ ID não encontrado.");
+    return;
+
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "buscarDisponibilidade2h",
+    {
+      idParticipante
+    },
+    function(dados) {
+
+      esconderSpinner();
+
+      if (!dados) {
+
+        mostrarAlertaGlobal(
+          "⚠️ Nenhuma disponibilidade encontrada."
+        );
+
+        return;
+
+      }
+
+      if (typeof carregarDadosDisponibilidadeNovoPonto20 === "function") {
+
+        carregarDadosDisponibilidadeNovoPonto20(dados);
+
+      } else {
+
+        console.error(
+          "Função carregarDadosDisponibilidadeNovoPonto20 não encontrada"
+        );
+
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar disponibilidade: " +
+        (err.mensagem || err.message)
+      );
+
+    }
+  );
+
+}
+
+function alternarModoEdicaoNovoPonto20() {
+
+  modoEdicaoAtivoNovoPonto20 = !modoEdicaoAtivoNovoPonto20;
+
+  const container = document.getElementById("disponibilidadeContainerNovoPonto20");
+
+  const checkboxes = container.querySelectorAll('.dia-turno-novoPonto20');
+  checkboxes.forEach(cb => cb.disabled = !modoEdicaoAtivoNovoPonto20);
+
+  const selects = [
+    document.getElementById('frequenciaDisponibilidadeNovoPonto20')
+  ];
+
+  selects.forEach(select => {
+    if (select) select.disabled = !modoEdicaoAtivoNovoPonto20;
+  });
+
+  const botao = document.getElementById('btnEditarDisponibilidadeNovoPonto20');
+
+  botao.textContent = modoEdicaoAtivoNovoPonto20
+    ? '❌ Cancelar'
+    : '✏️ Editar Disponibilidade';
+
+  if (!modoEdicaoAtivoNovoPonto20) {
+
+    pesquisarDisponibilidadeNovoPonto20();
+
+  }
+  }
+
+  function carregarDadosDisponibilidadeNovoPonto20(dados) {
+
+  renderizarDisponibilidadeBase(dados, {
+    chkSubstituicao: "somenteSubstituicaoNovoPonto20",
+    chkDesignado: "jaTenhoDesignacaoNovoPonto20",
+    frequencia: "frequenciaDisponibilidadeNovoPonto20",
+    checkboxes: ".dia-turno-novoPonto20"
+  });
+  }
+
 
 let map;
 let todosOsPontos = [];
@@ -1850,7 +2812,8 @@ let mapScriptLoaded = false;
 let mapaIniciado = false;
 
 function initMap() {
-  if (mapaIniciado) return;
+
+  if (mapaIniciado) return; // impede recriação
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: -14.2350, lng: -51.9253 },
@@ -1859,34 +2822,41 @@ function initMap() {
 
   mapaIniciado = true;
 
-  const cb = "cb_pontos_" + Date.now();
+  // Buscar os pontos via JSONP
+  apiJSONP(
+    "getTodosOsPontos",
+    {},
 
-  window[cb] = function(res) {
+    function(pontos) {
 
-    todosOsPontos = res;
+      todosOsPontos = pontos;
 
-    const select = document.getElementById("pontoSelectMap");
-    select.innerHTML = "<option value=''>Selecione</option>";
+      // Preenche o select
+      const select = document.getElementById("pontoSelectMap");
+      select.innerHTML = "<option value=''>Selecione</option>";
 
-    res.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.nome;
-      opt.textContent = p.nome;
-      select.appendChild(opt);
-    });
+      pontos.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.nome;
+        opt.textContent = p.nome;
+        select.appendChild(opt);
+      });
 
-    renderAllMarkers(todosOsPontos);
+      // Exibe todos os marcadores
+      renderAllMarkers(todosOsPontos);
 
-    delete window[cb];
-  };
+    },
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=getTodosOsPontos" +
-    "&callback=" + cb;
+    function(err) {
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar pontos: " +
+        (err?.message || err?.mensagem || err)
+      );
+
+    }
+
+  );
 }
 
 window.initMap = initMap;
@@ -1978,44 +2948,55 @@ function verMapa() {
 }
 
 function editarMapa() {
-  const nomeSelecionado = document.getElementById("pontoSelectMap2").value;
+
+  const nomeSelecionado =
+    document.getElementById("pontoSelectMap2").value;
 
   if (!nomeSelecionado) {
     mostrarAlertaGlobal("Selecione um ponto.");
     return;
   }
 
-  const cb = "cb_editarMapa_" + Date.now();
+  apiJSONP(
+    "buscarDadosDoMapa",
+    {
+      nome: nomeSelecionado
+    },
 
-  window[cb] = function(dados) {
+    function(dados) {
 
-    if (!dados) {
-      mostrarAlertaGlobal('Mapa não cadastrado. Preencha os campos e clique em "Cadastrar/Editar Mapa".');
-      delete window[cb];
-      return;
+      if (!dados) {
+        mostrarAlertaGlobal(
+          'Mapa não cadastrado. Preencha os campos e clique em "Cadastrar/Editar Mapa".'
+        );
+        return;
+      }
+
+      // Preencher os campos com os dados retornados
+      document.getElementById("novoPonto").value = dados[0] || "";
+      document.getElementById("novaLatitude").value = dados[1] || "";
+      document.getElementById("novaLongitude").value = dados[2] || "";
+      document.getElementById("novoAAC").value = dados[3] || "";
+      document.getElementById("novoEndereco").value = dados[4] || "";
+      document.getElementById("novoDeposito").value = dados[5] || "";
+
+    },
+
+    function(err) {
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao buscar dados do mapa: " +
+        (err?.message || err?.mensagem || err)
+      );
+
     }
 
-    document.getElementById("novoPonto").value = dados[0] || "";
-    document.getElementById("novaLatitude").value = dados[1] || "";
-    document.getElementById("novaLongitude").value = dados[2] || "";
-    document.getElementById("novoAAC").value = dados[3] || "";
-    document.getElementById("novoEndereco").value = dados[4] || "";
-    document.getElementById("novoDeposito").value = dados[5] || "";
+  );
 
-    delete window[cb];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarDadosDoMapa" +
-    "&nome=" + encodeURIComponent(nomeSelecionado) +
-    "&callback=" + cb;
-
-  document.body.appendChild(script);
 }
 
 function cadastrarNovoMapa() {
+
   const nome = document.getElementById("novoPonto").value;
   const lat = document.getElementById("novaLatitude").value;
   const lng = document.getElementById("novaLongitude").value;
@@ -2028,26 +3009,33 @@ function cadastrarNovoMapa() {
     return;
   }
 
-  const cb = "cb_salvarMapa_" + Date.now();
+  const dados = { nome, lat, lng, aac, endereco, deposito };
 
-  window[cb] = function(res) {
-    mostrarAlertaGlobal(res);
-    delete window[cb];
-  };
+  apiJSONP(
+    "cadastrarOuAtualizarMapa",
+    {
+      dados: JSON.stringify(dados)
+    },
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=cadastrarOuAtualizarMapa" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&lat=" + encodeURIComponent(lat) +
-    "&lng=" + encodeURIComponent(lng) +
-    "&aac=" + encodeURIComponent(aac) +
-    "&endereco=" + encodeURIComponent(endereco) +
-    "&deposito=" + encodeURIComponent(deposito) +
-    "&callback=" + cb;
+    function(mensagem) {
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        mensagem?.mensagem || mensagem || "Operação realizada com sucesso!"
+      );
+
+    },
+
+    function(err) {
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao cadastrar/atualizar mapa: " +
+        (err?.message || err?.mensagem || err)
+      );
+
+    }
+
+  );
+
 }
 
 function carregarMapaQuandoClicar() {
@@ -2070,42 +3058,58 @@ function pesquisarTcs() {
 
   if (!participanteSelecionadoTcs) {
 
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
     return;
   }
 
-  const idParticipante = participanteSelecionadoTcs.id;
+  const idParticipante =
+    participanteSelecionadoTcs.id;
 
   if (!idParticipante) {
 
-    mostrarAlertaGlobal("❌ ID não encontrado para este participante.");
+    mostrarAlertaGlobal(
+      "❌ ID não encontrado para este participante."
+    );
+
     return;
   }
 
   mostrarSpinner();
 
-  const cb = "cb_pesquisarTcs_" + Date.now();
+  apiJSONP(
+    "pesquisarEmailTcsPorId",
+    {
+      id: idParticipante
+    },
 
-  window[cb] = function(email) {
+    function(email) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    mostrarResultadoTcs(email);
+      mostrarResultadoTcs(email);
 
-    mostrarAlertaGlobal("✅ E-mail encontrado.");
+      mostrarAlertaGlobal(
+        "✅ E-mail encontrado."
+      );
 
-    delete window[cb];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=pesquisarEmailTcsPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + cb;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao pesquisar participante: " +
+        (err?.message || err?.mensagem || err)
+      );
+
+    }
+
+  );
+
 }
 
 let modoEdicaoTcs = false;
@@ -2172,7 +3176,11 @@ function salvartcs() {
   ];
 
   if (!nome) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
     return;
   }
 
@@ -2180,11 +3188,16 @@ function salvartcs() {
     window.mapaParticipantesPorNome?.[nome];
 
   if (!idParticipante) {
-    mostrarAlertaGlobal("❌ ID não encontrado.");
+
+    mostrarAlertaGlobal(
+      "❌ ID não encontrado."
+    );
+
     return;
   }
 
-  const emailLower = novoEmail.toLowerCase();
+  const emailLower =
+    novoEmail.toLowerCase();
 
   if (
     !novoEmail ||
@@ -2192,7 +3205,11 @@ function salvartcs() {
     emailLower.includes("@jwpub.org") ||
     !validarEmail(novoEmail)
   ) {
-    mostrarAlertaGlobal("⚠️ Por favor, digite um e-mail válido (não pode conter @jwpub.org).");
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, digite um e-mail válido (não pode conter @jwpub.org)."
+    );
+
     return;
   }
 
@@ -2200,42 +3217,57 @@ function salvartcs() {
 
   mostrarSpinner();
 
-  const cb = "cb_salvarTcs_" + Date.now();
+  apiJSONP(
+    "salvarEmailTcsPorId",
+    {
+      id: idParticipante,
+      email: novoEmail
+    },
 
-  window[cb] = function() {
+    function() {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    mostrarAlertaGlobal("✅ E-mail atualizado com sucesso!");
+      mostrarAlertaGlobal(
+        "✅ E-mail atualizado com sucesso!"
+      );
 
-    document.getElementById("emailTcs").readOnly = true;
+      document.getElementById("emailTcs").readOnly = true;
 
-    document.getElementById("btnEditartcs").textContent = "✏️ Editar e-mail tcs";
+      document.getElementById("btnEditartcs").textContent =
+        "✏️ Editar e-mail tcs";
 
-    delete window[cb];
-  };
+    },
 
-  const script = document.createElement("script");
+    function(err) {
 
-  script.src =
-    API_URL +
-    "?acao=salvarEmailTcsPorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&email=" + encodeURIComponent(novoEmail) +
-    "&callback=" + cb;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      mostrarAlertaGlobal(
+        "❌ Erro ao salvar e-mail!"
+      );
+
+      console.error(err);
+
+    }
+
+  );
+
 }
 
 function pesquisarParticipante() {
 
   if (!participanteSelecionadoEditar) {
 
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
     return;
   }
 
-  const id = participanteSelecionadoEditar.id;
+  const id =
+    participanteSelecionadoEditar.id;
 
   if (!id) {
     mostrarAlertaGlobal('❌ ID não encontrado para este participante.');
@@ -2244,40 +3276,50 @@ function pesquisarParticipante() {
 
   mostrarSpinner();
 
-  const cb = "cb_pesquisarParticipante_" + Date.now();
+  apiJSONP(
+    "pesquisarParticipantesPorId",
+    {
+      id
+    },
 
-  window[cb] = function(dados) {
+    function(dados) {
 
-    esconderSpinner();
-    mostrarResultados(dados);
+      esconderSpinner();
 
-    delete window[cb];
-  };
+      mostrarResultados(dados);
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=pesquisarParticipantesPorId" +
-    "&id=" + encodeURIComponent(id) +
-    "&callback=" + cb;
+    },
 
-  document.body.appendChild(script);
+    function(err) {
 
-  // segunda chamada (sem tratamento de retorno)
-  const cb2 = "cb_designacoes_" + Date.now();
+      esconderSpinner();
 
-  window[cb2] = function() {
-    delete window[cb2];
-  };
+      mostrarAlertaGlobal(
+        '❌ Erro ao pesquisar participante: ' +
+        (err?.message || err?.mensagem || err)
+      );
 
-  const script2 = document.createElement("script");
-  script2.src =
-    API_URL +
-    "?acao=pesquisarDesignacoesPorParticipanteId" +
-    "&id=" + encodeURIComponent(id) +
-    "&callback=" + cb2;
+    }
 
-  document.body.appendChild(script2);
+  );
+
+  // segunda chamada (sem callback no original)
+  apiJSONP(
+    "pesquisarDesignacoesPorParticipanteId",
+    {
+      id
+    },
+
+    function() {
+      // intencionalmente vazio (mesmo comportamento do original)
+    },
+
+    function(err) {
+      console.error("Erro ao buscar designações:", err);
+    }
+
+  );
+
 }
 
 
@@ -2314,6 +3356,17 @@ function calcularAnosBatismo(dataString) {
 }
 
 function mostrarResultados(dados) {
+
+  // 🔥 JSONP SAFETY: caso venha string
+  if (typeof dados === "string") {
+    try {
+      dados = JSON.parse(dados);
+    } catch (e) {
+      console.error("Erro ao parsear JSONP:", e);
+      return;
+    }
+  }
+
   const tInfo = document.getElementById('tabelaInfoPessoal'),
         bInfo = document.getElementById('infoPessoalBody'),
 
@@ -2340,22 +3393,29 @@ function mostrarResultados(dados) {
   bDet.innerHTML = '';
 
   if (!dados || (dados.length === 0 && (!dados.participantes || dados.participantes.length === 0))) {
+
     tInfo.style.display = 'none';
     tInfo1.style.display = 'none';
     tInfo2.style.display = 'none';
     tInfo3.style.display = 'none';
     tClas.style.display = 'none';
     tDet.style.display = 'none';
+
     document.getElementById('detalhesDesignacoes').style.display = 'none';
     document.getElementById('detalhesPrivilegios').style.display = 'none';
     return;
   }
 
-  let part = dados.participantes || dados,
-      privs = dados.privilegios || [];
+  let part = dados.participantes || dados;
+  let privs = dados.privilegios || [];
 
+  if (!Array.isArray(part)) part = [];
+
+  // 🔥 proteção JSONP extra
   if (Array.isArray(privs) && privs.length === 1 && Array.isArray(privs[0])) privs = privs[0];
-  if (privs.length === 1 && typeof privs[0] === 'string' && privs[0].includes(',')) privs = privs[0].split(',').map(p => p.trim());
+  if (privs.length === 1 && typeof privs[0] === 'string' && privs[0].includes(',')) {
+    privs = privs[0].split(',').map(p => p.trim());
+  }
 
   part.forEach((linha, idx) => {
 
@@ -2366,62 +3426,60 @@ function mostrarResultados(dados) {
           trClas = document.createElement('tr'),
           trDet = document.createElement('tr');
 
-    trDet.dataset.identificadorOriginal = (linha[11] || '').toString().trim();
+    console.log("LINHA:", linha);
+    console.log("ID índice 17:", linha[17]);
 
+    console.log("Tamanho da linha:", linha.length);
+    console.log(linha);
+
+    trDet.dataset.identificadorOriginal = (linha[17] || '').toString().trim();
+
+    // ===== INFO =====
     linha.slice(0, 2).forEach(v => {
       const td = document.createElement('td');
       td.textContent = v || '';
       trInfo.appendChild(td);
     });
 
-    linha.slice(2, 3).forEach(v => {
-      const td = document.createElement('td');
-      td.textContent = v || '';
-      trInfo1.appendChild(td);
-    });
+    // email
+    const tdEmail = document.createElement('td');
+    tdEmail.textContent = linha[2] || '';
+    trInfo1.appendChild(tdEmail);
 
+    // contato + petição
     linha.slice(3, 5).forEach(v => {
       const td = document.createElement('td');
       td.textContent = v || '';
       trInfo2.appendChild(td);
     });
 
+    // datas
     const dataNasc = linha[8] || '';
     const dataBat  = linha[9] || '';
 
     const idade = dataNasc ? calcularIdade(dataNasc) : '';
     const anosBat = dataBat ? calcularAnosBatismo(dataBat) : '';
 
-    let td = document.createElement('td');
-    td.textContent = dataNasc;
-    trInfo3.appendChild(td);
+    trInfo3.innerHTML = `
+      <td>${dataNasc}</td>
+      <td style="text-align:center">${idade ? idade + ' anos' : ''}</td>
+      <td>${dataBat}</td>
+      <td style="text-align:center">${anosBat ? anosBat + ' anos' : ''}</td>
+    `;
 
-    td = document.createElement('td');
-    td.textContent = idade ? idade + ' anos' : '';
-    td.style.textAlign = "center";
-    trInfo3.appendChild(td);
-
-    td = document.createElement('td');
-    td.textContent = dataBat;
-    trInfo3.appendChild(td);
-
-    td = document.createElement('td');
-    td.textContent = anosBat ? anosBat + ' anos' : '';
-    td.style.textAlign = "center";
-    trInfo3.appendChild(td);
-
+    // classificação
     linha.slice(5, 8).forEach(v => {
       const td = document.createElement('td');
       td.textContent = v || '';
       trClas.appendChild(td);
     });
 
-    linha.slice(10, 11).forEach(v => {
-      const td = document.createElement('td');
-      td.textContent = v || '';
-      trDet.appendChild(td);
-    });
+    // TCS
+    const tdTcs = document.createElement('td');
+    tdTcs.textContent = linha[10] || '';
+    trDet.appendChild(tdTcs);
 
+    // botão container
     const tdA = document.createElement('td');
     tdA.style.display = 'flex';
     tdA.style.justifyContent = 'flex-end';
@@ -2429,31 +3487,75 @@ function mostrarResultados(dados) {
 
     const btnE = document.createElement('button');
     btnE.textContent = '✏️ Editar';
-    btnE.className = 'botao editar';
+    btnE.onclick = () => tornarEditavel([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
 
     const btnS = document.createElement('button');
     btnS.textContent = '💾 Salvar';
-    btnS.className = 'botao salvar';
     btnS.style.display = 'none';
+    btnS.onclick = () => salvarAlteracoes([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
 
     const btnC = document.createElement('button');
     btnC.textContent = '❌ Cancelar';
-    btnC.className = 'botao cancel';
     btnC.style.display = 'none';
+    btnC.onclick = () => cancelarEdicao([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
 
     const btnX = document.createElement('button');
     btnX.textContent = '🗑️ Excluir';
-    btnX.className = 'botao excluir';
 
-    btnE.onclick = () => tornarEditavel([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
-    btnS.onclick = () => salvarAlteracoes([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
-    btnC.onclick = () => cancelarEdicao([trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet], idx);
+    btnX.onclick = () => {
+
+      const nome = linha[0];
+      const congregacao = linha[1];
+      const telefone = linha[3];
+
+      const nomeConcatenado = `${nome}\n${congregacao}\n${telefone}`;
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "validarExclusaoParticipante",
+        { nomeConcatenado },
+        (resultado) => {
+
+          esconderSpinner();
+
+          if (!resultado.permitido) {
+            mostrarAlertaGlobal("❌ " + resultado.motivo);
+            return;
+          }
+
+          mostrarConfirmacaoGlobal(
+            `⚠️ Tem certeza que deseja mesmo excluir <strong>${nome}</strong>?`,
+            () => {
+
+              mostrarSpinner();
+
+              apiJSONP(
+                "excluirParticipantePorNomeConcatenado",
+                { nomeConcatenado },
+                () => {
+                  esconderSpinner();
+                  mostrarAlertaGlobal("✅ Participante excluído com sucesso.");
+                },
+                (err) => {
+                  esconderSpinner();
+                  mostrarAlertaGlobal("❌ Erro ao excluir: " + err.mensagem);
+                }
+              );
+            }
+          );
+        },
+        (err) => {
+          esconderSpinner();
+          mostrarAlertaGlobal("❌ " + err.mensagem);
+        }
+      );
+    };
 
     tdA.appendChild(btnE);
     tdA.appendChild(btnS);
     tdA.appendChild(btnC);
     tdA.appendChild(btnX);
-
     trDet.appendChild(tdA);
 
     bInfo.appendChild(trInfo);
@@ -2470,7 +3572,678 @@ function mostrarResultados(dados) {
   tInfo3.style.display = 'table';
   tClas.style.display = 'table';
   tDet.style.display = 'table';
+
+  const p0 = part[0] || {};
+
+  const designacoes = [
+    { id: 'campoDesignacao1', valor: p0?.[12] || '' },
+    { id: 'campoDesignacao2', valor: p0?.[13] || '' },
+    { id: 'campoDesignacao3', valor: p0?.[14] || '' },
+    { id: 'campoDesignacao4', valor: p0?.[15] || '' },
+    { id: 'campoDesignacao5', valor: p0?.[16] || '' }
+  ];
+
+  designacoes.forEach(({ id, valor }) => {
+    const span = document.getElementById(id);
+    if (!span) return;
+
+    span.textContent = valor;
+    span.closest('.card-info').style.display = valor ? '' : 'none';
+  });
+
+  document.getElementById('campoIdentificacao').textContent = p0?.[11] || '';
+
+  document.getElementById('detalhesDesignacoes').style.display =
+    designacoes.some(d => d.valor) ? 'block' : 'none';
+
+  document.getElementById('campoPrivOrganizacao').textContent = formatarPrivilegio(privs[0]);
+  document.getElementById('campoPrivAAC').textContent         = formatarPrivilegio(privs[1]);
+  document.getElementById('campoPrivEscalas').textContent     = formatarPrivilegio(privs[2]);
+  document.getElementById('campoPrivEquipes').textContent     = formatarPrivilegio(privs[3]);
+  document.getElementById('campoPrivTreinador').textContent   = formatarPrivilegio(privs[4]);
+
+  document.getElementById('detalhesPrivilegios').style.display = 'block';
+
+  setTimeout(() => marcarUltimaLinhaTabela('detalhesBody'), 0);
 }
+
+function marcarUltimaLinhaTabela(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+
+    const linhas = [...tbody.querySelectorAll('tr')];
+    if (linhas.length === 0) return;
+
+    // Remove classes antigas
+    linhas.forEach(tr => {
+      const tds = tr.querySelectorAll('td');
+      tds.forEach(td => td.classList.remove('pequena', 'grande'));
+    });
+
+    const ultimaLinha = linhas[linhas.length - 1];
+    const tds = ultimaLinha.querySelectorAll('td');
+
+    if (tds.length >= 2) {
+      tds[0].classList.add('pequena'); // primeira célula
+      tds[tds.length - 1].classList.add('grande'); // última célula
+    }
+  }
+
+function criarSelectComValorAtual(opcoes = [], valorOriginal = '') {
+    const select = document.createElement('select');
+    const valor = valorOriginal.trim();
+    const valorLower = valor.toLowerCase();
+
+    // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
+    const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
+
+    // Se não existir, adiciona o valor original como uma opção temporária
+    if (!existe && valor !== '') {
+      opcoes = [valor, ...opcoes];
+    }
+
+    opcoes.forEach(opcao => {
+      const opt = document.createElement('option');
+      opt.value = opcao;
+      opt.textContent = opcao;
+
+      if (opcao.trim().toLowerCase() === valorLower) {
+        opt.selected = true;
+      }
+
+      select.appendChild(opt);
+    });
+
+    select.defaultValue = valor;
+
+    return select;
+  }
+
+  function aplicarMascaraData(input) {
+
+    input.addEventListener('input', () => {
+
+      // Remove tudo exceto números
+      let valor = input.value.replace(/\D/g, '');
+
+      // Limita a 8 dígitos
+      if (valor.length > 8) valor = valor.slice(0, 8);
+
+      // Monta a máscara
+      if (valor.length > 4) {
+        valor = valor.slice(0, 2) + "/" + valor.slice(2, 4) + "/" + valor.slice(4);
+      } 
+      else if (valor.length > 2) {
+        valor = valor.slice(0, 2) + "/" + valor.slice(2);
+      }
+
+      input.value = valor;
+
+      // Se já tem data completa (10 chars), validar
+      if (valor.length === 10) {
+        if (!dataValida(valor)) {
+          input.style.borderColor = "red";
+        } else {
+          input.style.borderColor = "";
+        }
+      } else {
+        input.style.borderColor = "";
+      }
+    });
+  }
+
+  function tornarEditavel(trs, idx) {
+    if (!window.opcoesPrivilegios || Object.keys(window.opcoesPrivilegios).length === 0) {
+      mostrarAlertaGlobal('⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos.');
+      return;
+    }
+
+    const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
+
+    // 🔷 Linha trInfo
+    const tds0 = trInfo.querySelectorAll('td');
+    tds0.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      if (index === 0) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valorOriginal;
+        input.defaultValue = valorOriginal;
+        td.appendChild(input);
+      } else if (index === 1) {
+        const select = criarSelectComValorAtual(window.opcoesCongregacoes || [], valorOriginal);
+        td.appendChild(select);
+      }
+    });
+
+    // 🔷 Linha trInfo1
+    const tds1 = trInfo1.querySelectorAll('td');
+    tds1.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      if (index === 0) {
+        const input = document.createElement('input');
+        input.type = 'email';
+        input.placeholder = 'exemplo@email.com';
+        input.title = 'Digite um e-mail válido.';
+        input.value = valorOriginal;
+        input.defaultValue = valorOriginal;
+
+        td.appendChild(input);
+      } 
+    });
+
+    // 🔷 Linha trInfo2
+    const tds = trInfo2.querySelectorAll('td');
+    tds.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      if (index === 0) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valorOriginal;
+        input.defaultValue = valorOriginal;
+
+        // ✅ Validação para telefone (1º campo)
+        if (index === 0) {
+          input.placeholder = '(11) 99217-3945';
+          
+          input.addEventListener('input', () => {
+            let numeros = input.value.replace(/\D/g, '');
+
+            if (numeros.length > 11) numeros = numeros.slice(0, 11);
+
+            let formatado = '';
+
+            if (numeros.length >= 2) {
+              formatado = `(${numeros.slice(0, 2)}) `;
+
+              if (numeros.length >= 7) {
+                formatado += `${numeros.slice(2, 7)}-${numeros.slice(7)}`;
+              } else if (numeros.length > 2) {
+                formatado += numeros.slice(2);
+              }
+            } else {
+              formatado = numeros;
+            }
+
+            input.value = formatado;
+          });
+
+        }
+
+        td.appendChild(input);
+      } else if (index === 1) {
+        const select = criarSelectComValorAtual(window.opcoesPrivilegios.confirmacao || [], valorOriginal);
+        td.appendChild(select);
+      }
+    });
+
+    // 🔷 Linha trInfo3 (Datas / Idade / Anos batismo)
+    const tds3 = trInfo3.querySelectorAll('td');
+    tds3.forEach((td, index) => {
+      const valorOriginal = td.textContent.trim();
+      td.textContent = '';
+
+      // --- 0: Data de nascimento ---
+      if (index === 0) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valorOriginal;
+        input.placeholder = 'dd/mm/aaaa';
+
+        aplicarMascaraData(input);
+
+        input.addEventListener('input', () => {
+          const idade = calcularIdade(input.value);
+          tds3[1].textContent = idade ? idade + ' anos' : '';
+        });
+
+        td.appendChild(input);
+      }
+
+      // --- 1: Idade (auto calculado) ---
+      if (index === 1) {
+        td.textContent = calcularIdade(valorOriginal) + ' anos';
+      }
+
+      // --- 2: Data de batismo ---
+      if (index === 2) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valorOriginal;
+        input.placeholder = 'dd/mm/aaaa';
+
+        aplicarMascaraData(input);
+
+        input.addEventListener('input', () => {
+          const anosBat = calcularAnosBatismo(input.value);
+          tds3[3].textContent = anosBat ? anosBat + ' anos' : '';
+        });
+
+        td.appendChild(input);
+      }
+
+      // --- 3: Anos batismo (auto calculado) ---
+      if (index === 3) {
+        td.textContent = calcularAnosBatismo(valorOriginal) + ' anos';
+      }
+    });
+
+    // 🔷 Linha trClas (3 colunas: confirmacao, sexo, situacao)
+    const tdsClas = trClas.querySelectorAll('td');
+    tdsClas.forEach((td, index) => {
+      const valorAtual = td.textContent.trim();
+      td.textContent = '';
+
+      const opcoes = (index === 0)
+        ? (window.opcoesPrivilegios.confirmacao || [])
+        : (index === 1)
+          ? (window.opcoesPrivilegios.sexo || [])
+          : (index === 2)
+            ? (window.opcoesPrivilegios.situacao || [])
+            : [];
+
+      const select = criarSelectComValorAtual(opcoes, valorAtual);
+      td.appendChild(select);
+    });
+
+    // 🔷 Linha trDet (campo situação extra)
+    const situacaoTd = trDet.querySelector('td');
+    const valorSituacao = situacaoTd.textContent.trim();
+    const selectSituacao = criarSelectComValorAtual(window.opcoesPrivilegios.confirmacao || [], valorSituacao);
+    situacaoTd.textContent = '';
+    situacaoTd.appendChild(selectSituacao);
+
+    // 🔷 Substituição de spans com ids específicos por selects
+    const mapaIdsParaChaves = {
+      campoPrivOrganizacao: 'organizacao',
+      campoPrivAAC: 'aac',
+      campoPrivEscalas: 'escalas',
+      campoPrivEquipes: 'equipes',
+      campoPrivTreinador: 'treinador'
+    };
+
+    Object.keys(mapaIdsParaChaves).forEach(id => {
+      const span = document.getElementById(id);
+      if (span && span.tagName.toLowerCase() === 'span') {
+        const chave = mapaIdsParaChaves[id];
+        const opcoes = window.opcoesPrivilegios[chave] || [];
+        const valorAtual = span.textContent.trim();
+
+        const select = criarSelectComValorAtual(opcoes, valorAtual);
+        select.id = id;
+
+        span.replaceWith(select);
+      }
+    });
+
+    // 🔷 Botões
+    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+    btnE.style.display = 'none';
+    btnS.style.display = 'inline-block';
+    btnC.style.display = 'inline-block';
+  }
+
+  function cancelarEdicao1(trs, idx) {
+    const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
+    const infoTds = trInfo.querySelectorAll('td'),
+          info1Tds = trInfo1.querySelectorAll('td'),
+          info2Tds = trInfo2.querySelectorAll('td'),
+          info3Tds = trInfo3.querySelectorAll('td'),
+          clasTds = trClas.querySelectorAll('td'),
+          detTds = trDet.querySelectorAll('td');
+
+    // 🔁 trInfo (apenas inputs)
+    infoTds.forEach(td => {
+      const input = td.querySelector('input');
+      const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 trInfo1 (apenas inputs)
+    info1Tds.forEach(td => {
+      const input = td.querySelector('input');
+      //const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      //else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 trInfo2 (mistura de input e select)
+    info2Tds.forEach(td => {
+      const input = td.querySelector('input');
+      const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 trInfo3 (apenas inputs)
+    info3Tds.forEach(td => {
+      const input = td.querySelector('input');
+
+      // se tem input → volta ao valor original do input
+      if (input) {
+        td.textContent = input.defaultValue || '';
+        return;
+      }
+
+      // se NÃO tem input → apenas mantém o texto que já estava salvo no td
+      td.textContent = td.textContent;
+    });
+
+    // 🔁 trClas (dois selects)
+    clasTds.forEach(td => {
+      const select = td.querySelector('select');
+      if (select) td.textContent = select.defaultValue || '';
+    });
+
+    /*// 🔁 trDet (input de situação)
+    const input = detTds[0].querySelector('input');
+    if (input) detTds[0].textContent = input.defaultValue || '';*/
+
+    detTds.forEach(td => {
+    if (td.querySelector('button')) return; // pula o <td> com botões
+      const input = td.querySelector('input');
+      const select = td.querySelector('select');
+      if (input) td.textContent = input.defaultValue || '';
+      else if (select) td.textContent = select.defaultValue || '';
+    });
+
+    // 🔁 Campos de privilégios (organizacao, aac, etc.) convertidos de <select> de volta para <span>
+    const campos = [
+      'campoPrivOrganizacao',
+      'campoPrivAAC',
+      'campoPrivEscalas',
+      'campoPrivEquipes',
+      'campoPrivTreinador'
+    ];
+
+    campos.forEach(id => {
+      const el = document.getElementById(id);
+
+      if (el && el.tagName.toLowerCase() === 'select') {
+        const span = document.createElement('span');
+        span.id = el.id;
+        span.textContent = el.defaultValue || '';
+        el.replaceWith(span);
+      }
+    });
+
+    // 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
+    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+    btnE.style.display = 'inline-block';
+    btnS.style.display = 'none';
+    btnC.style.display = 'none';
+
+    pesquisarParticipante();
+  }
+
+  function cancelarEdicao() {
+    pesquisarParticipante();
+  }
+
+function salvarAlteracoes(trs, idx) {
+
+  const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
+
+  const getTdValue = (td) => {
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+    return input ? input.value :
+           select ? select.value :
+           td.textContent.trim();
+  };
+
+  const infoTds = trInfo.querySelectorAll('td'),
+        info1Tds = trInfo1.querySelectorAll('td'),
+        info2Tds = trInfo2.querySelectorAll('td'),
+        info3Tds = trInfo3.querySelectorAll('td'),
+        clasTds = trClas.querySelectorAll('td'),
+        detTds = trDet.querySelectorAll('td');
+
+  const nd = [];
+  const priv = [];
+
+  // =========================
+  // INFO PRINCIPAL
+  // =========================
+  infoTds.forEach(td => {
+    const valor = getTdValue(td);
+    nd.push(valor);
+    td.textContent = valor;
+  });
+
+  // =========================
+  // EMAIL
+  // =========================
+  let emailValido = true;
+
+  info1Tds.forEach(td => {
+    const input = td.querySelector('input');
+    const valor = input ? input.value : td.textContent.trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(valor)) {
+      mostrarAlertaGlobal('⚠️ E-mail inválido.');
+
+      if (input) {
+        input.classList.add('erro-campo');
+        input.focus();
+      }
+
+      emailValido = false;
+      return;
+    }
+
+    nd.push(valor);
+    td.textContent = valor;
+  });
+
+  if (!emailValido) return;
+
+  // =========================
+  // TELEFONE
+  // =========================
+  let telefoneValido = true;
+
+  info2Tds.forEach(td => {
+    const input = td.querySelector('input');
+    const valor = getTdValue(td);
+
+    if (input) {
+      const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
+
+      if (!telefoneRegex.test(valor)) {
+        mostrarAlertaGlobal('⚠️ Telefone inválido.');
+
+        input.classList.add('erro-campo');
+        input.focus();
+
+        telefoneValido = false;
+        return;
+      }
+    }
+
+    nd.push(valor);
+    td.textContent = valor;
+  });
+
+  if (!telefoneValido) return;
+
+  // =========================
+  // DATAS
+  // =========================
+  const [tdNasc, tdIdade, tdBat, tdAnosBat] = info3Tds;
+
+  const dataNasc = getTdValue(tdNasc);
+
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dataNasc)) {
+    mostrarAlertaGlobal("⚠️ Data de nascimento inválida.");
+    return;
+  }
+
+  const idadeCalc = calcularIdade(dataNasc);
+
+  tdNasc.textContent = dataNasc;
+  tdIdade.textContent = idadeCalc + " anos";
+
+  nd.push(dataNasc, String(idadeCalc));
+
+  const dataBat = getTdValue(tdBat);
+
+  if (dataBat && !/^\d{2}\/\d{2}\/\d{4}$/.test(dataBat)) {
+    mostrarAlertaGlobal("⚠️ Data de batismo inválida.");
+    return;
+  }
+
+  const anosBatCalc = dataBat ? calcularAnosBatismo(dataBat) : "";
+
+  tdBat.textContent = dataBat;
+  tdAnosBat.textContent = anosBatCalc ? anosBatCalc + " anos" : "";
+
+  nd.push(dataBat, String(anosBatCalc));
+
+  // =========================
+  // CLASSIFICAÇÃO
+  // =========================
+  clasTds.forEach(td => {
+    const valor = getTdValue(td);
+    nd.push(valor);
+    td.textContent = valor;
+  });
+
+  // =========================
+  // SITUAÇÃO
+  // =========================
+  const situacaoTd = detTds[0];
+  const situacao = getTdValue(situacaoTd);
+
+  nd.push(situacao);
+  situacaoTd.textContent = situacao;
+
+  // =========================
+  // PRIVILÉGIOS
+  // =========================
+  const campos = [
+    'campoPrivOrganizacao',
+    'campoPrivAAC',
+    'campoPrivEscalas',
+    'campoPrivEquipes',
+    'campoPrivTreinador'
+  ];
+
+  campos.forEach(id => {
+
+    const el = document.getElementById(id);
+
+    if (!el) {
+      priv.push("");
+      return;
+    }
+
+    let valor = "";
+
+    if (el.tagName.toLowerCase() === "select") {
+      valor = el.value;
+
+      const span = document.createElement("span");
+      span.id = el.id;
+      span.textContent = valor;
+      el.replaceWith(span);
+
+    } else {
+      valor = el.textContent.trim();
+    }
+
+    priv.push(valor);
+  });
+
+  // =========================
+  // API JSONP
+  // =========================
+  const idOrig = trDet.dataset.identificadorOriginal;
+
+  console.log("ID ORIGINAL:", idOrig);
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "atualizarParticipanteAdmin",
+    {
+      primeiros9: JSON.stringify(nd),
+      privilegios: JSON.stringify(priv),
+      identificadorOriginal: idOrig
+    },
+    () => {
+
+      esconderSpinner();
+      mostrarAlertaGlobal("✅ Alterado com sucesso");
+      carregarOpcoes();
+
+      document.querySelectorAll(".erro-campo")
+        .forEach(e => e.classList.remove("erro-campo"));
+    },
+    (erro) => {
+
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao salvar: " + (erro?.mensagem || "erro"));
+    }
+  );
+
+  // =========================
+  // BOTÕES
+  // =========================
+  const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+
+  btnE.style.display = "inline-block";
+  btnS.style.display = "none";
+  btnC.style.display = "none";
+}
+
+function editarPrivilegios() {
+    const campos = [
+      { id: 'campoPrivOrganizacao', chave: 'organizacao' },
+      { id: 'campoPrivAAC', chave: 'aac' },
+      { id: 'campoPrivEscalas', chave: 'escalas' },
+      { id: 'campoPrivEquipes', chave: 'equipes' },
+      { id: 'campoPrivTreinador', chave: 'treinador' }
+    ];
+
+    campos.forEach(({ id, chave }) => {
+      const span = document.getElementById(id);
+      if (!span) {
+        console.warn(`Elemento com ID ${id} não encontrado`);
+        return;
+      }
+
+      const valorAtual = span.textContent.trim();
+      const select = document.createElement('select');
+      select.id = id;
+
+      const optVazio = document.createElement('option');
+      optVazio.value = '';
+      optVazio.textContent = '- Selecione -';
+      select.appendChild(optVazio);
+
+      const opcoes = (window.opcoesPrivilegios?.[chave] || []);
+      opcoes.forEach(opcao => {
+        const option = document.createElement('option');
+        option.value = opcao;
+        option.textContent = opcao;
+        if (opcao === valorAtual) option.selected = true;
+        select.appendChild(option);
+      });
+
+      span.replaceWith(select);
+    });
+  }
+
 
 function cadastrarParticipante() {
 
@@ -2483,7 +4256,6 @@ function cadastrarParticipante() {
     estaNoZap: document.getElementById('estaNoZap'),
     sexo: document.getElementById('sexo'),
     situacao: document.getElementById('situacao'),
-
     dataNascimento: document.getElementById('dataNascimento'),
     idade: document.getElementById('idade'),
     dataBatismo: document.getElementById('dataBatismo'),
@@ -2505,12 +4277,14 @@ function cadastrarParticipante() {
     anosBatismo: campos.anosBatismo.value
   };
 
+  // limpa erros
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
     el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
   });
 
-  let camposVazios = Object.entries(dados)
+  // valida campos vazios
+  const camposVazios = Object.entries(dados)
     .filter(([_, valor]) => !valor)
     .map(([chave]) => chave);
 
@@ -2520,6 +4294,7 @@ function cadastrarParticipante() {
     return;
   }
 
+  // valida telefone
   const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
   if (!telefoneRegex.test(dados.telefone)) {
     mostrarAlertaGlobal("⚠️ Telefone inválido. Use o formato: (11) 99217-3945");
@@ -2528,6 +4303,7 @@ function cadastrarParticipante() {
     return;
   }
 
+  // valida email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(dados.email)) {
     mostrarAlertaGlobal("⚠️ E-mail inválido.");
@@ -2538,34 +4314,38 @@ function cadastrarParticipante() {
 
   mostrarSpinner();
 
-  const cb = "cb_cadastrarParticipante_" + Date.now();
+  apiJSONP(
+    "salvarCadastroParticipante",
+    { dados: JSON.stringify(dados) },
 
-  window[cb] = function(resposta) {
+    function (resposta) {
 
-    esconderSpinner();
+      esconderSpinner();
 
-    mostrarAlertaGlobal("✅ Participante cadastrado com sucesso!");
+      mostrarAlertaGlobal("✅ Participante cadastrado com sucesso!");
 
-    document.getElementById("formParticipante").reset();
-    carregarOpcoes();
+      document.getElementById("formParticipante").reset();
+      carregarOpcoes();
 
-    Object.values(campos).forEach(el => el.classList.remove("erro-campo"));
+      Object.values(campos).forEach(el =>
+        el.classList.remove("erro-campo")
+      );
+    },
 
-    delete window[cb];
-  };
+    function (erro) {
 
-  const script = document.createElement("script");
+      esconderSpinner();
 
-  script.src =
-    API_URL +
-    "?acao=salvarCadastroParticipante" +
-    "&dados=" + encodeURIComponent(JSON.stringify(dados)) +
-    "&callback=" + cb;
+      mostrarAlertaGlobal(
+        erro?.mensagem || "❌ Erro ao cadastrar participante."
+      );
 
-  document.body.appendChild(script);
+      console.error("Erro API:", erro);
+    }
+  );
 }
 
-/*document.getElementById("telefone").addEventListener("input", function (e) {
+document.getElementById("telefone").addEventListener("input", function (e) {
   let input = e.target.value.replace(/\D/g, "").substring(0, 11);
   let formatted = "";
 
@@ -2574,7 +4354,7 @@ function cadastrarParticipante() {
   if (input.length >= 8) formatted += "-" + input.substring(7, 11);
 
   e.target.value = formatted;
-});*/
+});
 
 function parseDataBR(dataTexto) {
   if (!dataTexto) return null;
@@ -2761,12 +4541,14 @@ function buscarParticipantes() {
 
   const msg = document.getElementById("msgPesqDisponiveis");
 
+  // Remove marcações de erro anteriores
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
     el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
     el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
   });
 
+  // Verifica se há campos vazios
   const camposVazios = Object.entries(campos)
     .filter(([_, el]) => !el.value)
     .map(([chave]) => chave);
@@ -2789,86 +4571,105 @@ function buscarParticipantes() {
 
   mostrarSpinner();
 
-  const cb = "cb_buscarParticipantes_" + Date.now();
+  apiJSONP(
+    "buscarParticipantesPorFiltroAvancado",
+    {
+      dados: JSON.stringify({
+        diasTurnos,
+        frequencias
+      })
+    },
+    (participantes) => {
 
-  window[cb] = function(participantes) {
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
 
-    esconderSpinner();
+      participantesEncontrados = participantes;
 
-    Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+      esconderSpinner();
 
-    participantesEncontrados = participantes;
+      if (!participantes || participantes.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante encontrado.");
+        resultadoDiv.textContent = '';
+        return;
+      }
 
-    if (!participantes || participantes.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhum participante encontrado.");
-      resultadoDiv.textContent = '';
-      delete window[cb];
-      return;
-    }
+      msg.textContent = `✅ ${participantes.length} participante(s) encontrado(s).`;
 
-    msg.textContent = `✅ ${participantes.length} participante(s) encontrado(s).`;
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
 
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
 
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
-
-    ['Nome Completo', 'Condição', 'Frequência', 'Dias e Turnos Disponíveis']
-      .forEach(text => {
+      [
+        'Nome Completo',
+        'Condição',
+        'Frequência',
+        'Dias e Turnos Disponíveis'
+      ].forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;
         trHead.appendChild(th);
       });
 
-    const tbody = tabela.createTBody();
+      const tbody = tabela.createTBody();
 
-    participantes.forEach(p => {
-      const tr = tbody.insertRow();
+      participantes.forEach(p => {
 
-      const tdNome = tr.insertCell();
-      const nome = p.nomeCompleto || '';
-      const linhas = nome.split('\n');
+        const tr = tbody.insertRow();
 
-      if (linhas.length > 0) {
-        const nomeFormatado =
-          `<strong>${linhas[0]}</strong>` +
-          (linhas.length > 1 ? '<br>' + linhas.slice(1).join('<br>') : '');
-        tdNome.innerHTML = nomeFormatado;
-      } else {
-        tdNome.textContent = nome;
-      }
+        const tdNome = tr.insertCell();
 
-      tdNome.classList.add('clicavel-nome');
-      tdNome.style.cursor = 'pointer';
-      tdNome.style.color = 'green';
-      tdNome.title = 'Clique para interagir';
+        const nome = p.nomeCompleto || '';
+        const linhas = nome.split('\n');
 
-      tr.insertCell().textContent = p.condicao || '';
-      tr.insertCell().textContent = p.frequencia || '';
-      tr.insertCell().textContent = (p.diasTurnos || []).join(", ");
-    });
+        if (linhas.length > 0) {
+          tdNome.innerHTML =
+            `<strong>${linhas[0]}</strong>` +
+            (linhas.length > 1
+              ? '<br>' + linhas.slice(1).join('<br>')
+              : '');
+        } else {
+          tdNome.textContent = nome;
+        }
 
-    resultadoDiv.appendChild(tabela);
+        tdNome.classList.add('clicavel-nome');
+        tdNome.style.cursor = 'pointer';
+        tdNome.style.color = 'green';
+        tdNome.title = 'Clique para interagir';
 
-    document.getElementById('dadosUsuarioContainer').style.display = 'inline-block';
-    document.getElementById('enviarEmailTodosBtn').style.display = 'inline-block';
+        tr.insertCell().textContent = p.condicao || '';
+        tr.insertCell().textContent = p.frequencia || '';
+        tr.insertCell().textContent = (p.diasTurnos || []).join(', ');
 
-    delete window[cb];
-  };
+      });
 
-  const script = document.createElement("script");
+      resultadoDiv.appendChild(tabela);
 
-  script.src =
-    API_URL +
-    "?acao=buscarParticipantesPorFiltroAvancado" +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&frequencias=" + encodeURIComponent(JSON.stringify(frequencias)) +
-    "&callback=" + cb;
+      document.getElementById('dadosUsuarioContainer').style.display = 'inline-block';
+      document.getElementById('enviarEmailTodosBtn').style.display = 'inline-block';
 
-  document.body.appendChild(script);
+    },
+    (erro) => {
+
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro na busca: " +
+        (erro?.mensagem || erro?.error || "Erro desconhecido")
+      );
+
+      resultadoDiv.textContent = '';
+
+    }
+  );
 }
-
 
 // clique em participante
 document.addEventListener('click', function (event) {
@@ -2889,6 +4690,7 @@ document.addEventListener('click', function (event) {
     necessidade: document.getElementById('necessidade')
   };
 
+  // remove erros + listeners
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
     el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
@@ -2902,59 +4704,60 @@ document.addEventListener('click', function (event) {
   if (camposVazios.length > 0) {
     esconderSpinner();
     mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar a mensagem.");
-    camposVazios.forEach(campo => campos[campo].classList.add('erro-campo'));
+    camposVazios.forEach(c => campos[c].classList.add('erro-campo'));
     return;
   }
-
-  const dia = campos.dia.value;
-  const turno = campos.turno.value;
-  const frequencia = campos.frequencia.value;
-  const ponto = campos.ponto.value;
-  const equipamento = campos.equipamento.value;
-  const necessidade = campos.necessidade.value;
 
   const mensagem =
     "*DESIGNAÇÃO NO TPE*\n\n" +
     "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
     "Informações da designação:\n\n" +
-    `🛠️ *Necessidade* ${necessidade}\n` +
-    `📍 *${ponto}*\n` +
-    `📆 *Dia:* ${dia}\n` +
-    `🕒 *Turno:* ${turno}\n` +
-    `📈 *Frequência:* ${frequencia}\n` +
-    `📚 *Mostruário:* ${equipamento}\n\n` +
+    `🛠️ *Necessidade* ${campos.necessidade.value}\n` +
+    `📍 *${campos.ponto.value}*\n` +
+    `📆 *Dia:* ${campos.dia.value}\n` +
+    `🕒 *Turno:* ${campos.turno.value}\n` +
+    `📈 *Frequência:* ${campos.frequencia.value}\n` +
+    `📚 *Mostruário:* ${campos.equipamento.value}\n\n` +
     "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
 
-  const alvoFix = alvo;
+  const mensagemCodificada = encodeURIComponent(mensagem);
+
   alvo.classList.remove('clicavel-nome');
 
-  const cb = "cb_whatsapp_" + Date.now();
+  apiJSONP(
+    "buscarNumeroWhatsAppPorNomeComMensagem",
+    {
+      nome,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
 
-  window[cb] = function(url) {
+      esconderSpinner();
 
-    esconderSpinner();
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
 
-    Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+      window.open(url, '_blank');
 
-    window.open(url, '_blank');
+      alvo.style.color = 'gray';
+      alvo.style.fontStyle = 'italic';
+      alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
 
-    alvoFix.style.color = 'gray';
-    alvoFix.style.fontStyle = 'italic';
-    alvoFix.innerHTML += ' <span title="Mensagem enviada">📤</span>';
+    },
+    (err) => {
 
-    delete window[cb];
-  };
+      esconderSpinner();
 
-  const script = document.createElement("script");
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
 
-  script.src =
-    API_URL +
-    "?acao=buscarNumeroWhatsAppPorNomeComMensagem" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&mensagem=" + encodeURIComponent(mensagem) +
-    "&callback=" + cb;
+      mostrarAlertaGlobal("❌ Erro: " + (err?.mensagem || err?.error || "Erro desconhecido"));
 
-  document.body.appendChild(script);
+      alvo.classList.add('clicavel-nome');
+    }
+  );
 });
 
 
@@ -2990,7 +4793,7 @@ document.getElementById('enviarEmailTodosBtn').addEventListener('click', functio
 
   if (camposVazios.length > 0) {
     mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar o e-mail.");
-    camposVazios.forEach(campo => campos[campo].classList.add('erro-campo'));
+    camposVazios.forEach(c => campos[c].classList.add('erro-campo'));
     return;
   }
 
@@ -3025,39 +4828,48 @@ document.getElementById('enviarEmailTodosBtn').addEventListener('click', functio
 
       const nomes = participantesEncontrados.map(p => p.nomeCompleto);
 
-      const cb = "cb_email_" + Date.now();
+      apiJSONP(
+        "buscarEmailsPorNomesEEnviarMensagem",
+        {
+          dados: JSON.stringify({
+            nomes,
+            nomeUsuarioAtual,
+            assunto,
+            mensagem,
+            necessidade
+          })
+        },
+        () => {
 
-      window[cb] = function() {
+          esconderSpinner();
 
-        esconderSpinner();
+          Object.values(campos)
+            .forEach(el => el.classList.remove('erro-campo'));
 
-        Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+          document.getElementById('dadosUsuarioContainer').style.display = 'none';
+          document.getElementById('enviarEmailTodosBtn').style.display = 'none';
 
-        document.getElementById('dadosUsuarioContainer').style.display = 'none';
-        document.getElementById('enviarEmailTodosBtn').style.display = 'none';
+          mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
 
-        mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
+        },
+        (err) => {
 
-        delete window[cb];
-      };
+          esconderSpinner();
 
-      const script = document.createElement("script");
+          Object.values(campos)
+            .forEach(el => el.classList.remove('erro-campo'));
 
-      script.src =
-        API_URL +
-        "?acao=buscarEmailsPorNomesEEnviarMensagem" +
-        "&nomes=" + encodeURIComponent(JSON.stringify(nomes)) +
-        "&nomeUsuarioAtual=" + encodeURIComponent(nomeUsuarioAtual) +
-        "&assunto=" + encodeURIComponent(assunto) +
-        "&mensagem=" + encodeURIComponent(mensagem) +
-        "&necessidade=" + encodeURIComponent(necessidade) +
-        "&callback=" + cb;
+          mostrarAlertaGlobal(
+            "❌ Erro ao enviar e-mails: " +
+            (err?.mensagem || err?.error || "Erro desconhecido")
+          );
 
-      document.body.appendChild(script);
+        }
+      );
+
     }
   );
 });
-
 
 // contatos usuário
 document.getElementById('nomeInputUsuario').addEventListener('input', function () {
@@ -3077,13 +4889,18 @@ function pegarContatosDoUsuario(nome) {
 
   mostrarSpinner();
 
-  const cb = "cb_contato_" + Date.now();
+  apiJSONP(
+    "pegarContatoUsuario",
+    { nome },
+    (contato) => {
 
-  window[cb] = function(contato) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (!contato) {
+        console.warn("⚠️ Nenhum contato retornado.");
+        return;
+      }
 
-    if (contato) {
       const telefoneInput = document.getElementById('telefoneInputUsuario');
       const emailInput = document.getElementById('emailInputUsuario');
       const nomeSelect = document.getElementById('nomeSelectUsuario');
@@ -3096,22 +4913,22 @@ function pegarContatosDoUsuario(nome) {
       nomeSelect.disabled = true;
 
       const container = document.querySelector('#dadosUsuarioContainer > div[style*="display: none"]');
-      if (container) container.style.display = 'block';
 
+      if (container) {
+        container.style.display = 'block';
+      }
+
+    },
+    (erro) => {
+
+      esconderSpinner();
+
+      console.error(
+        "❌ Erro ao buscar contato do usuário:",
+        erro?.mensagem || erro?.error || erro?.message || erro
+      );
     }
-
-    delete window[cb];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=pegarContatoUsuario" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&callback=" + cb;
-
-  document.body.appendChild(script);
+  );
 }
 
 let participantesEncontrados2h = [];
@@ -3126,19 +4943,12 @@ function buscarParticipantes2h() {
 
   const msg = document.getElementById("msgPesqDisponiveis2h");
 
-  // 🔹 Remove marcações de erro anteriores
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
-    el.addEventListener('input', function () {
-      el.classList.remove('erro-campo');
-    }, { once: true });
-
-    el.addEventListener('change', function () {
-      el.classList.remove('erro-campo');
-    }, { once: true });
+    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
+    el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
   });
 
-  // 🔍 Verifica se há algum campo vazio
   const camposVazios = Object.entries(campos)
     .filter(([_, el]) => !el.value)
     .map(([chave]) => chave);
@@ -3149,22 +4959,27 @@ function buscarParticipantes2h() {
     return;
   }
 
-  const dia = campos.dia.value;
-  const turno = campos.turno.value;
-  const frequencia = campos.frequencia.value;
-
-  const diasTurnos = [`${dia} - ${turno}`];
-  const frequencias = [frequencia];
+  const diasTurnos = [`${campos.dia.value} - ${campos.turno.value}`];
+  const frequencias = [campos.frequencia.value];
 
   const resultadoDiv = document.getElementById('resultadoBusca2h');
-
   resultadoDiv.textContent = '';
+
   mostrarSpinner();
 
-  google.script.run
-    .withSuccessHandler(participantes => {
+  apiJSONP(
+    "buscarParticipantesPorFiltroAvancado2h",
+    {
+      dados: JSON.stringify({
+        diasTurnos,
+        frequencias
+      })
+    },
+    (participantes) => {
 
-      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
 
       participantesEncontrados2h = participantes;
 
@@ -3194,16 +5009,20 @@ function buscarParticipantes2h() {
       const tbody = tabela.createTBody();
 
       participantes.forEach(p => {
+
         const tr = tbody.insertRow();
 
         const tdNome = tr.insertCell();
+
         const nome = p.nomeCompleto || '';
         const linhas = nome.split('\n');
 
         if (linhas.length > 0) {
-          const nomeFormatado = `<strong>${linhas[0]}</strong>` +
-            (linhas.length > 1 ? '<br>' + linhas.slice(1).join('<br>') : '');
-          tdNome.innerHTML = nomeFormatado;
+          tdNome.innerHTML =
+            `<strong>${linhas[0]}</strong>` +
+            (linhas.length > 1
+              ? '<br>' + linhas.slice(1).join('<br>')
+              : '');
         } else {
           tdNome.textContent = nome;
         }
@@ -3223,100 +5042,113 @@ function buscarParticipantes2h() {
       document.getElementById('dadosUsuarioContainer2h').style.display = 'inline-block';
       document.getElementById('enviarEmailTodosBtn2h').style.display = 'inline-block';
 
-    })
-    .withFailureHandler(err => {
-      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+    },
+    (err) => {
+
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
+
       esconderSpinner();
-      mostrarAlertaGlobal("❌ Erro na busca: " + err.message);
+
+      mostrarAlertaGlobal(
+        "❌ Erro na busca: " +
+        (err?.mensagem || err?.error || "Erro desconhecido")
+      );
+
       resultadoDiv.textContent = '';
-    })
-    .buscarParticipantesPorFiltroAvancado2h({ diasTurnos, frequencias });
+    }
+  );
 }
 
 document.addEventListener('click', function (event) {
+
   const alvo = event.target.closest('.clicavel-nome2h');
-  if (alvo) {
-    mostrarSpinner();
-    const nome = alvo.innerText.trim();
+  if (!alvo) return;
 
-    const campos = {
-      dia: document.getElementById('diasSelect2h'),
-      turno: document.getElementById('turnosSelect2h'),
-      frequencia: document.getElementById('frequenciasSelect2h'),
-      ponto: document.getElementById('pontosParaOferecerSelect2h'),
-      equipamento: document.getElementById('equipamentosParaOferecerSelect2h'),
-      necessidade: document.getElementById('necessidade2h')
-    };
+  mostrarSpinner();
 
-    Object.values(campos).forEach(el => {
-      el.classList.remove('erro-campo');
+  const nome = alvo.innerText.trim();
 
-      el.addEventListener('change', function () {
-        el.classList.remove('erro-campo');
-      }, { once: true });
+  const campos = {
+    dia: document.getElementById('diasSelect2h'),
+    turno: document.getElementById('turnosSelect2h'),
+    frequencia: document.getElementById('frequenciasSelect2h'),
+    ponto: document.getElementById('pontosParaOferecerSelect2h'),
+    equipamento: document.getElementById('equipamentosParaOferecerSelect2h'),
+    necessidade: document.getElementById('necessidade2h')
+  };
 
-      el.addEventListener('input', function () {
-        el.classList.remove('erro-campo');
-      }, { once: true });
-    });
+  Object.values(campos).forEach(el => {
+    el.classList.remove('erro-campo');
+    el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
+    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
+  });
 
-    const camposVazios = Object.entries(campos)
-      .filter(([_, el]) => !el.value)
-      .map(([chave]) => chave);
+  const camposVazios = Object.entries(campos)
+    .filter(([_, el]) => !el.value)
+    .map(([chave]) => chave);
 
-    if (camposVazios.length > 0) {
-      esconderSpinner();
-      mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar a mensagem.");
-      camposVazios.forEach(campo => campos[campo].classList.add('erro-campo'));
-      return;
-    }
-
-    const dia = campos.dia.value;
-    const turno = campos.turno.value;
-    const frequencia = campos.frequencia.value;
-    const ponto = campos.ponto.value;
-    const equipamento = campos.equipamento.value;
-    const necessidade = campos.necessidade.value;
-
-    const mensagem =
-      "*DESIGNAÇÃO NO TPE*\n\n" +
-      "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
-      "Informações da designação:\n\n" +
-      `🛠️ *Necessidade* ${necessidade}\n` +
-      `📍 *${ponto}*\n` +
-      `📆 *Dia:* ${dia}\n` +
-      `🕒 *Turno:* ${turno}\n` +
-      `📈 *Frequência:* ${frequencia}\n` +
-      `📚 *Mostruário:* ${equipamento}\n\n` +
-      "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
-
-    const mensagemCodificada = encodeURIComponent(mensagem);
-
-    alvo.classList.remove('clicavel-nome2h');
-
-    google.script.run
-      .withSuccessHandler(function (url) {
-        esconderSpinner();
-
-        Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
-
-        window.open(url, '_blank');
-
-        alvo.style.color = 'gray';
-        alvo.style.fontStyle = 'italic';
-        alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
-      })
-      .withFailureHandler(function (error) {
-        esconderSpinner();
-
-        Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
-
-        mostrarAlertaGlobal("❌ Erro: " + error.message);
-
-        alvo.classList.add('clicavel-nome2h');
-      })
-      .buscarNumeroWhatsAppPorNomeComMensagem(nome, mensagemCodificada);
+  if (camposVazios.length > 0) {
+    esconderSpinner();
+    mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar a mensagem.");
+    camposVazios.forEach(c => campos[c].classList.add('erro-campo'));
+    return;
   }
+
+  const mensagem =
+    "*DESIGNAÇÃO NO TPE*\n\n" +
+    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
+    "Informações da designação:\n\n" +
+    `🛠️ *Necessidade* ${campos.necessidade.value}\n` +
+    `📍 *${campos.ponto.value}*\n` +
+    `📆 *Dia:* ${campos.dia.value}\n` +
+    `🕒 *Turno:* ${campos.turno.value}\n` +
+    `📈 *Frequência:* ${campos.frequencia.value}\n` +
+    `📚 *Mostruário:* ${campos.equipamento.value}\n\n` +
+    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
+
+  const mensagemCodificada = encodeURIComponent(mensagem);
+
+  alvo.classList.remove('clicavel-nome2h');
+
+  apiJSONP(
+    "buscarNumeroWhatsAppPorNomeComMensagem",
+    {
+      nome,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
+
+      esconderSpinner();
+
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
+
+      window.open(url, '_blank');
+
+      alvo.style.color = 'gray';
+      alvo.style.fontStyle = 'italic';
+      alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
+
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      Object.values(campos).forEach(el =>
+        el.classList.remove('erro-campo')
+      );
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " +
+        (err?.mensagem || err?.error || err?.message || "Erro desconhecido")
+      );
+
+      alvo.classList.add('clicavel-nome2h');
+    }
+  );
 });
 
 document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', function () {
@@ -3340,14 +5172,8 @@ document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', funct
 
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
-
-    el.addEventListener('input', function () {
-      el.classList.remove('erro-campo');
-    }, { once: true });
-
-    el.addEventListener('change', function () {
-      el.classList.remove('erro-campo');
-    }, { once: true });
+    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
+    el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
   });
 
   const camposVazios = Object.entries(campos)
@@ -3371,6 +5197,7 @@ document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', funct
   const email = campos.email.value.trim();
 
   const assunto = "Designação no TPE";
+
   const mensagem =
     "Olá querido(a) irmão(ã),\n\n" +
     "Temos uma designação para você no TPE, de acordo com sua disponibilidade atual.\n\n" +
@@ -3388,11 +5215,18 @@ document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', funct
 
       mostrarSpinner();
 
-      const nomes =
-        participantesEncontrados2h.map(p => p.nomeCompleto);
+      const nomes = participantesEncontrados2h.map(p => p.nomeCompleto);
 
-      google.script.run
-        .withSuccessHandler(() => {
+      apiJSONP(
+        "buscarEmailsPorNomesEEnviarMensagem",
+        {
+          nomes: JSON.stringify(nomes),
+          nomeUsuarioAtual,
+          assunto,
+          mensagem,
+          necessidade
+        },
+        () => {
 
           esconderSpinner();
 
@@ -3402,22 +5236,19 @@ document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', funct
           document.getElementById('enviarEmailTodosBtn2h').style.display = 'none';
 
           mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
-        })
-        .withFailureHandler(err => {
+
+        },
+        (err) => {
 
           esconderSpinner();
 
           Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
 
-          mostrarAlertaGlobal("❌ Erro ao enviar e-mails: " + err.message);
-        })
-        .buscarEmailsPorNomesEEnviarMensagem(
-          nomes,
-          nomeUsuarioAtual,
-          assunto,
-          mensagem,
-          necessidade
-        );
+          mostrarAlertaGlobal("❌ Erro ao enviar e-mails: " + (err?.mensagem || err?.message || err));
+
+        }
+      );
+
     }
   );
 });
@@ -3472,24 +5303,27 @@ function buscarParticipantesSub() {
 
   const campos = {
     dia: document.getElementById('diasSelectSub'),
-    turno: document.getElementById('turnosSelectSub'),
+    turno: document.getElementById('turnosSelectSub')
   };
 
   const msg = document.getElementById("msgPesqDisponiveisSub");
   const data = document.getElementById('dataSelectSub').value;
+  const resultadoDiv = document.getElementById('resultadoBuscaSub');
 
+  // remove erros antigos
   Object.values(campos).forEach(el => {
     el.classList.remove('erro-campo');
     el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
     el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
   });
 
+  // valida campos
   const camposVazios = Object.entries(campos)
     .filter(([_, el]) => !el.value)
     .map(([chave]) => chave);
 
   if (camposVazios.length > 0) {
-    mostrarAlertaGlobal("⚠️ Por favor, selecione dia, turno e frequência.");
+    mostrarAlertaGlobal("⚠️ Por favor, selecione dia e turno.");
     camposVazios.forEach(campo => campos[campo].classList.add('erro-campo'));
     return;
   }
@@ -3497,88 +5331,88 @@ function buscarParticipantesSub() {
   const dia = campos.dia.value;
   const turno = campos.turno.value;
 
-  const resultadoDiv = document.getElementById('resultadoBuscaSub');
-
   const diasTurnos = [`${dia} - ${turno}`];
   const datas = [data];
 
   resultadoDiv.textContent = '';
   mostrarSpinner();
 
-  const cb = "cb_sub_" + Date.now();
+  apiJSONP(
+    "buscarParticipantesPorFiltroAvancadoSub",
+    {
+      diasTurnos: JSON.stringify(diasTurnos),
+      datas: JSON.stringify(datas)
+    },
+    (participantes) => {
 
-  window[cb] = function(participantes) {
+      esconderSpinner();
 
-    Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
 
-    substitutosEncontrados = participantes;
+      substitutosEncontrados = participantes;
 
-    esconderSpinner();
-
-    if (!participantes || participantes.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhum participante encontrado.");
-      resultadoDiv.textContent = '';
-      delete window[cb];
-      return;
-    }
-
-    msg.textContent = `✅ ${participantes.length} substituto(s) encontrado(s).`;
-
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
-
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
-
-    ['Nome Completo', 'Condição', 'Dias e Turnos Disponíveis'].forEach(text => {
-      const th = document.createElement('th');
-      th.textContent = text;
-      trHead.appendChild(th);
-    });
-
-    const tbody = tabela.createTBody();
-
-    participantes.forEach(p => {
-
-      const tr = tbody.insertRow();
-
-      const tdNome = tr.insertCell();
-      const nome = p.nomeCompleto || '';
-      const linhas = nome.split('\n');
-
-      if (linhas.length > 0) {
-        tdNome.innerHTML =
-          `<strong>${linhas[0]}</strong>` +
-          (linhas.length > 1 ? '<br>' + linhas.slice(1).join('<br>') : '');
-      } else {
-        tdNome.textContent = nome;
+      if (!participantes || participantes.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante encontrado.");
+        resultadoDiv.textContent = '';
+        return;
       }
 
-      tdNome.classList.add('clicavel-nomeSub');
-      tdNome.style.cursor = 'pointer';
-      tdNome.style.color = 'green';
-      tdNome.title = 'Clique para interagir';
+      msg.textContent = `✅ ${participantes.length} substituto(s) encontrado(s).`;
 
-      tr.insertCell().textContent = p.condicao || '';
-      tr.insertCell().textContent = (p.diasTurnos || []).join(", ");
-    });
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
 
-    resultadoDiv.appendChild(tabela);
-    document.getElementById('dadosUsuarioContainerSb').style.display = 'inline-block';
-    document.getElementById('enviarEmailSbTodosBtn').style.display = 'inline-block';
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
 
-    delete window[cb];
-  };
+      ['Nome Completo', 'Condição', 'Dias e Turnos Disponíveis']
+        .forEach(text => {
+          const th = document.createElement('th');
+          th.textContent = text;
+          trHead.appendChild(th);
+        });
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarParticipantesPorFiltroAvancadoSub" +
-    "&diasTurnos=" + encodeURIComponent(JSON.stringify(diasTurnos)) +
-    "&datas=" + encodeURIComponent(JSON.stringify(datas)) +
-    "&callback=" + cb;
+      const tbody = tabela.createTBody();
 
-  document.body.appendChild(script);
+      participantes.forEach(p => {
+        const tr = tbody.insertRow();
+
+        const tdNome = tr.insertCell();
+        const nome = p.nomeCompleto || '';
+        const linhas = nome.split('\n');
+
+        if (linhas.length > 0) {
+          tdNome.innerHTML =
+            `<strong>${linhas[0]}</strong>` +
+            (linhas.length > 1 ? '<br>' + linhas.slice(1).join('<br>') : '');
+        } else {
+          tdNome.textContent = nome;
+        }
+
+        tdNome.classList.add('clicavel-nomeSub');
+        tdNome.style.cursor = 'pointer';
+        tdNome.style.color = 'green';
+        tdNome.title = 'Clique para interagir';
+
+        tr.insertCell().textContent = p.condicao || '';
+        tr.insertCell().textContent = (p.diasTurnos || []).join(", ");
+      });
+
+      resultadoDiv.appendChild(tabela);
+
+      document.getElementById('dadosUsuarioContainerSb').style.display = 'inline-block';
+      document.getElementById('enviarEmailSbTodosBtn').style.display = 'inline-block';
+
+    },
+    (err) => {
+
+      esconderSpinner();
+      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+
+      mostrarAlertaGlobal("❌ Erro na busca: " + (err?.mensagem || err?.message || err));
+      resultadoDiv.textContent = '';
+    }
+  );
 }
 
 document.addEventListener('click', function (event) {
@@ -3638,31 +5472,37 @@ document.addEventListener('click', function (event) {
 
   alvo.classList.remove('clicavel-nomeSub');
 
-  const cb = "cb_wpp_" + Date.now();
+  apiJSONP(
+    "buscarNumeroWhatsAppPorNomeComMensagemSub",
+    {
+      nome,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
 
-  window[cb] = function(url) {
+      esconderSpinner();
 
-    Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
-    esconderSpinner();
+      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
 
-    window.open(url, '_blank');
+      window.open(url, '_blank');
 
-    alvo.style.color = 'gray';
-    alvo.style.fontStyle = 'italic';
-    alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
+      alvo.style.color = 'gray';
+      alvo.style.fontStyle = 'italic';
+      alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
 
-    delete window[cb];
-  };
+    },
+    (error) => {
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarNumeroWhatsAppPorNomeComMensagem" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&mensagem=" + encodeURIComponent(mensagemCodificada) +
-    "&callback=" + cb;
+      esconderSpinner();
 
-  document.body.appendChild(script);
+      Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
+
+      mostrarAlertaGlobal("❌ Erro: " + (error?.mensagem || error?.message || error));
+
+      alvo.classList.add('clicavel-nomeSub');
+    }
+  );
+
 });
 
 document.getElementById('enviarEmailSbTodosBtn').addEventListener('click', function () {
@@ -3707,6 +5547,8 @@ document.getElementById('enviarEmailSbTodosBtn').addEventListener('click', funct
   const equipamento = campos.equipamento.value;
   const necessidade = campos.necessidade.value;
   const nomeUsuarioAtual = campos.nomeUsuarioAtual.value;
+  const telefone = campos.telefone.value.trim();
+  const email = campos.email.value.trim();
 
   const assunto = "Substituição no TPE";
 
@@ -3728,33 +5570,38 @@ document.getElementById('enviarEmailSbTodosBtn').addEventListener('click', funct
 
       const nomes = substitutosEncontrados.map(p => p.nomeCompleto);
 
-      const cb = "cb_email_" + Date.now();
+      apiJSONP(
+        "buscarEmailsPorNomesEEnviarMensagemSub",
+        {
+          nomes: JSON.stringify(nomes),
+          nomeUsuarioAtual,
+          assunto,
+          mensagem,
+          necessidade
+        },
+        () => {
 
-      window[cb] = function() {
+          esconderSpinner();
 
-        Object.values(campos).forEach(el => el.classList.remove('erro-campo'));
-        esconderSpinner();
+          Object.values(campos)
+            .forEach(el => el.classList.remove('erro-campo'));
 
-        document.getElementById('dadosUsuarioContainerSb').style.display = 'none';
-        document.getElementById('enviarEmailSbTodosBtn').style.display = 'none';
+          document.getElementById('dadosUsuarioContainerSb').style.display = 'none';
+          document.getElementById('enviarEmailSbTodosBtn').style.display = 'none';
 
-        mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
+          mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
+        },
+        (err) => {
 
-        delete window[cb];
-      };
+          esconderSpinner();
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=buscarEmailsPorNomesEEnviarMensagem" +
-        "&nomes=" + encodeURIComponent(JSON.stringify(nomes)) +
-        "&nomeUsuarioAtual=" + encodeURIComponent(nomeUsuarioAtual) +
-        "&assunto=" + encodeURIComponent(assunto) +
-        "&mensagem=" + encodeURIComponent(mensagem) +
-        "&necessidade=" + encodeURIComponent(necessidade) +
-        "&callback=" + cb;
+          Object.values(campos)
+            .forEach(el => el.classList.remove('erro-campo'));
 
-      document.body.appendChild(script);
+          mostrarAlertaGlobal(`❌ Erro ao enviar e-mails: ${err?.mensagem || err.message || "erro"}`);
+        }
+      );
+
     }
   );
 });
@@ -3776,41 +5623,41 @@ function pegarContatosDoUsuarioSb(nome) {
 
   mostrarSpinner();
 
-  const cb = "cb_contato_" + Date.now();
+  apiJSONP(
+    "pegarContatoUsuarioSub",
+    { nome },
+    (contato) => {
 
-  window[cb] = function(contato) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (contato) {
 
-    if (contato) {
+        const telefoneInput = document.getElementById('telefoneInputUsuarioSb');
+        const emailInput = document.getElementById('emailInputUsuarioSb');
+        const nomeSelect = document.getElementById('nomeSelectUsuarioSb');
 
-      const telefoneInput = document.getElementById('telefoneInputUsuarioSb');
-      const emailInput = document.getElementById('emailInputUsuarioSb');
-      const nomeSelect = document.getElementById('nomeSelectUsuarioSb');
+        telefoneInput.value = contato.telefone || '';
+        emailInput.value = contato.email || '';
 
-      telefoneInput.value = contato.telefone || '';
-      emailInput.value = contato.email || '';
+        telefoneInput.disabled = true;
+        emailInput.disabled = true;
+        nomeSelect.disabled = true;
 
-      telefoneInput.disabled = true;
-      emailInput.disabled = true;
-      nomeSelect.disabled = true;
+        const container = document.querySelector('#dadosUsuarioContainerSb > div[style*="display: none"]');
+        if (container) {
+          container.style.display = 'block';
+        }
 
-      const container = document.querySelector('#dadosUsuarioContainerSb > div[style*="display: none"]');
-      if (container) container.style.display = 'block';
+      } else {
+        console.warn("⚠️ Nenhum contato retornado.");
+      }
+    },
+    (erro) => {
 
+      esconderSpinner();
+      console.error("❌ Erro ao buscar contato do usuário:", erro?.mensagem || erro?.message || erro);
     }
-
-    delete window[cb];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=pegarContatoUsuario" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&callback=" + cb;
-
-  document.body.appendChild(script);
+  );
 }
 
   // Delegação para remover tabela
@@ -3918,23 +5765,24 @@ function pegarContatosDoUsuarioSb(nome) {
   // LISTAR EVENTOS
   document.getElementById('btnListarEventos').addEventListener('click', () => {
 
-    mostrarSpinner();
+  mostrarSpinner();
 
-    const dataHistorico = document.getElementById('dataHistoricoDeEventos').value;
+  const dataHistorico =
+    document.getElementById('dataHistoricoDeEventos').value;
 
-    const cb = "cb_listar_eventos_" + Date.now();
-
-    window[cb] = function(eventos) {
+  apiJSONP(
+    "listarEventosAdm",
+    { dataHistorico },
+    (eventos) => {
 
       const lista = document.getElementById("listaEventos");
       lista.innerHTML = "";
 
-      const idsEventos = eventos.map(ev => ev.id);
-
       eventos.forEach(ev => {
 
         const partes = ev.data.split("/");
-        const dataCurta = `${partes[0]}/${partes[1]}/${partes[2].slice(-2)}`;
+        const dataCurta =
+          `${partes[0]}/${partes[1]}/${partes[2].slice(-2)}`;
 
         const card = document.createElement("div");
         card.className = "cardEvento";
@@ -3980,141 +5828,220 @@ function pegarContatosDoUsuarioSb(nome) {
           editarEvento(ev.id);
         };
 
-        card.querySelector(".copiarBtn").onclick = () => copiarMensagemEvento(ev.id);
+        card.querySelector(".copiarBtn").onclick =
+          () => copiarMensagemEvento(ev.id);
 
         lista.appendChild(card);
       });
 
-      window[cb_metrics] = function(metricas) {
+      const idsEventos = eventos.map(ev => ev.id);
 
-        Object.keys(metricas).forEach(id => {
+      apiJSONP(
+        "obterMetricasEventosAdm",
+        { idsEventos: JSON.stringify(idsEventos) },
+        (metricas) => {
 
-          const card = document.querySelector(`[data-evento-id="${id}"]`);
-          if (!card) return;
+          Object.keys(metricas).forEach(id => {
 
-          card.querySelector(".designacoes").textContent = metricas[id].designacoesRealizadas;
-          card.querySelector(".vagas").textContent = metricas[id].vagasEmAberto;
-          card.querySelector(".carrinhos").textContent = metricas[id].carrinhosUnicos;
-          card.querySelector(".pessoas").textContent = metricas[id].pessoasUnicas;
-        });
+            const card = document.querySelector(
+              `[data-evento-id="${id}"]`
+            );
 
-        esconderSpinner();
-      };
+            if (!card) return;
 
-      const cb_metrics = "cb_metrics_" + Date.now();
+            card.querySelector(".designacoes").textContent =
+              metricas[id].designacoesRealizadas;
 
-      const script2 = document.createElement("script");
-      script2.src =
-        API_URL +
-        "?acao=obterMetricasEventos" +
-        "&ids=" + encodeURIComponent(JSON.stringify(idsEventos)) +
-        "&callback=" + cb_metrics;
+            card.querySelector(".vagas").textContent =
+              metricas[id].vagasEmAberto;
 
-      document.body.appendChild(script2);
+            card.querySelector(".carrinhos").textContent =
+              metricas[id].carrinhosUnicos;
 
-      delete window[cb];
-    };
+            card.querySelector(".pessoas").textContent =
+              metricas[id].pessoasUnicas;
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&data=" + encodeURIComponent(dataHistorico || "") +
-      "&callback=" + cb;
+          });
 
-    document.body.appendChild(script);
-  });
+          esconderSpinner();
+        },
+        (err) => {
+          esconderSpinner();
+          mostrarAlertaGlobal("❌ Erro ao carregar métricas: " + (err?.mensagem || err.message));
+        }
+      );
 
-  function copiarMensagemEvento(eventoId) {
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao listar eventos: " + (err?.mensagem || err.message));
+    }
+  );
+});
 
-    mostrarSpinner();
+function copiarMensagemEvento(eventoId) {
 
-    const cb = "cb_msg_" + Date.now();
+  mostrarSpinner();
 
-    window[cb] = async function(mensagem) {
+  apiJSONP(
+    "gerarMensagemVagasAdm",
+    { eventoId },
+    async (mensagem) => {
 
       esconderSpinner();
 
       try {
+
         await navigator.clipboard.writeText(mensagem);
-        mostrarAlertaGlobal("✅ Mensagem copiada para a área de transferência.");
-      } catch (e) {
-        mostrarAlertaGlobal("❌ Não foi possível copiar a mensagem.");
+
+        mostrarAlertaGlobal(
+          "✅ Mensagem copiada para a área de transferência."
+        );
+
+      } catch (erro) {
+
+        mostrarAlertaGlobal(
+          "❌ Não foi possível copiar a mensagem."
+        );
       }
+    },
+    (erro) => {
 
-      delete window[cb];
-    };
+      esconderSpinner();
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=gerarMensagemVagas" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
-  }
+      mostrarAlertaGlobal(
+        "❌ " + (erro?.mensagem || erro?.message || erro)
+      );
+    }
+  );
+}
 
   document.getElementById('btnCadastrarEvento').addEventListener('click', () => {
 
-    const descricaoEl = document.getElementById('descricaoEvento');
-    const ruaEl = document.getElementById('ruaEv');
-    const numeroEl = document.getElementById('numeroEv');
-    const bairroEl = document.getElementById('bairroEv');
+  const descricaoEl = document.getElementById('descricaoEvento');
+  const ruaEl = document.getElementById('ruaEv');
+  const numeroEl = document.getElementById('numeroEv');
+  const bairroEl = document.getElementById('bairroEv');
+  const carr = document.getElementById('carrCadEv');
+  const msg = document.getElementById('msgCadEv');
 
-    const descricao = descricaoEl.value.trim();
-    const rua = ruaEl.value.trim();
-    const numero = numeroEl.value.trim();
-    const bairro = bairroEl.value.trim();
+  const descricao = descricaoEl.value.trim();
+  const rua = ruaEl.value.trim();
+  const numero = numeroEl.value.trim();
+  const bairro = bairroEl.value.trim();
 
-    if (!descricao) {
-      mostrarAlertaGlobal("⚠️ Atenção! Informe a descrição do evento.");
-      return;
+  [descricaoEl, ruaEl].forEach(el => {
+    el.classList.remove('erro-campo');
+    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
+  });
+
+  if (!descricao) {
+    mostrarAlertaGlobal("⚠️ Atenção! Informe a descrição do evento.");
+    descricaoEl.classList.add('erro-campo');
+    descricaoEl.focus();
+    esconderSpinner();
+    return;
+  }
+
+  if (!rua) {
+    mostrarAlertaGlobal("⚠️ Atenção! Informe o endereço do evento.");
+    ruaEl.classList.add('erro-campo');
+    ruaEl.focus();
+    esconderSpinner();
+    return;
+  }
+
+  const container = document.getElementById('containerTables');
+  const tabelas = container.querySelectorAll('table');
+  let turnos = [];
+
+  for (const tabela of tabelas) {
+
+    let dataInput = tabela.querySelector('input[type="date"]');
+
+    if (!dataInput) {
+      dataInput = tabela.closest('.tabela-turno')?.querySelector('input[type="date"]');
     }
 
-    if (!rua) {
-      mostrarAlertaGlobal("⚠️ Atenção! Informe o endereço do evento.");
-      return;
-    }
+    if (!dataInput) continue;
 
-    const turnos = extrairTurnosDoFormulario();
+    dataInput.classList.remove('erro-campo');
+    dataInput.addEventListener('input', () => dataInput.classList.remove('erro-campo'), { once: true });
 
-    if (turnos.length === 0) {
-      mostrarAlertaGlobal("⚠️ Atenção! Informe pelo menos um turno com vagas.");
-      return;
-    }
-
-    mostrarSpinner();
-
-    const cb = "cb_cadastrar_" + Date.now();
-
-    window[cb] = function() {
-
+    if (!dataInput.value) {
+      mostrarAlertaGlobal("⚠️ Atenção! Informe a data do evento.");
+      dataInput.classList.add('erro-campo');
       esconderSpinner();
+      return;
+    }
+
+    const dataFormatada = formatarDataBR(dataInput.value);
+
+    const linhas = tabela.querySelectorAll('tbody tr');
+
+    linhas.forEach((linha, idxTurno) => {
+
+      const inicio = linha.querySelector('input[name="inicio"]')?.value;
+      const fim = linha.querySelector('input[name="fim"]')?.value;
+      const vagas = linha.querySelector('input[name="vagas"]')?.value;
+
+      if (inicio && fim && vagas !== "") {
+        turnos.push({
+          data: dataFormatada,
+          numero: idxTurno + 1,
+          inicio,
+          fim,
+          vagas
+        });
+      }
+    });
+  }
+
+  if (turnos.length === 0) {
+    mostrarAlertaGlobal("⚠️ Atenção! Informe pelo menos um turno com vagas.");
+    esconderSpinner();
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "cadastrarEventoNaPlanilhaAdm",
+    {
+      descricao,
+      turnos: JSON.stringify(turnos),
+      rua,
+      numero,
+      bairro
+    },
+    () => {
+
       mostrarAlertaGlobal("✅ Evento cadastrado com sucesso!");
+      esconderSpinner();
 
       carregarEventosNoSelect();
       carregarEventosNoSelectUsuario();
 
-      delete window[cb];
-    };
+      [descricaoEl, ruaEl].forEach(el => el.classList.remove('erro-campo'));
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=cadastrarEventoNaPlanilha" +
-      "&descricao=" + encodeURIComponent(descricao) +
-      "&turnos=" + encodeURIComponent(JSON.stringify(turnos)) +
-      "&rua=" + encodeURIComponent(rua) +
-      "&numero=" + encodeURIComponent(numero) +
-      "&bairro=" + encodeURIComponent(bairro) +
-      "&callback=" + cb;
+      const inputsData = container.querySelectorAll('input[type="date"]');
+      inputsData.forEach(el => el.classList.remove('erro-campo'));
+    },
+    (err) => {
 
-    document.body.appendChild(script);
-  });
+      esconderSpinner();
 
-  document.getElementById('btnAddTable').addEventListener('click', () => {
+      mostrarAlertaGlobal(
+        "❌ Erro ao cadastrar evento: " + (err?.mensagem || err.message || "erro")
+      );
 
+      [descricaoEl, ruaEl].forEach(el => el.classList.remove('erro-campo'));
+    }
+  );
+
+});
+
+ document.getElementById('btnAddTable').addEventListener('click', () => {
     const container = document.getElementById('containerTables');
     const tabelaOriginal = document.getElementById('tabela1');
     const novaTabela = tabelaOriginal.cloneNode(true);
@@ -4122,82 +6049,310 @@ function pegarContatosDoUsuarioSb(nome) {
     const numTabelas = container.querySelectorAll('table').length + 1;
     novaTabela.id = 'tabela' + numTabelas;
 
+    function atualizaIds(element) {
+      if (element.hasAttribute('id')) {
+        const idAtual = element.getAttribute('id');
+        const novoId = idAtual.replace(/\d+$/, '') + numTabelas;
+        element.setAttribute('id', novoId);
+      }
+      if (element.hasAttribute('for')) {
+        const forAtual = element.getAttribute('for');
+        const novoFor = forAtual.replace(/\d+$/, '') + numTabelas;
+        element.setAttribute('for', novoFor);
+      }
+      if (element.tagName === 'INPUT') {
+        element.value = '';
+      }
+      element.childNodes.forEach(child => {
+        if (child.nodeType === 1) atualizaIds(child);
+      });
+    }
+    atualizaIds(novaTabela);
+
+    const tbody = novaTabela.querySelector("tbody");
+    tbody.innerHTML = "";
+    const primeiraLinha = document.createElement("tr");
+    primeiraLinha.innerHTML = `
+      <td class="turno-label">Turno 1</td>
+      <td><input type="time" name="inicio" required></td>
+      <td><input type="time" name="fim" required></td>
+      <td><input type="number" name="vagas" min="0" placeholder="0"></td>
+      <td><button type="button" class="btnRemoverTurno">🗑️</button></td>
+    `;
+    tbody.appendChild(primeiraLinha);
+
+    const tfoot = novaTabela.querySelector("tfoot");
+    tfoot.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center;">
+          <div style="display: flex; justify-content: center; gap: 10px;">
+            <button type="button" class="btnAddTurno">➕ Adicionar Turno</button>
+            <button type="button" class="btnRemoverTabela">🗑 Remover Tabela</button>
+          </div>
+        </td>
+      </tr>
+    `;
+
     container.appendChild(novaTabela);
   });
 
-  function gerarMensagemEvento() {
-    return null;
+function gerarMensagemEvento() {
+    const descricao = document.getElementById('descricaoEvento').value.trim();
+    if (!descricao) {
+      mostrarAlertaGlobal("⚠️ Por favor, informe a descrição do evento.");
+      return null;
+    }
+
+    const rua = document.getElementById('ruaEv')?.value.trim();
+    const numero = document.getElementById('numeroEv')?.value.trim();
+    const bairro = document.getElementById('bairroEv')?.value.trim();
+
+    const container = document.getElementById('containerTables');
+    const tabelas = container.querySelectorAll('table');
+
+    let mensagem = `Evento: ${descricao}\n`;
+
+    if (rua) {
+      mensagem += `Endereço: ${rua}`;
+      if (numero) mensagem += `, ${numero}`;
+      if (bairro) mensagem += ` - ${bairro}`;
+      mensagem += `\n`; 
+    }
+
+    tabelas.forEach(tabela => {
+      const dataInput = tabela.querySelector('input[type="date"]');
+      if (!dataInput || !dataInput.value) return;
+
+      const dataFormatada = formatarDataBR(dataInput.value);
+      mensagem += `\nData: ${dataFormatada}\n`;
+
+      const linhas = tabela.querySelectorAll('tbody tr');
+      linhas.forEach((linha, idx) => {
+        const inicio = linha.querySelector('input[name="inicio"]')?.value;
+        const fim = linha.querySelector('input[name="fim"]')?.value;
+
+        if (inicio && fim) {
+          mensagem += `Turno ${idx + 1}: ${inicio} - ${fim}\n`;
+        }
+      });
+    });
+
+    return mensagem;
   }
 
-  function agruparTurnosPorData(turnos) {
+function agruparTurnosPorData(turnos) {
     const agrupados = {};
+
     turnos.forEach(t => {
-      if (!agrupados[t.data]) agrupados[t.data] = [];
+      if (!agrupados[t.data]) {
+        agrupados[t.data] = [];
+      }
       agrupados[t.data].push(t);
     });
+
     return agrupados;
   }
 
-  function criarNovaTabela() {
+function criarNovaTabela() {
+
     const tabela = document.createElement('table');
     tabela.classList.add('tabela-listagem');
+
+    tabela.innerHTML = `
+      <thead>
+        <tr>
+          <th colspan="5">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label style="color: white;">Data:</label>
+              <input type="date" required>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>Turno</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th>Vagas</th>
+          <th>Remover</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5" style="text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <button type="button" class="btnAddTurno">➕ Adicionar Turno</button>
+              <button type="button" class="btnRemoverTabela">🗑 Remover Tabela</button>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    `;
     return tabela;
   }
 
-  function popularTurnosNaTabela() {}
+ function popularTurnosNaTabela(tabela, data, turnos) {
+    let inputData = tabela.querySelector('input[type="date"]');
+    if (!inputData) {
+      inputData = document.createElement('input');
+      inputData.type = 'date';
+      inputData.style.marginBottom = '10px';
+      tabela.insertBefore(inputData, tabela.firstChild);
+    }
+    
+    function converterParaISO(dataStr) {
+      if (!dataStr) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dataStr)) return dataStr;
 
-  function atualizarNumeracaoTurnosTabela() {}
+      const partes = dataStr.split('/');
+      if (partes.length === 3) {
+        const [dd, mm, yyyy] = partes;
+        return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+      }
+      return dataStr;
+    }
+    
+    inputData.value = converterParaISO(data);
 
-  function editarEvento(id) {
+    const tbody = tabela.querySelector('tbody');
+    tbody.innerHTML = '';
 
-    mostrarSpinner();
+    turnos.forEach((turno, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="turno-label">Turno ${i + 1}</td>
+        <td><input type="time" name="inicio" value="${turno.inicio}" required></td>
+        <td><input type="time" name="fim" value="${turno.fim}" required></td>
+        <td><input type="number" name="vagas" min="0" value="${turno.vagas}" placeholder="0"></td>
+        <td><button type="button" class="btnRemoverTurno">🗑️</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    atualizarNumeracaoTurnosTabela(tabela);
+  }
 
-    const cb = "cb_editar_" + Date.now();
+function atualizarNumeracaoTurnosTabela(tabela) {
+    const linhas = tabela.querySelectorAll("tbody tr");
+    linhas.forEach((linha, index) => {
+      const label = linha.querySelector(".turno-label");
+      if (label) {
+        label.textContent = `Turno ${index + 1}`;
+      }
+    });
+  }
 
-    window[cb] = function(evento) {
+function editarEvento(id) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "obterEventoPorIdAdm",
+    { id },
+    (evento) => {
 
       document.getElementById('descricaoEvento').value = evento.nome;
+      document.getElementById('nomeOriginal').value = evento.nome;
 
       document.getElementById('ruaEv').value = evento.rua || '';
       document.getElementById('numeroEv').value = evento.numero || '';
       document.getElementById('bairroEv').value = evento.bairro || '';
 
+      document.getElementById('ruaOriginal').value = evento.rua || '';
+      document.getElementById('numeroOriginal').value = evento.numero || '';
+      document.getElementById('bairroOriginal').value = evento.bairro || '';
+
+      document.getElementById('dataOriginal').value = evento.turnos[0].data;
+
+      document.getElementById('btnCadastrarEvento').style.display = 'none';
+      document.getElementById('btnSalvarEdicaoEvento').style.display = 'inline-block';
+
+      const agrupadosPorData = agruparTurnosPorData(evento.turnos);
+      const container = document.getElementById('containerTables');
+
+      container.querySelectorAll('.tabela-turnos:not(#tabela1)')
+        .forEach(tabela => tabela.remove());
+
+      const datas = Object.keys(agrupadosPorData);
+
+      datas.forEach((data, index) => {
+        let tabela;
+
+        if (index === 0) {
+          tabela = document.getElementById('tabela1');
+          tabela.querySelector('tbody').innerHTML = '';
+        } else {
+          tabela = criarNovaTabela(index + 1);
+          container.appendChild(tabela);
+        }
+
+        tabela.querySelector('input[type="date"]').value = data;
+
+        const tbody = tabela.querySelector('tbody');
+
+        agrupadosPorData[data].forEach((turno, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="turno-label">Turno ${idx + 1}</td>
+            <td><input type="time" name="inicio" value="${turno.inicio}" required></td>
+            <td><input type="time" name="fim" value="${turno.fim}" required></td>
+            <td><input type="number" name="vagas" value="${turno.vagas}" min="0"></td>
+            <td><button type="button" class="btnRemoverTurno">🗑️</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+
       esconderSpinner();
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao carregar evento: " + (err?.mensagem || err.message));
+    }
+  );
+}
 
-      delete window[cb];
-    };
+document.getElementById('btnSalvarEdicaoEvento').addEventListener('click', () => {
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=obterEventoPorId" +
-      "&id=" + encodeURIComponent(id) +
-      "&callback=" + cb;
+  const descricao = document.getElementById('descricaoEvento').value.trim();
+  const nomeOriginal = document.getElementById('nomeOriginal').value;
+  const dataOriginal = document.getElementById('dataOriginal').value;
 
-    document.body.appendChild(script);
+  const ruaOriginal = document.getElementById('ruaOriginal').value;
+  const numeroOriginal = document.getElementById('numeroOriginal').value;
+  const bairroOriginal = document.getElementById('bairroOriginal').value;
+
+  const rua = document.getElementById('ruaEv').value.trim();
+  const numero = document.getElementById('numeroEv').value.trim();
+  const bairro = document.getElementById('bairroEv').value.trim();
+
+  if (!descricao || !nomeOriginal || !dataOriginal) {
+    mostrarAlertaGlobal("⚠️ Atenção! Dados incompletos para salvar edição.");
+    return;
   }
 
-  document.getElementById('btnSalvarEdicaoEvento').addEventListener('click', () => {
+  const turnos = extrairTurnosDoFormulario();
+  if (turnos.length === 0) {
+    mostrarAlertaGlobal("⚠️ Atenção! Informe pelo menos um turno com vagas.");
+    return;
+  }
 
-    const descricao = document.getElementById('descricaoEvento').value.trim();
-    const nomeOriginal = document.getElementById('nomeOriginal').value;
-    const dataOriginal = document.getElementById('dataOriginal').value;
+  mostrarSpinner();
 
-    const ruaOriginal = document.getElementById('ruaOriginal').value;
-    const numeroOriginal = document.getElementById('numeroOriginal').value;
-    const bairroOriginal = document.getElementById('bairroOriginal').value;
-
-    const rua = document.getElementById('ruaEv').value.trim();
-    const numero = document.getElementById('numeroEv').value.trim();
-    const bairro = document.getElementById('bairroEv').value.trim();
-
-    const turnos = extrairTurnosDoFormulario();
-
-    mostrarSpinner();
-
-    const cb = "cb_salvar_edicao_" + Date.now();
-
-    window[cb] = function() {
+  apiJSONP(
+    "salvarEdicoesDeEventoNaPlanilhaAdm",
+    {
+      descricao,
+      turnos: JSON.stringify(turnos),
+      nomeOriginal,
+      dataOriginal,
+      ruaOriginal,
+      numeroOriginal,
+      bairroOriginal,
+      rua,
+      numero,
+      bairro
+    },
+    () => {
 
       esconderSpinner();
       mostrarAlertaGlobal("✅ Evento alterado com sucesso!");
@@ -4205,85 +6360,204 @@ function pegarContatosDoUsuarioSb(nome) {
       carregarEventosNoSelect();
       carregarEventosNoSelectUsuario();
 
-      delete window[cb];
-    };
+      document.getElementById('btnCadastrarEvento').style.display = 'inline-block';
+      document.getElementById('btnSalvarEdicaoEvento').style.display = 'none';
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=salvarEdicoesDeEventoNaPlanilha" +
-      "&descricao=" + encodeURIComponent(descricao) +
-      "&turnos=" + encodeURIComponent(JSON.stringify(turnos)) +
-      "&nomeOriginal=" + encodeURIComponent(nomeOriginal) +
-      "&dataOriginal=" + encodeURIComponent(dataOriginal) +
-      "&ruaOriginal=" + encodeURIComponent(ruaOriginal) +
-      "&numeroOriginal=" + encodeURIComponent(numeroOriginal) +
-      "&bairroOriginal=" + encodeURIComponent(bairroOriginal) +
-      "&rua=" + encodeURIComponent(rua) +
-      "&numero=" + encodeURIComponent(numero) +
-      "&bairro=" + encodeURIComponent(bairro) +
-      "&callback=" + cb;
+      document.getElementById('nomeOriginal').value = '';
+      document.getElementById('dataOriginal').value = '';
+      document.getElementById('ruaOriginal').value = '';
+      document.getElementById('numeroOriginal').value = '';
+      document.getElementById('bairroOriginal').value = '';
 
-    document.body.appendChild(script);
-  });
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao salvar alterações: " + (err?.mensagem || err.message));
+    }
+  );
 
-  function extrairTurnosDoFormulario() {
-    return [];
+});
+
+function extrairTurnosDoFormulario() {
+    const container = document.getElementById('containerTables');
+    const tabelas = container.querySelectorAll('table');
+    let turnos = [];
+
+    tabelas.forEach((tabela, idxTabela) => {
+      let dataInput = tabela.querySelector('input[type="date"]');
+      if (!dataInput) {
+        dataInput = tabela.closest('.tabela-turno')?.querySelector('input[type="date"]');
+      }
+
+      if (!dataInput || !dataInput.value) return;
+
+      const dataFormatada = formatarDataBR(dataInput.value);
+
+      const linhas = tabela.querySelectorAll('tbody tr');
+      linhas.forEach((linha, idxTurno) => {
+        const inicio = linha.querySelector('input[name="inicio"]')?.value;
+        const fim = linha.querySelector('input[name="fim"]')?.value;
+        const vagas = linha.querySelector('input[name="vagas"]')?.value;
+
+        if (inicio && fim && vagas !== "") {
+          turnos.push({
+            data: dataFormatada,
+            numero: idxTurno + 1,
+            inicio,
+            fim,
+            vagas
+          });
+        }
+      });
+    });
+
+    return turnos;
   }
 
-  function criarMensagemWhatsApp() {
-    return null;
-  }
-
-  document.getElementById('btnGerarMensagemWhatsApp').addEventListener('click', () => {
-    const msg = criarMensagemWhatsApp();
-    if (!msg) return;
-  });
-
-  document.getElementById('btnCopiarMensagemWhatsApp').addEventListener('click', async () => {
-    const texto = document.getElementById('mensagemWhatsApp').value;
-    await navigator.clipboard.writeText(texto);
-  });
-
-  function enviarEmailInformativo() {
-
+function criarMensagemWhatsApp() {
     const descricao = document.getElementById('descricaoEvento').value.trim();
-    if (!descricao) return;
+    if (!descricao) {
+      mostrarAlertaGlobal("⚠️ Por favor, informe a descrição do evento.");
+      return null;
+    }
 
-    mostrarSpinner();
+    const rua = document.getElementById('ruaEv')?.value.trim();
+    const numero = document.getElementById('numeroEv')?.value.trim();
+    const bairro = document.getElementById('bairroEv')?.value.trim();
 
-    const assunto = `Evento do TPE - ${descricao}`;
-    const mensagemBase = gerarMensagemEvento();
+    const container = document.getElementById('containerTables');
+    const tabelas = container.querySelectorAll('table');
+    if (tabelas.length === 0) {
+      mostrarAlertaGlobal("❌ Nenhuma tabela de turnos encontrada.");
+      return null;
+    }
 
-    const cb = "cb_email_info_" + Date.now();
+    let mensagem = `📢 Queridos(as) irmãos(ãs),
 
-    window[cb] = function() {
+    Temos o prazer de informar que o TPE vai cobrir mais um evento na cidade.
+
+    📌 *Evento:* ${descricao}
+    `;
+
+    if (rua) {
+      mensagem += `📍 *Endereço:* ${rua}`;
+      if (numero) mensagem += `, ${numero}`;
+      if (bairro) mensagem += ` - ${bairro}`;
+      mensagem += `\n`;
+    }
+
+    tabelas.forEach(tabela => {
+      const dataInput = tabela.querySelector('input[type="date"]');
+      if (!dataInput || !dataInput.value) return;
+
+      const data = dataInput.value.split('-');
+      const dataFormatada = data.length === 3 ? `${data[2]}/${data[1]}/${data[0]}` : dataInput.value;
+
+      mensagem += `\n📅 *Data:* ${dataFormatada}\n`;
+
+      const linhas = tabela.querySelectorAll('tbody tr');
+      linhas.forEach((linha, idx) => {
+        const inicio = linha.querySelector('input[name="inicio"]')?.value;
+        const fim = linha.querySelector('input[name="fim"]')?.value;
+        const vagas = linha.querySelector('input[name="vagas"]')?.value;
+
+        if (inicio && fim) {
+          mensagem += `🕒 Turno ${idx + 1}: ${inicio} às ${fim} — Vagas: ${vagas || '0'}\n`;
+        }
+      });
+    });
+
+    mensagem += `
+
+    📝 Para se inscrever, acesse o aplicativo do TPE na descrição do grupo de WhatsApp. Clique na aba "Eventos"! Selecione o evento, o turno, e clique em "Fazer inscrição". Depois disso, é só esperar a confirmação da equipe de eventos.
+
+    *Atenciosamente,*
+    Equipe de Eventos do TPE SBC`;
+
+    return mensagem;
+  }
+
+document.getElementById('btnGerarMensagemWhatsApp').addEventListener('click', () => {
+  const mensagem = criarMensagemWhatsApp();
+  if (!mensagem) return;
+
+  const container = document.getElementById('mensagemWhatsAppContainer');
+  const textarea = document.getElementById('mensagemWhatsApp');
+
+  textarea.value = mensagem;
+  container.style.display = 'block';
+});
+
+document.getElementById('btnCopiarMensagemWhatsApp').addEventListener('click', async () => {
+  const textarea = document.getElementById('mensagemWhatsApp');
+  const texto = textarea.value;
+
+  try {
+    await navigator.clipboard.writeText(texto);
+    mostrarAlertaGlobal("✅ Mensagem copiada com sucesso! Agora cole no grupo do WhatsApp.");
+  } catch (err) {
+    console.error("Erro ao copiar:", err);
+    mostrarAlertaGlobal("❌ Não foi possível copiar a mensagem. Tente manualmente.");
+  }
+});
+
+function enviarEmailInformativo() {
+
+  const descricaoInput = document.getElementById('descricaoEvento');
+  if (!descricaoInput) {
+    mostrarAlertaGlobal("❌ Campo de descrição do evento não encontrado.");
+    return;
+  }
+
+  const descricao = descricaoInput.value.trim();
+  if (!descricao) {
+    mostrarAlertaGlobal("⚠️ Atenção! Informe a descrição do evento.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  const assunto = `Evento do TPE - ${descricao}`;
+  const mensagemBase = gerarMensagemEvento();
+  if (!mensagemBase) {
+    esconderSpinner();
+    return;
+  }
+
+  apiJSONP(
+    "enviarEmailInformativoEventoAdm",
+    {
+      assunto,
+      mensagem: mensagemBase
+    },
+    (res) => {
 
       esconderSpinner();
-      mostrarAlertaGlobal("E-mails enviados com sucesso.");
 
-      delete window[cb];
-    };
+      const emails = res?.emailsEnviados || [];
+      mostrarAlertaGlobal(`✅ ${emails.length} email(s) enviados com sucesso.`);
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=enviarEmailInformativoEvento" +
-      "&assunto=" + encodeURIComponent(assunto) +
-      "&mensagem=" + encodeURIComponent(mensagemBase) +
-      "&callback=" + cb;
+    },
+    (err) => {
 
-    document.body.appendChild(script);
-  }
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao enviar emails: " + (err?.mensagem || err.message));
+
+    }
+  );
+
+}
 
    // Carrega eventos no select de designados ao carregar a página
-  function carregarEventosDesignados() {
+function carregarEventosDesignados() {
 
-    const cb = "cb_eventos_designados_" + Date.now();
-
-    window[cb] = function(eventos) {
+  apiJSONP(
+    "listarEventos",
+    {},
+    (eventos) => {
 
       const sel = document.getElementById("eventoSelectDesignados");
+
       if (!sel) {
         console.error("Select eventoSelectDesignados não encontrado no DOM");
         return;
@@ -4294,47 +6568,47 @@ function pegarContatosDoUsuarioSb(nome) {
       eventos.forEach(evt => {
         const opt = document.createElement("option");
         opt.value = evt.id;
-
         const ano = evt.data ? evt.data.split("/")[2] : "";
         opt.textContent = `${evt.nome} - ${ano}`;
-
         sel.appendChild(opt);
       });
 
       const selTurno = document.getElementById("turnoSelectDesignados");
       selTurno.disabled = true;
 
-      delete window[cb];
-    };
+    },
+    (err) => {
+      console.error("❌ Erro ao carregar eventos:", err);
+      mostrarAlertaGlobal("❌ Erro ao carregar eventos.");
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
-  }
+}
 
   // Função para popular turnos baseado no evento selecionado
-  function eventoMudouDesignados() {
+function eventoMudouDesignados() {
 
-    const selEv = document.getElementById("eventoSelectDesignados");
-    const eventoId = selEv.value;
+  const selEv = document.getElementById("eventoSelectDesignados");
+  const eventoId = selEv.value;
 
-    const selTurno = document.getElementById("turnoSelectDesignados");
-    selTurno.innerHTML = "<option value=''>- Selecione turno -</option>";
-    selTurno.disabled = true;
+  const selTurno = document.getElementById("turnoSelectDesignados");
+  selTurno.innerHTML = "<option value=''>- Selecione turno -</option>";
+  selTurno.disabled = true;
 
-    document.getElementById("grupoTurnoDesignados").style.display = "none";
-    mostrarSpinner();
-    document.getElementById("resultadoDesignadosContainerEv").innerHTML = "";
+  document.getElementById("grupoTurnoDesignados").style.display = "none";
+  document.getElementById("resultadoDesignadosContainerEv").innerHTML = "";
 
-    if (!eventoId) return;
+  mostrarSpinner();
 
-    const cb = "cb_turnos_" + Date.now();
+  if (!eventoId) {
+    esconderSpinner();
+    return;
+  }
 
-    window[cb] = function(turnos) {
+  apiJSONP(
+    "listarTurnosDoEvento",
+    { eventoId },
+    (turnos) => {
 
       esconderSpinner();
 
@@ -4350,94 +6624,116 @@ function pegarContatosDoUsuarioSb(nome) {
       selTurno.disabled = false;
       document.getElementById("grupoTurnoDesignados").style.display = "flex";
 
-      delete window[cb];
-    };
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao carregar turnos: " + (err?.mensagem || err.message));
+    }
+  );
+}
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarTurnosDoEvento" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
+function mostrarConfirmacaoRegistrar() {
 
-    document.body.appendChild(script);
-  }
+  const mensagemEl = document.getElementById("mensagemRegistro");
 
-  function mostrarConfirmacaoRegistrar() {
+  mostrarConfirmacaoGlobal(
+    "⚠️ Atenção! Você está criando a Escala do Evento. Você poderá atualizá-la se precisar. Deseja continuar?",
+    () => {
 
-    const mensagemEl = document.getElementById("mensagemRegistro");
+      if (mensagemEl) {
+        mensagemEl.textContent = "";
+      }
 
-    mostrarConfirmacaoGlobal(
-      "⚠️ Atenção! Você está criando a Escala do Evento. Você poderá atualizá-la se precisar. Deseja continuar?",
-      () => {
+      mostrarSpinner();
 
-        if (mensagemEl) mensagemEl.textContent = "";
-        mostrarSpinner();
+      if (mensagemEl) {
+        mensagemEl.style.color = "blue";
+        mensagemEl.textContent = "🔁 Registrando...";
+      }
+
+      const eventoId = document.getElementById("eventoSelectDesignados").value;
+      const turno = document.getElementById("turnoSelectDesignados").value;
+
+      if (!eventoId) {
+        esconderSpinner();
 
         if (mensagemEl) {
-          mensagemEl.style.color = "blue";
-          mensagemEl.textContent = "🔁 Registrando...";
+          mensagemEl.textContent = "";
         }
 
-        const eventoId = document.getElementById("eventoSelectDesignados").value;
+        mostrarAlertaGlobal("⚠️ Por favor, selecione um evento antes de registrar.");
+        return;
+      }
 
-        if (!eventoId) {
-          esconderSpinner();
-          if (mensagemEl) mensagemEl.textContent = "";
-
-          mostrarAlertaGlobal("⚠️ Por favor, selecione um evento antes de registrar.");
-          return;
-        }
-
-        const cb = "cb_registrar_designados_" + Date.now();
-
-        window[cb] = function() {
+      apiJSONP(
+        "registrarTodosDesignadosNoEvento",
+        {
+          eventoId,
+          turno
+        },
+        () => {
 
           esconderSpinner();
-          if (mensagemEl) mensagemEl.textContent = "";
+
+          if (mensagemEl) {
+            mensagemEl.textContent = "";
+          }
 
           mostrarAlertaGlobal(
             "✅ Designações do evento registradas com sucesso. Para imprimir o PDF, use a aba Relatórios!"
           );
 
-          delete window[cb];
-        };
+        },
+        (err) => {
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=registrarTodosDesignadosNoEvento" +
-          "&eventoId=" + encodeURIComponent(eventoId) +
-          "&callback=" + cb;
-
-        document.body.appendChild(script);
-
-      }
-    );
-  }
-
-  function mostrarConfirmacaoRegistrarInscritos() {
-
-    const mensagemEl = document.getElementById("mensagemRegistroInscritos");
-
-    mostrarConfirmacaoGlobal(
-      "⚠️ Atenção! Você está criando a lista de inscritos do evento. Você poderá atualizá-la posteriormente. Deseja continuar?",
-      () => {
-
-        if (mensagemEl) mensagemEl.textContent = "";
-        mostrarSpinner();
-
-        const eventoId = document.getElementById("eventoSelectInscritos").value;
-
-        if (!eventoId) {
           esconderSpinner();
-          mostrarAlertaGlobal("⚠️ Por favor, selecione um evento antes de registrar.");
-          return;
+
+          if (mensagemEl) {
+            mensagemEl.textContent = "";
+          }
+
+          mostrarAlertaGlobal(
+            "❌ Erro ao registrar designados: " + (err?.mensagem || err.message)
+          );
+
         }
+      );
 
-        const cb = "cb_registrar_inscritos_" + Date.now();
+    }
+  );
 
-        window[cb] = function() {
+}
+
+function mostrarConfirmacaoRegistrarInscritos() {
+
+  const mensagemEl = document.getElementById("mensagemRegistroInscritos");
+
+  mostrarConfirmacaoGlobal(
+    "⚠️ Atenção! Você está criando a lista de inscritos do evento. Você poderá atualizá-la posteriormente. Deseja continuar?",
+    () => {
+
+      if (mensagemEl) {
+        mensagemEl.textContent = "";
+      }
+
+      mostrarSpinner();
+
+      const eventoId = document.getElementById("eventoSelectInscritos").value;
+
+      if (!eventoId) {
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          "⚠️ Por favor, selecione um evento antes de registrar."
+        );
+
+        return;
+      }
+
+      apiJSONP(
+        "registrarTodosInscritosNoEvento",
+        { eventoId },
+        () => {
 
           esconderSpinner();
 
@@ -4445,324 +6741,351 @@ function pegarContatosDoUsuarioSb(nome) {
             "✅ Lista de inscritos registrada com sucesso. Consulte a nova aba criada na planilha."
           );
 
-          delete window[cb];
-        };
+        },
+        (err) => {
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=registrarTodosInscritosNoEvento" +
-          "&eventoId=" + encodeURIComponent(eventoId) +
-          "&callback=" + cb;
+          esconderSpinner();
 
-        document.body.appendChild(script);
+          mostrarAlertaGlobal(
+            "❌ Erro ao registrar inscritos: " + (err?.mensagem || err.message)
+          );
 
-      }
-    );
-  }
+        }
+      );
 
-  document.addEventListener("DOMContentLoaded", function() {
+    }
+  );
 
-    carregarEventosInscritos();
+}
+//*********************************************************** */
+// Configurar listeners após o DOM carregar
+document.addEventListener("DOMContentLoaded", function() {
 
-    document
-      .getElementById("eventoSelectInscritos")
-      .addEventListener("change", eventoMudouInscritos);
+  carregarEventosInscritos();
 
-    carregarEventosDesignados();
+  document
+    .getElementById("eventoSelectInscritos")
+    .addEventListener("change", eventoMudouInscritos);
 
-    const selEv = document.getElementById("eventoSelectDesignados");
-    selEv.addEventListener("change", eventoMudouDesignados);
+  carregarEventosDesignados();
 
-    const btn = document.getElementById("btnMostrarDesignados");
+  const selEv = document.getElementById("eventoSelectDesignados");
+  selEv.addEventListener("change", eventoMudouDesignados);
 
-    btn.addEventListener("click", function() {
+  const btn = document.getElementById("btnMostrarDesignados");
+  btn.addEventListener("click", function() {
+    const eventoId = selEv.value;
+    const turno = document.getElementById("turnoSelectDesignados").value;
 
-      const eventoId = selEv.value;
-      const turno = document.getElementById("turnoSelectDesignados").value;
+    window.eventoIdAtual = eventoId;
+    window.turnoSelecionadoAtual = turno;
 
-      window.eventoIdAtual = eventoId;
-      window.turnoSelecionadoAtual = turno;
+    const container = document.getElementById("resultadoDesignadosContainerEv");
+    container.innerHTML = "";
 
-      const container = document.getElementById("resultadoDesignadosContainerEv");
-      container.innerHTML = "";
+    if (!eventoId || !turno) {
+      mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
+      return;
+    }
 
-      if (!eventoId || !turno) {
-        mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
-        return;
-      }
+    mostrarSpinner();
+    container.innerHTML = "<p>Carregando designados...</p>";
 
-      mostrarSpinner();
-      container.innerHTML = "<p>Carregando designados...</p>";
-
-      const cb = "cb_designados_" + Date.now();
-
-      window[cb] = function(designados) {
+    apiJSONP(
+      "listarDesignadosDoEvento",
+      { eventoId, turno },
+      function(designados) {
 
         esconderSpinner();
 
-        if (!designados || designados.length === 0) {
+        if (!designados || (Array.isArray(designados) && designados.length === 0)) {
           container.innerHTML = "<p>❌ Nenhum designado encontrado para esse turno.</p>";
-          delete window[cb];
-          return;
-        }
+        } else if (typeof designados === "string") {
+          container.innerHTML = `<p style="color: gray;">${designados}</p>`;
+        } else {
 
-        let html = "<table class='tabela-listagem'>";
+          let html = "<table class='tabela-listagem'>";
 
-        html += `
-          <thead>
-            <tr>
-              <th style="width: 20%;">Mostruário</th>
-              <th style="width: 40%;">Nome</th>
-              <th style="width: 15%;">Sexo</th>
-              <th style="width: 20%;">Telefone</th>
-              <th style="display:none; width: 5%;">Email</th>
-            </tr>
-          </thead>
-          <tbody>
-        `;
+          html += `
+            <thead>
+              <tr>
+                <th style="width: 20%;">Mostruário</th>
+                <th style="width: 40%;">Nome</th>
+                <th style="width: 15%;">Sexo</th>
+                <th style="width: 20%;">Telefone</th>
+                <th style="display:none; width: 5%;">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+          `;
 
-        designados.forEach(function(d) {
+          designados.forEach(function(d, idx) {
 
-          const telefoneLimpo = String(d.telefone || "").replace(/\D/g, "");
-          const nome = d.nome || "participante";
+            var telefoneLimpo = String(d.telefone || "").replace(/\D/g, "");
+            var nome = d.nome || "participante";
 
-          const evento = selEv.options[selEv.selectedIndex].text;
+            var selEv = document.getElementById("eventoSelectDesignados");
+            var evento = selEv.options[selEv.selectedIndex].text;
 
-          const selectTurno = document.getElementById("turnoSelectDesignados");
-          const turnoTxt = selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
+            var selectTurno = document.getElementById("turnoSelectDesignados");
+            var turnoTxt = selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
 
-          const mensagem =
-            "*Evento do TPE - Confirmação de Participação*\n\n" +
-            "👤 Olá,\n" + nome + "\n\n" +
-            "✍️ Você foi designado para o evento *" + evento + "*, para o dia *" + turnoTxt + "*.\n\n" +
-            "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
-            "*Equipe de Eventos do TPE SBC*";
+            var mensagem =
+              "*Evento do TPE - Confirmação de Participação*\n\n" +
+              "👤 Olá,\n" + nome + "\n\n" +
+              "✍️ Você foi designado para o evento *" + evento + "*, para o dia *" + turnoTxt + "*.\n\n" +
+              "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
+              "*Equipe de Eventos do TPE SBC*";
 
-          const linkWhatsapp = telefoneLimpo
-            ? "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem)
-            : "";
+            var linkWhatsapp = telefoneLimpo
+              ? "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem)
+              : "";
 
-          html += "<tr>" +
-            "<td class='carrinho-editavel' style='color:blue; cursor:pointer;' data-carrinho='" + (d.carrinho || "") + "'>" + (d.carrinho || "Carrinho do Evento") + "</td>" +
-            "<td class='nome-editavel' data-id='" + d.id + "'>" + (d.nome || "Participante") + "</td>" +
-            "<td>" + (d.sexo || "") + "</td>" +
-            "<td>" + (linkWhatsapp ? "<a href='" + linkWhatsapp + "' target='_blank' rel='noopener noreferrer'>" + (d.telefone || "") + "</a>" : "") + "</td>" +
-            "<td style='display:none;'>" + (d.email || "") + "</td>" +
-            "</tr>";
-        });
-
-        html += "</tbody></table>";
-        container.innerHTML = html;
-
-        document.querySelectorAll(".carrinho-editavel").forEach(td => {
-          td.addEventListener("click", () => transformarCarrinhoEmSelect(td));
-        });
-
-        document.getElementById("areaBotoes").style.display = "block";
-
-        document.getElementById("btnEnviarTodos").addEventListener("click", () => {
-          enviarEmailParaTodos(container);
-        });
-
-        document.getElementById("btnEnviarDaAba").addEventListener("click", () => {
-          enviarEmailParaTodosDaAba();
-        });
-
-        document.querySelectorAll(".nome-editavel").forEach(td => {
-          td.addEventListener("click", () => {
-            mostrarSpinner();
-            transformarNomeEmSelect(td);
+            html += "<tr>" +
+              "<td class='carrinho-editavel' style='color:blue; cursor:pointer;' data-carrinho='" + (d.carrinho || "") + "'>" + (d.carrinho || "Carrinho do Evento") + "</td>" +
+              "<td class='nome-editavel' data-id='" + d.id + "'>" + (d.nome || "Participante") + "</td>" +
+              "<td>" + (d.sexo || "") + "</td>" +
+              "<td>" + (linkWhatsapp ? "<a href='" + linkWhatsapp + "' target='_blank' rel='noopener noreferrer'>" + (d.telefone || "") + "</a>" : "") + "</td>" +
+              "<td style='display:none;'>" + (d.email || "") + "</td>" +
+              "</tr>";
           });
-        });
 
-        delete window[cb];
-      };
+          html += "</tbody></table>";
+          container.innerHTML = html;
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=listarDesignadosDoEvento" +
-        "&eventoId=" + encodeURIComponent(eventoId) +
-        "&turno=" + encodeURIComponent(turno) +
-        "&callback=" + cb;
+          container.querySelectorAll(".carrinho-editavel").forEach(td => {
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+            td.addEventListener("click", () => transformarCarrinhoEmSelect(td));
+          });
 
-      document.body.appendChild(script);
-    });
+          document.getElementById("areaBotoes").style.display = "block";
 
-    const btnRegistrarInscritos =
-      document.getElementById("btnRegistrarInscritos");
+          document.getElementById("btnEnviarTodos").addEventListener("click", () => {
+            const container = document.getElementById("resultadoDesignadosContainerEv");
+            enviarEmailParaTodos(container);
+          });
 
-    btnRegistrarInscritos.replaceWith(btnRegistrarInscritos.cloneNode(true));
+          document.getElementById("btnEnviarDaAba").addEventListener("click", () => {
+            enviarEmailParaTodosDaAba();
+          });
 
-    document.getElementById("btnRegistrarInscritos")
-      .addEventListener("click", mostrarConfirmacaoRegistrarInscritos);
+          container.querySelectorAll(".nome-editavel").forEach(td => {
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+            td.addEventListener("click", () => {
+              mostrarSpinner();
+              transformarNomeEmSelect(td);
+            });
+          });
 
-    const btnRegistrarDesignados =
-      document.getElementById("btnRegistrarDesignados");
-
-    btnRegistrarDesignados.replaceWith(btnRegistrarDesignados.cloneNode(true));
-
-    document.getElementById("btnRegistrarDesignados")
-      .addEventListener("click", mostrarConfirmacaoRegistrar);
-
-    const btnMostrarInscritos =
-      document.getElementById("btnMostrarInscritos");
-
-    btnMostrarInscritos.addEventListener("click", function() {
-
-      const container =
-        document.getElementById("resultadoInscritosContainer");
-
-      container.innerHTML = "";
-
-      const eventoId =
-        document.getElementById("eventoSelectInscritos").value;
-
-      const valorSelecionado =
-        document.getElementById("turnoSelectInscritos").value;
-
-      if (!eventoId || !valorSelecionado) {
-        mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
-        return;
+        }
+      },
+      function(err) {
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ Erro: " + err.message);
       }
+    );
+  });
 
-      const partes = valorSelecionado.split("|");
-      const data = partes[0];
-      const turno = partes[1];
+  const btnRegistrarInscritos = document.getElementById("btnRegistrarInscritos");
+  btnRegistrarInscritos.replaceWith(btnRegistrarInscritos.cloneNode(true));
+  document.getElementById("btnRegistrarInscritos")
+    .addEventListener("click", mostrarConfirmacaoRegistrarInscritos);
 
-      mostrarSpinner();
+  const btnRegistrarDesignados = document.getElementById("btnRegistrarDesignados");
+  btnRegistrarDesignados.replaceWith(btnRegistrarDesignados.cloneNode(true));
+  document.getElementById("btnRegistrarDesignados")
+    .addEventListener("click", mostrarConfirmacaoRegistrar);
 
-      const cb = "cb_inscritos_" + Date.now();
+  const btnMostrarInscritos =
+    document.getElementById("btnMostrarInscritos");
 
-      window[cb] = function(res) {
+  btnMostrarInscritos.addEventListener("click", function() {
+
+    const container =
+      document.getElementById("resultadoInscritosContainer");
+
+    container.innerHTML = "";
+
+    const eventoId =
+      document.getElementById("eventoSelectInscritos").value;
+
+    const valorSelecionado =
+      document.getElementById("turnoSelectInscritos").value;
+
+    if (!eventoId || !valorSelecionado) {
+      mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
+      return;
+    }
+
+    const partes = valorSelecionado.split("|");
+
+    const data = partes[0];
+    const turno = partes[1];
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "listarInscritosPorTurno",
+      { eventoId, data, turno },
+      function(res) {
 
         esconderSpinner();
         mostrarInscritos(res);
         document.getElementById("areaBotoesInscritos").style.display = "block";
 
-        delete window[cb];
-      };
+      },
+      function(err) {
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=listarInscritosPorTurno" +
-        "&eventoId=" + encodeURIComponent(eventoId) +
-        "&data=" + encodeURIComponent(data) +
-        "&turno=" + encodeURIComponent(turno) +
-        "&callback=" + cb;
+        esconderSpinner();
 
-      document.body.appendChild(script);
-    });
+        console.error("Erro backend:", err);
+
+        mostrarAlertaGlobal("❌ Erro: " + err.message);
+
+      }
+    );
 
   });
 
-  function carregarEventosInscritos() {
+});
 
-    const cb = "cb_eventos_inscritos_" + Date.now();
 
-    window[cb] = function(eventos) {
+/***************************** */
+function carregarEventosInscritos() {
 
-      const sel = document.getElementById("eventoSelectInscritos");
+  apiJSONP(
+    "listarEventosAdm",
+    {},
+    function(eventos) {
 
-      sel.innerHTML = "<option value=''>- Selecione -</option>";
+      const sel =
+        document.getElementById("eventoSelectInscritos");
+
+      sel.innerHTML =
+        "<option value=''>- Selecione -</option>";
 
       eventos.forEach(evt => {
 
-        const opt = document.createElement("option");
+        const opt =
+          document.createElement("option");
+
         opt.value = evt.id;
 
-        const ano = evt.data ? evt.data.split("/")[2] : "";
+        const ano =
+          evt.data
+            ? evt.data.split("/")[2]
+            : "";
 
-        opt.textContent = `${evt.nome} - ${ano}`;
+        opt.textContent =
+          `${evt.nome} - ${ano}`;
 
         sel.appendChild(opt);
+
       });
 
-      document.getElementById("turnoSelectInscritos").disabled = true;
+      document.getElementById(
+        "turnoSelectInscritos"
+      ).disabled = true;
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      console.error("Erro:", err);
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&callback=" + cb;
+}
 
-    document.body.appendChild(script);
-  }
 
-  function eventoMudouInscritos() {
 
-    const eventoId =
-      document.getElementById("eventoSelectInscritos").value;
+function eventoMudouInscritos() {
 
-    const selTurno =
-      document.getElementById("turnoSelectInscritos");
+  const eventoId =
+    document.getElementById("eventoSelectInscritos").value;
 
-    selTurno.innerHTML = "<option value=''>- Selecione turno -</option>";
-    selTurno.disabled = true;
+  const selTurno =
+    document.getElementById("turnoSelectInscritos");
 
-    document.getElementById("grupoTurnoInscritos").style.display = "none";
-    mostrarSpinner();
+  selTurno.innerHTML =
+    "<option value=''>- Selecione turno -</option>";
 
-    if (!eventoId) return;
+  selTurno.disabled = true;
 
-    const cb = "cb_turnos_inscritos_" + Date.now();
+  document.getElementById(
+    "grupoTurnoInscritos"
+  ).style.display = "none";
 
-    window[cb] = function(turnos) {
+  mostrarSpinner();
+
+  if (!eventoId) return;
+
+  apiJSONP(
+    "listarTurnosDoEventoAdm",
+    { eventoId },
+    function(turnos) {
 
       esconderSpinner();
 
       turnos.forEach(t => {
 
-        const opt = document.createElement("option");
-        opt.value = `${t.data}|${t.label}`;
-        opt.textContent = `${t.data} - ${t.label}`;
+        const opt =
+          document.createElement("option");
+
+        opt.value =
+          `${t.data}|${t.label}`;
+
+        opt.textContent =
+          `${t.data} - ${t.label}`;
+
         selTurno.appendChild(opt);
 
       });
 
       selTurno.disabled = false;
-      document.getElementById("grupoTurnoInscritos").style.display = "flex";
 
-      delete window[cb];
-    };
+      document.getElementById(
+        "grupoTurnoInscritos"
+      ).style.display = "flex";
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarTurnosDoEvento" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
+      esconderSpinner();
 
-    document.body.appendChild(script);
-  }
+    },
+    function(err) {
+      esconderSpinner();
+      console.error("Erro:", err);
+    }
+  );
 
-  function mostrarInscritos(inscritos) {
+}
+
+function mostrarInscritos(inscritos) {
 
     esconderSpinner();
 
     const container =
-      document.getElementById("resultadoInscritosContainer");
+      document.getElementById(
+        "resultadoInscritosContainer"
+      );
 
     if (!inscritos || inscritos.length === 0) {
-      container.innerHTML = "<p>❌ Nenhum inscrito encontrado.</p>";
+
+      container.innerHTML =
+        "<p>❌ Nenhum inscrito encontrado.</p>";
+
       return;
     }
 
     let html = `<table class='tabela-listagem'>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Sexo</th>
-          <th>Telefone</th>
-          <th>Ação</th>
-        </tr>
-      </thead>
-      <tbody>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Sexo</th>
+            <th>Telefone</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
     `;
 
     inscritos.forEach(i => {
@@ -4773,184 +7096,209 @@ function pegarContatosDoUsuarioSb(nome) {
           <td>${i.sexo || ""}</td>
           <td>${i.telefone || ""}</td>
           <td>
-            <button onclick="confirmarExclusao('${i.participanteId}')">
+            <button
+              onclick="confirmarExclusao(
+                '${i.participanteId}'
+              )">
               Excluir
             </button>
           </td>
         </tr>
       `;
+
     });
 
-    html += `</tbody></table>`;
+    html += `
+        </tbody>
+      </table>
+    `;
+
     container.innerHTML = html;
   }
 
-  function confirmarExclusao(participanteId) {
+function confirmarExclusao(participanteId) {
 
-    const eventoId =
-      document.getElementById("eventoSelectInscritos").value;
+  const eventoId =
+    document.getElementById("eventoSelectInscritos").value;
 
-    const valorSelecionado =
-      document.getElementById("turnoSelectInscritos").value;
+  const valorSelecionado =
+    document.getElementById("turnoSelectInscritos").value;
 
-    if (!eventoId || !valorSelecionado) {
-      mostrarAlertaGlobal("⚠️ Evento ou turno não selecionado.");
-      return;
-    }
+  if (!eventoId || !valorSelecionado) {
+    mostrarAlertaGlobal("⚠️ Evento ou turno não selecionado.");
+    return;
+  }
 
-    const [data, turno] = valorSelecionado.split("|");
+  const [data, turno] =
+    valorSelecionado.split("|");
 
-    mostrarConfirmacaoGlobal(
-      "⚠️ Deseja realmente excluir esta inscrição?",
-      () => {
+  mostrarConfirmacaoGlobal(
+    "⚠️ Deseja realmente excluir esta inscrição?",
+    () => {
 
-        mostrarSpinner();
+      mostrarSpinner();
 
-        const cb = "cb_excluir_" + Date.now();
-
-        window[cb] = function() {
+      apiJSONP(
+        "excluirInscricaoAdm",
+        { eventoId, data, turno, participanteId },
+        function() {
 
           esconderSpinner();
+
           mostrarAlertaGlobal("✅ Inscrição excluída.");
-          document.getElementById("btnMostrarInscritos").click();
 
-          delete window[cb];
-        };
+          document
+            .getElementById("btnMostrarInscritos")
+            .click();
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=excluirInscricao" +
-          "&eventoId=" + encodeURIComponent(eventoId) +
-          "&data=" + encodeURIComponent(data) +
-          "&turno=" + encodeURIComponent(turno) +
-          "&participanteId=" + encodeURIComponent(participanteId) +
-          "&callback=" + cb;
+        },
+        function(err) {
 
-        document.body.appendChild(script);
+          esconderSpinner();
 
+          mostrarAlertaGlobal("❌ " + err.message);
+
+        }
+      );
+
+    }
+  );
+
+}
+
+function enviarEmailParaTodos(container) {
+  container.querySelector("#confirmEmailContainer")?.remove();
+
+  const linhas = container.querySelectorAll("table tbody tr");
+  if (!linhas || linhas.length === 0) {
+    mostrarAlertaGlobal("❌ Não há designados para enviar email.");
+    return;
+  }
+
+  const emails = [];
+  linhas.forEach(tr => {
+    const tdEmail = tr.children[4];
+    if (tdEmail) {
+      const email = tdEmail.textContent.trim();
+      if (email && validateEmail(email)) {
+        emails.push(email);
+      }
+    }
+  });
+
+  if (emails.length === 0) {
+    mostrarAlertaGlobal("❌ Nenhum email válido encontrado para enviar.");
+    return;
+  }
+
+  let confirmDiv = document.createElement("div");
+  confirmDiv.id = "confirmEmailContainer";
+  confirmDiv.classList.add("confirm-box");
+  container.appendChild(confirmDiv);
+
+  confirmDiv.innerHTML = `
+    <p>⚠️ Atenção! Enviando confirmação para os designados do turno selecionado. Envie a Escala para TODOS os designados pelo botão "Enviar Escalas". 📧 Deseja enviar email para o(s) <strong>${emails.length}</strong> designado(s) que tem email cadastrado?</p>
+    <div class="confirm-buttons">
+      <button id="confirmarEnvioEmailBtn" class="confirm">✅ Confirmar</button>
+      <button id="cancelarEnvioEmailBtn" class="cancel">❌ Cancelar</button>
+    </div>
+  `;
+
+  confirmDiv.querySelector("#confirmarEnvioEmailBtn").addEventListener("click", () => {
+    confirmDiv.innerHTML = "Enviando emails...";
+
+    const assunto = "Designação no TPE";
+
+    const selectEvento = document.getElementById("eventoSelectDesignados");
+    const eventoSelecionado = selectEvento.options[selectEvento.selectedIndex]?.textContent || "Evento";
+
+    const selectTurno = document.getElementById("turnoSelectDesignados");
+    const turnoSelecionado = selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
+
+    const mensagem =
+      `Olá querido(a) irmão(ã),\n\n` +
+      `Você se inscreveu para o evento abaxo e foi designado(a) para participar:\n\n` +
+      `${eventoSelecionado}\n` +
+      `Turno: ${turnoSelecionado}\n\n` +
+      `Voce será adicionado ao grupo de whatsapp do evento, onde receberá mais informações.\n` +
+      `Em caso de imprevistos ou outra necessidade, por favor, fique à vontade para falar com os administradores do grupo.\n\n` +
+      `Atenciosamente,\n` +
+      `Equipe TPE`;
+
+    apiJSONP(
+      "enviarEmailParaDesignadosEventoAdm",
+      { emails: JSON.stringify(emails), assunto, mensagem },
+      function() {
+        confirmDiv.innerHTML = `<div style="color: green;">✅ Emails enviados com sucesso!</div>`;
+      },
+      function(err) {
+        confirmDiv.innerHTML = `<div style="color: red;">❌ Erro ao enviar emails: ${err.message}</div>`;
       }
     );
+
+  });
+
+  confirmDiv.querySelector("#cancelarEnvioEmailBtn").addEventListener("click", () => {
+    confirmDiv.remove();
+  });
+}
+
+
+// Função simples para validar email
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function transformarNomeEmSelect(td) {
+  const eventoId = document.getElementById("eventoSelectDesignados").value;
+  const selectTurno = document.getElementById("turnoSelectDesignados");
+  const turnoCompleto = selectTurno.options[selectTurno.selectedIndex]?.textContent || "";
+
+  const nomeAtual = td.dataset.nome;
+  const idAtual = td.dataset.id || "";
+
+  if (!eventoId || !turnoCompleto) {
+    mostrarAlertaGlobal("❌ Evento ou turno não selecionado");
+    return;
   }
 
-  function enviarEmailParaTodos(container) {
+  if (td.cellIndex === 0) return;
+  if (td.querySelector("select")) return;
 
-    container.querySelector("#confirmEmailContainer")?.remove();
+  const tr = td.parentElement;
+  tr.classList.add("linha-em-edicao");
 
-    const linhas = container.querySelectorAll("table tbody tr");
+  const tds = tr.children;
 
-    if (!linhas || linhas.length === 0) {
-      mostrarAlertaGlobal("❌ Não há designados para enviar email.");
-      return;
-    }
-
-    const emails = [];
-
-    linhas.forEach(tr => {
-      const tdEmail = tr.children[4];
-      if (tdEmail) {
-        const email = tdEmail.textContent.trim();
-        if (email && validateEmail(email)) emails.push(email);
-      }
-    });
-
-    if (emails.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhum email válido encontrado para enviar.");
-      return;
-    }
-
-    let confirmDiv = document.createElement("div");
-    confirmDiv.id = "confirmEmailContainer";
-    confirmDiv.classList.add("confirm-box");
-    container.appendChild(confirmDiv);
-
-    confirmDiv.innerHTML = `
-      <p>⚠️ Atenção! Enviando confirmação...</p>
-      <div class="confirm-buttons">
-        <button id="confirmarEnvioEmailBtn">✅ Confirmar</button>
-        <button id="cancelarEnvioEmailBtn">❌ Cancelar</button>
-      </div>
-    `;
-
-    confirmDiv.querySelector("#confirmarEnvioEmailBtn").addEventListener("click", () => {
-
-      confirmDiv.innerHTML = "Enviando emails...";
-
-      const assunto = "Designação no TPE";
-
-      const selectEvento = document.getElementById("eventoSelectDesignados");
-      const eventoSelecionado = selectEvento.options[selectEvento.selectedIndex]?.textContent || "Evento";
-
-      const selectTurno = document.getElementById("turnoSelectDesignados");
-      const turnoSelecionado = selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
-
-      const mensagem =
-        `Olá querido(a) irmão(ã),\n\n` +
-        `Você foi designado(a) para:\n\n` +
-        `${eventoSelecionado}\nTurno: ${turnoSelecionado}\n\n` +
-        `Equipe TPE`;
-
-      const cb = "cb_email_designados_" + Date.now();
-
-      window[cb] = function() {
-        confirmDiv.innerHTML = `<div style="color: green;">✅ Emails enviados com sucesso!</div>`;
-        delete window[cb];
-      };
-
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=enviarEmailParaDesignadosEvento" +
-        "&assunto=" + encodeURIComponent(assunto) +
-        "&emails=" + encodeURIComponent(JSON.stringify(emails)) +
-        "&mensagem=" + encodeURIComponent(mensagem) +
-        "&callback=" + cb;
-
-      document.body.appendChild(script);
-    });
-
-    confirmDiv.querySelector("#cancelarEnvioEmailBtn").addEventListener("click", () => {
-      confirmDiv.remove();
-    });
-  }
-
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-
-  function transformarNomeEmSelect(td) {
-    const eventoId = document.getElementById("eventoSelectDesignados").value;
-    const selectTurno = document.getElementById("turnoSelectDesignados");
-    const turnoCompleto = selectTurno.options[selectTurno.selectedIndex]?.textContent || "";
-
-    const idAtual = td.dataset.id || "";
-
-    if (!eventoId || !turnoCompleto) {
-      mostrarAlertaGlobal("❌ Evento ou turno não selecionado");
-      return;
-    }
-
-    const tr = td.parentElement;
-    tr.classList.add("linha-em-edicao");
-
-    const cb = "cb_cadastro_reserva_" + Date.now();
-
-    window[cb] = function(nomesReserva) {
+  apiJSONP(
+    "listarCadastroReservaAdm",
+    { eventoId, turnoCompleto },
+    function(nomesReserva) {
 
       const candidatos = nomesReserva.candidatos;
 
       const selectNome = document.createElement("select");
+      selectNome.style.fontSize = "25px";
 
       const optVaga = document.createElement("option");
       optVaga.value = "VAGA";
       optVaga.textContent = "VAGA";
+      optVaga.dataset.sexo = "";
+      optVaga.dataset.telefone = "";
+      optVaga.dataset.email = "";
+      optVaga.dataset.nome = "VAGA";
+      if (nomeAtual === "VAGA") optVaga.selected = true;
       selectNome.appendChild(optVaga);
 
       candidatos.forEach(item => {
         const opt = document.createElement("option");
         opt.value = item.id;
         opt.textContent = item.nome;
+        opt.dataset.sexo = item.sexo || "";
+        opt.dataset.telefone = item.telefone || "";
+        opt.dataset.email = item.email || "";
+        opt.dataset.nome = item.nome || "";
         if (item.id === idAtual) opt.selected = true;
         selectNome.appendChild(opt);
       });
@@ -4960,120 +7308,245 @@ function pegarContatosDoUsuarioSb(nome) {
 
       esconderSpinner();
 
+      const valorOriginal = selectNome.value;
+
+      setTimeout(() => {
+        function cliqueFora(event) {
+          const clicouDentroDoTd = td.contains(event.target);
+          if (!clicouDentroDoTd) {
+            const novoValor = selectNome.value;
+            if (novoValor === valorOriginal) {
+              document.getElementById("btnMostrarDesignados").click();
+              document.removeEventListener("click", cliqueFora);
+              return;
+            }
+            tr.classList.remove("linha-em-edicao");
+            document.removeEventListener("click", cliqueFora);
+          }
+        }
+        document.addEventListener("click", cliqueFora);
+      }, 0);
+
       selectNome.addEventListener("change", () => {
-
         const novoId = selectNome.value;
-        const optSel = selectNome.options[selectNome.selectedIndex];
+        const optSelecionada = selectNome.options[selectNome.selectedIndex];
+        const novoNome = optSelecionada.dataset.nome;
+        const novoSexo = optSelecionada.dataset.sexo;
+        const novoTelefone = optSelecionada.dataset.telefone;
+        const novoEmail = optSelecionada.dataset.email;
 
-        td.textContent = optSel.textContent;
+        const tdCarrinho = tds[0];
+        const carrinhoSelecionado = tdCarrinho.textContent.trim();
+
+        td.innerHTML = novoNome;
         td.dataset.id = novoId;
+        td.dataset.nome = novoNome;
+        td.dataset.sexo = novoSexo;
 
-        const cbSave = "cb_save_" + Date.now();
+        td.style.color = "blue";
+        td.style.cursor = "pointer";
+        td.addEventListener("click", () => {
+          mostrarSpinner();
+          transformarNomeEmSelect(td);
+        });
 
-        window[cbSave] = function() {
-          esconderSpinner();
-          delete window[cbSave];
-        };
+        tds[2].textContent = novoSexo;
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=salvarAlteracaoDesignado" +
-          "&eventoId=" + encodeURIComponent(eventoId) +
-          "&turnoCompleto=" + encodeURIComponent(turnoCompleto) +
-          "&idAtual=" + encodeURIComponent(idAtual) +
-          "&novoId=" + encodeURIComponent(novoId) +
-          "&callback=" + cbSave;
+        const selectEvento = document.getElementById("eventoSelectDesignados");
+        const eventoSelecionado = selectEvento.options[selectEvento.selectedIndex]?.textContent || "Evento";
 
-        document.body.appendChild(script);
+        const partesTurno = turnoCompleto.split(" - ");
+        const dataTurno = partesTurno[0]?.trim() || "";
+        const turnoPadronizado = partesTurno[1]?.trim() || "";
+
+        const tdTelefone = tds[3];
+        const telefoneLimpo = (novoTelefone || "").replace(/\D/g, "");
+
+        const mensagemWhatsapp =
+          "*Evento do TPE - Confirmação de Participação*\n\n" +
+          "👤 Olá,\n" + novoNome + "\n\n" +
+          "✍️ Você foi designado para o evento *" + eventoSelecionado + "*, no turno *" + turnoPadronizado + "*.\n" +
+          "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
+          "*Equipe de Eventos do TPE SBC*";
+
+        tdTelefone.innerHTML = telefoneLimpo
+          ? `<a href="https://wa.me/55${telefoneLimpo}?text=${encodeURIComponent(mensagemWhatsapp)}" target="_blank" rel="noopener noreferrer">${novoTelefone}</a>`
+          : "";
+
+        tds[4].textContent = novoEmail;
+
+        mostrarSpinner();
+
+        apiJSONP(
+          "salvarAlteracaoDesignadoAdm",
+          {
+            eventoId,
+            turnoCompleto,
+            idAtual,
+            novoId,
+            carrinhoSelecionado
+          },
+          function() {
+            esconderSpinner();
+            console.log("Alteração salva automaticamente.");
+          },
+          function(err) {
+            esconderSpinner();
+            mostrarAlertaGlobal("❌ Erro ao salvar alteração: " + err.message);
+          }
+        );
+
       });
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar cadastro reserva: " + err.message);
+    }
+  );
+}
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarCadastroReserva" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&turnoCompleto=" + encodeURIComponent(turnoCompleto) +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
+function transformarCarrinhoEmSelect(td) {
+  let carrinhoAtual = td.dataset.carrinho;
+  if (!carrinhoAtual) {
+    const texto = td.textContent.trim();
+    carrinhoAtual = texto === "Carrinho do Evento" ? "" : texto;
   }
 
-  function transformarCarrinhoEmSelect(td) {
+  const tr = td.parentElement;
 
-    let carrinhoAtual = td.dataset.carrinho || "";
+  tr.classList.add("linha-em-edicao");
 
-    const tr = td.parentElement;
+  const tds = tr.children;
 
-    if (td.querySelector("select")) return;
+  if (td.querySelector("select")) return;
 
-    const select = document.createElement("select");
+  const select = document.createElement("select");
+  select.style.fontSize = "25px";
 
-    for (let i = 1; i <= 10; i++) {
-      const opt = document.createElement("option");
-      opt.value = `Carrinho ${i}`;
-      opt.textContent = `Carrinho ${i}`;
-      if (opt.value === carrinhoAtual) opt.selected = true;
-      select.appendChild(opt);
+  const optInicial = document.createElement("option");
+  optInicial.value = "";
+  optInicial.textContent = "Selecione";
+  optInicial.disabled = true;
+  optInicial.selected = true;
+  select.appendChild(optInicial);
+
+  for (let i = 1; i <= 10; i++) {
+    const opt = document.createElement("option");
+    opt.value = `Carrinho ${i}`;
+    opt.textContent = `Carrinho ${i}`;
+    if (opt.value === carrinhoAtual) opt.selected = true;
+    select.appendChild(opt);
+  }
+
+  td.innerHTML = "";
+  td.appendChild(select);
+  select.focus();
+
+  esconderSpinner();
+
+  const valorOriginal = carrinhoAtual;
+
+  setTimeout(() => {
+    function cliqueFora(event) {
+      const clicouDentro = td.contains(event.target);
+
+      if (!clicouDentro) {
+        const novoValor = select.value;
+
+        if (novoValor === valorOriginal || novoValor === "") {
+          td.textContent = valorOriginal || "Carrinho do Evento";
+          td.dataset.carrinho = valorOriginal;
+          td.style.color = "blue";
+          td.style.cursor = "pointer";
+          td.addEventListener("click", () => transformarCarrinhoEmSelect(td));
+        }
+
+        tr.classList.remove("linha-em-edicao");
+        document.removeEventListener("click", cliqueFora);
+      }
     }
 
-    td.innerHTML = "";
-    td.appendChild(select);
+    document.addEventListener("click", cliqueFora);
+  }, 0);
 
-    select.addEventListener("change", () => {
+  select.addEventListener("change", () => {
+    const novoCarrinho = select.value;
 
-      const novo = select.value;
-      td.textContent = novo;
-      td.dataset.carrinho = novo;
+    td.textContent = novoCarrinho;
+    td.dataset.carrinho = novoCarrinho;
+    td.style.color = "blue";
+    td.style.cursor = "pointer";
 
-      const eventoId = document.getElementById("eventoSelectDesignados").value;
+    tr.classList.remove("linha-em-edicao");
 
-      const selectTurno = document.getElementById("turnoSelectDesignados");
-      const turnoCompleto = selectTurno.options[selectTurno.selectedIndex]?.textContent || "";
+    td.addEventListener("click", () => transformarCarrinhoEmSelect(td));
 
-      const cb = "cb_save_carrinho_" + Date.now();
+    const eventoId =
+      document.getElementById("eventoSelectDesignados").value;
 
-      window[cb] = function() {
+    const selectTurno =
+      document.getElementById("turnoSelectDesignados");
+
+    const turnoCompleto =
+      selectTurno.options[selectTurno.selectedIndex]?.textContent || "";
+
+    const id =
+      tds[1]?.dataset.id || tds[1]?.textContent.trim() || "";
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "salvarAlteracaoDesignadoAdm",
+      {
+        eventoId,
+        turnoCompleto,
+        idAtual: id,
+        novoId: id,
+        carrinhoSelecionado: novoCarrinho
+      },
+      function() {
         esconderSpinner();
-        delete window[cb];
-      };
+      },
+      function(err) {
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ Erro ao salvar carrinho: " + err.message);
+      }
+    );
+  });
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=salvarAlteracaoDesignado" +
-        "&eventoId=" + encodeURIComponent(eventoId) +
-        "&turnoCompleto=" + encodeURIComponent(turnoCompleto) +
-        "&novoCarrinho=" + encodeURIComponent(novo) +
-        "&callback=" + cb;
+  select.addEventListener("blur", () => {
+    td.textContent = carrinhoAtual || "Carrinho do Evento";
+    td.dataset.carrinho = carrinhoAtual;
+    td.style.color = "blue";
+    td.style.cursor = "pointer";
+  });
+}
 
-      document.body.appendChild(script);
-    });
+function enviarEmailParaTodosDaAba() {
+  const container = document.getElementById("resultadoDesignadosContainerEv");
+  container.querySelector("#confirmEmailContainer")?.remove();
+
+  const selectEvento = document.getElementById("eventoSelectDesignados");
+  const eventoId = selectEvento.value;
+
+  if (!eventoId) {
+    mostrarAlertaGlobal("⚠️ Atenção! Selecione um evento.");
+    return;
   }
 
-  function enviarEmailParaTodosDaAba() {
+  container.innerHTML = "";
 
-    const container = document.getElementById("resultadoDesignadosContainerEv");
-    container.querySelector("#confirmEmailContainer")?.remove();
+  apiJSONP(
+    "listarEmailsDesignados",
+    { eventoId },
+    function(emails) {
 
-    const selectEvento = document.getElementById("eventoSelectDesignados");
-    const eventoId = selectEvento.value;
-
-    if (!eventoId) {
-      mostrarAlertaGlobal("⚠️ Atenção! Selecione um evento.");
-      return;
-    }
-
-    const cb = "cb_lista_emails_" + Date.now();
-
-    window[cb] = function(emails) {
+      container.innerHTML = "";
 
       if (!emails || emails.length === 0) {
+        container.innerHTML = "<p style='color:red;'>Nenhum email válido encontrado para enviar.</p>";
         mostrarAlertaGlobal("❌ Nenhum email válido encontrado para enviar.");
-        delete window[cb];
         return;
       }
 
@@ -5083,56 +7556,65 @@ function pegarContatosDoUsuarioSb(nome) {
       container.appendChild(confirmDiv);
 
       confirmDiv.innerHTML = `
-        <p>📧 Enviar escala geral para ${emails.length} pessoas?</p>
-        <button id="ok">Confirmar</button>
-        <button id="no">Cancelar</button>
+        <p>📧 Atenção! Você já finalizou <strong>TODAS</strong> as designações? Só envie a Escala, depois de finalizar <strong>TODAS</strong> as designações e clicar no botão <strong>"Registrar Designações"</strong>. Deseja enviar a Escala Geral por email para os <strong>${emails.length}</strong> designado(s) que tem email cadastrado?</p>
+        <div class="confirm-buttons">
+          <button id="confirmarEnvioEmailBtn" class="confirm">✅ Confirmar</button>
+          <button id="cancelarEnvioEmailBtn" class="cancel">❌ Cancelar</button>
+        </div>
       `;
 
-      confirmDiv.querySelector("#ok").addEventListener("click", () => {
+      confirmDiv.querySelector("#confirmarEnvioEmailBtn").addEventListener("click", () => {
+        confirmDiv.innerHTML = "Enviando emails...";
 
-        const assunto = "Designação Evento";
+        const eventoSelecionado =
+          selectEvento.options[selectEvento.selectedIndex]?.textContent || "Evento";
 
-        const cbSend = "cb_send_" + Date.now();
+        const assunto = "Designação Evento do TPE";
 
-        window[cbSend] = function() {
-          mostrarAlertaGlobal("✅ Emails enviados com sucesso!");
-          delete window[cbSend];
-        };
+        const mensagem =
+          `Olá querido(a) irmão(ã),\n\n` +
+          `Você se inscreveu e foi selecionado(a) para participar do TPE no evento abaxo:\n\n` +
+          `${eventoSelecionado}\n\n` +
+          `Para mais informações sobre o dia e turno de sua participação,\n` +
+          `aguarde o contato do pessoal da equipe organizadora.\n\n` +
+          `Você será incluído(a) no grupo de WhatsApp do evento,\n` +
+          `onde receberá mais informações sobre seu ponto e companheiro(a).\n\n` +
+          `Caso tenha qualquer dúvida ou imprevisto, por favor,\n` +
+          `fique à vontade para contatar os administradores do grupo\n` +
+          `de mensagens.\n\n` +
+          `Atenciosamente,\n` +
+          `Equipe TPE`;
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=enviarEmailParaDesignadosEvento" +
-          "&emails=" + encodeURIComponent(JSON.stringify(emails)) +
-          "&assunto=" + encodeURIComponent(assunto) +
-          "&callback=" + cbSend;
-
-        document.body.appendChild(script);
+        apiJSONP(
+          "enviarEmailParaDesignadosEvento",
+          { emails: JSON.stringify(emails), assunto, mensagem },
+          function() {
+            mostrarAlertaGlobal("✅ Emails enviados com sucesso!");
+          },
+          function(err) {
+            mostrarAlertaGlobal(`❌ Erro ao enviar emails: ${err.message}`);
+          }
+        );
       });
 
-      confirmDiv.querySelector("#no").addEventListener("click", () => {
+      confirmDiv.querySelector("#cancelarEnvioEmailBtn").addEventListener("click", () => {
         confirmDiv.remove();
       });
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      container.innerHTML = "<p style='color:red;'>Erro: " + err.message + "</p>";
+      mostrarAlertaGlobal("❌ Erro: " + err.message);
+    }
+  );
+}
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEmailsDesignados" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
-  }
-
-
-  function carregarEventosNoSelectUsuario() {
-
-    const cb = "cb_eventos_usuario_" + Date.now();
-
-    window[cb] = function(eventos) {
+/******************* */
+function carregarEventosNoSelectUsuario() {
+  apiJSONP(
+    "listarEventos",
+    {},
+    function(eventos) {
 
       const select = document.getElementById("eventoSelectUsuario");
 
@@ -5148,55 +7630,56 @@ function pegarContatosDoUsuarioSb(nome) {
       eventos.forEach(ev => {
 
         const opt = document.createElement("option");
+
         opt.value = ev.id;
 
-        const ano = ev.data ? ev.data.split("/")[2] : "";
+        const ano = ev.data
+          ? ev.data.split("/")[2]
+          : "";
+
         opt.textContent = `${ev.nome} - ${ano}`;
 
         select.appendChild(opt);
+
       });
 
-      delete window[cb];
-    };
-
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
-  }
+    },
+    function(err) {
+      console.error("Erro:", err);
+    }
+  );
+}
 
   window.addEventListener("load", () => {
     carregarEventosNoSelectUsuario();
   });
 
-  document
-    .getElementById("eventoSelectUsuario")
-    .addEventListener("change", function () {
+document
+  .getElementById("eventoSelectUsuario")
+  .addEventListener("change", function () {
 
-      const eventoId = this.value;
+    const eventoId = this.value;
 
-      const turnoSelect =
-        document.getElementById("turnoSelectUsuario");
+    const turnoSelect =
+      document.getElementById("turnoSelectUsuario");
 
-      const apenasMost =
-        document.getElementById("apenasMostUsuario");
+    const apenasMost =
+      document.getElementById("apenasMostUsuario");
 
-      turnoSelect.innerHTML =
-        '<option value="">Selecione um turno</option>';
+    turnoSelect.innerHTML =
+      '<option value="">Selecione um turno</option>';
 
-      if (!eventoId) {
-        turnoSelect.disabled = true;
-        return;
-      }
+    if (!eventoId) {
+      turnoSelect.disabled = true;
+      return;
+    }
 
-      mostrarSpinner();
+    mostrarSpinner();
 
-      const cb = "cb_turnos_usuario_" + Date.now();
-
-      window[cb] = function(turnos) {
+    apiJSONP(
+      "listarTurnosDoEventoUser",
+      { eventoId },
+      function(turnos) {
 
         esconderSpinner();
 
@@ -5205,7 +7688,6 @@ function pegarContatosDoUsuarioSb(nome) {
 
         if (!turnos || turnos.length === 0) {
           turnoSelect.disabled = true;
-          delete window[cb];
           return;
         }
 
@@ -5213,70 +7695,77 @@ function pegarContatosDoUsuarioSb(nome) {
 
           const opt = document.createElement("option");
 
-          opt.value = `${t.data} - ${t.label}`;
-          opt.textContent = `${t.data} - ${t.label}`;
+          opt.value =
+            `${t.data} - ${t.label}`;
+
+          opt.textContent =
+            `${t.data} - ${t.label}`;
 
           turnoSelect.appendChild(opt);
 
         });
 
         apenasMost.style.display = "block";
+
         turnoSelect.disabled = false;
 
-        delete window[cb];
-      };
+      },
+      function(err) {
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=listarTurnosDoEvento" +
-        "&eventoId=" + encodeURIComponent(eventoId) +
-        "&callback=" + cb;
+        esconderSpinner();
 
-      document.body.appendChild(script);
+        turnoSelect.disabled = true;
 
-    });
+        mostrarAlertaGlobal(
+          "❌ Erro ao buscar turnos: " +
+          err.message
+        );
 
-  function inscreverMinhaParticipacao() {
+      }
+    );
 
-    const eventoSelect = document.getElementById("eventoSelectUsuario");
-    const turnoSelect = document.getElementById("turnoSelectUsuario");
+  });
 
-    const eventoIdSelecionado = eventoSelect.value;
-    const turnoSelecionado = turnoSelect.value;
-    const idUsuario = idUsuarioLogado;
+function inscreverMinhaParticipacao() {
 
-    [eventoSelect, turnoSelect].forEach(el => {
-      if (el) el.classList.remove("erro-campo");
-    });
+  const eventoSelect = document.getElementById("eventoSelectUsuario");
+  const turnoSelect = document.getElementById("turnoSelectUsuario");
 
-    if (!idUsuario) {
-      mostrarAlertaGlobal("❌ Usuário não identificado.");
-      return;
-    }
+  const eventoIdSelecionado = eventoSelect.value;
+  const turnoSelecionado = turnoSelect.value;
+  const idUsuario = idUsuarioLogado;
 
-    if (!eventoIdSelecionado || eventoIdSelecionado === "Selecione um evento") {
-      mostrarAlertaGlobal("⚠️ Selecione o evento");
-      eventoSelect.classList.add("erro-campo");
-      return;
-    }
+  [eventoSelect, turnoSelect].forEach(el => {
+    if (el) el.classList.remove("erro-campo");
+  });
 
-    if (!turnoSelecionado) {
-      mostrarAlertaGlobal("⚠️ Selecione o turno.");
-      turnoSelect.classList.add("erro-campo");
-      return;
-    }
+  if (!idUsuario) {
+    mostrarAlertaGlobal("❌ Usuário não identificado.");
+    return;
+  }
 
-    const nomeEvento = eventoIdSelecionado
-      .replace(/^Evento\s*-\s*/, "")
-      .replace(/\s*-\s*\d{2}\/\d{2}\/\d{4}$/, "");
+  if (!eventoIdSelecionado || eventoIdSelecionado === "Selecione um evento") {
+    mostrarAlertaGlobal("⚠️ Selecione o evento");
+    eventoSelect.classList.add("erro-campo");
+    return;
+  }
 
-    const partesTurno = turnoSelecionado.split(" - ");
-    const dataTurno = partesTurno[0] || "";
-    const descricaoTurno = partesTurno[1] || "";
+  if (!turnoSelecionado) {
+    mostrarAlertaGlobal("⚠️ Selecione o turno.");
+    turnoSelect.classList.add("erro-campo");
+    return;
+  }
 
-    mostrarConfirmacaoGlobal(
-      `⚠️ Confira os dados antes de prosseguir:
+  const nomeEvento = eventoIdSelecionado
+    .replace(/^Evento\s*-\s*/, "")
+    .replace(/\s*-\s*\d{2}\/\d{2}\/\d{4}$/, "");
+
+  const partesTurno = turnoSelecionado.split(" - ");
+  const dataTurno = partesTurno[0] || "";
+  const descricaoTurno = partesTurno[1] || "";
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Confira os dados antes de prosseguir:
 
 🎊 Evento ${nomeEvento}
 
@@ -5285,13 +7774,19 @@ function pegarContatosDoUsuarioSb(nome) {
 🕒 ${descricaoTurno}
 
 Tem certeza de que deseja realizar esta inscrição?`,
-      () => {
+    () => {
 
-        mostrarSpinner();
+      mostrarSpinner();
 
-        const cb = "cb_inscricao_usuario_" + Date.now();
-
-        window[cb] = function(res) {
+      apiJSONP(
+        "inscreverParticipanteUser",
+        {
+          eventoIdSelecionado,
+          turnoSelecionado,
+          campoExtra: "",
+          idUsuario
+        },
+        function(res) {
 
           esconderSpinner();
 
@@ -5307,30 +7802,30 @@ Tem certeza de que deseja realizar esta inscrição?`,
             mostrarAlertaGlobal(resultado);
           }
 
-          delete window[cb];
-        };
+        },
+        function(err) {
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=inscreverParticipante" +
-          "&eventoId=" + encodeURIComponent(eventoIdSelecionado) +
-          "&turno=" + encodeURIComponent(turnoSelecionado) +
-          "&extra=" +
-          "&idUsuario=" + encodeURIComponent(idUsuario) +
-          "&callback=" + cb;
+          esconderSpinner();
 
-        document.body.appendChild(script);
+          document.getElementById("resultadoMinhaInscricao").innerHTML =
+            "Erro: " + err.message;
 
-      }
-    );
-  }
+          mostrarAlertaGlobal(
+            "❌ " + (err.message || "Erro ao realizar inscrição.")
+          );
 
- function carregarEventosNoSelect() {
+        }
+      );
 
-    const cb = "cb_eventos_admin_" + Date.now();
+    }
+  );
+}
 
-    window[cb] = function(eventos) {
+function carregarEventosNoSelect() {
+  apiJSONP(
+    "listarEventos",
+    {},
+    function(eventos) {
 
       const select = document.getElementById("eventoSelect");
       select.innerHTML = "";
@@ -5342,7 +7837,6 @@ Tem certeza de que deseja realizar esta inscrição?`,
       select.appendChild(placeholder);
 
       eventos.forEach(ev => {
-
         const opt = document.createElement("option");
         opt.value = ev.id;
 
@@ -5352,41 +7846,36 @@ Tem certeza de que deseja realizar esta inscrição?`,
         select.appendChild(opt);
       });
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      console.error("Erro:", err);
+    }
+  );
+}
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&callback=" + cb;
+window.addEventListener("load", () => {
+  carregarEventosNoSelect();
+});
 
-    document.body.appendChild(script);
+document.getElementById("eventoSelect").addEventListener("change", function() {
+
+  const eventoId = this.value;
+  const turnoSelect = document.getElementById("turnoSelect");
+  const apenasMost = document.getElementById("apenasMost");
+
+  turnoSelect.innerHTML = '<option value="">Selecione um turno</option>';
+
+  if (!eventoId) {
+    turnoSelect.disabled = true;
+    return;
   }
 
-  window.addEventListener("load", () => {
-    carregarEventosNoSelect();
-  });
+  mostrarSpinner();
 
-  document.getElementById("eventoSelect").addEventListener("change", function() {
-
-    const eventoId = this.value;
-
-    const turnoSelect = document.getElementById("turnoSelect");
-    const apenasMost = document.getElementById("apenasMost");
-
-    turnoSelect.innerHTML = '<option value="">Selecione um turno</option>';
-
-    if (!eventoId) {
-      turnoSelect.disabled = true;
-      return;
-    }
-
-    mostrarSpinner();
-
-    const cb = "cb_turnos_admin_" + Date.now();
-
-    window[cb] = function(turnos) {
+  apiJSONP(
+    "listarTurnosDoEventoUser",
+    { eventoId },
+    function(turnos) {
 
       esconderSpinner();
 
@@ -5394,7 +7883,6 @@ Tem certeza de que deseja realizar esta inscrição?`,
 
       if (!turnos || turnos.length === 0) {
         turnoSelect.disabled = true;
-        delete window[cb];
         return;
       }
 
@@ -5406,78 +7894,82 @@ Tem certeza de que deseja realizar esta inscrição?`,
         opt.textContent = `${t.data} - ${t.label}`;
 
         turnoSelect.appendChild(opt);
-
       });
 
       apenasMost.style.display = "block";
       turnoSelect.disabled = false;
 
-      delete window[cb];
-    };
+    },
+    function(err) {
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarTurnosDoEvento" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
+      esconderSpinner();
+      turnoSelect.disabled = true;
+      mostrarAlertaGlobal("❌ Erro ao buscar turnos: " + err.message);
 
-    document.body.appendChild(script);
+    }
+  );
 
+});
+
+let participanteSelecionadoEv = {
+  nome: "",
+  id: ""
+};
+
+function inscreverParticipanteAdmin() {
+
+  const eventoSelect = document.getElementById("eventoSelect");
+  const turnoSelect = document.getElementById("turnoSelect");
+
+  const eventoIdSelecionado = eventoSelect.value;
+  const turnoSelecionado = turnoSelect.value;
+
+  if (!participanteSelecionadoInscreverOutro) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
+    return;
+  }
+
+  const nomeUsuario =
+    participanteSelecionadoInscreverOutro.nome;
+
+  const idUsuario =
+    participanteSelecionadoInscreverOutro.id;
+
+  if (!idUsuario) {
+    mostrarAlertaGlobal("❌ ID do participante não encontrado.");
+    return;
+  }
+
+  [eventoSelect, turnoSelect].forEach(el => {
+    if (el) el.classList.remove("erro-campo");
   });
 
-  let participanteSelecionadoEv = {
-    nome: "",
-    id: ""
-  };
+  if (!eventoIdSelecionado || eventoIdSelecionado === "Selecione um evento") {
+    mostrarAlertaGlobal("⚠️ Selecione o evento");
+    eventoSelect.classList.add("erro-campo");
+    return;
+  }
 
-  function inscreverParticipanteAdmin() {
+  if (!turnoSelecionado) {
+    mostrarAlertaGlobal("⚠️ Selecione o turno.");
+    turnoSelect.classList.add("erro-campo");
+    return;
+  }
 
-    const eventoSelect = document.getElementById("eventoSelect");
-    const turnoSelect = document.getElementById("turnoSelect");
+  const nomeEvento = eventoIdSelecionado
+    .replace(/^Evento\s*-\s*/, "")
+    .replace(/\s*-\s*\d{2}\/\d{2}\/\d{4}$/, "");
 
-    const eventoIdSelecionado = eventoSelect.value;
-    const turnoSelecionado = turnoSelect.value;
+  const partesTurno = turnoSelecionado.split(" - ");
+  const dataTurno = partesTurno[0] || "";
+  const descricaoTurno = partesTurno[1] || "";
 
-    if (!participanteSelecionadoInscreverOutro) {
-      mostrarAlertaGlobal("⚠️ Selecione um participante.");
-      return;
-    }
-
-    const nomeUsuario = participanteSelecionadoInscreverOutro.nome;
-    const idUsuario = participanteSelecionadoInscreverOutro.id;
-
-    if (!idUsuario) {
-      mostrarAlertaGlobal("❌ ID do participante não encontrado.");
-      return;
-    }
-
-    [eventoSelect, turnoSelect].forEach(el => {
-      if (el) el.classList.remove("erro-campo");
-    });
-
-    if (!eventoIdSelecionado || eventoIdSelecionado === "Selecione um evento") {
-      mostrarAlertaGlobal("⚠️ Selecione o evento");
-      eventoSelect.classList.add("erro-campo");
-      return;
-    }
-
-    if (!turnoSelecionado) {
-      mostrarAlertaGlobal("⚠️ Selecione o turno.");
-      turnoSelect.classList.add("erro-campo");
-      return;
-    }
-
-    const nomeEvento = eventoIdSelecionado
-      .replace(/^Evento\s*-\s*/, "")
-      .replace(/\s*-\s*\d{2}\/\d{2}\/\d{4}$/, "");
-
-    const partesTurno = turnoSelecionado.split(" - ");
-    const dataTurno = partesTurno[0] || "";
-    const descricaoTurno = partesTurno[1] || "";
-
-    mostrarConfirmacaoGlobal(
-      `⚠️ Confira os dados antes de prosseguir:
+  mostrarConfirmacaoGlobal(
+    `⚠️ Confira os dados antes de prosseguir:
 
 🎊 Evento ${nomeEvento}
 👤 ${nomeUsuario}
@@ -5486,13 +7978,19 @@ Tem certeza de que deseja realizar esta inscrição?`,
 🕒 ${descricaoTurno}
 
 Confirmar inscrição?`,
-      () => {
+    () => {
 
-        mostrarSpinner();
+      mostrarSpinner();
 
-        const cb = "cb_inscricao_admin_" + Date.now();
-
-        window[cb] = function(res) {
+      apiJSONP(
+        "inscreverParticipanteAdm",
+        {
+          eventoIdSelecionado,
+          turnoSelecionado,
+          nomeUsuario,
+          idUsuario
+        },
+        function(res) {
 
           esconderSpinner();
 
@@ -5508,132 +8006,132 @@ Confirmar inscrição?`,
             mostrarAlertaGlobal(resultado);
           }
 
-          delete window[cb];
-        };
+        },
+        function(err) {
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=inscreverParticipante" +
-          "&eventoId=" + encodeURIComponent(eventoIdSelecionado) +
-          "&turno=" + encodeURIComponent(turnoSelecionado) +
-          "&nome=" + encodeURIComponent(nomeUsuario) +
-          "&idUsuario=" + encodeURIComponent(idUsuario) +
-          "&callback=" + cb;
+          esconderSpinner();
 
-        document.body.appendChild(script);
+          document.getElementById("resultadoInscricao").innerHTML =
+            "Erro: " + err.message;
 
-      }
-    );
-  }
-  
-  function carregarAbasEv() {
+          mostrarAlertaGlobal("❌ " + err.message);
 
-    const cb = "cb_abas_ev_" + Date.now();
+        }
+      );
 
-    window[cb] = function(nomes) {
+    }
+  );
+}
 
-      const select = document.getElementById('abaEv');
+
+function carregarAbasEv() {
+
+  apiJSONP(
+    "listarAbasEv",
+    {},
+    function(nomes) {
+
+      const select = document.getElementById("abaEv");
       select.innerHTML = "";
 
-      const optionDefault = document.createElement('option');
+      const optionDefault = document.createElement("option");
       optionDefault.value = "";
       optionDefault.text = "- Selecione -";
       select.appendChild(optionDefault);
 
       nomes.forEach(nome => {
-        const option = document.createElement('option');
+        const option = document.createElement("option");
         option.value = nome;
         option.text = nome;
         select.appendChild(option);
       });
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      console.error("Erro:", err);
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarAbasEv" +
-      "&callback=" + cb;
+}
 
-    document.body.appendChild(script);
-  }
+function exportarEscalaEv() {
 
-  function exportarEscalaEv() {
+  const abaSelecionada = document.getElementById("abaEv").value;
+  const mensagem = document.getElementById("mensagemEv");
 
-    const abaSelecionada = document.getElementById('abaEv').value;
-    const mensagem = document.getElementById('mensagemEv');
+  mensagem.innerHTML = "Gerando link de download...";
+  mostrarSpinner();
 
-    mensagem.innerHTML = "Gerando link de download...";
-    mostrarSpinner();
-
-    const cb = "cb_exportar_ev_" + Date.now();
-
-    window[cb] = function(linkHTML) {
+  apiJSONP(
+    "exportarAbaSelecionadaAdm",
+    { abaSelecionada },
+    function(linkHTML) {
 
       mensagem.innerHTML = linkHTML;
       esconderSpinner();
 
-      delete window[cb];
-    };
+    },
+    function(erro) {
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=exportarAbaSelecionada" +
-      "&aba=" + encodeURIComponent(abaSelecionada) +
-      "&callback=" + cb;
+      mensagem.innerText = "❌ Erro: " + erro.message;
+      esconderSpinner();
 
-    document.body.appendChild(script);
-  }
+    }
+  );
 
- function carregarEventosConversor() {
+}
 
-    const cb = "cb_eventos_conversor_" + Date.now();
+function carregarEventosConversor() {
 
-    window[cb] = function(eventos) {
+  apiJSONP(
+    "listarEventosConversor",
+    {},
+    function(eventos) {
 
       const sel = document.getElementById("eventoSelectConversor");
+
       sel.innerHTML = "<option value=''>- Selecione -</option>";
 
       eventos.forEach(evt => {
+
         const opt = document.createElement("option");
+
         opt.value = evt.id;
 
         const ano = evt.data ? evt.data.split("/")[2] : "";
+
         opt.textContent = `${evt.nome} - ${ano}`;
 
         sel.appendChild(opt);
+
       });
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      console.error("Erro:", err);
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=listarEventos" +
-      "&callback=" + cb;
+}
 
-    document.body.appendChild(script);
+function converterTeste() {
+
+  const eventoId = document.getElementById("eventoSelectConversor").value;
+  const status = document.getElementById("status");
+
+  if (!eventoId) {
+    status.textContent = "❗ Selecione um evento primeiro.";
+    return;
   }
 
-  function converter() {
+  status.textContent = "⏳ Convertendo... aguarde...";
 
-    const eventoId = document.getElementById("eventoSelectConversor").value;
-    const status = document.getElementById("status");
-
-    if (!eventoId) {
-      status.textContent = "❗ Selecione um evento primeiro.";
-      return;
-    }
-
-    status.textContent = "⏳ Convertendo... aguarde...";
-
-    const cb = "cb_converter_" + Date.now();
-
-    window[cb] = function(resultado) {
+  apiJSONP(
+    "converterDesignadosDosEventosParaIDsTeste",
+    {
+      eventoIds: JSON.stringify([eventoId])
+    },
+    function(resultado) {
 
       status.innerHTML = `<p>${resultado.mensagem}</p>`;
 
@@ -5643,8 +8141,7 @@ Confirmar inscrição?`,
 
         resultado.naoEncontrados.forEach(item => {
           const li = document.createElement("li");
-          li.textContent =
-            `Linha ${item.linha} | Turno: ${item.turno} | Valor: ${item.id}`;
+          li.textContent = `Linha ${item.linha} | Turno: ${item.turno} | Valor: ${item.id}`;
           lista.appendChild(li);
         });
 
@@ -5655,26 +8152,24 @@ Confirmar inscrição?`,
         status.appendChild(lista);
       }
 
-      delete window[cb];
-    };
+    },
+    function(err) {
+      status.textContent = "Erro: " + err.message;
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=converterDesignadosDosEventosParaIDs" +
-      "&eventoId=" + encodeURIComponent(eventoId) +
-      "&callback=" + cb;
-
-    document.body.appendChild(script);
-  }
+}
 
   carregarEventosConversor();
 
+
+  /**************** */
   function carregarAbasEv() {
 
-    const callbackName = "cb_" + Date.now();
-
-    window[callbackName] = function(nomes) {
+  apiJSONP(
+    "listarAbasEv",
+    {},
+    function(nomes) {
 
       const select = document.getElementById('abaEv');
       select.innerHTML = "";
@@ -5684,165 +8179,158 @@ Confirmar inscrição?`,
       optionDefault.text = "- Selecione -";
       select.appendChild(optionDefault);
 
-      nomes.forEach(nome => {
+      (nomes || []).forEach(nome => {
         const option = document.createElement('option');
         option.value = nome;
         option.text = nome;
         select.appendChild(option);
       });
 
-      delete window[callbackName];
-    };
+    },
+    err => {
+      mostrarAlertaGlobal("❌ Erro ao carregar abas EV: " + err.message);
+    }
+  );
 
-    const script = document.createElement("script");
-    script.src =
-      "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-      "?action=listarAbasEv" +
-      "&callback=" + callbackName;
+}
 
-    document.body.appendChild(script);
-  }
+function exportarEscalaEv() {
 
+  const abaSelecionada = document.getElementById('abaEv').value;
+  const mensagem = document.getElementById('mensagemEv');
 
-  function exportarEscalaEv() {
+  mensagem.innerHTML = "Gerando link de download...";
+  mostrarSpinner();
 
-    const abaSelecionada = document.getElementById('abaEv').value;
-    const mensagem = document.getElementById('mensagemEv');
-
-    mensagem.innerHTML = "Gerando link de download...";
-    mostrarSpinner();
-
-    const callbackName = "cb_" + Date.now();
-
-    window[callbackName] = function(linkHTML) {
+  apiJSONP(
+    "exportarAbaSelecionada",
+    { aba: abaSelecionada },
+    function(linkHTML) {
 
       mensagem.innerHTML = linkHTML;
       esconderSpinner();
 
-      delete window[callbackName];
-    };
+    },
+    err => {
 
-    const script = document.createElement("script");
-    script.src =
-      "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-      "?action=exportarAbaSelecionada" +
-      "&aba=" + encodeURIComponent(abaSelecionada) +
-      "&callback=" + callbackName;
+      mensagem.innerText = "❌ Erro: " + err.message;
+      esconderSpinner();
 
-    document.body.appendChild(script);
+    }
+  );
+
+}
+
+function buscarDesignacoesPorPonto() {
+
+  const ponto = document.getElementById("pontobepp").value;
+  const msg = document.getElementById("msgDesignacoesPorPontopppp");
+  const container = document.getElementById("resultadoDesignacoesPorPontopppp");
+
+  container.innerHTML = "";
+  msg.textContent = "";
+  document.getElementById("btnExportarPdfDesignacoes").style.display = "none";
+
+  if (!ponto) {
+    mostrarAlertaGlobal("❌ Por favor, selecione um ponto.");
+    return;
   }
-  
-  function buscarDesignacoesPorPonto() {
 
-    const ponto = document.getElementById("pontobepp").value;
-    const msg = document.getElementById("msgDesignacoesPorPontopppp");
-    const container = document.getElementById("resultadoDesignacoesPorPontopppp");
+  mostrarSpinner();
 
-    container.innerHTML = "";
-    msg.textContent = "";
-    document.getElementById("btnExportarPdfDesignacoes").style.display = "none";
+  const callbackName = "cb_" + Date.now();
 
-    if (!ponto) {
-      mostrarAlertaGlobal("❌ Por favor, selecione um ponto.");
+  window[callbackName] = function(res) {
+
+    esconderSpinner();
+
+    if (!res || res.length === 0) {
+      mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
+      delete window[callbackName];
       return;
     }
 
-    mostrarSpinner();
+    msg.textContent = `✅ ${res.length} designações encontradas.`;
 
-    const callbackName = "cb_" + Date.now();
+    const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
 
-    window[callbackName] = function(res) {
+    let html = `<h5 style="text-align:center; margin-bottom: 20px;">Escalas do Ponto ${numeroDoPonto}</h5>`;
 
-      esconderSpinner();
+    html += `<table class="tabela-listagem">
+      <thead>
+        <tr>
+          <th style="width: 35%;">Nome</th>
+          <th style="width: 15%;">Turno</th>
+          <th style="width: 15%;">Dia</th>
+          <th style="width: 15%;">Freq.</th>
+          <th style="width: 20%;">Most.</th>
+        </tr>
+      </thead><tbody>`;
 
-      if (!res || res.length === 0) {
-        mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
-        delete window[callbackName];
-        return;
-      }
+    res.forEach(r => {
+      html += `
+        <tr>
+          <td>${formatarNomeComNegrito(r.nome)}</td>
+          <td>${r.turno}</td>
+          <td>${r.dia}</td>
+          <td>${r.frequencia}</td>
+          <td>${r.equipamento}</td>
+        </tr>`;
+    });
 
-      msg.textContent = `✅ ${res.length} designações encontradas.`;
+    html += "</tbody></table>";
 
-      const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
+    container.innerHTML = html;
+    document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
 
-      let html = `<h5 style="text-align:center; margin-bottom: 20px;">Escalas do Ponto ${numeroDoPonto}</h5>`;
+    delete window[callbackName];
+  };
 
-      html += `<table class="tabela-listagem">
-        <thead>
-          <tr>
-            <th style="width: 35%;">Nome</th>
-            <th style="width: 15%;">Turno</th>
-            <th style="width: 15%;">Dia</th>
-            <th style="width: 15%;">Freq.</th>
-            <th style="width: 20%;">Most.</th>
-          </tr>
-        </thead><tbody>`;
+  const script = document.createElement("script");
+  script.src =
+    "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
+    "?action=listarDesignacoesDoPonto" +
+    "&ponto=" + encodeURIComponent(ponto) +
+    "&callback=" + callbackName;
 
-      res.forEach(r => {
-        html += `
-          <tr>
-            <td>${formatarNomeComNegrito(r.nome)}</td>
-            <td>${r.turno}</td>
-            <td>${r.dia}</td>
-            <td>${r.frequencia}</td>
-            <td>${r.equipamento}</td>
-          </tr>`;
-      });
+  document.body.appendChild(script);
+}
 
-      html += "</tbody></table>";
+function baixarDesignacoesPorPonto() {
 
-      container.innerHTML = html;
-      document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
+  const ponto = document.getElementById("pontobepp").value;
+  const msg = document.getElementById("msgBaixarPDFPonto");
 
-      delete window[callbackName];
-    };
+  msg.textContent = "";
 
-    const script = document.createElement("script");
-    script.src =
-      "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-      "?action=listarDesignacoesDoPonto" +
-      "&ponto=" + encodeURIComponent(ponto) +
-      "&callback=" + callbackName;
-
-    document.body.appendChild(script);
+  if (!ponto) {
+    mostrarAlertaGlobal("❌ Selecione um ponto.");
+    return;
   }
 
+  mostrarSpinner();
 
-  function baixarDesignacoesPorPonto() {
+  const callbackName = "cb_" + Date.now();
 
-    const ponto = document.getElementById("pontobepp").value;
-    const msg = document.getElementById("msgBaixarPDFPonto");
+  window[callbackName] = function(link) {
 
-    msg.textContent = "";
+    esconderSpinner();
 
-    if (!ponto) {
-      mostrarAlertaGlobal("❌ Selecione um ponto.");
-      return;
-    }
+    msg.innerHTML =
+      `✅ PDF pronto: <a href="${link}" target="_blank">Clique para baixar</a>`;
 
-    mostrarSpinner();
+    delete window[callbackName];
+  };
 
-    const callbackName = "cb_" + Date.now();
+  const script = document.createElement("script");
+  script.src =
+    "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
+    "?action=gerarPdfDesignacoesDoPonto" +
+    "&ponto=" + encodeURIComponent(ponto) +
+    "&callback=" + callbackName;
 
-    window[callbackName] = function(link) {
-
-      esconderSpinner();
-
-      msg.innerHTML =
-        `✅ PDF pronto: <a href="${link}" target="_blank">Clique para baixar</a>`;
-
-      delete window[callbackName];
-    };
-
-    const script = document.createElement("script");
-    script.src =
-      "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-      "?action=gerarPdfDesignacoesDoPonto" +
-      "&ponto=" + encodeURIComponent(ponto) +
-      "&callback=" + callbackName;
-
-    document.body.appendChild(script);
-  }
+  document.body.appendChild(script);
+}
   
  function callJSONP(action, params, onSuccess, onFailure) {
   const cbName = "cb_" + Math.random().toString(36).substr(2);
@@ -6216,8 +8704,6 @@ function buscarTreinando() {
   document.body.appendChild(script);
 }
 
-/* ====== eventos (mantidos, sem alterar lógica) ====== */
-
 document.addEventListener('click', function(event) {
   if (event.target && event.target.classList.contains('clicavel-nome-treinando')) {
 
@@ -6326,8 +8812,6 @@ document.addEventListener('click', function (event) {
     }
   }
 });
-
-/* ===== funções restantes (mantidas iguais, sem refatorar) ===== */
 
 function buscarTreinadoresParaTreinando(treinandoSelecionado, treinadores) {
 
@@ -6606,9 +9090,6 @@ function buscarTreinamentosEmAndamento() {
   document.body.appendChild(script);
 }
 
-
-/* ================= EVENTOS ================= */
-
 document.getElementById('acaoConcluir').addEventListener('click', function() {
 
   const modal = document.getElementById('modalAcoesTreinamento');
@@ -6639,7 +9120,6 @@ document.getElementById('acaoConcluir').addEventListener('click', function() {
 
   document.body.appendChild(script);
 });
-
 
 document.getElementById('acaoDesistencia').addEventListener('click', async function() {
 
@@ -6685,7 +9165,6 @@ document.getElementById('acaoDesistencia').addEventListener('click', async funct
   document.body.appendChild(script);
 });
 
-
 document.getElementById('acaoAlterarTreinador').addEventListener('click', function() {
 
   const modalAcoes = document.getElementById('modalAcoesTreinamento');
@@ -6701,7 +9180,6 @@ document.getElementById('acaoAlterarTreinador').addEventListener('click', functi
   modalTreinador.classList.remove('oculto');
 });
 
-
 document.getElementById('acaoLembrete').addEventListener('click', function() {
 
   const modal = document.getElementById('modalAcoesTreinamento');
@@ -6715,7 +9193,6 @@ document.getElementById('acaoLembrete').addEventListener('click', function() {
     modal.dataset.telefone
   );
 });
-
 
 document.addEventListener('click', function(e) {
 
@@ -6732,9 +9209,6 @@ document.addEventListener('click', function(e) {
     modal.classList.remove('oculto');
   }
 });
-
-
-/* ================= MODAIS ================= */
 
 function fecharModalAcoesTreinamento() {
   document.getElementById('modalAcoesTreinamento').classList.add('oculto');
@@ -6759,9 +9233,6 @@ function fecharModalComunicacao() {
 
   buscarTreinamentosEmAndamento();
 }
-
-
-/* ================= FLUXOS ================= */
 
 function confirmarAlteracaoTreinador() {
 
@@ -6819,7 +9290,6 @@ function confirmarAlteracaoTreinador() {
   document.body.appendChild(script);
 }
 
-
 function comunicarNovoTreinador() {
 
   mostrarSpinner();
@@ -6866,13 +9336,11 @@ function comunicarNovoTreinador() {
   document.body.appendChild(script);
 }
 
-
 function comunicarLembreteTreinador(
   idTreinador,
   nomeTreinando,
   congregacao,
-  telefone
-) {
+  telefone) {
 
   mostrarSpinner();
 
@@ -6909,84 +9377,6 @@ function comunicarLembreteTreinador(
   document.body.appendChild(script);
 }
 
-function consultarMeuTreinamento() {
-
-  mostrarSpinner();
-
-  const callback = "cb_" + Date.now();
-
-  window[callback] = function(res) {
-
-    esconderSpinner();
-
-    const container = document.getElementById('resultadoMeuTreinamento');
-
-    container.innerHTML = '';
-
-    if (!res.sucesso) {
-      mostrarAlertaGlobal(res.mensagem);
-      delete window[callback];
-      return;
-    }
-
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
-
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
-
-    ['Nome', 'Cong.', 'Contato', 'Ação'].forEach(texto => {
-
-      const th = document.createElement('th');
-      th.textContent = texto;
-      trHead.appendChild(th);
-    });
-
-    const tbody = tabela.createTBody();
-
-    const tr = tbody.insertRow();
-
-    tr.insertCell().textContent = res.nome;
-    tr.insertCell().textContent = res.congregacao;
-    tr.insertCell().textContent = res.telefone;
-
-    const tdAcao = tr.insertCell();
-
-    const btnAcoes = document.createElement('button');
-    btnAcoes.textContent = '✅Concluir';
-    btnAcoes.classList.add('concluir-meu-treinamento');
-    btnAcoes.style.cursor = 'pointer';
-
-    btnAcoes.dataset.idTreinando = res.idTreinando;
-    btnAcoes.dataset.idTreinador = idUsuarioLogado;
-    btnAcoes.dataset.nomeTreinando = res.nome;
-
-    tdAcao.appendChild(btnAcoes);
-
-    container.appendChild(tabela);
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal(err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=consultarMeuTreinamento" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-
-/* ================= CLICK CONCLUIR ================= */
-
 document.addEventListener('click', function(e) {
 
   if (e.target.classList.contains('concluir-meu-treinamento')) {
@@ -7001,7 +9391,6 @@ document.addEventListener('click', function(e) {
   }
 
 });
-
 
 document.getElementById('acaoConcluirTreinador').addEventListener('click', async function () {
 
@@ -7060,7 +9449,6 @@ document.getElementById('acaoConcluirTreinador').addEventListener('click', async
   document.body.appendChild(script);
 });
 
-
 document.getElementById('acaoDesistenciaTreinador').addEventListener('click', async function () {
 
   const modal = document.getElementById('modalAcoesTreinador');
@@ -7118,7 +9506,6 @@ document.getElementById('acaoDesistenciaTreinador').addEventListener('click', as
   document.body.appendChild(script);
 });
 
-
 function confirmarDecisao(mensagem, textoSim, textoNao) {
   return new Promise((resolve) => {
 
@@ -7146,224 +9533,6 @@ function confirmarDecisao(mensagem, textoSim, textoNao) {
   });
 }
 
-
-/* ================= ADMIN ================= */
-
-function comunicarAdministrador() {
-
-  const modal = document.getElementById('modalComunicarAdministrador');
-
-  const tipo = modal.dataset.tipo;
-  const nomeTreinador = modal.dataset.nomeTreinador;
-  const nomeTreinando = modal.dataset.nomeTreinando;
-  const dataHora = modal.dataset.dataHora;
-
-  let mensagemAdmin = '';
-
-  if (tipo === 'CONCLUSAO') {
-
-    mensagemAdmin =
-      "*TREINAMENTO CONCLUÍDO*\n\n" +
-      `👨‍🏫 Treinador: ${nomeTreinador}\n` +
-      `👤 Candidato: ${nomeTreinando}\n\n` +
-      `📅 Data e hora: ${dataHora}\n\n` +
-      "O treinamento foi concluído e encerrado no sistema.";
-
-  } else {
-
-    mensagemAdmin =
-      "*TREINAMENTO CANCELADO (DESISTÊNCIA)*\n\n" +
-      `👨‍🏫 Treinador: ${nomeTreinador}\n` +
-      `👤 Candidato: ${nomeTreinando}\n\n` +
-      `📅 Data e hora: ${dataHora}\n\n` +
-      "O candidato desistiu do treinamento.";
-  }
-
-  const callback = "cb_admin_" + Date.now();
-
-  window[callback] = function(url) {
-    window.open(url, '_blank');
-    fecharModalAdministrador();
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=gerarLinkWhatsAppAdministrador" +
-    "&mensagem=" + encodeURIComponent(mensagemAdmin) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-
-/* ================= VERIFICAÇÃO ================= */
-
-function verificarTreinamentoPendente() {
-
-  const callback = "cb_pend_" + Date.now();
-
-  window[callback] = function(res) {
-
-    if (!res.possuiTreinamento) {
-      delete window[callback];
-      return;
-    }
-
-    mostrarAlertaGlobal(
-      '🎓 Você possui um treinamento pendente com o candidato:\n\n' +
-      res.nome +
-      '\n\nAcesse "Meus Treinamentos" para concluir o processo após realizar o treinamento.'
-    );
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=verificarTreinamentoPendente" +
-    "&id=" + encodeURIComponent(idUsuarioLogado) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-
-/* ================= FECHAMENTO ================= */
-
-function fecharModalAcoesTreinador() {
-  document.getElementById('modalAcoesTreinador').classList.add('oculto');
-}
-
-let irregularesEncontrados = [];
-
-function buscarIrregulares() {
-
-  const resultadoDiv = document.getElementById('resultadoIrregulares');
-  const msg = document.getElementById('msgIrregulares') || { textContent: () => {} };
-
-  resultadoDiv.innerHTML = '';
-
-  mostrarSpinner();
-
-  const callback = "cb_" + Date.now();
-
-  window[callback] = function(lista) {
-
-    esconderSpinner();
-
-    irregularesEncontrados = lista;
-
-    if (!lista || lista.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhum participante irregular encontrado.");
-      delete window[callback];
-      return;
-    }
-
-    if (msg) msg.textContent = `✅ ${lista.length} irregular(es) encontrado(s).`;
-
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
-
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
-
-    ['Nome', 'Congregação', 'Telefone', 'Sexo'].forEach(txt => {
-      const th = document.createElement('th');
-      th.textContent = txt;
-      trHead.appendChild(th);
-    });
-
-    const tbody = tabela.createTBody();
-
-    lista.forEach(item => {
-
-      const tr = tbody.insertRow();
-
-      const tdNome = tr.insertCell();
-      tdNome.textContent = item.nome;
-
-      tdNome.dataset.nome = item.nome || '';
-      tdNome.dataset.congregacao = item.congregacao || '';
-      tdNome.dataset.telefone = item.telefone || '';
-      tdNome.dataset.sexo = item.sexo || '';
-      tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
-        ? JSON.stringify(item.diasTurnos)
-        : JSON.stringify((item.diasTurnos || '').split(',').map(s => s.trim()).filter(Boolean));
-
-      tr.insertCell().textContent = item.congregacao || '';
-
-      const tdTelefone = tr.insertCell();
-
-      const telefoneOriginal = String(item.telefone || '');
-      const telefoneLimpo = telefoneOriginal.replace(/\D/g, '');
-
-      if (telefoneLimpo) {
-
-        const nome = item.nome || 'Participante';
-
-        const mensagem =
-          "*TPE SBC - Informativo*\n\n" +
-          "👤 Olá, " + nome + "\n\n" +
-          "📋 Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
-          "📲 Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
-          "👥 Em caso de email ou senha incorreta, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n" +
-          "*Seus irmãos*,\n" +
-          "*Equipe do TPE SBC*";
-
-        const linkWhatsApp =
-          "https://wa.me/55" +
-          telefoneLimpo +
-          "?text=" +
-          encodeURIComponent(mensagem);
-
-        const a = document.createElement('a');
-        a.href = linkWhatsApp;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = telefoneOriginal;
-        a.style.color = 'blue';
-        a.classList.add('enviar-whatsapp-irregulares');
-
-        tdTelefone.appendChild(a);
-
-      } else {
-        tdTelefone.textContent = telefoneOriginal;
-      }
-
-      tr.insertCell().textContent = item.sexo || '';
-    });
-
-    resultadoDiv.appendChild(tabela);
-
-    document.getElementById('dadosUsuarioContainerIr').style.display = 'inline-block';
-    document.getElementById('enviarEmailIrregularesBtn').style.display = "inline-block";
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal("❌ Erro na busca: " + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=buscarIrregulares" +
-    "&callback=" +
-    callback;
-
-  document.body.appendChild(script);
-}
-
-
-/* ================= WHATSAPP CLICK ================= */
-
 document.addEventListener('click', function (event) {
 
   if (event.target && event.target.classList.contains('enviar-whatsapp-irregulares')) {
@@ -7389,9 +9558,6 @@ document.addEventListener('click', function (event) {
     }
   }
 });
-
-
-/* ================= EMAIL ================= */
 
 document.getElementById('enviarEmailIrregularesBtn').addEventListener('click', function () {
 
@@ -7452,9 +9618,6 @@ document.getElementById('enviarEmailIrregularesBtn').addEventListener('click', f
   );
 });
 
-
-/* ================= CONTATOS ================= */
-
 document.getElementById('nomeInputUsuarioIr').addEventListener('input', function () {
 
   setTimeout(() => {
@@ -7470,7 +9633,6 @@ document.getElementById('nomeInputUsuarioIr').addEventListener('input', function
   }, 300);
 
 });
-
 
 function pegarContatosDoUsuarioIr(nome) {
 
@@ -7540,29 +9702,28 @@ function salvarVaga() {
 
   mostrarSpinner();
 
-  vagaContexto = { ponto, dia, frequencia };
+  apiJSONP(
+    "obterColunaPontoDia",
+    {
+      ponto,
+      dia
+    },
+    function(res) {
 
-  const callback = "cb_vaga_" + Date.now();
+      mostrarModalSubstituicao(res);
 
-  window[callback] = function(dados) {
+    },
+    function(err) {
 
-    esconderSpinner();
-    mostrarModalSubstituicao(dados);
+      esconderSpinner();
+      mostrarAlertaGlobal("Erro ao carregar dados do ponto");
 
-    delete window[callback];
-  };
+    }
+  );
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=obterColunaPontoDia" +
-    "&ponto=" + encodeURIComponent(ponto) +
-    "&dia=" + encodeURIComponent(dia) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  // guarda contexto global
+  window.vagaContexto = { ponto, dia, frequencia };
 }
-
 
 function mostrarModalSubstituicao(dados) {
 
@@ -7571,15 +9732,23 @@ function mostrarModalSubstituicao(dados) {
   const container = document.getElementById("listaSubstituicao");
   container.innerHTML = "";
 
-  dados.forEach((item) => {
+  dados.forEach((item, index) => {
 
-    if (!item || item.tipo === "vazio" || (!item.nome && !item.valor)) return;
+    if (
+      !item ||
+      item.tipo === "vazio" ||
+      (!item.nome && !item.valor)
+    ) return;
 
     if (item.tipo === "vaga") {
 
       const btn = document.createElement("button");
+
       btn.textContent = "🪑 " + item.valor;
-      btn.classList.add("botao-participante-modal", "botao-vaga-modal");
+      btn.classList.add(
+        "botao-participante-modal",
+        "botao-vaga-modal"
+      );
 
       btn.onclick = () => {
         mostrarAlertaGlobal("⚠️ Vagas devem ser excluídas diretamente na lista de vagas.");
@@ -7605,7 +9774,7 @@ function mostrarModalSubstituicao(dados) {
       const id = e.currentTarget.dataset.valor;
       const nome = e.currentTarget.dataset.nome;
 
-      const { ponto, dia, frequencia } = vagaContexto;
+      const { ponto, dia, frequencia } = window.vagaContexto;
 
       if (!id) {
         mostrarAlertaGlobal("❌ ID do participante não encontrado.");
@@ -7620,32 +9789,36 @@ function mostrarModalSubstituicao(dados) {
 
         mostrarSpinner();
 
-        const callback = "cb_subst_" + Date.now();
+        apiJSONP(
+          "transformarParticipanteEmVaga",
+          {
+            ponto,
+            dia,
+            frequencia,
+            id
+          },
+          function() {
 
-        window[callback] = function() {
+            esconderSpinner();
 
-          esconderSpinner();
-          mostrarAlertaGlobal("✅ Vaga criada com sucesso");
+            mostrarAlertaGlobal("✅ Vaga criada com sucesso");
 
-          document.getElementById("modalSubstituicao").style.display = "none";
+            setTimeout(() => {
+              document.getElementById("modalSubstituicao").style.display = "none";
+            }, 50);
 
-          carregarTodasVagasAbertas();
-          google.script.run.atualizarVagasEmAberto();
+            carregarTodasVagasAbertas();
 
-          delete window[callback];
-        };
+            apiJSONP("atualizarVagasEmAberto", {}, function(){});
 
-        const script = document.createElement("script");
-        script.src =
-          API_URL +
-          "?acao=transformarParticipanteEmVaga" +
-          "&ponto=" + encodeURIComponent(ponto) +
-          "&dia=" + encodeURIComponent(dia) +
-          "&frequencia=" + encodeURIComponent(frequencia) +
-          "&id=" + encodeURIComponent(id) +
-          "&callback=" + callback;
+          },
+          function(err) {
 
-        document.body.appendChild(script);
+            esconderSpinner();
+            mostrarAlertaGlobal("❌ " + err.message);
+
+          }
+        );
 
       });
     };
@@ -7656,10 +9829,9 @@ function mostrarModalSubstituicao(dados) {
   document.getElementById("modalSubstituicao").style.display = "block";
 }
 
-
 function confirmarNenhum() {
 
-  const { ponto, dia, frequencia } = vagaContexto;
+  const { ponto, dia, frequencia } = window.vagaContexto;
 
   const mensagem =
     `⚠️ Tem certeza que quer criar uma vaga "<b>${frequencia}</b>"<br>` +
@@ -7667,45 +9839,44 @@ function confirmarNenhum() {
 
   mostrarConfirmacaoGlobal(mensagem, () => {
 
-    fecharModal();
+    fecharModal(); // só fecha depois da confirmação
 
     mostrarSpinner();
 
-    const callback = "cb_vaganovo_" + Date.now();
+    apiJSONP(
+      "cadastrarVaga",
+      {
+        ponto,
+        dia,
+        frequencia
+      },
+      function() {
 
-    window[callback] = function() {
+        esconderSpinner();
 
-      esconderSpinner();
-      mostrarAlertaGlobal("✅ Vaga criada com sucesso");
+        mostrarAlertaGlobal("✅ Vaga criada com sucesso");
 
-      carregarTodasVagasAbertas();
-      google.script.run.atualizarVagasEmAberto();
+        carregarTodasVagasAbertas();
 
-      delete window[callback];
-    };
+        apiJSONP("atualizarVagasEmAberto", {}, function(){});
 
-    const script = document.createElement("script");
-    script.src =
-      API_URL +
-      "?acao=cadastrarVaga" +
-      "&ponto=" + encodeURIComponent(ponto) +
-      "&dia=" + encodeURIComponent(dia) +
-      "&frequencia=" + encodeURIComponent(frequencia) +
-      "&callback=" + callback;
+      },
+      function(err) {
 
-    document.body.appendChild(script);
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ " + err.message);
+
+      }
+    );
+
   });
 }
-
 
 function fecharModal() {
   document.getElementById("modalSubstituicao").style.display = "none";
 }
 
-
-/* ================= LISTA ================= */
-
-function atualizarParticipantesParaCadastrarVaga() {
+async function atualizarParticipantesParaCadastrarVaga() {
 
   const ponto = document.getElementById("pontoVaga").value;
   const dia = document.getElementById("diaVaga").value;
@@ -7715,82 +9886,90 @@ function atualizarParticipantesParaCadastrarVaga() {
     return;
   }
 
-  mostrarSpinner();
+  apiJSONP(
+    "buscarParticipantesParaSubstituir",
+    {
+      ponto,
+      dia
+    },
+    function(participantesDesignados) {
 
-  const callback = "cb_part_" + Date.now();
+      const select = document.getElementById("substituirQuemsai");
+      select.innerHTML = '<option value="">-- Nenhum --</option>';
 
-  window[callback] = function(participantesDesignados) {
+      (participantesDesignados || []).forEach(participante => {
+        const option = document.createElement("option");
+        option.value = participante.id;
+        option.textContent = participante.nomeCompleto;
+        select.appendChild(option);
+      });
 
-    esconderSpinner();
+    },
+    function(err) {
 
-    const select = document.getElementById("substituirQuemsai");
-    select.innerHTML = '<option value="">-- Nenhum --</option>';
+      console.error("❌ Erro ao buscar participantes designados:", err.message);
+      limparSubstituirQuemsai();
 
-    (participantesDesignados || []).forEach(participante => {
-      const option = document.createElement("option");
-      option.value = participante.id;
-      option.textContent = participante.nomeCompleto;
-      select.appendChild(option);
-    });
+    }
+  );
 
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    console.error("❌ Erro ao buscar participantes designados:", err.message);
-    limparSubstituirQuemsai();
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarParticipantesParaSubstituir" +
-    "&ponto=" + encodeURIComponent(ponto) +
-    "&dia=" + encodeURIComponent(dia) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
-
 
 function limparSubstituirQuemsai() {
   const select = document.getElementById("substituirQuemsai");
   select.innerHTML = '<option value="">-- Nenhum --</option>';
 }
 
-
-/* ================= VAGAS ================= */
-
 function atualizarContagemVagas(vagas) {
-  document.getElementById("totalVagas").textContent = vagas.length;
+  const total = vagas.length;
+  document.getElementById("totalVagas").textContent = total;
 }
 
+function preencherFormularioDesignacao(vaga) {
+  document.getElementById("ponto").value = vaga.ponto;
+  document.getElementById("dia").value = vaga.dia;
+  document.getElementById("frequencia").value = vaga.frequencia;
+  document.getElementById("substituirQuem").value = vaga.quemSai;
+
+}
 
 function carregarTodasVagasAbertas() {
 
   mostrarSpinner();
 
-  const callback = "cb_vagas_" + Date.now();
+  // 1. Primeiro atualiza
+  apiJSONP(
+    "atualizarVagasEmAberto",
+    {},
+    function() {
 
-  window[callback] = function(dados) {
+      // 2. Depois busca as vagas
+      apiJSONP(
+        "getVagasAbertas",
+        {},
+        function(dados) {
 
-    esconderSpinner();
-    mostrarVagasNaTabela(dados);
+          esconderSpinner();
+          mostrarVagasNaTabela(dados);
 
-    delete window[callback];
-  };
+        },
+        function(err) {
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=getVagasAbertas" +
-    "&callback=" + callback;
+          mostrarAlertaGlobal("❌ Erro ao buscar vagas: " + err.message);
+          esconderSpinner();
 
-  document.body.appendChild(script);
+        }
+      );
+
+    },
+    function(err) {
+
+      mostrarAlertaGlobal("❌ Erro ao atualizar vagas: " + err.message);
+      esconderSpinner();
+
+    }
+  );
 }
-
 
 function mostrarVagasNaTabela(vagas) {
 
@@ -7819,46 +9998,54 @@ function mostrarVagasNaTabela(vagas) {
 
           mostrarSpinner();
 
-          const callback = "cb_delvaga_" + Date.now();
+          apiJSONP(
+            "excluirVaga",
+            {
+              ponto: vaga.ponto,
+              dia: vaga.dia,
+              frequencia: vaga.frequencia
+            },
+            function() {
 
-          window[callback] = function() {
+              apiJSONP(
+                "atualizarStatusDeVagaExcluida",
+                {
+                  ponto: vaga.ponto,
+                  dia: vaga.dia,
+                  frequencia: vaga.frequencia
+                },
+                function() {
 
-            const cb2 = "cb_upd_" + Date.now();
+                  esconderSpinner();
+                  carregarTodasVagasAbertas();
+                  mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
 
-            window[cb2] = function() {
+                },
+                function(err) {
+
+                  esconderSpinner();
+                  mostrarAlertaGlobal(
+                    "❌ Erro ao atualizar status da vaga excluída: " +
+                    err.message
+                  );
+
+                }
+              );
+
+            },
+            function(err) {
+
               esconderSpinner();
-              carregarTodasVagasAbertas();
-              mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
-              delete window[cb2];
-            };
+              mostrarAlertaGlobal(
+                "❌ Erro ao excluir vaga: " + err.message
+              );
 
-            const script2 = document.createElement("script");
-            script2.src =
-              API_URL +
-              "?acao=atualizarStatusDeVagaExcluida" +
-              "&ponto=" + encodeURIComponent(vaga.ponto) +
-              "&dia=" + encodeURIComponent(vaga.dia) +
-              "&frequencia=" + encodeURIComponent(vaga.frequencia) +
-              "&callback=" + cb2;
-
-            document.body.appendChild(script2);
-
-            delete window[callback];
-          };
-
-          const script = document.createElement("script");
-          script.src =
-            API_URL +
-            "?acao=excluirVaga" +
-            "&ponto=" + encodeURIComponent(vaga.ponto) +
-            "&dia=" + encodeURIComponent(vaga.dia) +
-            "&frequencia=" + encodeURIComponent(vaga.frequencia) +
-            "&callback=" + callback;
-
-          document.body.appendChild(script);
+            }
+          );
 
         }
       );
+
     };
 
     tbody.appendChild(tr);
@@ -7873,283 +10060,188 @@ function pesquisarParticipantesPorCongregacao() {
   const resultadoDiv = document.getElementById('resultadoPesquisaCongregacoes');
   const msg = document.getElementById("msgPesqCongregacoes");
 
+  mostrarSpinner();
+
   if (!congregacaoSelecionada) {
     mostrarAlertaGlobal("⚠️ Por favor, selecione uma congregação.");
+    esconderSpinner();
     return;
   }
 
   resultadoDiv.textContent = '';
   mostrarSpinner();
 
-  const callback = "cb_cong_" + Date.now();
+  apiJSONP(
+    "pesquisarParticipantesPorCongregacao",
+    { congregacaoSelecionada },
+    function(participantes) {
 
-  window[callback] = function(participantes) {
+      const total = participantes.length;
+      msg.textContent = `✅ ${total} participante${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''} para a congregação selecionada.`;
 
-    esconderSpinner();
+      esconderSpinner();
 
-    const total = participantes.length;
-    if (msg) {
-      msg.textContent =
-        `✅ ${total} participante${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''} para a congregação selecionada.`;
-    }
+      if (!participantes || participantes.length === 0) {
+        msg.textContent = "❌ Nenhum participante encontrado para essa congregação.";
+        mostrarAlertaGlobal("❌ Nenhum participante encontrado para essa congregação.");
+        return;
+      }
 
-    if (!participantes || participantes.length === 0) {
-      if (msg) msg.textContent = "❌ Nenhum participante encontrado para essa congregação.";
-      mostrarAlertaGlobal("❌ Nenhum participante encontrado para essa congregação.");
-      delete window[callback];
-      return;
-    }
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
 
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
+      const colgroup = document.createElement('colgroup');
+      const larguras = ['350px', '200px', '100px', '100px', '100px'];
 
-    const colgroup = document.createElement('colgroup');
-    const larguras = ['350px', '200px', '100px', '100px', '100px'];
+      larguras.forEach(largura => {
+        const col = document.createElement('col');
+        col.style.width = largura;
+        colgroup.appendChild(col);
+      });
 
-    larguras.forEach(largura => {
-      const col = document.createElement('col');
-      col.style.width = largura;
-      colgroup.appendChild(col);
-    });
+      tabela.appendChild(colgroup);
 
-    tabela.appendChild(colgroup);
-
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-      <tr>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Petição</th>
-        <th>Sexo</th>
-        <th>TCS</th>
-      </tr>
-    `;
-    tabela.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-
-    participantes.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${p.nome || ''}</td>
-        <td>${p.telefone || ''}</td>
-        <td>${p.peticao || ''}</td>
-        <td>${p.sexo || ''}</td>
-        <td>${p.tcs || ''}</td>
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr>
+          <th>Nome</th>
+          <th>Telefone</th>
+          <th>Petição</th>
+          <th>Sexo</th>
+          <th>TCS</th>
+        </tr>
       `;
-      tbody.appendChild(tr);
-    });
+      tabela.appendChild(thead);
 
-    tabela.appendChild(tbody);
+      const tbody = document.createElement('tbody');
 
-    resultadoDiv.textContent = '';
-    resultadoDiv.appendChild(tabela);
+      participantes.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.nome || ''}</td>
+          <td>${p.telefone || ''}</td>
+          <td>${p.peticao || ''}</td>
+          <td>${p.sexo || ''}</td>
+          <td>${p.tcs || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
 
-    delete window[callback];
-  };
+      tabela.appendChild(tbody);
 
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal("❌ Erro ao buscar participantes: " + err.message);
-    delete window[callback];
-  };
+      resultadoDiv.textContent = '';
+      resultadoDiv.appendChild(tabela);
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=pesquisarParticipantesPorCongregacao" +
-    "&congregacao=" + encodeURIComponent(congregacaoSelecionada) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+    },
+    function(err) {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar participantes: " + err.message);
+    }
+  );
 }
-
-
-/* ================= CONGREGACOES ================= */
 
 function carregarOpcoesCongregacoes() {
 
-  const callback = "cb_lista_cong_" + Date.now();
+  apiJSONP(
+    "buscarCongregacoesUnicas",
+    {},
+    function(congregacoes) {
 
-  window[callback] = function(congregacoes) {
+      const sel = document.getElementById('pesqCongregacao');
+      sel.innerHTML = '<option value="">-- Selecione Congregação --</option>';
 
-    const sel = document.getElementById('pesqCongregacao');
-    sel.innerHTML = '<option value="">-- Selecione Congregação --</option>';
+      congregacoes.forEach(item => {
+        const o = document.createElement('option');
+        o.value = item;
+        o.textContent = item;
+        sel.appendChild(o);
+      });
 
-    congregacoes.forEach(item => {
-      const o = document.createElement('option');
-      o.value = item;
-      o.textContent = item;
-      sel.appendChild(o);
-    });
+    },
+    function(err) {
+      mostrarAlertaGlobal('❌ Erro ao carregar congregações: ' + err.message);
+    }
+  );
 
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    mostrarAlertaGlobal('❌ Erro ao carregar congregações: ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarCongregacoesUnicas" +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 function exportar() {
 
-  const abaSelecionada = document.getElementById('aba').value;
-  const mensagem = document.getElementById('mensagem');
-
-  if (!abaSelecionada) {
-    mostrarAlertaGlobal("⚠️ Selecione uma aba.");
-    return;
-  }
+  const abaSelecionada = document.getElementById("aba").value;
+  const mensagem = document.getElementById("mensagem");
 
   mensagem.innerHTML = "Gerando link de download...";
   mostrarSpinner();
 
-  const callback = "cb_export_" + Date.now();
+  apiJSONP(
+    "exportarAbaSelecionadaExportar",
+    { abaSelecionada },
+    function(linkHTML) {
 
-  window[callback] = function(linkHTML) {
+      mensagem.innerHTML = linkHTML;
+      esconderSpinner();
 
-    mensagem.innerHTML = linkHTML;
-    esconderSpinner();
+    },
+    function(erro) {
 
-    delete window[callback];
-  };
+      mensagem.innerText = "❌ Erro: " + erro.message;
+      esconderSpinner();
 
-  window[callback].failure = function(erro) {
-
-    mensagem.innerText = "❌ Erro: " + erro.message;
-    esconderSpinner();
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=exportarAbaSelecionada" +
-    "&aba=" + encodeURIComponent(abaSelecionada) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}
-
-function carregarResumo() {
-
-  const callback = "cb_resumo_" + Date.now();
-
-  window[callback] = function(resumo) {
-
-    // Preenche os campos existentes
-    for (const chave in resumo) {
-      const el = document.getElementById(chave);
-      if (el && chave !== 'contagemCircuitos') {
-        el.textContent = resumo[chave];
-      }
     }
+  );
 
-    // Preenche tabela de circuitos
-    const tbodyCircuitos = document.getElementById('tbodyCircuitos');
-
-    if (tbodyCircuitos && resumo.contagemCircuitos) {
-
-      tbodyCircuitos.innerHTML = '';
-
-      const circuitos = Object.keys(resumo.contagemCircuitos).sort((a, b) => {
-        if (a === 'Desconhecido') return 1;
-        if (b === 'Desconhecido') return -1;
-        return parseInt(a) - parseInt(b);
-      });
-
-      circuitos.forEach(circuito => {
-
-        const quantidade = resumo.contagemCircuitos[circuito];
-
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-          <td style="border: 1px solid #ccc; padding: 8px;">${circuito}</td>
-          <td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${quantidade}</td>
-        `;
-
-        tbodyCircuitos.appendChild(tr);
-      });
-    }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    console.error("Erro ao carregar resumo:", err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=obterResumoTPEComPlanilha" +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
 }
 
 function consultarPerfilAtual() {
 
   if (!participanteSelecionadoPerfil) {
+
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
     return;
   }
 
-  const idParticipante = participanteSelecionadoPerfil.id;
-  const perfilAtual = document.getElementById("perfilAtual");
+  const idParticipante =
+    participanteSelecionadoPerfil.id;
+
+  const perfilAtual =
+    document.getElementById("perfilAtual");
 
   mostrarSpinner();
 
-  const callback = "cb_perfil_" + Date.now();
+  apiJSONP(
+    "obterPerfilParticipantePorId",
+    {
+      idParticipante
+    },
+    function(res) {
 
-  window[callback] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (res.sucesso) {
+        perfilAtual.value = res.perfil || '';
+      } else {
+        perfilAtual.value = '';
+        mostrarAlertaGlobal(res.mensagem || '❌ Perfil não encontrado.');
+      }
 
-    if (res.sucesso) {
-      perfilAtual.value = res.perfil || '';
-    } else {
+    },
+    function(err) {
+
+      esconderSpinner();
       perfilAtual.value = '';
-      mostrarAlertaGlobal(res.mensagem || '❌ Perfil não encontrado.');
+      mostrarAlertaGlobal('❌ Erro: ' + err.message);
+
     }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    perfilAtual.value = '';
-    mostrarAlertaGlobal('❌ Erro: ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=obterPerfilParticipantePorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  );
 }
-
 
 function alterarPerfil() {
 
-  const novoPerfil = document.getElementById('tipoDePerfil').value;
-  const idParticipante = participanteSelecionadoPerfil.id;
+  const novoPerfil =
+    document.getElementById('tipoDePerfil').value;
+
+  const idParticipante =
+    participanteSelecionadoPerfil.id;
 
   if (!idParticipante || !novoPerfil) {
     mostrarAlertaGlobal('❌ Selecione participante e perfil.');
@@ -8158,104 +10250,106 @@ function alterarPerfil() {
 
   mostrarSpinner();
 
-  const callback = "cb_alterar_perfil_" + Date.now();
+  apiJSONP(
+    "atualizarPerfilParticipantePorId",
+    {
+      idParticipante,
+      novoPerfil
+    },
+    function(res) {
 
-  window[callback] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (res.sucesso) {
 
-    if (res.sucesso) {
+        mostrarAlertaGlobal(
+          `✅ Perfil atualizado com sucesso para "${novoPerfil}".`
+        );
 
-      mostrarAlertaGlobal(
-        `✅ Perfil atualizado com sucesso para "${novoPerfil}".`
-      );
+        consultarPerfilAtual();
 
-      consultarPerfilAtual();
+      } else {
+        mostrarAlertaGlobal(res.mensagem || '❌ Erro ao atualizar perfil.');
+      }
 
-    } else {
-      mostrarAlertaGlobal(res.mensagem || '❌ Erro ao atualizar perfil.');
+    },
+    function(err) {
+
+      esconderSpinner();
+      mostrarAlertaGlobal('❌ Erro de comunicação: ' + err.message);
+
     }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal('❌ Erro de comunicação: ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=atualizarPerfilParticipantePorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&perfil=" + encodeURIComponent(novoPerfil) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  );
 }
 
 let participanteSelecionadoGA = null;
 
 function consultarDadosAcesso() {
 
-  const idParticipante = participanteSelecionadoAcesso.id;
+  const idParticipante =
+    participanteSelecionadoAcesso.id;
 
   if (!idParticipante) {
+
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
     return;
   }
 
-  const emailAtual = document.getElementById('emailAtual');
-  const senhaAtual = document.getElementById('senhaAtual');
+  const emailAtual =
+    document.getElementById('emailAtual');
+
+  const senhaAtual =
+    document.getElementById('senhaAtual');
 
   mostrarSpinner();
 
-  const callback = "cb_acesso_" + Date.now();
+  apiJSONP(
+    "obterDadosAcessoParticipantePorId",
+    {
+      idParticipante
+    },
+    function(res) {
 
-  window[callback] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (res.sucesso) {
 
-    if (res.sucesso) {
-      emailAtual.value = res.email || '';
-      senhaAtual.value = res.senha || '';
-    } else {
+        emailAtual.value = res.email || '';
+        senhaAtual.value = res.senha || '';
+
+      } else {
+
+        emailAtual.value = '';
+        senhaAtual.value = '';
+        mostrarAlertaGlobal(res.mensagem || '❌ Dados não encontrados.');
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
       emailAtual.value = '';
       senhaAtual.value = '';
-      mostrarAlertaGlobal(res.mensagem || '❌ Dados não encontrados.');
+
+      mostrarAlertaGlobal('❌ Erro: ' + err.message);
     }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    emailAtual.value = '';
-    senhaAtual.value = '';
-    mostrarAlertaGlobal('❌ Erro: ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=obterDadosAcessoParticipantePorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  );
 }
-
 
 function alterarDadosAcesso() {
 
-  const novoEmail = document.getElementById('novoEmail').value.trim();
-  const novaSenha = document.getElementById('novaSenha').value.trim();
-  const idParticipante = participanteSelecionadoAcesso.id;
+  const novoEmail =
+    document.getElementById('novoEmail').value.trim();
+
+  const novaSenha =
+    document.getElementById('novaSenha').value.trim();
+
+  const idParticipante =
+    participanteSelecionadoAcesso.id;
 
   if (!idParticipante) {
+
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
     return;
   }
@@ -8267,47 +10361,64 @@ function alterarDadosAcesso() {
 
   mostrarSpinner();
 
-  const callback = "cb_alt_acesso_" + Date.now();
+  apiJSONP(
+    "atualizarDadosAcessoParticipantePorId",
+    {
+      idParticipante,
+      novoEmail,
+      novaSenha
+    },
+    function(res) {
 
-  window[callback] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (res.sucesso) {
 
-    if (res.sucesso) {
-      mostrarAlertaGlobal('✅ Dados de acesso atualizados com sucesso.');
-      consultarDadosAcesso();
-    } else {
-      mostrarAlertaGlobal(res.mensagem || '❌ Erro ao atualizar.');
+        mostrarAlertaGlobal('✅ Dados de acesso atualizados com sucesso.');
+
+        consultarDadosAcesso();
+
+      } else {
+        mostrarAlertaGlobal(res.mensagem || '❌ Erro ao atualizar.');
+      }
+
+    },
+    function(err) {
+
+      esconderSpinner();
+      mostrarAlertaGlobal('❌ Erro: ' + err.message);
+
     }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal('❌ Erro: ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=atualizarDadosAcessoParticipantePorId" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&email=" + encodeURIComponent(novoEmail) +
-    "&senha=" + encodeURIComponent(novaSenha) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  );
 }
 
 /* FALTA MUITA COISA DO ÚLTIMO CÓDIGO*/
 
+
+
+
+
+
+
+
+/* FALTA MUITA COISA DO ÚLTIMO CÓDIGO*/
+
+
+function norm(s) {
+  return (s || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+  window.todosNomesSimples = [];
+  window.todosNomes = [];
+
 function carregarOpcoes() {
 
-  const cb = "cb_opcoes_" + Date.now();
+  console.log("carregarOpcoes iniciou");
 
-  window[cb] = function(opcoes) {
+  apiJSONP("buscarOpcoesParaForm", {}, function(opcoes) {
+
+    console.log(opcoes);
+    console.log(opcoes.privilegios);
 
     window.mapaParticipantesPorNome = {};
 
@@ -8321,20 +10432,13 @@ function carregarOpcoes() {
       if (k) mapa.set(k, n);
     }
 
-    window.todosNomesSimples = Array.from(mapa.values())
-      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    window.todosNomesSimples =
+      Array.from(mapa.values()).sort((a, b) =>
+        a.localeCompare(b, 'pt-BR')
+      );
 
-    ligarFiltroAoSelect(
-      'filtroModalParticipantes',
-      'selectModalParticipantes',
-      window.todosNomesSimples
-    );
-
-    ligarFiltroAoSelect(
-      'filtroBuscaTrei',
-      'listaNomesTrei',
-      window.todosNomesSimples
-    );
+    ligarFiltroAoSelect('filtroModalParticipantes', 'selectModalParticipantes', window.todosNomesSimples);
+    ligarFiltroAoSelect('filtroBuscaTrei', 'listaNomesTrei', window.todosNomesSimples);
 
     window.opcoesCongregacoes = opcoes.congregacao || [];
 
@@ -8368,41 +10472,9 @@ function carregarOpcoes() {
       diaSelect.appendChild(option);
     });
 
-    const inputCong = document.getElementById('inputCongregacao');
-    const selCong = document.getElementById('pesqCongregacao');
-
-    const congregacoes = Array.from(selCong.options)
-      .map(opt => opt.value)
-      .filter(val => val && val !== "- Selecione -");
-
-    if (inputCong && selCong) {
-      inputCong.addEventListener('input', () => {
-        renderizarListaPara(
-          'inputCongregacao',
-          'pesqCongregacao',
-          congregacoes
-        );
-      });
-
-      renderizarListaPara(
-        'inputCongregacao',
-        'pesqCongregacao',
-        congregacoes
-      );
-    }
-
     window.opcoesPrivilegios = opcoes.privilegios || {};
 
-    delete window[cb];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarOpcoesParaForm" +
-    "&callback=" + cb;
-
-  document.body.appendChild(script);
+  });
 
   const pontoInput = document.getElementById("ponto");
   const diaInput = document.getElementById("dia");
@@ -8467,55 +10539,257 @@ function carregarOpcoes() {
 
     renderizarListaUser2h(nomeInputUser2h.value);
   }
+
+}
+
+function carregarDadosDesignacao() {
+
+  apiJSONP(
+    "obterDadosFormulario",
+    {},
+    popularSelects,
+    (err) => {
+      mostrarAlertaGlobal("❌ Erro ao carregar dados: " + err.message);
+    }
+  );
+
+}
+
+function popularSelects(dados) {
+  const { pontoCorrigir, pontos = [], participantes = [] } = dados;
+
+  const pontoVcorrigir = document.getElementById('pontoCorrigir');
+  const pontoSel = document.getElementById('ponto');
+  const partSel = document.getElementById('participanteDesignacao');
+
+  if (!pontoVcorrigir || !pontoSel || !partSel) return;
+
+  // 🧹 Limpa selects
+  pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
+  pontoVcorrigir.innerHTML = "<option value=''>- Sel Teste Corrigir -</option>";
+
+  const regex = /^([A-Z]+)(\d+)$/i;
+
+  // 🔍 Log para depuração
+  console.log("📋 Pontos recebidos:", pontos);
+
+  // ✅ Ordena por número e prefixo
+  const pontosOrdenados = pontos.slice().sort((a, b) => {
+    const matchA = a.match(regex);
+    const matchB = b.match(regex);
+    if (!matchA || !matchB) return 0;
+
+    const [, prefixA, numA] = matchA;
+    const [, prefixB, numB] = matchB;
+
+    const diffNum = parseInt(numA) - parseInt(numB);
+    if (diffNum !== 0) return diffNum;
+
+    const ordemPrefixos = ["A", "M", "MA", "MB", "T", "TA", "TB", "N"];
+    const idxA = ordemPrefixos.indexOf(prefixA);
+    const idxB = ordemPrefixos.indexOf(prefixB);
+    if (idxA === -1 || idxB === -1) return prefixA.localeCompare(prefixB);
+    return idxA - idxB;
+  });
+
+  console.log("✅ Pontos ordenados:", pontosOrdenados);
+
+  // ✅ Preenche selects com os pontos completos (ex: MA20, MB20)
+  pontosOrdenados.forEach(p => {
+    const opt1 = document.createElement('option');
+    opt1.value = p;
+    opt1.textContent = p;
+    pontoSel.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = p;
+    opt2.textContent = p;
+    pontoVcorrigir.appendChild(opt2);
+  });
+
+  // ✅ Participantes
+  partSel.innerHTML = '<option value="">-- Selecione para designar! --</option>';
+  participantes.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n;
+    partSel.appendChild(opt);
+  });
+
+  // ✅ Popula selects de "Ponto X"
+  const selPonto1 = document.getElementById('pontobepp');
+  const selPonto2 = document.getElementById('pontoDesignado');
+  const selPonto3 = document.getElementById('pontosParaOferecerSelect');
+  const selPonto4 = document.getElementById('pontosParaOferecerSelectSub');
+  const selPonto5 = document.getElementById('pontoSelectMap2');
+  const selPonto6 = document.getElementById('pontosParaOferecerSelect2h');
+
+  if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
+    const numerosUnicos = new Set();
+
+    pontosOrdenados.forEach(ponto => {
+      const match = ponto.match(regex);
+      if (match) {
+        const num = parseInt(match[2], 10);
+        if (!isNaN(num)) numerosUnicos.add(num);
+      } else {
+        console.warn("⚠️ Ponto ignorado (regex falhou):", ponto);
+      }
+    });
+
+    const numerosOrdenados = Array.from(numerosUnicos).sort((a, b) => a - b);
+    console.log("📌 Números de ponto:", numerosOrdenados);
+
+    numerosOrdenados.forEach(num => {
+      const label = `Ponto ${num}`;
+      [selPonto1, selPonto2, selPonto3, selPonto4, selPonto5, selPonto6].forEach(sel => {
+        const opt = document.createElement('option');
+        opt.value = label;
+        opt.textContent = label;
+        sel.appendChild(opt);
+      });
+    });
+  }
+
+  console.log("🎯 Selects populados com sucesso.");
+}
+
+ async function atualizarParticipantesParaSubstituir() {
+
+  const ponto = document.getElementById("ponto").value;
+  const dia = document.getElementById("dia").value;
+
+  if (!ponto || !dia) {
+    limparSubstituirQuem();
+    return;
+  }
+
+  apiJSONP(
+    "buscarParticipantesParaSubstituir",
+    {
+      ponto,
+      dia
+    },
+    function(participantesDesignados) {
+
+      const select = document.getElementById("substituirQuem");
+      select.innerHTML = '<option value="">-- Nenhum --</option>';
+
+      (participantesDesignados || []).forEach(participante => {
+        const option = document.createElement("option");
+        option.value = participante.id;
+        option.textContent = participante.nomeCompleto;
+        select.appendChild(option);
+      });
+
+    },
+    function(err) {
+
+      console.error("❌ Erro ao buscar participantes designados:", err.message);
+
+      limparSubstituirQuem();
+
+    }
+  );
+
+}
+
+function limparSubstituirQuem() {
+  const select = document.getElementById("substituirQuem");
+  select.innerHTML = '<option value="">-- Nenhum --</option>';
+}
+
+function carregarDadosVaga() {
+
+  apiJSONP(
+    "obterDadosFormulario",
+    {},
+    popularSelectsVaga,
+    (err) => {
+      mostrarAlertaGlobal("❌ Erro ao carregar dados: " + err.message);
+    }
+  );
+
+}
+
+function popularSelectsVaga(dados) {
+  const { pontos, participantes } = dados;
+  const pontoSel = document.getElementById('pontoVaga');
+  if (!pontoSel) return;
+
+  // ✅ Limpar o select e adicionar a primeira opção
+  pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
+
+  // ✅ Ordenar os pontos no padrão desejado
+  const pontosOrdenados = pontos.slice().sort((a, b) => {
+    const regex = /^([A-Z]+)(\d+)$/i;
+    const [, letraA, numA] = a.match(regex) || [];
+    const [, letraB, numB] = b.match(regex) || [];
+
+    const diffNum = parseInt(numA) - parseInt(numB);
+    if (diffNum !== 0) return diffNum;
+
+    return letraA.localeCompare(letraB, 'pt-BR');
+  });
+
+  // ✅ Adicionar os pontos ao select
+  pontosOrdenados.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    pontoSel.appendChild(opt);
+  });
 }
 
 function carregarOpcoesGenerica(inputId, selectId, metodoScript, listaKey = 'nomesCompletos') {
 
-  const cb = "cb_generica_" + Date.now();
+  apiJSONP(
+    metodoScript,
+    {},
+    function(opcoes) {
 
-  window[cb] = function(opcoes) {
+      const listaObjetos = opcoes[listaKey] || [];
 
-    const listaObjetos = opcoes[listaKey] || [];
+      const mapNomeParaId = new Map();
 
-    const mapNomeParaId = new Map();
-
-    listaObjetos.forEach(p => {
-      if (typeof p === 'object' && p.nome && p.id) {
-        mapNomeParaId.set(p.nome, p.id);
-      }
-    });
-
-    window.todosNomes = listaObjetos.map(p => p.nome);
-
-    window.todosNomes.sort((a, b) => {
-      const norm = s =>
-        s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-      return norm(a).localeCompare(norm(b));
-    });
-
-    window.mapNomeParaId = mapNomeParaId;
-
-    const input = document.getElementById(inputId);
-    const select = document.getElementById(selectId);
-
-    if (input && select) {
-      input.addEventListener("input", () => {
-        renderizarListaPara(inputId, selectId, window.todosNomes);
+      listaObjetos.forEach(p => {
+        if (typeof p === 'object' && p.nome && p.id) {
+          mapNomeParaId.set(p.nome, p.id);
+        }
       });
 
-      renderizarListaPara(inputId, selectId, window.todosNomes);
+      window.todosNomes = listaObjetos.map(p => p.nome);
+
+      window.todosNomes.sort((a, b) => {
+        const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        return norm(a).localeCompare(norm(b));
+      });
+
+      window.mapNomeParaId = mapNomeParaId;
+
+      const input = document.getElementById(inputId);
+      const select = document.getElementById(selectId);
+
+      if (input && select) {
+
+        input.addEventListener("input", () => {
+          renderizarListaPara(inputId, selectId, window.todosNomes);
+        });
+
+        renderizarListaPara(inputId, selectId, window.todosNomes);
+
+      }
+
+    },
+    function(err) {
+
+      mostrarAlertaGlobal(
+        '❌ Erro ao carregar opções para participantes: ' + err.message
+      );
+
     }
+  );
 
-    delete window[cb];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=" + metodoScript +
-    "&callback=" + cb;
-
-  document.body.appendChild(script);
 }
 
 function enviarPesquisaDireta(sexo, dia, turno) {
@@ -8528,163 +10802,1920 @@ function enviarPesquisaDireta(sexo, dia, turno) {
   mostrarSpinner();
   document.getElementById('resultadoContainer').innerHTML = '';
 
-  const cb = "cb_treinadores_" + Date.now();
+  apiJSONP(
+    "listarTreinadoresComFiltroDireto",
+    {
+      sexo,
+      dia,
+      turno
+    },
+    function(res) {
 
-  window[cb] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      (res.logs || []).forEach(l => console.log(l));
 
-    (res.logs || []).forEach(l => console.log(l));
+      montarTabela(res.resultados, sexo, dia, turno);
 
-    montarTabela(res.resultados, sexo, dia, turno);
+    },
+    function(err) {
 
-    delete window[cb];
-  };
+      esconderSpinner();
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=listarTreinadoresComFiltroDireto" +
-    "&sexo=" + encodeURIComponent(sexo) +
-    "&dia=" + encodeURIComponent(dia) +
-    "&turno=" + encodeURIComponent(turno) +
-    "&callback=" + cb;
+      mostrarAlertaGlobal("❌ Erro ao buscar treinadores: " + err.message);
 
-  document.body.appendChild(script);
+    }
+  );
+
 }
 
 function carregarAbas() {
 
-  const cb = "cb_abas_" + Date.now();
+  apiJSONP(
+    "listarAbas",
+    {},
+    function(nomes) {
 
-  window[cb] = function(nomes) {
+      const select = document.getElementById('aba');
+      select.innerHTML = "";
 
-    const select = document.getElementById('aba');
-    select.innerHTML = "";
+      const optionDefault = document.createElement('option');
+      optionDefault.value = "";
+      optionDefault.text = "- Selecione -";
+      select.appendChild(optionDefault);
 
-    const optionDefault = document.createElement('option');
-    optionDefault.value = "";
-    optionDefault.text = "- Selecione -";
-    select.appendChild(optionDefault);
+      nomes.forEach(nome => {
+        const option = document.createElement('option');
+        option.value = nome;
+        option.text = nome;
+        select.appendChild(option);
+      });
 
-    nomes.forEach(nome => {
-      const option = document.createElement('option');
-      option.value = nome;
-      option.text = nome;
-      select.appendChild(option);
-    });
+    },
+    function(err) {
 
-    delete window[cb];
-  };
+      mostrarAlertaGlobal("❌ Erro ao carregar abas: " + err.message);
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=listarAbas" +
-    "&callback=" + cb;
+    }
+  );
 
-  document.body.appendChild(script);
 }
 
 function carregarResumo() {
 
-  const cb = "cb_resumo_" + Date.now();
+  apiJSONP(
+    "obterResumoTPEComPlanilha",
+    {},
+    function(resumo) {
 
-  window[cb] = function(resumo) {
-
-    for (const chave in resumo) {
-      const el = document.getElementById(chave);
-      if (el && chave !== 'contagemCircuitos') {
-        el.textContent = resumo[chave];
+      for (const chave in resumo) {
+        const el = document.getElementById(chave);
+        if (el && chave !== 'contagemCircuitos') {
+          el.textContent = resumo[chave];
+        }
       }
+
+      const tbodyCircuitos = document.getElementById('tbodyCircuitos');
+
+      if (tbodyCircuitos && resumo.contagemCircuitos) {
+
+        tbodyCircuitos.innerHTML = '';
+
+        const circuitos = Object.keys(resumo.contagemCircuitos).sort((a, b) => {
+          if (a === 'Desconhecido') return 1;
+          if (b === 'Desconhecido') return -1;
+          return parseInt(a) - parseInt(b);
+        });
+
+        circuitos.forEach(circuito => {
+
+          const quantidade = resumo.contagemCircuitos[circuito];
+
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td style="border: 1px solid #ccc; padding: 8px;">${circuito}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${quantidade}</td>
+          `;
+
+          tbodyCircuitos.appendChild(tr);
+        });
+      }
+
+    },
+    function(err) {
+      mostrarAlertaGlobal("❌ Erro ao carregar resumo: " + err.message);
     }
+  );
+}
 
-    const tbodyCircuitos = document.getElementById('tbodyCircuitos');
+function selecionarSubstituicaoDesignados(ponto, dia) {
 
-    if (tbodyCircuitos && resumo.contagemCircuitos) {
+  return new Promise((resolve) => {
 
-      tbodyCircuitos.innerHTML = '';
+    participanteSubstituido = null;
+    window._resolveSubstituicao = resolve;
 
-      const circuitos = Object.keys(resumo.contagemCircuitos).sort((a, b) => {
-        if (a === 'Desconhecido') return 1;
-        if (b === 'Desconhecido') return -1;
-        return parseInt(a) - parseInt(b);
-      });
+    apiJSONP(
+      "buscarDesignadosNoPonto",
+      {
+        ponto,
+        dia
+      },
+      function(lista) {
 
-      circuitos.forEach(circuito => {
-        const quantidade = resumo.contagemCircuitos[circuito];
-        const tr = document.createElement('tr');
+        esconderSpinner();
 
-        tr.innerHTML = `
-          <td style="border: 1px solid #ccc; padding: 8px;">${circuito}</td>
-          <td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${quantidade}</td>
-        `;
+        renderizarDesignados(lista);
 
-        tbodyCircuitos.appendChild(tr);
-      });
-    }
+        document.getElementById("modalDesignados").style.display = "block";
 
-    delete window[cb];
-  };
+      },
+      function(err) {
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=obterResumoTPEComPlanilha" +
-    "&callback=" + cb;
+        esconderSpinner();
 
-  document.body.appendChild(script);
+        mostrarAlertaGlobal(err.message);
+
+        resolve(null);
+
+      }
+    );
+
+  });
+
 }
 
 function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
 
   mostrarSpinner();
 
-  const cb = "cb_disp_" + Date.now();
+  apiJSONP(
+    "buscarTipoDisponibilidade",
+    {
+      //idParticipante
+      id: idUsuarioLogado
+    },
+    function(dados) {
 
-  window[cb] = function(dados) {
+      esconderSpinner();
 
-    esconderSpinner();
+      const chk2 =
+        document.getElementById("tipoDisponibilidade2h");
 
-    const chk2 = document.getElementById("tipoDisponibilidade2h");
-    const chk4 = document.getElementById("tipoDisponibilidade4h");
-    const jtd  = document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
-    const ss   = document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
+      const chk4 =
+        document.getElementById("tipoDisponibilidade4h");
 
-    if (!chk2 || !chk4 || !jtd || !ss) return;
+      const jtd =
+        document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
 
-    chk2.checked = false;
-    chk4.checked = false;
-    jtd.checked = false;
-    ss.checked = false;
+      const ss =
+        document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
 
-    switch (dados.condicao) {
-      case "Somente substituição":
-        ss.checked = true;
-        break;
+      if (!chk2 || !chk4 || !jtd || !ss) return;
 
-      case "Já possui designação":
-        jtd.checked = true;
-        break;
+      // Limpa tudo
+      chk2.checked = false;
+      chk4.checked = false;
+      jtd.checked = false;
+      ss.checked = false;
 
-      default:
-        if (dados.tipo === "2h") chk2.checked = true;
-        if (dados.tipo === "4h") chk4.checked = true;
-        break;
+      switch (dados.condicao) {
+
+        case "Somente substituição":
+          ss.checked = true;
+          break;
+
+        case "Já possui designação":
+          jtd.checked = true;
+          break;
+
+        default:
+
+          if (dados.tipo === "2h") {
+            chk2.checked = true;
+          }
+
+          if (dados.tipo === "4h") {
+            chk4.checked = true;
+          }
+
+          break;
+      }
+
+      sincronizarCardsComSwitch();
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(err);
+
+    }
+  );
+
+}
+
+  window.addEventListener('DOMContentLoaded', () => {
+  const participante = document.getElementById('participante');
+    if (participante) {
+      const originalAppendChild = participante.appendChild;
+      participante.appendChild = function(child) {
+        return originalAppendChild.call(this, child);
+      };
     }
 
-    sincronizarCardsComSwitch();
+    document.getElementById('ponto').addEventListener('change', atualizarParticipantesParaSubstituir);
+    document.getElementById('dia').addEventListener('change', atualizarParticipantesParaSubstituir);
+    document.getElementById('pontoVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
+    document.getElementById('diaVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
+    atualizarParticipantesParaCadastrarVaga();
+    carregarTodasVagasAbertas();
+    atualizarParticipantesParaSubstituir();
+    carregarOpcoes();
+    carregarOpcoesGenerica("filtroBusca1", "participante", "buscarOpcoesParaForm");
+    carregarAbas();
+    carregarAbasEv();
+    carregarResumo();
+    carregarOpcoesCongregacoes();
 
-    delete window[cb];
+  });
+
+  function criarOpcaoSelecione() {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = '- Selecione -';
+    return opt;
+  }
+
+  function renderizarListaGenerica(selectId, filtro, listaDeNomes) {
+    const sel = document.getElementById(selectId);
+    if (!sel) {
+
+      return;
+    }
+
+    sel.innerHTML = '';
+
+    const alvo = norm(filtro), com = [], cont = [];
+
+    listaDeNomes.forEach(n => {
+      const nn = norm(n);
+      if (!alvo || nn.includes(alvo)) {
+        if (alvo && nn.startsWith(alvo)) com.push(n);
+        else cont.push(n);
+      }
+    });
+
+    const res = com.concat(cont);
+
+    if (!alvo || res.length === 0) {
+      sel.appendChild(criarOpcaoSelecione());
+      sel.value = '';
+      return;
+    }
+
+    res.forEach(n => {
+      const o = document.createElement('option');
+      o.value = n;
+      o.textContent = n;
+      sel.appendChild(o);
+    });
+
+    sel.value = res[0];
+  }
+
+  function ligarFiltroAoSelect(inputId, selectId, lista) {
+    const input = document.getElementById(inputId);
+    const select = document.getElementById(selectId);
+    if (input && select) {
+      input.addEventListener("input", () => {
+        renderizarListaGenerica(selectId, input.value, lista);
+      });
+      renderizarListaGenerica(selectId, input.value, lista);
+    }
+  }
+
+  function renderizarListaPara(inputId, selectId, listaDeNomes) {
+    const input = document.getElementById(inputId);
+    const sel = document.getElementById(selectId);
+
+    sel.innerHTML = '';
+
+    const filtro = norm(input.value);
+    const com = [], cont = [];
+
+    listaDeNomes.forEach(n => {
+      const nn = norm(n);
+      if (!filtro || nn.includes(filtro)) {
+        if (filtro && nn.startsWith(filtro)) com.push(n);
+        else cont.push(n);
+      }
+    });
+
+    const resultado = com.concat(cont);
+
+    if (!filtro) {
+      sel.appendChild(criarOpcaoSelecione());
+      resultado.forEach(n => {
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n;
+        sel.appendChild(o);
+      });
+      sel.value = '';
+
+      if (selectId === 'participante') {
+        valorSelecionadoParticipante = '';
+
+      }
+    }
+    else if (resultado.length === 0) {
+      sel.appendChild(criarOpcaoSelecione());
+      sel.value = '';
+
+      if (selectId === 'participante') {
+        valorSelecionadoParticipante = '';
+
+      }
+    }
+    else {
+      resultado.forEach(n => {
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n;
+        sel.appendChild(o);
+      });
+
+      sel.value = resultado[0];
+
+      if (selectId === 'participante') {
+        valorSelecionadoParticipante = resultado[0];
+
+      }
+    }
+  }
+
+  function renderizarListaUser2h(filtro) {
+    renderizarListaGenerica('nomeSelectUsuario2h', filtro, window.todosNomesSimples);
+  }
+
+  function renderizarListaUserIr(filtro) {
+    renderizarListaGenerica('nomeSelectUsuarioIr', filtro, window.todosNomesSimples);
+  }
+
+  function renderizarListaUserSb(filtro) {
+    renderizarListaGenerica('nomeSelectUsuarioSb', filtro, window.todosNomesSimples);
+  }
+
+  function renderizarListaUser(filtro) {
+    renderizarListaGenerica('nomeSelectUsuario', filtro, window.todosNomesSimples);
+  }
+  
+  function renderizarListaTrei(filtro) {
+    renderizarListaGenerica('listaNomesTrei', filtro, window.todosNomesSimples);
+  }
+
+  function renderizarListaModal(filtro) {
+    renderizarListaGenerica('selectModalParticipantes', filtro, window.todosNomesSimples);
+  }
+
+  function formatarDataBR(dataISO) {
+    if (!dataISO) return "";
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function mostrarAlertaGlobal(mensagem) {
+    const alerta = document.getElementById('alertaGlobal');
+    const alertaMensagem = document.getElementById('alertaMensagem');
+    const botaoOk = document.getElementById('alertaBotaoOk');
+
+    alertaMensagem.textContent = mensagem;
+    alerta.classList.remove('oculto');
+
+    botaoOk.onclick = () => {
+      alerta.classList.add('oculto');
+    };
+  }
+
+  function mostrarConfirmacaoGlobal(mensagem, onConfirmar) {
+    const alerta = document.getElementById('confirmacaoGlobal');
+    const alertaMensagem = document.getElementById('confirmacaoMensagem');
+    const botaoOk = document.getElementById('confirmacaoBotaoOk');
+    const botaoCancelar = document.getElementById('confirmacaoBotaoCancelar');
+
+    alertaMensagem.innerHTML = mensagem;
+
+    botaoOk.textContent = 'Confirmar';
+    botaoCancelar.textContent = 'Cancelar';
+
+    botaoOk.style.display = 'inline-block';
+    botaoCancelar.style.display = 'inline-block';
+
+    alerta.classList.remove('oculto');
+
+    botaoOk.onclick = () => {
+      alerta.classList.add('oculto');
+      botaoOk.textContent = 'Confirmar';
+      botaoCancelar.textContent = 'Cancelar';
+      onConfirmar();
+    };
+
+    botaoCancelar.onclick = () => {
+      alerta.classList.add('oculto');
+      botaoOk.textContent = 'Confirmar';
+      botaoCancelar.textContent = 'Cancelar';
+    };
+  }
+
+  function mostrarSpinner() {
+    document.getElementById('spinnerGlobal').style.display = 'flex';
+  }
+
+  function esconderSpinner() {
+    document.getElementById('spinnerGlobal').style.display = 'none';
+  }
+
+  window.onload=function(){
   };
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarTipoDisponibilidade" +
-    "&id=" + encodeURIComponent(idParticipante) +
-    "&callback=" + cb;
+  function formatarNomeComNegrito(nome) {
+    if (!nome) return "";
+    const linhas = nome.split('\n');
+    const primeira = `<strong>${linhas[0]}</strong>`;
+    const restante = linhas.slice(1).join('<br>');
+    return restante ? `${primeira}<br>${restante}` : primeira;
+  }
 
-  document.body.appendChild(script);
+function abrirCadastroEvento() {
+
+    document.querySelector(
+      '[onclick*="abrirTela(\'eventos\'"]'
+    )?.click();
+}
+
+function exibirVoltar() {
+    document.getElementById('menuCards').classList.add('oculto');
+    document.getElementById('btnVoltarMenu').classList.remove('oculto');
+}
+
+const historico = [];
+let telaAtual = 'menuCards';
+
+function abrirTela(idTela, card = null) {
+
+    if (telaAtual) {
+        historico.push(telaAtual);
+    }
+
+    document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+    });
+
+    document.getElementById(idTela)
+        ?.classList.add('aberta');
+
+    telaAtual = idTela;
+
+    document.querySelectorAll('.card-menu')
+        .forEach(c => c.classList.remove('ativo'));
+
+        switch (telaAtual) {
+
+          case "telaUsuarioLogado":
+            atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
+            break;
+
+          case "disponibilidadeContainerUsuarioLogado2h":
+            abrirCalendario2h();
+            break;
+
+          case "disponibilidadeContainerUsuarioLogado4h":
+            abrirCalendario4h();
+            break;
+
+        }
+
+    atualizarBotaoVoltar();
+
+}
+
+function voltar() {
+
+    if (historico.length === 0) return;
+
+    document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+    });
+
+    telaAtual = historico.pop();
+
+    [
+        "tipoDisponibilidade2h",
+        "tipoDisponibilidade4h"
+    ].forEach(id => {
+
+        const el = document.getElementById(id);
+
+        if (el) {
+            el.checked = false;
+        }
+
+    });
+
+    console.log("Tela recuperada:", telaAtual);
+
+    document.getElementById(telaAtual)
+        ?.classList.add('aberta');
+
+    switch (telaAtual) {
+
+      case "telaUsuarioLogado":
+        atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
+        break;
+
+    }
+
+    atualizarBotaoVoltar();
+}
+
+function atualizarBotaoVoltar() {
+
+    const btnVoltar = document.getElementById('btnVoltarMenu');
+
+    if (!btnVoltar) return;
+
+    if (historico.length === 0) {
+
+        btnVoltar.classList.add('oculto');
+
+    } else {
+
+        btnVoltar.classList.remove('oculto');
+
+        const destino = historico[historico.length - 1];
+
+        btnVoltar.innerHTML =
+            destino === 'menuCards'
+                ? '👈 Início'
+                : '👈 Voltar';
+
+    }
+
+}
+
+function restaurarCamposPerfil() {
+
+    [
+        //"listaNomesDisponibilidade",
+        //"listaNomesDisponibilidadeNovoPonto20",
+        //"listaNomesEv"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "";
+    });
+
+    [
+        //"filtroBuscaDisponibilidade",
+        //"filtroBuscaDisponibilidadeNovoPonto20",
+        //"filtroBuscaEv"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "";
+    });
+
+    [
+        "btnPesqMinhaInfo",
+        "btnPesqDisp",
+        "btnPesqDispNovoPonto20"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "";
+    });
+}
+
+function limparCamposUsuario() {
+
+    document.querySelectorAll('input[type="text"], input[type="date"], input[type="email"], input[type="password"]').forEach(el => {
+        el.value = '';
+    });
+
+    document.querySelectorAll('textarea').forEach(el => {
+        el.value = '';
+    });
+
+    [
+        //'listaNomesDisponibilidade',
+        //'listaNomesDisponibilidadeNovoPonto20',
+        //'listaNomesEv'
+    ].forEach(id => {
+
+        const select = document.getElementById(id);
+
+        if (select) {
+            select.innerHTML = '<option value="">- Selecione -</option>';
+        }
+
+    });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        el.checked = false;
+    });
+
+    document.querySelectorAll('input[type="radio"]').forEach(el => {
+        el.checked = false;
+    });
+
+    document.querySelectorAll('.mensagem-verde, .mensagem-vermelha').forEach(el => {
+        el.textContent = '';
+    });
+}
+
+window.contextoModalParticipantes = "";
+
+function abrirSelecao2horas() {
+
+  window.destinoModalParticipantes = "duasHoras";
+   
+  abrirModalParticipantes();
+}
+
+function abrirSelecao4horas() {
+
+  window.destinoModalParticipantes = "quatroHoras";
+
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoInscreverOutro() {
+
+  window.destinoModalParticipantes = "inscreverOutro";
+
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoCandidatoTreinamentoPratico() {
+
+  window.destinoModalParticipantes = "candidatosTreinamentoPratico";
+
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoParticipante() {
+
+  window.destinoModalParticipantes = "pesqPartc";
+   
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoTcs() {
+
+  window.destinoModalParticipantes = "selecaoTcs";
+   
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoPerfil() {
+
+  window.destinoModalParticipantes = "selecaoPerfil";
+   
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoAcesso() {
+
+  window.destinoModalParticipantes = "selecaoAcesso";
+   
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoDesignacao() {
+
+  window.destinoModalParticipantes = "designacao";
+
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoTrocaDesignacao() {
+
+  window.destinoModalParticipantes = "trocaDesignacao";
+
+  abrirModalParticipantes();
+}
+
+function confirmarSelecaoParticipante() {
+
+  const nome =
+    document.getElementById("selectModalParticipantes")?.value;
+
+  if (!nome) {
+    mostrarAlertaGlobal("⚠️ Selecione um participante.");
+    return;
+  }
+
+  const id =
+    window.mapaParticipantesPorNome?.[nome];
+
+  if (!id) {
+    mostrarAlertaGlobal("❌ ID não encontrado.");
+    return;
+  }
+
+  switch (window.destinoModalParticipantes) {
+
+    case "selecaoPerfil":
+
+      participanteSelecionadoPerfil = {
+        nome,
+        id
+      };
+
+      document.getElementById("nomeSelecionadoPerfil").value = nome;
+
+      consultarPerfilAtual();
+
+      break;
+
+    case "selecaoAcesso":
+
+      participanteSelecionadoAcesso = {
+        nome,
+        id
+      };
+
+      document.getElementById("nomeSelecionadoAcesso").value = nome;
+
+      consultarDadosAcesso();
+
+      break;
+
+    case "selecaoTcs":
+
+      participanteSelecionadoTcs = {
+        nome,
+        id
+      };
+
+      document.getElementById("participanteTcs").textContent = nome;
+
+      pesquisarTcs();
+
+      break;
+
+    case "duasHoras":
+
+      participanteSelecionado2horas = {
+        nome,
+        id
+      };
+
+      document.getElementById("duasHoras").textContent = nome;
+
+      pesquisarDisponibilidadeNovoPonto20();
+
+      break;
+
+    case "quatroHoras":
+
+      participanteSelecionado4horas = {
+        nome,
+        id
+      };
+
+      document.getElementById("quatroHoras").textContent = nome;
+
+      pesquisarDisponibilidade();
+
+      break;
+
+    case "inscreverOutro":
+
+      participanteSelecionadoInscreverOutro = {
+        nome,
+        id
+      };
+
+      document.getElementById("candidatoEvSelecionado").textContent = nome;
+
+      inscreverParticipanteAdmin();
+
+      break;
+
+    case "candidatosTreinamentoPratico":
+
+      participanteSelecionadoTreinamentoPratico = {
+        nome,
+        id
+      };
+
+      document.getElementById("candidatoTreinamentoPratico").textContent = nome;
+
+      pesquisarTP();
+
+      break;
+
+    case "pesqPartc":
+
+      participanteSelecionadoEditar = {
+        nome,
+        id
+      };
+
+      document.getElementById("pesqPart").textContent = nome;
+
+      pesquisarParticipante();
+
+      break;
+
+      case "designacao":
+
+      participanteSelecionadoDesignacao = {
+        nome,
+        id
+      };
+
+      document.getElementById("participanteDesignacao").value = nome;
+
+      break;
+
+      case "trocarDesignacao":
+
+      participanteSelecionadoTrocaDesignacao = {
+        nome,
+        id
+      };
+
+      document.getElementById("troca").value = nome;
+
+      break;
+  }
+
+  fecharModalParticipantes();
+}
+
+let participanteSelecionadoEditar = null;
+let participanteSelecionadoTreinamentoPratico = null;
+let participanteSelecionadoInscreverOutro = null;
+let participanteSelecionado2horas = null;
+let participanteSelecionado4horas = null;
+let participanteSelecionadoTcs = null;
+let participanteSelecionado = null;
+let participanteSelecionadoPerfil = null;
+let participanteSubstituido = null;
+let participanteSelecionadoDesignacao = null;
+let modalSubstituicaoResolvido = false;
+let participanteSelecionadoGP = null;
+let acaoModalEditarDisponibilidade = null;
+let abrirModalDepoisDaPesquisa = false;
+
+function renderizarDesignados(lista) {
+
+  const div = document.getElementById("listaDesignados");
+  div.innerHTML = "";
+
+  lista.forEach(p => {
+
+    const botao = document.createElement("button");
+      botao.type = "button";
+      botao.textContent = p.nome;
+      botao.classList.add("botao-participante-modal");
+
+      botao.onclick = () => {
+
+          participanteSubstituido = p;
+
+          document.getElementById("nomeSubstituido").value = p.nome;
+
+          fecharModalDesignados();
+
+          if (window._resolveSubstituicao) {
+              window._resolveSubstituicao(p);
+          }
+      };
+
+      div.appendChild(botao);
+  });
+}
+
+function confirmarNenhumDesignados() {
+
+  participanteSubstituido = null;
+
+  document.getElementById("nomeSubstituido").value = "";
+
+  fecharModalDesignados();
+
+  if (window._resolveSubstituicao) {
+    window._resolveSubstituicao(null);
+  }
+}
+
+function fecharModalDesignados(){
+
+    document.getElementById(
+        "modalDesignados"
+    ).style.display = "none";
+
+}
+
+function possuiDisponibilidadeCadastrada(dados) {
+
+  if (!dados) return false;
+
+  const condicao =
+    String(dados.condicao || "").trim();
+
+  const frequencia =
+    String(dados.frequencia || "").trim();
+
+  const diasTurnos =
+    Array.isArray(dados.diasTurnos)
+      ? dados.diasTurnos
+      : [];
+
+  return (
+    condicao !== "" ||
+    frequencia !== "" ||
+    diasTurnos.length > 0
+  );
+}
+
+function selecionarModoDisponibilidade(origem) {
+
+    const jtd = document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
+    const ss  = document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
+    const h2  = document.getElementById("tipoDisponibilidade2h");
+    const h4  = document.getElementById("tipoDisponibilidade4h");
+
+    jtd.checked = false;
+    ss.checked  = false;
+    h2.checked  = false;
+    h4.checked  = false;
+
+    origem.checked = true;
+
+    sincronizarCardsComSwitch();
+}
+
+function sincronizarCardsComSwitch() {
+
+    const jtd = document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
+    const ss  = document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
+    const h2  = document.getElementById("tipoDisponibilidade2h");
+    const h4  = document.getElementById("tipoDisponibilidade4h");
+
+    const card2h = document.getElementById("card2h");
+    const card4h = document.getElementById("card4h");
+
+    card2h.classList.remove("card-habilitado","card-desabilitado", "card-ativo-azul");
+    card4h.classList.remove("card-habilitado","card-desabilitado", "card-ativo-roxo");
+
+    if (jtd.checked) {
+
+        card2h.classList.add("card-desabilitado");
+        card4h.classList.add("card-desabilitado");
+        card2h.classList.remove("card-ativo-azul");
+        card4h.classList.remove("card-ativo-roxo");
+        return;
+    }
+
+    if (ss.checked) {
+
+        card2h.classList.add("card-desabilitado");
+        card4h.classList.add("card-desabilitado");
+        card2h.classList.remove("card-ativo-azul");
+        card4h.classList.remove("card-ativo-roxo");
+        return;
+    }
+
+    if (h2.checked) {
+
+        card2h.classList.add("card-habilitado");
+        card4h.classList.add("card-desabilitado");
+        card2h.classList.add("card-ativo-azul");
+        card4h.classList.remove("card-ativo-roxo");
+        return;
+    }
+
+    if (h4.checked) {
+
+        card2h.classList.add("card-desabilitado");
+        card4h.classList.add("card-habilitado");
+        card2h.classList.remove("card-ativo-azul");
+        card4h.classList.add("card-ativo-roxo");
+        return;
+    }
+
+    card2h.classList.add("card-desabilitado");
+    card4h.classList.add("card-desabilitado");
+    card2h.classList.remove("card-ativo-azul");
+    card4h.classList.remove("card-ativo-roxo");
+}
+
+function renderizarDisponibilidade(dados, cfg) {
+
+  console.log("condição:", dados.condicao);
+  console.log("frequência:", dados.frequencia);
+  console.log("dias:", dados.diasTurnos);
+
+  const chkSubstituicao =
+    document.getElementById(cfg.chkSubstituicao);
+
+  const chkDesignado =
+    document.getElementById(cfg.chkDesignado);
+
+  const frequencia =
+    document.getElementById(cfg.frequencia);
+
+  const checkboxes =
+    document.querySelectorAll(cfg.checkboxes);
+
+  if (!chkSubstituicao || !chkDesignado) return;
+
+  chkSubstituicao.checked = false;
+  chkDesignado.checked = false;
+
+  if (frequencia) {
+    frequencia.value = dados.frequencia || "";
+
+    frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
+  }
+
+  checkboxes.forEach(cb => {
+    cb.checked = false;
+    cb.disabled = true;
+  });
+
+  if (!possuiDisponibilidadeCadastrada(dados)) {
+    return;
+  }
+
+  const condicao =
+    String(dados.condicao || "")
+      .trim()
+      .toLowerCase();
+
+  if (condicao === "somente substituição") {
+
+    chkSubstituicao.checked = true;
+    return;
+  }
+
+  if (condicao === "já possui designação") {
+
+    chkDesignado.checked = true;
+    return;
+  }
+
+  if (frequencia) {
+    frequencia.value = dados.frequencia || "";
+
+    frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
+
+  }
+
+  if (Array.isArray(dados.diasTurnos)) {
+
+    dados.diasTurnos.forEach(item => {
+
+      const partes = item.split(" - ");
+      if (partes.length !== 2) return;
+
+      const dia = partes[0];
+      const turno = partes[1];
+
+      const checkbox = Array.from(checkboxes).find(cb =>
+        norm(cb.dataset.dia) === norm(dia) &&
+        norm(cb.dataset.turno) === norm(turno)
+      );
+
+      if (checkbox) {
+        checkbox.checked = true;
+      }
+
+    });
+  }
+    console.log(
+    "Depois do render:",
+    frequencia.disabled
+  );
+}
+
+function renderizarDisponibilidadeBase(dados, cfg) {
+
+  const chkSubstituicao =
+    document.getElementById(cfg.chkSubstituicao);
+
+  const chkDesignado =
+    document.getElementById(cfg.chkDesignado);
+
+  const frequencia =
+    document.getElementById(cfg.frequencia);
+
+  const checkboxes =
+    document.querySelectorAll(cfg.checkboxes);
+
+  if (chkSubstituicao) chkSubstituicao.checked = false;
+  if (chkDesignado) chkDesignado.checked = false;
+
+  if (frequencia) {
+    frequencia.value = dados.frequencia || "";
+
+    frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
+  }
+
+  checkboxes.forEach(cb => {
+    cb.checked = false;
+    cb.disabled = true;
+  });
+
+  if (!possuiDisponibilidadeCadastrada(dados)) {
+    return;
+  }
+
+  const condicao =
+    String(dados.condicao || "")
+      .trim()
+      .toLowerCase();
+
+  if (condicao === "somente substituição") {
+    if (chkSubstituicao) chkSubstituicao.checked = true;
+    return;
+  }
+
+  if (condicao === "já possui designação") {
+    if (chkDesignado) chkDesignado.checked = true;
+    return;
+  }
+
+  if (frequencia) {
+    frequencia.value = dados.frequencia || "";
+
+    frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
+  }
+
+  if (Array.isArray(dados.diasTurnos)) {
+
+    dados.diasTurnos.forEach(item => {
+
+      const partes = item.split(" - ");
+      if (partes.length !== 2) return;
+
+      const dia = partes[0];
+      const turno = partes[1];
+
+      const checkbox = Array.from(checkboxes).find(cb =>
+        norm(cb.dataset.dia) === norm(dia) &&
+        norm(cb.dataset.turno) === norm(turno)
+      );
+
+      if (checkbox) {
+        checkbox.checked = true;
+      }
+    });
+  }
+}
+
+function abrirModalEditarDisponibilidade(funcao) {
+
+    acaoModalEditarDisponibilidade = funcao;
+
+    document
+        .getElementById("modalEditarDisponibilidade")
+        .classList.add("aberto");
+}
+
+function fecharModalEditarDisponibilidade() {
+
+    document
+        .getElementById("modalEditarDisponibilidade")
+        .classList.remove("aberto");
+}
+
+function executarAcaoModalEditarDisponibilidade() {
+
+    fecharModalEditarDisponibilidade();
+
+    if (typeof acaoModalEditarDisponibilidade === "function") {
+        acaoModalEditarDisponibilidade();
+    }
+}
+
+//MEU TREINAMENTO PRÁTICO x
+function consultarMeuTreinamento() {
+
+  console.log("🔥 consultarMeuTreinamento INICIOU");
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "consultarMeuTreinamento",
+    {
+      id: idUsuarioLogado
+    },
+
+    function(res) {
+      
+      console.log("🔥 RESPOSTA CHEGOU:", res);
+
+      esconderSpinner();
+
+      if (!res || res.sucesso === false) {
+        mostrarAlertaGlobal(res?.mensagem || "Sem dados");
+        return;
+      }
+
+      const container =
+        document.getElementById(
+          'resultadoMeuTreinamento'
+        );
+
+      container.innerHTML = '';
+
+      if (!res.sucesso) {
+
+        mostrarAlertaGlobal(
+          res.mensagem
+        );
+
+        return;
+      }
+
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
+
+      const thead =
+        tabela.createTHead();
+
+      const trHead =
+        thead.insertRow();
+
+      [
+        'Nome',
+        'Cong.',
+        'Contato',
+        'Ação'
+      ].forEach(texto => {
+
+        const th =
+          document.createElement('th');
+
+        th.textContent = texto;
+
+        trHead.appendChild(th);
+
+      });
+
+      const tbody =
+        tabela.createTBody();
+
+      const tr =
+        tbody.insertRow();
+
+      tr.insertCell().textContent =
+        res.nome;
+
+      tr.insertCell().textContent =
+        res.congregacao;
+
+      tr.insertCell().textContent =
+        res.telefone;
+
+      const tdAcao =
+        tr.insertCell();
+
+      const btnAcoes =
+        document.createElement('button');
+
+      btnAcoes.textContent =
+        '✅Concluir';
+
+      btnAcoes.classList.add(
+        'concluir-meu-treinamento'
+      );
+
+      btnAcoes.style.cursor =
+        'pointer';
+
+      btnAcoes.dataset.idTreinando =
+        res.idTreinando;
+
+      btnAcoes.dataset.idTreinador =
+        idUsuarioLogado;
+
+      btnAcoes.dataset.nomeTreinando =
+        res.nome;
+
+      tdAcao.appendChild(btnAcoes);
+
+      container.appendChild(
+        tabela
+      );
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err.message
+      );
+
+    }
+  );
+
+}
+document.addEventListener('click', function(e) {
+
+  if (e.target.classList.contains('concluir-meu-treinamento')) {
+
+    const modal =
+      document.getElementById('modalAcoesTreinador');
+
+    modal.dataset.idTreinando =
+      e.target.dataset.idTreinando;
+
+    modal.dataset.idTreinador =
+      e.target.dataset.idTreinador;
+
+    modal.dataset.nomeTreinando =
+      e.target.dataset.nomeTreinando;
+
+    modal.classList.remove('oculto');
+  }
+
+});
+
+document
+  .getElementById('acaoConcluirTreinador')
+  .addEventListener('click', async function () {
+
+    const modal =
+      document.getElementById('modalAcoesTreinador');
+
+    const nomeTreinando =
+      modal.dataset.nomeTreinando;
+
+    const confirmou =
+      await confirmarDecisao(
+        `Confirmar conclusão do treinamento de <b>${nomeTreinando}</b>?`,
+        'Concluir',
+        'Cancelar'
+      );
+
+    if (!confirmou) return;
+
+    const idTreinando =
+      modal.dataset.idTreinando;
+
+    const idTreinador =
+      modal.dataset.idTreinador;
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "concluirTreinamento",
+      {
+        idTreinando,
+        idTreinador
+      },
+      function(res) {
+
+        esconderSpinner();
+
+        fecharModalAcoesTreinador();
+
+        if (!res.sucesso) {
+          mostrarAlertaGlobal(res.mensagem);
+          return;
+        }
+
+        const modalAdmin =
+          document.getElementById(
+            'modalComunicarAdministrador'
+          );
+
+        modalAdmin.dataset.tipo = 'CONCLUSAO';
+        modalAdmin.dataset.nomeTreinador = res.nomeTreinador;
+        modalAdmin.dataset.nomeTreinando = res.nomeTreinando;
+        modalAdmin.dataset.dataHora = res.dataHora;
+
+        modalAdmin.classList.remove('oculto');
+
+        consultarMeuTreinamento();
+
+      },
+      function(err) {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal('❌ ' + err.message);
+
+      }
+    );
+
+  });
+
+  document
+  .getElementById('acaoDesistenciaTreinador')
+  .addEventListener('click', async function () {
+
+    const modal =
+      document.getElementById('modalAcoesTreinador');
+
+    const nomeTreinando =
+      modal.dataset.nomeTreinando;
+
+    const confirmou =
+      await confirmarDecisao(
+        `Confirma registrar a desistência de <b>${nomeTreinando}</b>?`,
+        'Sim',
+        'Cancelar'
+      );
+
+    if (!confirmou) return;
+
+    const idTreinando =
+      modal.dataset.idTreinando;
+
+    const idTreinador =
+      modal.dataset.idTreinador;
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "marcarDesistenciaTreinamento",
+      {
+        idTreinando,
+        idTreinador
+      },
+      function(res) {
+
+        esconderSpinner();
+
+        fecharModalAcoesTreinador();
+
+        if (!res.sucesso) {
+          mostrarAlertaGlobal(res.mensagem);
+          return;
+        }
+
+        const modalAdmin =
+          document.getElementById(
+            'modalComunicarAdministrador'
+          );
+
+        modalAdmin.dataset.tipo = 'DESISTENCIA';
+        modalAdmin.dataset.nomeTreinador = res.nomeTreinador;
+        modalAdmin.dataset.nomeTreinando = res.nomeTreinando;
+        modalAdmin.dataset.dataHora = res.dataHora;
+
+        modalAdmin.classList.remove('oculto');
+
+        consultarMeuTreinamento();
+
+      },
+      function(err) {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal('❌ ' + err.message);
+
+      }
+    );
+
+  });
+
+  function confirmarDecisao(mensagem, textoSim, textoNao) {
+  return new Promise((resolve) => {
+
+    const alerta = document.getElementById('confirmacaoGlobal');
+    const alertaMensagem = document.getElementById('confirmacaoMensagem');
+    const botaoOk = document.getElementById('confirmacaoBotaoOk');
+    const botaoCancelar = document.getElementById('confirmacaoBotaoCancelar');
+
+    alertaMensagem.innerHTML = mensagem;
+
+    botaoOk.textContent = textoSim || 'Sim';
+    botaoCancelar.textContent = textoNao || 'Não';
+
+    alerta.classList.remove('oculto');
+
+    botaoOk.onclick = () => {
+      alerta.classList.add('oculto');
+      resolve(true);
+    };
+
+    botaoCancelar.onclick = () => {
+      alerta.classList.add('oculto');
+      resolve(false);
+    };
+  });
+}
+
+function comunicarAdministrador() {
+
+  const modal =
+    document.getElementById(
+      'modalComunicarAdministrador'
+    );
+
+  const tipo =
+    modal.dataset.tipo;
+
+  const nomeTreinador =
+    modal.dataset.nomeTreinador;
+
+  const nomeTreinando =
+    modal.dataset.nomeTreinando;
+
+  const dataHora =
+    modal.dataset.dataHora;
+
+  let mensagemAdmin = '';
+
+  if (tipo === 'CONCLUSAO') {
+
+    mensagemAdmin =
+      "*TREINAMENTO CONCLUÍDO*\n\n" +
+      `👨‍🏫 Treinador: ${nomeTreinador}\n` +
+      `👤 Candidato: ${nomeTreinando}\n\n` +
+      `📅 Data e hora: ${dataHora}\n\n` +
+      "O treinamento foi concluído e encerrado no sistema.";
+
+  } else {
+
+    mensagemAdmin =
+      "*TREINAMENTO CANCELADO (DESISTÊNCIA)*\n\n" +
+      `👨‍🏫 Treinador: ${nomeTreinador}\n` +
+      `👤 Candidato: ${nomeTreinando}\n\n` +
+      `📅 Data e hora: ${dataHora}\n\n` +
+      "O candidato desistiu do treinamento.";
+
+  }
+
+  apiJSONP(
+    "gerarLinkWhatsAppAdministrador",
+    {
+      mensagem: mensagemAdmin
+    },
+    function(url) {
+
+      window.open(url, '_blank');
+
+      fecharModalAdministrador();
+
+    },
+    function(err) {
+
+      mostrarAlertaGlobal(err.message);
+
+    }
+  );
+
+}
+
+function verificarTreinamentoPendente() {
+
+  apiJSONP(
+    "verificarTreinamentoPendente",
+    {
+      idUsuarioLogado
+    },
+    function(res) {
+
+      if (!res.possuiTreinamento) {
+        return;
+      }
+
+      mostrarAlertaGlobal(
+
+        '🎓 Você possui um treinamento pendente com o candidato:\n\n' +
+
+        res.nome +
+
+        '\n\nAcesse "Meus Treinamentos" para concluir o processo após realizar o treinamento.'
+
+      );
+
+    },
+    function(err) {
+
+      console.error(err);
+
+    }
+  );
+
+}
+
+function fecharModalAcoesTreinador() {
+  document
+    .getElementById('modalAcoesTreinador')
+    .classList.add('oculto');
+}
+
+let irregularesEncontrados = [];
+
+function buscarIrregulares() {
+
+  const resultadoDiv =
+    document.getElementById('resultadoIrregulares');
+
+  const msg =
+    document.getElementById('msgIrregulares') || { textContent: () => {} };
+
+  resultadoDiv.innerHTML = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "buscarIrregulares",
+    {},
+    function(lista) {
+
+      esconderSpinner();
+
+      irregularesEncontrados = lista;
+
+      if (!lista || lista.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante irregular encontrado.");
+        return;
+      }
+
+      if (msg) {
+        msg.textContent = `✅ ${lista.length} irregular(es) encontrado(s).`;
+      }
+
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
+
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
+
+      ['Nome', 'Congregação', 'Telefone', 'Sexo'].forEach(txt => {
+        const th = document.createElement('th');
+        th.textContent = txt;
+        trHead.appendChild(th);
+      });
+
+      const tbody = tabela.createTBody();
+
+      lista.forEach(item => {
+
+        const tr = tbody.insertRow();
+
+        const tdNome = tr.insertCell();
+        tdNome.textContent = item.nome;
+
+        tdNome.dataset.nome = item.nome || '';
+        tdNome.dataset.congregacao = item.congregacao || '';
+        tdNome.dataset.telefone = item.telefone || '';
+        tdNome.dataset.sexo = item.sexo || '';
+        tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
+          ? JSON.stringify(item.diasTurnos)
+          : JSON.stringify(
+              (item.diasTurnos || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean)
+            );
+
+        tr.insertCell().textContent = item.congregacao || '';
+
+        const tdTelefone = tr.insertCell();
+
+        const telefoneOriginal = String(item.telefone || '');
+        const telefoneLimpo = telefoneOriginal.replace(/\D/g, '');
+
+        if (telefoneLimpo) {
+
+          const nome = item.nome || 'Participante';
+
+          const mensagem =
+            "*TPE SBC - Informativo*\n\n" +
+            "👤 Olá, " + nome + "\n\n" +
+            "📋 Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
+            "📲 Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
+            "👥 Em caso de email ou senha incorreta, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n" +
+            "*Seus irmãos*,\n" +
+            "*Equipe do TPE SBC*";
+
+          const linkWhatsApp =
+            "https://wa.me/55" +
+            telefoneLimpo +
+            "?text=" +
+            encodeURIComponent(mensagem);
+
+          const a = document.createElement('a');
+          a.href = linkWhatsApp;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = telefoneOriginal;
+          a.style.color = 'blue';
+          a.classList.add('enviar-whatsapp-irregulares');
+
+          tdTelefone.appendChild(a);
+
+        } else {
+          tdTelefone.textContent = telefoneOriginal;
+        }
+
+        tr.insertCell().textContent = item.sexo || '';
+      });
+
+      resultadoDiv.appendChild(tabela);
+
+      document.getElementById('dadosUsuarioContainerIr')
+        .style.display = 'inline-block';
+
+      document.getElementById('enviarEmailIrregularesBtn')
+        .style.display = "inline-block";
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal("❌ Erro na busca: " + err.message);
+
+    }
+  );
+
+}
+
+document.addEventListener('click', function (event) {
+    if (event.target && event.target.classList.contains('enviar-whatsapp-irregulares')) {
+      event.preventDefault(); 
+
+      if (perfilUsuario !== 'admin') {
+        mostrarAlertaGlobal("⚠️ Permitido apenas consultar quem não tem designação no TPE.");
+        return;
+      }
+
+      const link = event.target;
+
+      window.open(link.href, '_blank');
+
+      link.classList.remove('enviar-whatsapp-irregulares');
+      link.style.color = 'gray';
+      link.style.fontStyle = 'italic';
+
+      if (!link.dataset.enviado) {
+        link.innerHTML += ' <span title="Mensagem enviada">📤</span>';
+        link.dataset.enviado = 'true'; 
+      }
+    }
+  });
+
+  document
+  .getElementById('enviarEmailIrregularesBtn')
+  .addEventListener('click', function () {
+
+    if (!irregularesEncontrados || irregularesEncontrados.length === 0) {
+      mostrarAlertaGlobal(
+        "⚠️ Nenhum participante irregular encontrado para envio de e-mail."
+      );
+      return;
+    }
+
+    const telefone =
+      document.getElementById('telefoneInputUsuarioIr').value.trim();
+
+    const email =
+      document.getElementById('emailInputUsuarioIr').value.trim();
+
+    const nomeUsuarioAtual =
+      document.getElementById('nomeSelectUsuarioIr').value;
+
+    if (!nomeUsuarioAtual || !telefone || !email) {
+      mostrarAlertaGlobal(
+        "⚠️ Por favor, verifique se os dados do usuário (nome, telefone e e-mail) foram preenchidos corretamente antes de enviar os e-mails."
+      );
+      return;
+    }
+
+    const assunto = "Participante sem designação no TPE";
+
+    const mensagemBase =
+      "TPE SBC - Informativo\n\n" +
+      "Olá, querido(a) irmão(ã)\n\n" +
+      "Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
+      "Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
+      "Em caso de email ou senha incorretos, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n\n" +
+      "Seus irmãos,\nEquipe do TPE SBC";
+
+    mostrarConfirmacaoGlobal(
+      `📧 Deseja enviar e-mail para todos os <strong>${irregularesEncontrados.length}</strong> participantes irregulares encontrados?`,
+      () => {
+
+        mostrarSpinner();
+
+        const nomes =
+          irregularesEncontrados.map(p => p.nome);
+
+        apiJSONP(
+          "enviarEmailParaIrregularesComUsuario",
+          {
+            nomes,
+            nomeUsuarioAtual,
+            assunto,
+            mensagemBase
+          },
+          function () {
+
+            esconderSpinner();
+
+            mostrarAlertaGlobal(
+              "✅ E-mails enviados com sucesso!"
+            );
+
+          },
+          function (err) {
+
+            esconderSpinner();
+
+            mostrarAlertaGlobal(
+              `❌ Erro ao enviar e-mails: ${err.message}`
+            );
+
+          }
+        );
+
+      }
+    );
+
+  });
+
+  document.getElementById('nomeInputUsuarioIr').addEventListener('input', function () {
+
+    setTimeout(() => {
+      const nomeSelecionado = document.getElementById('nomeSelectUsuarioIr').value;
+
+      if (nomeSelecionado) {
+        pegarContatosDoUsuarioIr(nomeSelecionado);
+      } else {
+        console.warn("⚠️ Nenhum nome selecionado no select após digitar.");
+      }
+    }, 300); // 300ms costuma ser suficiente
+  });
+
+  function pegarContatosDoUsuarioIr(nome) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "pegarContatoUsuario",
+    {
+      nome
+    },
+    function(contato) {
+
+      esconderSpinner();
+
+      if (contato) {
+
+        const telefoneInput =
+          document.getElementById('telefoneInputUsuarioIr');
+
+        const emailInput =
+          document.getElementById('emailInputUsuarioIr');
+
+        const nomeSelect =
+          document.getElementById('nomeSelectUsuarioIr');
+
+        telefoneInput.value = contato.telefone || '';
+        emailInput.value = contato.email || '';
+
+        telefoneInput.disabled = true;
+        emailInput.disabled = true;
+        nomeSelect.disabled = true;
+
+        const container =
+          document.querySelector('#dadosUsuarioContainerIr > div[style*="display: none"]');
+
+        if (container) {
+          container.style.display = 'block';
+        } else {
+          esconderSpinner();
+        }
+
+      } else {
+
+        esconderSpinner();
+        console.warn("⚠️ Nenhum contato retornado.");
+
+      }
+
+    },
+    function(erro) {
+
+      esconderSpinner();
+      console.error("❌ Erro ao buscar contato do usuário:", erro.message);
+
+    }
+  );
+
 }
 

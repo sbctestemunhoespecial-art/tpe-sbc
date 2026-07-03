@@ -12,6 +12,363 @@
 
 <body>
 
+<div class="top-bar">
+  <button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
+  <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
+
+  <div id="sidebar" class="sidebar">
+    <a href="#" onclick="event.preventDefault(); sair()" >Sair</a>
+    <!--<a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telaUsuarioLogado'); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);" class="bloquear-treinandos">Minha Disponibilidade</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('minhaInfo'); pesquisarMinhaInfo();">Meu cadastro</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telameutreinamentopratico'); pesquisarTP()" class="so-treinandos">Treinamento prático</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telamapas'); carregarMapaQuandoClicar();" class="so-participantes">Mapa</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('participantes')" class="so-organizadores">Cadastro geral</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('disponiveis')" class="so-escalas">Disponíveis</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('disponibilidadeBuscadaSub')" class="so-organizadores">Substitutos</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telaeventos')" class="so-participantes">Eventos</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('escalas')" class="so-participantes">Escalas</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('designar')" class="so-escalas">Designar</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('admin')" class="so-admin">Administração</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('vagas')" class="so-organizadores">Vagas</a>-->
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('congregacoes')" class="so-organizadores">Congregações</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('relatorios')" class="so-organizadores">Relatórios</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('estatisticas')" class="so-participantes">Estatisticas</a>
+    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('perfil')" class="so-admin">Perfil</a>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+</div>
+
+<div id="modalEditarDisponibilidade" class="modal-editar">
+
+  <div class="conteudo-modal-editar">
+
+    <div class="cabecalho-modal">
+
+      <h3>Cique para alterar a sua disponbilidade</h3>
+
+      <button
+        class="fechar-modal-editar"
+        onclick="fecharModalEditarDisponibilidade()">
+        ❌
+      </button>
+
+    </div>
+
+    <button
+      id="btnEditarDisponibilidadeUsuario"
+      onclick="executarAcaoModalEditarDisponibilidade()"
+      class="botao editar"
+      style="width:100%;">
+
+      ✏️ Editar Disponibilidade
+
+    </button>
+
+  </div>
+
+</div>
+
+<div id="modalAlterarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>Alterar Treinador</h3>
+
+    <select id="listaNomesTrei">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <div style="margin-top:10px;">
+      <input type="text"
+             id="filtroBuscaTrei"
+             placeholder="Digite o nome para pesquisar...">
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+
+      <button type="button"
+              onclick="confirmarAlteracaoTreinador()">
+        Alterar
+      </button>
+
+      <button type="button"
+              onclick="fecharModalTreinador()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalComunicarAdministrador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Coordenador</h3>
+
+    <p>
+      Deseja comunicar o coordenador do TPE pelo WhatsApp?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button
+        type="button"
+        onclick="comunicarAdministrador()">
+
+        ✅ Sim
+
+      </button>
+
+      <button
+        type="button"
+        onclick="fecharModalAdministrador()">
+
+        ❌ Não
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalComunicarTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>📲 Comunicar Treinador</h3>
+
+    <p>
+      Deseja comunicar o novo treinador pelo WhatsApp?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button
+        type="button"
+        onclick="comunicarNovoTreinador()">
+
+        ✅ Sim
+
+      </button>
+
+      <button
+        type="button"
+        onclick="fecharModalComunicacao()">
+
+        ❌ Não
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📌 Confirmar Designação</h3>
+
+    <p>
+      Deseja realmente designar este treinador para o participante?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button onclick="confirmarDesignacao()">✅ Sim</button>
+      <button onclick="fecharModalDesignacao()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
+  <div class="conteudo-modal">
+
+    <h3>📲 Enviar WhatsApp</h3>
+
+    <p>
+      Deseja enviar mensagem para o treinador designado?
+    </p>
+
+    <div class="botoes-modal">
+
+      <button onclick="enviarWhatsappDesignacao()">📤 Sim</button>
+      <button onclick="fecharModalWhatsapp()">❌ Não</button>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="modalAcoesTreinamento" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>O que você quer fazer?</h3>
+
+    <button id="acaoConcluir">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button id="acaoDesistencia">
+      🚫 Registrar Desistência
+    </button>
+
+    <button id="acaoAlterarTreinador">
+      ✏️ Alterar Treinador
+    </button>
+
+    <button id="acaoLembrete">
+      🔔 Lembrete Para Treinador
+    </button>
+
+    <button onclick="fecharModalAcoesTreinamento()">
+      ❌ Fechar
+    </button>
+
+  </div>
+
+</div>
+
+<div id="modalAcoesTreinador" class="oculto">
+
+  <div class="conteudo-modal">
+
+    <h3>Q que você quer fazer?</h3>
+
+    <button id="acaoConcluirTreinador">
+      ✅ Concluir Treinamento
+    </button>
+
+    <button id="acaoDesistenciaTreinador">
+      ❌ Registrar Desistência
+    </button>
+
+    <button onclick="fecharModalAcoesTreinador()">
+      Fechar
+    </button>
+
+  </div>
+
+</div>
+
+<div id="modalDesignados">
+
+    <div class="conteudo-modal">
+
+        <h3>Quem será substituído?</h3>
+
+        <div id="listaDesignados"></div>
+
+        <div style="Display:flex">
+        <button onclick="confirmarNenhumDesignados()">Ninguém</button>
+        <button onclick="fecharModalDesignados()">Cancelar</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="modalSubstituicao">
+  <div class="conteudo-modal">
+    <h3>Quem deve sair?</h3>
+
+    <div id="listaSubstituicao"></div>
+
+    <div style="display:flex">
+      <button onclick="confirmarNenhum()">Ninguém</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="modalParticipantes" class="modal-overlay oculto">
+
+  <div class="conteudo-modal">
+
+    <div class="modal-topo">
+      <h3>👤 Selecionar Participante</h3>
+
+      <!-- X pequeno no canto -->
+      <button
+        type="button"
+        class="btn-fechar-modal"
+        onclick="fecharModalParticipantes()">
+        ✖
+      </button>
+    </div>
+
+    <select id="selectModalParticipantes" size="5">
+      <option value="">- Selecione -</option>
+    </select>
+
+    <h3>🔎 Filtrar participante</h3>
+
+    <input
+      type="text"
+      id="filtroModalParticipantes"
+      placeholder="Digite o nome para pesquisar...">
+
+    <div class="modal-botoes">
+
+      <button
+        type="button"
+        onclick="confirmarSelecaoParticipante()">
+        ✅ Selecionar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="confirmacaoGlobal" class="oculto">
+
+  <div class="conteudo-confirmacao">
+
+    <p id="confirmacaoMensagem"></p>
+
+    <div class="botoes-confirmacao">
+      <button id="confirmacaoBotaoOk">
+        Confirmar
+      </button>
+
+      <button id="confirmacaoBotaoCancelar">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="alertaGlobal" class="oculto">
+
+  <div class="conteudo-alerta">
+
+    <span id="alertaMensagem"></span>
+
+    <br><br>
+
+    <button class="alerta-btn" id="alertaBotaoOk">
+      Ok
+    </button>
+
+  </div>
+
+</div>
+
     <!-- SPINNER GLOBAL -->
 
 <div id="spinnerGlobal" style="
@@ -470,191 +827,90 @@
 
         <!-- MENU -->
 
-        <div id="menuCards" class="tela aberta">
-
-            <div class="cards-menu">
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">👤</div>
-
-                    <div class="titulo">
-                        Meu Perfil
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🎓</div>
-
-                    <div class="titulo">
-                        Meus Treinamentos
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🕒</div>
-
-                    <div class="titulo">
-                        Disponibilidade Geral
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🕒</div>
-
-                    <div class="titulo">
-                        Minha Disponibilidade
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🎊</div>
-
-                    <div class="titulo">
-                        Eventos
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">📅</div>
-
-                    <div class="titulo">
-                        Escalas
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🌍</div>
-
-                    <div class="titulo">
-                        Mapas
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🧑‍🤝‍🧑</div>
-
-                    <div class="titulo">
-                        Participantes
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-escalas"
-                    onclick="abrirTela('painelSemDisponibilidade', this)">
-
-                    <div class="icone">⚠️</div>
-
-                    <div class="titulo">
-                        Participantes Sem Disponibilidade
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-admin"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🎓</div>
-
-                    <div class="titulo">
-                        Dias dos Candidatos para Treinamento
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-treinandos"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🎓</div>
-
-                    <div class="titulo">
-                        Meus Dias Para Treinamento
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-escalas"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">👥</div>
-
-                    <div class="titulo">
-                        Disponíveis
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-escalas"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">✅</div>
-
-                    <div class="titulo">
-                        Designar
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-admin"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">👨‍💼</div>
-
-                    <div class="titulo">
-                        Administração
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">🪑</div>
-
-                    <div class="titulo">
-                        Vagas
-                    </div>
-
-                </div>
-
-                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                    onclick="alert('Em migração')">
-
-                    <div class="icone">📈</div>
-
-                    <div class="titulo">
-                        Relatórios
-                    </div>
-
-                </div>
-
-            </div>
-
+          <div id="menuCards" class="tela aberta">
+      <div class="cards-menu">
+        <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
+            onclick="abrirTela('minhaInfo', this); pesquisarMinhaInfo();">
+            <div class="icone">👤</div>
+            <div class="titulo">Meu Perfil</div>
         </div>
-
-    </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('painelMeusTreinamentos', this); consultarMeuTreinamento();">
+            <div class="icone">🎓</div>
+            <div class="titulo">Meus Treinamentos</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+            onclick="abrirTela('disponibilidade', this)">
+            <div class="icone">🕒</div>
+            <div class="titulo">Disponibilidade Geral</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('telaUsuarioLogado', this)"><!-- onclick="abrirTela('telaUsuarioLogado', this); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);"> -->
+            <div class="icone">🕒</div>
+            <div class="titulo">Minha Disponibilidade</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('telaeventos', this)">
+            <div class="icone">🎊</div>
+            <div class="titulo">Eventos</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('escalas', this)">
+            <div class="icone">📅</div>
+            <div class="titulo">Escalas</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('telamapas', this); carregarMapaQuandoClicar();">
+            <div class="icone">🌍</div>
+            <div class="titulo">Mapas</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+            onclick="abrirTela('participantes', this)">
+            <div class="icone">🧑‍🤝‍🧑</div>
+            <div class="titulo">Participantes</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-escalas"
+            onclick="abrirTela('painelSemDisponibilidade', this)">
+            <div class="icone">⚠️</div>
+            <div class="titulo">Participantes Sem Disponibilidade</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-admin"
+            onclick="abrirTela('telameutreinamentopratico', this)">
+            <div class="icone">🎓</div>
+            <div class="titulo">Dias dos Candidatos para Treinamento</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-treinandos"
+            onclick="abrirTela('telameutreinamentopraticoId', this); pesquisarTPPorId();">
+            <div class="icone">🎓</div>
+            <div class="titulo">Meus Dias Para Treinamento</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-escalas"
+            onclick="abrirTela('disponiveis', this)">
+            <div class="icone">👥</div>
+            <div class="titulo">Disponíveis</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-escalas"
+            onclick="abrirTela('designar', this)">
+            <div class="icone">✅</div>
+            <div class="titulo">Designar</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-admin"
+            onclick="abrirTela('admin', this)">
+            <div class="icone">👨‍💼</div>
+            <div class="titulo">Administração</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+            onclick="abrirTela('vagas', this)">
+            <div class="icone">🪑</div>
+            <div class="titulo">Vagas</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+            onclick="abrirTela('relatorios', this)">
+            <div class="icone">📈</div>
+            <div class="titulo">Relatórios</div>
+        </div>
+      </div>
+  </div>
 
 <div id="painelSemDisponibilidade" class="painel-exportar tela"> <!-- AQUI TERMINA O PAINEL PARTICIPANTES SEM DISPONIBILIDADE-->
 
@@ -732,6 +988,2726 @@
     </table>
 
 </div>
+
+<div id="minhaInfo" class="painel tela"> 
+
+    <h3>👤 Meu Perfil</h3>
+    <div id="painelMinhaInfo">
+      
+    <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Congregação</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBodyMinhaInfo"></tbody>
+    </table>
+
+    <table id="tabelaInfoPessoal2MinhaInfo" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Contato</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBody2MinhaInfo"></tbody>
+    </table>
+
+    <table id="tabelaClassificacaoMinhaInfo" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Grupo</th>
+            <th>Sexo</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+      <tbody id="classificacaoBodyMinhaInfo"></tbody>
+    </table>
+
+    <table id="tabelaDetalhesMinhaInfo" style="display:none;" class="tabela-sistema">
+        <colgroup>
+          <col style="width: 20%;">  
+          <col>                      
+        </colgroup>
+          <thead>
+            <tr>
+              <th>TCS</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+        <tbody id="detalhesBodyMinhaInfo">
+      </tbody>
+    </table>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgSalvarAlteracoesMinhaInfo" class="mensagem-verde"></p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgExcluirMinhaInfo" class="mensagem-verde"></p>
+      </div>
+
+    <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
+
+    <h4 class="titulo-secao">Designações</h4>
+
+    <div class="card-info">
+        <span id="campoDesignacao1Mi"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao2Mi"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao3Mi"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao4Mi"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao5Mi"></span>
+    </div>
+
+    <span id="campoIdentificacaoMi" style="display:none;"></span>
+
+</div>
+
+<div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
+
+    <h4 class="titulo-secao">Privilégios</h4>
+
+    <div class="lista-privilegios">
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Coordenação</span>
+            <span id="campoPrivOrganizacaoMi"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">AAC</span>
+            <span id="campoPrivAACMi"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Escalas</span>
+            <span id="campoPrivEscalasMi"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Equipe</span>
+            <span id="campoPrivEquipesMi"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Treinador</span>
+            <span id="campoPrivTreinadorMi"></span>
+        </div>
+
+    </div>
+
+</div>
+
+  </div>
+</div>
+
+
+  <div id="telaUsuarioLogado" class="painel tela">
+  
+    <h3>🕒 Minha Disponibilidade</h3>
+
+      <div class="linha-substituicao">
+
+          <span id="textoDesignacaoFixa" class="nome-pesquisado texto-verde">
+              JÁ TENHO DESIGNAÇÃO FIXA
+          </span>
+        
+        <div style="margin:50px 0;">
+          <label class="switchVerde">
+              <input
+                  type="checkbox"
+                  id="jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade"
+                  onchange="alternarDesignadoID(); selecionarModoDisponibilidade(this);">
+              <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="linha-substituicao">
+
+          <span id="textoSubstituicao" class="nome-pesquisado texto-vermelho">
+              SOMENTE SUBSTITUIÇÃO
+          </span>
+
+        <div style="margin:50px 0;">
+          <label class="switchVermelho">
+              <input
+                  type="checkbox"
+                  id="somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade"
+                  onchange="alternarSomenteSubstituicaoID(); selecionarModoDisponibilidade(this);">
+              <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+    <div class="linha-substituicao">
+      
+      <span id="textoTipoDisponibilidade2h" class="nome-pesquisado texto-azul">
+        DISPONÍVEL SOMENTE PARA 2 HORAS
+      </span>
+
+      <div style="margin:50px 0;">
+        <label class="switch">
+          <input
+            type="checkbox"
+            id="tipoDisponibilidade2h"
+            onchange="selecionarModoDisponibilidade(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="linha-substituicao">
+
+    <span id="textoTipoDisponibilidade4h" class="nome-pesquisado texto-roxo">
+      DISPONÍVEL PARA 4 HORAS
+    </span>
+         
+      <div style="margin:50px 0;">
+        <label class="switchRoxo">
+          <input
+            type="checkbox"    
+            id="tipoDisponibilidade4h"
+            onchange="selecionarModoDisponibilidade(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+            <div class="cards-menu">
+              <div id="card2h" class="card-menu btn-relatoriosSubMenu so-participantes card-desabilitado"
+                  onclick="abrirTela('disponibilidadeContainerUsuarioLogado2h', this)"><!-- onclick="abrirTela('disponibilidadeContainerUsuarioLogado2h', this); pesquisarDisponibilidadeUsuarioLogado2h();">-->
+                  <div class="icone">🕒</div>
+                  <div class="titulo">2 Horas</div>
+              </div>
+              <div id="card4h" class="card-menu btn-relatoriosSubMenu so-participantes card-desabilitado"
+                  onclick="abrirTela('disponibilidadeContainerUsuarioLogado4h', this)"><!-- onclick="abrirTela('disponibilidadeContainerUsuarioLogado4h', this); pesquisarDisponibilidadeUsuarioLogado4h();">-->
+                  <div class="icone">🕒</div>
+                  <div class="titulo">4 Horas</div>
+              </div>
+            </div>
+  </div>
+
+
+    <div id="disponibilidadeContainerUsuarioLogado2h" class="painel-exportar tela">
+
+    <h3>🕒 Minha Disponibilidade Para 2 Horas</h3>
+
+    <div class="painel-disponibilidade">
+
+        <div class="linha-frequencia">
+
+            <label for="frequenciaDisponibilidadeUsuarioLogado2h">
+                Selecione sua disponibilidade
+            </label>
+
+            <select id="frequenciaDisponibilidadeUsuarioLogado2h">
+                <option value="">Selecione a frequência</option>
+                <option value="Semanal">Uma vez por semana</option>
+                <option value="Quinzenal">Uma vez a cada 15 dias</option>
+                <option value="Mensal">Uma vez por mês</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <table id="tabelaDisponibilidadeUsuarioLogado2h" class="tabela-sistema tabela-destaque"> <!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Manhã 09-11h</th>
+          <th>Manhã 11-13h</th>
+          <th>Tarde 13-15h</th>
+          <th>Tarde 15-17h</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <script>
+
+          const diasUsuario = [
+            "Segunda",
+            "Terça",
+            "Quarta",
+            "Quinta",
+            "Sexta",
+            "Sábado",
+            "Domingo"
+          ];
+
+          const turnosUsuario = [
+            "Manhã (9-11h)",
+            "Manhã (11-13h)",
+            "Tarde (13-15h)",
+            "Tarde (15-17h)"
+          ];
+
+          diasUsuario.forEach(dia => {
+
+            document.write("<tr>");
+
+            document.write(
+              `<th>${dia}</th>`
+            );
+
+            turnosUsuario.forEach(turno => {
+
+              document.write(`
+                <td>
+                  <input
+                    type="checkbox"
+                    class="dia-turno-usuario"
+                    data-dia-u="${dia}"
+                    data-turno-u="${turno}"
+                    disabled>
+                </td>
+              `);
+
+            });
+
+            document.write("</tr>");
+
+          });
+
+        </script>
+
+      </tbody>
+
+    </table>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+
+      <button
+        id="btnEditarDisponibilidadeUsuarioLogado2h"
+        onclick="alternarModoEdicaoUsuarioLogado2h()"
+        class="botao editar"
+        style="flex:1;">
+
+        ✏️ Editar Disponibilidade
+
+      </button>
+
+      <button
+        onclick="salvarDisponibilidadeIdUsuarioLogado2h()"
+        class="botao salvar"
+        style="flex:1;">
+
+        💾 Salvar Disponibilidade
+
+      </button>
+
+    </div>
+
+  </div>
+
+    <div id="disponibilidadeContainerUsuarioLogado4h" class="painel-exportar so-participantes bloquear-treinandos tela">
+
+      <h3>🕒 Minha Disponibilidade Para 4 Horas</h3>
+
+      <div class="painel-disponibilidade">
+
+        <div class="linha-frequencia">
+
+            <label for="frequenciaDisponibilidadeUsuarioLogado4h">
+                Selecione sua disponibilidade
+            </label>
+
+            <select id="frequenciaDisponibilidadeUsuarioLogado4h">
+                <option value="">Selecione a frequência</option>
+                <option value="Semanal">Uma vez por semana</option>
+                <option value="Quinzenal">Uma vez a cada 15 dias</option>
+                <option value="Mensal">Uma vez por mês</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+      <table id="tabelaDisponibilidadeUsuarioLogado4h" class="tabela-sistema tabela-destaque">
+            <!--border="1"
+            cellpadding="8"
+            cellspacing="0"
+            style="border-collapse: collapse;">-->
+
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Matinal</th>
+            <th>Manhã</th>
+            <th>Tarde</th>
+            <th>Noite</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <script>
+
+            const diasID = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+            const turnosID = ["Matinal","Manhã","Tarde","Noite"];
+
+            diasID.forEach(dia => {
+
+              document.write('<tr>');
+              document.write(`<th>${dia}</th>`);
+
+              turnosID.forEach(turno => {
+
+                document.write(`
+                  <td>
+                    <input type="checkbox"
+                          class="dia-turno-id"
+                          data-dia-id="${dia}"
+                          data-turno-id="${turno}"
+                          disabled>
+                  </td>
+                `);
+
+              });
+
+              document.write('</tr>');
+
+            });
+
+          </script>
+
+        </tbody>
+
+      </table>
+
+      <div style="display:flex;gap:10px;margin-top:20px;">
+
+        <button id="btnEditarDisponibilidadeUsuarioLogado4h"
+                onclick="alternarModoEdicaoUsuarioLogado4h()"
+                class="botao editar"
+                style="flex:1;">
+                ✏️ Editar Disponibilidade
+        </button>
+
+        <button onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
+                class="botao salvar"
+                style="flex:1;">
+                💾 Salvar Disponibilidade
+        </button>
+
+      </div>
+
+  </div>
+
+    <div id="disponibilidade" class="painel tela"> 
+    
+    <h3>🕒 Disponibilidade dos Participantes</h3>
+            <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                  onclick="abrirTela('disponibilidadeContainerNovoPonto20', this)">
+                  <div class="icone">🕒</div>
+                  <div class="titulo">Turnos de 2 Horas</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                  onclick="abrirTela('disponibilidadeContainer', this)">
+                  <div class="icone">🕒</div>
+                  <div class="titulo">Turnos de 4 Horas</div>
+              </div>
+            </div>
+  </div>
+
+    <div id="disponibilidadeContainerNovoPonto20" class="painel-exportar tela">
+
+    <h3>🕒 Disponibilidade dos Participantes (2 Horas)</h3>
+
+      <div style="display:flex">
+        <button
+          type="button"
+          onclick="abrirSelecao2horas()">
+          👤 Selecionar
+        </button>
+        <button 
+          type="button" 
+          id= "btnPesqDispNovoPonto20" 
+          onclick="pesquisarDisponibilidadeNovoPonto20()">
+          🔍 Ver disponibilidade
+        </button>
+      </div>
+
+      <div id="duasHoras" class="nome-pesquisado"></div>
+
+<div class="painel-disponibilidade">
+
+    <div class="linha-substituicao">
+
+        <span class="rotulo-substituicao">
+            Já tenho designação fixa
+        </span>
+
+        <label class="switch">
+            <input
+                type="checkbox"
+                id="jaTenhoDesignacaoNovoPonto20"
+                onchange="alternarDesignadoNovoPonto20()">
+            <span class="slider"></span>
+        </label>
+
+    </div>
+
+    <div class="linha-substituicao">
+
+        <span class="rotulo-substituicao">
+            Disponível só pra substituição
+        </span>
+
+        <label class="switch">
+            <input
+                type="checkbox"
+                id="somenteSubstituicaoNovoPonto20"
+                onchange="alternarSomenteSubstituicaoNovoPonto20()">
+            <span class="slider"></span>
+        </label>
+
+    </div>
+
+    <div class="linha-frequencia">
+
+        <label for="frequenciaDisponibilidadeNovoPonto20">
+            Selecione sua disponibilidade
+        </label>
+
+        <select id="frequenciaDisponibilidadeNovoPonto20">
+            <option value="">Selecione a frequência</option>
+            <option value="Semanal">Uma vez por semana</option>
+            <option value="Quinzenal">Uma vez a cada 15 dias</option>
+            <option value="Mensal">Uma vez por mês</option>
+        </select>
+
+    </div>
+
+</div>
+    
+    <!-- Tabela com dias e turnos -->
+    <table id="tabelaDisponibilidadeNovoPonto20" class="tabela-sistema tabela-destaque"> <!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Manhã 09-11h</th>
+          <th>Manhã 11-13h</th>
+          <th>Tarde 13-15h</th>
+          <th>Tarde 15-17h</th>
+        </tr>
+      </thead>
+      <tbody>
+        <script>
+          const diasN = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+          const turnosN = ["Manhã (9-11h)", "Manhã (11-13h)", "Tarde (13-15h)", "Tarde (15-17h)"];
+
+          diasN.forEach(diaN => {
+            document.write('<tr>');
+            document.write(`<td>${diaN}</td>`);
+            turnosN.forEach(turnoN => {
+              document.write(`
+                <td>
+                  <input type="checkbox"
+                        class="dia-turno-novoPonto20"
+                        data-dia-n="${diaN}"
+                        data-turno-n="${turnoN}"
+                        disabled>
+
+                </td>`);
+            });
+            document.write('</tr>');
+          });
+        </script>
+      </tbody>
+    </table>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button id="btnEditarDisponibilidadeNovoPonto20"
+                  onclick="alternarModoEdicaoNovoPonto20()" class="botao editar"
+                  style="flex: 1;">✏️ Editar Disponibilidade</button>
+
+          <button onclick="salvarDisponibilidade2h()" class="botao salvar"
+                  style="flex: 1;">💾 Salvar Disponibilidade</button>
+        </div>
+
+  </div>
+
+    <div id="disponibilidadeContainer" class="painel-exportar so-participantes bloquear-treinandos tela">
+    <h3>🕒 Disponibilidade dos Participantes (4 Horas)</h3>
+
+      <div style="display:flex">
+        <button
+          type="button"
+          onclick="abrirSelecao4horas()">
+          👤 Selecionar
+        </button>
+        <button 
+          type="button" 
+          id= "btnPesqDisp" 
+          onclick="pesquisarDisponibilidade()">
+          🔍 Ver disponibilidade
+        </button>
+      </div>
+
+    <div id="quatroHoras" class="nome-pesquisado"></div>
+
+    <div class="painel-disponibilidade">
+
+      <div class="linha-substituicao">
+
+          <span class="rotulo-substituicao">
+              Já tenho designação fixa
+          </span>
+
+          <label class="switch">
+              <input
+                  type="checkbox"
+                  id="jaTenhoDesignacao"
+                  onchange="alternarDesignado()">
+              <span class="slider"></span>
+          </label>
+
+      </div>
+
+      <div class="linha-substituicao">
+
+          <span class="rotulo-substituicao">
+              Disponível só pra substituição
+          </span>
+
+          <label class="switch">
+              <input
+                  type="checkbox"
+                  id="somenteSubstituicao"
+                  onchange="alternarSomenteSubstituicao()">
+              <span class="slider"></span>
+          </label>
+
+      </div>
+
+      <div class="linha-frequencia">
+
+          <label for="frequenciaDisponibilidade">
+              Selecione sua disponibilidade
+          </label>
+
+          <select id="frequenciaDisponibilidade">
+              <option value="">Selecione a frequência</option>
+              <option value="Semanal">Uma vez por semana</option>
+              <option value="Quinzenal">Uma vez a cada 15 dias</option>
+              <option value="Mensal">Uma vez por mês</option>
+          </select>
+
+      </div>
+
+  </div>
+    
+
+    <!-- Tabela com dias e turnos -->
+    <table id="tabelaDisponibilidade" class="tabela-sistema tabela-destaque"><!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Matinal</th>
+          <th>Manhã</th>
+          <th>Tarde</th>
+          <th>Noite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <script>
+          const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+          const turnos = ["Matinal", "Manhã", "Tarde", "Noite"];
+
+          dias.forEach(dia => {
+            document.write('<tr>');
+            document.write(`<td>${dia}</td>`);
+            turnos.forEach(turno => {
+              document.write(`
+                <td>
+                  <input type="checkbox"
+                        class="dia-turno"
+                        data-dia="${dia}"
+                        data-turno="${turno}"
+                        disabled>
+
+                </td>`);
+            });
+            document.write('</tr>');
+          });
+        </script>
+      </tbody>
+    </table>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button id="btnEditarDisponibilidade"
+                  onclick="alternarModoEdicao()" class="botao editar"
+                  style="flex: 1;">✏️ Editar Disponibilidade</button>
+
+          <button onclick="salvarDisponibilidadeParticipante4h()" class="botao salvar"
+                  style="flex: 1;">💾 Salvar Disponibilidade</button>
+        </div>
+
+  </div>
+
+    <div id="telameutreinamentopratico" class="painel tela"> 
+
+    <h3>🎓 Dias dos Candidatos para Treinamento</h3>
+    <div id="treinamentoPraticoContainer">
+      <!--<h3>treinamentoPratico</h3>-->
+
+    <!--<div style="display:none">
+        <select id="listaNomesTP"><option value="">- Selecione -</option></select>
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="text" id="filtroBuscaTP" placeholder="Digite o nome para pesquisar...">
+        </div>
+    </div>-->
+
+        <div style="display: flex">
+        <button
+            type="button"
+            onclick="abrirSelecaoCandidatoTreinamentoPratico()">
+            👤 Ver Candidato
+          <!--</button>
+          <button type="button" id= "btnPesqDispTP" onclick="pesquisarTP()">🔍 Disponibilidade</button>-->
+        </div>
+
+          <div id="candidatoTreinamentoPratico" class="nome-pesquisado"></div>
+      
+      <!-- Tabela com dias e turnos   <table id="tabelaTP" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;"> -->class="tabela-sistema"
+      <table id="tabelaTP" class="tabela-sistema tabela-destaque">
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Matinal<br>6h às 9h</th>
+            <th>Manhã<br>9h às 1h</th>
+            <th>Tarde<br>1h às 5h</th>
+            <th>Noite<br>5h às 8h</th>
+          </tr>
+        </thead>
+        <tbody>
+          <script>
+            const diasT = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"];
+            const turnosT = ["Matinal", "Manhã", "Tarde", "Noite"];
+
+            diasT.forEach(diaT => {
+              document.write('<tr>');
+              document.write(`<td>${diaT}</td>`);
+              turnosT.forEach(turnoT => {
+                document.write(`
+                  <td>
+                    <input type="checkbox"
+                          class="dia-turno-treinamentoPratico"
+                          data-dia-t="${diaT}"
+                          data-turno-t="${turnoT}"
+                          disabled>
+
+                  </td>`);
+              });
+              document.write('</tr>');
+            });
+          </script>
+        </tbody>
+      </table>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button id="btnEditarTP"
+                    onclick="alternarModoEdicaoTP()" class="botao editar"
+                    style="flex: 1;">✏️ Editar Disponibilidade</button>
+
+            <button onclick="salvarTP()" class="botao salvar"
+                    style="flex: 1;">💾 Salvar Disponibilidade</button>
+          </div>
+
+    </div>
+  </div>
+
+    <div id="telameutreinamentopraticoId" class="painel tela">
+
+    <h3>🎓 Meus Dias Para Treinamento</h3>
+
+    <div id="treinamentoPraticoContainerId">
+
+      <!--<div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button"
+                id="btnPesqDispTPId"
+                onclick="pesquisarTPPorId()">
+          🔍 Ver disponibilidade
+        </button>
+      </div>-->
+
+      <!--<table id="tabelaTPId" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+      <table id="tabelaTPId" class="tabela-sistema tabela-destaque">
+
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Matinal<br>6h às 9h</th>
+            <th>Manhã<br>9h às 1h</th>
+            <th>Tarde<br>1h às 5h</th>
+            <th>Noite<br>5h às 8h</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <script>
+
+            const diasTId = [
+              "Segunda",
+              "Terça",
+              "Quarta",
+              "Quinta",
+              "Sexta",
+              "Sabado",
+              "Domingo"
+            ];
+
+            const turnosTId = [
+              "Matinal",
+              "Manhã",
+              "Tarde",
+              "Noite"
+            ];
+
+            diasTId.forEach(diaTId => {
+
+              document.write('<tr>');
+              document.write(`<td>${diaTId}</td>`);
+
+              turnosTId.forEach(turnoTId => {
+
+                document.write(`
+                  <td>
+                    <input type="checkbox"
+                          class="dia-turno-treinamentoPraticoId"
+                          data-dia-t-id="${diaTId}"
+                          data-turno-t-id="${turnoTId}"
+                          disabled>
+                  </td>
+                `);
+
+              });
+
+              document.write('</tr>');
+
+            });
+
+          </script>
+        </tbody>
+
+      </table>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+
+        <button id="btnEditarTPId"
+                onclick="alternarModoEdicaoTPId()"
+                class="botao editar"
+                style="flex: 1;">
+          ✏️ Editar Disponibilidade
+        </button>
+
+        <button onclick="salvarTPPorId()"
+                class="botao salvar"
+                style="flex: 1;">
+          💾 Salvar Disponibilidade
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    <div id="minhaInfo" class="painel tela"> 
+
+      <h3>👤 Meu Perfil</h3>
+      <div id="painelMinhaInfo">
+        
+      <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Congregação</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBodyMinhaInfo"></tbody>
+      </table>
+
+      <table id="tabelaInfoPessoal2MinhaInfo" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Contato</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBody2MinhaInfo"></tbody>
+      </table>
+
+      <table id="tabelaClassificacaoMinhaInfo" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Grupo</th>
+              <th>Sexo</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+        <tbody id="classificacaoBodyMinhaInfo"></tbody>
+      </table>
+
+      <table id="tabelaDetalhesMinhaInfo" style="display:none;" class="tabela-sistema">
+          <colgroup>
+            <col style="width: 20%;">  
+            <col>                      
+          </colgroup>
+            <thead>
+              <tr>
+                <th>TCS</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+          <tbody id="detalhesBodyMinhaInfo">
+        </tbody>
+      </table>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgSalvarAlteracoesMinhaInfo" class="mensagem-verde"></p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgExcluirMinhaInfo" class="mensagem-verde"></p>
+        </div>
+
+      <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
+
+      <h4 class="titulo-secao">Designações</h4>
+
+      <div class="card-info">
+          <span id="campoDesignacao1Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao2Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao3Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao4Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao5Mi"></span>
+      </div>
+
+      <span id="campoIdentificacaoMi" style="display:none;"></span>
+
+  </div>
+
+  <div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
+
+      <h4 class="titulo-secao">Privilégios</h4>
+
+      <div class="lista-privilegios">
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Coordenação</span>
+              <span id="campoPrivOrganizacaoMi"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">AAC</span>
+              <span id="campoPrivAACMi"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Escalas</span>
+              <span id="campoPrivEscalasMi"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Equipe</span>
+              <span id="campoPrivEquipesMi"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Treinador</span>
+              <span id="campoPrivTreinadorMi"></span>
+          </div>
+
+      </div>
+
+  </div>
+
+    </div>
+  </div>
+
+    <div id="telamapas" class="painel tela">
+
+  <div id="mapas">
+  <h3>🌍 Mapas dos pontos</h3>
+    <div id="topo">
+      <label>Selecione um ponto:</label>
+      <!--<div style="display: flex; gap: 10px; margin-bottom: 10px;">-->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <select id="pontoSelectMap">
+          <option value="">Selecione</option>
+        </select>
+        <button onclick="verMapa()">Ver mapa do ponto</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+        <label style="flex: 0 0 25%;">AAC:</label>
+        <div id="infoEncarregado" style="flex: 1; font-weight: bold;"></div>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+        <label style="flex: 0 0 25%;">Endereço:</label>
+        <div id="infoEndereco" style="flex: 1;"></div>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+        <label style="flex: 0 0 25%;">Depósito:</label>
+        <div id="infoDeposito" style="flex: 1;"></div>
+      </div>
+
+    </div>
+
+    <div id="map"></div>
+
+    </div>
+      
+      <div class="cards-menu">
+        <div class="card-menu btn-relatoriosSubMenu so-admin"
+            onclick="abrirTela('novoMapa', this)">
+            <div class="icone">🌍</div>
+            <div class="titulo">Novo Mapa</div>
+        </div>
+      </div>
+
+  </div>
+  <div id="novoMapa" class="painel-exportar tela">
+  <h3>🌍 Cadastrar Mapa</h3>
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novoPonto" style="flex: 0 0 25%;">Ponto:</label>
+      <input type="text" id="novoPonto" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novaLatitude" style="flex: 0 0 25%;">Latitude:</label>
+      <input type="text" id="novaLatitude" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novaLongitude" style="flex: 0 0 25%;">Longitude:</label>
+      <input type="text" id="novaLongitude" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novoAAC" style="flex: 0 0 25%;">AAC:</label>
+      <input type="text" id="novoAAC" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novoEndereco" style="flex: 0 0 25%;">Endereço:</label>
+      <input type="text" id="novoEndereco" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <label for="novoDeposito" style="flex: 0 0 25%;">Depósito:</label>
+      <input type="text" id="novoDeposito" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <select id="pontoSelectMap2">
+        <option value="">Selecione</option>
+      </select>
+      <button onclick="editarMapa()">Verificar Mapa</button>
+    </div>
+
+    <button onclick="cadastrarNovoMapa()">Cadastrar/Editar Mapa</button>
+
+  </div>
+
+    <div id="participantes" class="painel tela"> 
+  <h3>🧑‍🤝‍🧑 Participantes</h3>
+        <div class="cards-menu">
+                <div class="card-menu btn-relatoriosSubMenu so-escalas"
+                onclick="abrirTela('painelCadastro', this)">
+                <div class="icone">➕👤</div>
+                <div class="titulo">Cadastrar Participante</div>
+            </div>
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('painelPesquisar', this)">
+                <div class="icone">✏️👤</div>
+                <div class="titulo">Editar Participante</div>
+            </div>
+                <div class="card-menu btn-relatoriosSubMenu so-admin"
+                onclick="abrirTela('criaPontoNovo', this)">
+                <div class="icone">➕📌</div>
+                <div class="titulo">Criar Novo Ponto</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-admin"
+                onclick="abrirTela('tcsContainer', this)">
+                <div class="icone">🈶</div>
+                <div class="titulo">TCS</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-admin"
+                onclick="abrirTela('painelPerfil', this)">
+                <div class="icone">⚙️</div>
+                <div class="titulo">Alterar Perfil</div>
+            </div>
+                <div class="card-menu btn-relatoriosSubMenu so-admin"
+                onclick="abrirTela('painelDadosAcesso', this)">
+                <div class="icone">⚙️</div>
+                <div class="titulo">Dados de Login</div>
+            </div>
+          </div>
+  </div>
+
+    <div id="tcsContainer" class="painel-exportar tela">
+    <h3>🈶 TCS</h3>
+      
+        <div style="display:flex">
+          <button
+            type="button"
+            onclick="abrirSelecaoTcs()">
+            👤 Selecionar Nome
+          </button>
+        </div>
+
+        <div id="participanteTcs" class="nome-pesquisado"></div>
+        
+        <input type="text" id="emailTcs" placeholder="Seu email vai aparecer aqui...">
+  
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgPesqtcs" class="mensagem-verde"></p>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button id="btnEditartcs"
+                  onclick="alternarModoEdicaotcs()" class="botao editar"
+                  style="flex: 1;">✏️ Editar e-mail pro TCS</button>
+
+          <button onclick="salvartcs()" class="botao salvar"
+                  style="flex: 1;">💾 Salvar e-mail pro TCS</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgSalvartcs" class="mensagem-verde"></p>
+        </div>
+
+  </div>
+
+    <div id="painelPesquisar" class="painel-exportar tela">
+  <h3>✏️👤 Editar Participante</h3>
+
+        <div style="display:flex">
+          <button
+            type="button"
+            onclick="abrirSelecaoParticipante()">
+            👤 Selecionar Nome
+          </button>
+        </div>
+        <div id="pesqPart" class="nome-pesquisado"></div>
+
+    <div style="display: flex; align-items: center; gap: 10px;"></div>
+    
+    <table id="tabelaInfoPessoal" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Congregação</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBody"></tbody>
+    </table>
+
+    <table id="tabelaInfoPessoal1" style="display:none;"class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>E-mail</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBody1"></tbody>
+    </table>
+
+    <table id="tabelaInfoPessoal2" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Telefone</th>
+            <th>Petição</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBody2"></tbody>
+    </table>
+
+    <table id="tabelaInfoPessoal3" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>D. nasc.</th>
+            <th>Idade</th>
+            <th>D. bat.</th>
+            <th>Anos bat.</th>
+          </tr>
+        </thead>
+      <tbody id="infoPessoalBody3"></tbody>
+    </table>
+
+    <table id="tabelaClassificacao" style="display:none;" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Grupo</th>
+            <th>Sexo</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+      <tbody id="classificacaoBody"></tbody>
+    </table>
+
+    <table id="tabelaDetalhes" style="display:none;" class="tabela-sistema">
+        <colgroup>
+          <col style="width: 20%;">   
+          <col>                       
+        </colgroup>
+          <thead>
+            <tr>
+              <th>TCS</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+        <tbody id="detalhesBody">
+      </tbody>
+    </table>
+
+      <div style="display: flex; align-items: center; gap: 10px;"></div>
+
+<div id="detalhesDesignacoes" class="cards-info" style="display:none; margin-top:15px;">
+
+    <h4 class="titulo-secao">Designações</h4>
+
+    <div class="card-info">
+        <span id="campoDesignacao1"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao2"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao3"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao4"></span>
+    </div>
+
+    <div class="card-info">
+        <span id="campoDesignacao5"></span>
+    </div>
+
+    <!-- Mantido oculto caso seja usado em outra parte do sistema -->
+    <span id="campoIdentificacao" style="display:none;"></span>
+
+</div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- <p id="msgExcluir" class="mensagem-verde"></p> -->
+      </div>
+
+  <!--<div id="detalhesPrivilegios" style="display:none; margin-top: 15px;">
+    <label>Privilégios</label>
+    <p>Coordenação <span id="campoPrivOrganizacao"></span></p>
+    <p>AAC <span id="campoPrivAAC"></span></p>
+    <p>Escalas <span id="campoPrivEscalas"></span></p>
+    <p>Equipe <span id="campoPrivEquipes"></span></p>
+    <p>Treinador <span id="campoPrivTreinador"></span></p>
+  </div>-->
+
+<div id="detalhesPrivilegios" style="display:none; margin-top:15px;">
+
+    <h4 class="titulo-secao">Privilégios</h4>
+
+    <div class="lista-privilegios">
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Coordenação</span>
+            <span id="campoPrivOrganizacao"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">AAC</span>
+            <span id="campoPrivAAC"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Escalas</span>
+            <span id="campoPrivEscalas"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Equipe</span>
+            <span id="campoPrivEquipes"></span>
+        </div>
+
+        <div class="item-privilegio">
+            <span class="rotulo-privilegio">Treinador</span>
+            <span id="campoPrivTreinador"></span>
+        </div>
+    </div>
+
+</div>
+
+  </div>
+
+    <div id="painelCadastro" class="painel-exportar tela">
+  <h3>➕👤 Cadastrar Participante</h3>
+    <form id="formParticipante" style="width: 100%; table-layout: fixed;">
+
+      <div class="grupo-form">
+        <label for="filtroCadastro">Nome</label>
+        <input type="text" id="filtroCadastro" placeholder="Digite o nome para cadastrar">
+
+        <label for="congregacao">Congregação</label>
+        <select id="congregacao">
+          <option value="">- Selecione -</option>
+        </select>
+      </div>
+
+      <div class="grupo-form">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="exemplo@email.com">
+      </div>
+
+      <div class="grupo-form">
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" placeholder="(11) 99999-9999">
+
+        <label for="temPeticao">Petição</label>
+        <select id="temPeticao">
+          <option value="">- Selecione -</option>
+          <option value="SIM">SIM</option>
+          <option value="NÃO">NÃO</option>
+        </select>
+      </div>
+
+      <!-- NOVOS CAMPOS -->
+      <div class="grupo-form">
+        <label for="dataNascimento">Data de nascimento</label>
+        <input 
+          type="text" 
+          id="dataNascimento" 
+          placeholder="dd/mm/aaaa"
+          oninput="validarData(this)"
+        >
+
+        <label for="idade">Idade</label>
+        <input type="text" id="idade" readonly>
+      </div>
+
+      <div class="grupo-form">
+        <label for="dataBatismo">Data de batismo</label>
+        <input 
+          type="text" 
+          id="dataBatismo" 
+          placeholder="dd/mm/aaaa"
+          oninput="validarData(this)"
+        >
+
+        <label for="anosBatismo">Anos de batismo</label>
+        <input type="text" id="anosBatismo" readonly>
+      </div>
+      <!-- FIM NOVOS CAMPOS -->
+
+      <div class="grupo-form">
+        <label for="estaNoZap">Grupo</label>
+        <select id="estaNoZap">
+          <option value="">- Selecione -</option>
+          <option value="SIM">SIM</option>
+          <option value="NÃO">NÃO</option>
+        </select>
+
+        <label for="sexo">Sexo</label>
+        <select id="sexo">
+          <option value="">- Selecione -</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+        </select>
+      </div>
+
+      <div class="grupo-form">
+        <label for="situacao">Situação</label>
+        <select id="situacao">
+          <option value="">- Selecione -</option>
+          <option value="Treinando">Treinando</option>
+          <option value="Aprovado">Aprovado</option>
+          <option value="Mudou">Mudou</option>
+          <option value="Desistiu">Desistiu</option>
+        </select>
+      </div>
+
+      <button type="button" class="botao salvar" onclick="cadastrarParticipante()">💾 Cadastrar</button>
+      <!-- <p id="msgCadastrarPart" class="mensagem-verde"></p> -->
+
+    </form>
+  </div>
+
+    <div id="criaPontoNovo" class="painel-exportar tela">
+  <h3>➕📌 Criar Novo Ponto</h3>
+    <form id="form">
+      <table>
+        <tr>
+          <th>Turno (A, M, T, N, MA, MB, TA, TB)</th>
+          <th>Número do ponto</th>
+          <th>Ação</th>
+        </tr>
+        <tr>
+          <td><input type="text" id="prefixo" name="prefixo" required maxlength="2"></td>
+          <td><input type="number" id="numero" name="numero" required></td>
+          <td><button type="button" onclick="abrirNovoPonto()">✍️ Abrir novo ponto</button></td>
+        </tr>
+      </table>
+    </form>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <p id="msgCriaPonto" class="mensagem-verde"></p><!--<div id="loadingCriaPonto" class="spinner"></div>-->
+                </div>
+  </div>
+
+    <div id="disponiveis" class="painel tela"> 
+
+  <h3>👤 Pesquisar Disponíveis</h3>
+  <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-escalas"
+                  onclick="abrirTela('disponibilidadeBuscada', this)">
+                  <div class="icone">👤</div>
+                  <div class="titulo">Disponíveis 4 Horas</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('disponibilidadeBuscada2h', this)">
+                  <div class="icone">👤</div>
+                  <div class="titulo">Disponíveis 2 Horas</div>
+              </div>
+            </div>
+  </div>
+
+    <div id="disponibilidadeBuscada" class="painel-exportar tela">
+    <h3>👤 Disponíveis 4 Horas</h3>
+
+    <table id="tabelaBuscarDisp" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Turno</th>
+          <th>Frequência</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="diasSelect">
+              <option value="">- Selecione -</option>
+              <option value="Segunda">Segunda</option>
+              <option value="Terça">Terça</option>
+              <option value="Quarta">Quarta</option>
+              <option value="Quinta">Quinta</option>
+              <option value="Sexta">Sexta</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </td>
+          <td>
+            <select id="turnosSelect">
+              <option value="">- Selecione -</option>
+              <option value="Matinal">Matinal</option>
+              <option value="Manhã">Manhã</option>
+              <option value="Tarde">Tarde</option>
+              <option value="Noite">Noite</option>
+            </select>
+          </td>
+          <td>
+            <select id="frequenciasSelect">
+              <option value="">- Selecione -</option>
+              <option value="Semanal">Semanal</option>
+              <option value="Quinzenal">Quinzenal</option>
+              <option value="Mensal">Mensal</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button onclick="buscarParticipantes()">🔍 Pesquisar participantes disponíveis</button>
+
+    <table id="tabelaPontoEquip" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Ponto</th>
+          <th>Necessidade</th>
+          <th>Equipamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="pontosParaOferecerSelect"><option value="">- Selecione -</option>
+            </select>
+          </td>
+          <td>
+            <select id="necessidade">
+              <option value="">- Selecione -</option>
+              <option value="Um irmão">Um irmão</option>
+              <option value="Uma irmã">Uma irmã</option>
+              <option value="Uma dupla">Uma dupla</option>
+            </select>
+          </td>
+          <td>
+            <select id="equipamentosParaOferecerSelect">
+              <option value="">- Selecione -</option>
+              <option value="Carrinho 1">Carrinho 1</option>
+              <option value="Carrinho 2">Carrinho 2</option>
+              <option value="Display">Display</option>
+            </select>
+        </tr>
+      </tbody>
+    </table>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgPesqDisponiveis" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
+        </div>
+
+        <div id="resultadoBusca" style="margin-top: 20px;"></div>
+        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailTodosBtn) -->
+        <div id="dadosUsuarioContainer" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
+            <div style="display: flex; gap: 10px;">
+              <label for="nomeSelectUsuario">Seus dados de contato</label>
+              <!--<div id="loadingDadosUsuario" class="spinner" style="display: none;"></div>-->
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="telefoneInputUsuario" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
+              <input type="email" id="emailInputUsuario" placeholder="seuemail@dominio.com" style="width: 50%;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <select id="nomeSelectUsuario" style="margin-left:10px; min-width:300px;" disabled>
+              <option value="">- selecione -</option></select>
+              <input type="text" id="nomeInputUsuario" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
+            </div>
+        </div>
+        <div id="confirmEmailContainer" style="margin-top:10px;"></div>
+        <!-- FIM: Dados do usuário -->
+        <!--<div id="loadingEnviadoEmailUsuario" class="spinner" style="display: none;"></div>-->
+        <button id="enviarEmailTodosBtn" style="display:none; margin-top: 15px;" class="botaomail">
+          📧 Enviar e-mail para todos os listados
+        </button>
+        <!--<div id="confirmEmailContainer" style="margin-top: 10px;"></div>-->
+
+  </div>
+
+    <div id="disponibilidadeBuscada2h" class="painel-exportar tela">
+    <h3>👤 Disponíveis 2 Horas</h3>
+
+    <table id="tabelaBuscarDisp2h" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Turno</th>
+          <th>Frequência</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="diasSelect2h">
+              <option value="">- Selecione -</option>
+              <option value="Segunda">Segunda</option>
+              <option value="Terça">Terça</option>
+              <option value="Quarta">Quarta</option>
+              <option value="Quinta">Quinta</option>
+              <option value="Sexta">Sexta</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </td>
+          <td>
+            <select id="turnosSelect2h">
+              <option value="">- Selecione -</option>
+              <option value="Manhã (9-11h)">Manhã 09-11h</option>
+              <option value="Manhã (11-13h)">Manhã 11-13h</option>
+              <option value="Tarde (13-15h)">Tarde 13-15h</option>
+              <option value="Tarde (15-17h)">Tarde 15-17h</option>
+            </select>
+          </td>
+          <td>
+            <select id="frequenciasSelect2h">
+              <option value="">- Selecione -</option>
+              <option value="Semanal">Semanal</option>
+              <option value="Quinzenal">Quinzenal</option>
+              <option value="Mensal">Mensal</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button onclick="buscarParticipantes2h()">🔍 Pesquisar participantes disponíveis</button>
+
+    <table id="tabelaPontoEquip2h" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Ponto</th>
+          <th>Necessidade</th>
+          <th>Equipamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="pontosParaOferecerSelect2h"><option value="">- Selecione -</option>
+            <!--Apenas um teste com o ponto 20-->
+            <!--<option value="Ponto 20">Ponto 20</option>-->
+            </select>
+          </td>
+          <td>
+            <select id="necessidade2h">
+              <option value="">- Selecione -</option>
+              <option value="Um irmão">Um irmão</option>
+              <option value="Uma irmã">Uma irmã</option>
+              <option value="Uma dupla">Uma dupla</option>
+            </select>
+          </td>
+          <td>
+            <select id="equipamentosParaOferecerSelect2h">
+              <option value="">- Selecione -</option>
+              <option value="Carrinho 1">Carrinho 1</option>
+              <option value="Carrinho 2">Carrinho 2</option>
+              <option value="Display">Display</option>
+            </select>
+        </tr>
+      </tbody>
+    </table>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgPesqDisponiveis2h" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
+        </div>
+
+        <div id="resultadoBusca2h" style="margin-top: 20px;"></div>
+        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailTodosBtn) -->
+        <div id="dadosUsuarioContainer2h" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
+            <div style="display: flex; gap: 10px;">
+              <label for="nomeSelectUsuario2h">Seus dados de contato</label>
+              <!--<div id="loadingDadosUsuario" class="spinner" style="display: none;"></div>-->
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="telefoneInputUsuario2h" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
+              <input type="email" id="emailInputUsuario2h" placeholder="seuemail@dominio.com" style="width: 50%;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <select id="nomeSelectUsuario2h" style="margin-left:10px; min-width:300px;" disabled>
+              <option value="">- selecione -</option></select>
+              <input type="text" id="nomeInputUsuario2h" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
+            </div>
+        </div>
+        <div id="confirmEmailContainer2h" style="margin-top:10px;"></div>
+        <!-- FIM: Dados do usuário -->
+        <!--<div id="loadingEnviadoEmailUsuario" class="spinner" style="display: none;"></div>-->
+        <button id="enviarEmailTodosBtn2h" style="display:none; margin-top: 15px;" class="botaomail">
+          📧 Enviar e-mail para todos os listados
+        </button>
+        <!--<div id="confirmEmailContainer" style="margin-top: 10px;"></div>-->
+
+  </div>
+
+    <div id="substitutos" class="painel tela"> 
+  <!--COMEÇA AQUI A BUSCA AVANÇADA POR SUBSTITUTOS-->
+
+            <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-coordeacao"
+                  onclick="abrirTela('disponibilidadeBuscadaSub', this)">
+                  <div class="icone">👤</div>
+                  <div class="titulo">Pedir Substituição</div>
+              </div>
+            </div>
+  </div>
+  <div id="disponibilidadeBuscadaSub" class="painel-exportar tela">
+    <h3>👤 Pedir Substituição</h3>
+    <table id="tabelaBuscarSubs" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Turno</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="diasSelectSub">
+              <option value="">- Selecione -</option>
+              <option value="Segunda">Segunda</option>
+              <option value="Terça">Terça</option>
+              <option value="Quarta">Quarta</option>
+              <option value="Quinta">Quinta</option>
+              <option value="Sexta">Sexta</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </td>
+          <td>
+            <select id="turnosSelectSub">
+              <option value="">- Selecione -</option>
+              <option value="Matinal">Matinal</option>
+              <option value="Manhã">Manhã</option>
+              <option value="Tarde">Tarde</option>
+              <option value="Noite">Noite</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button onclick="buscarParticipantesSub()">🔍 Pesquisar substitutos disponíveis</button>
+
+    <table id="infoSubs" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Ponto</th>
+          <th>Necessidade</th>
+          <th>Mostruário</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select id="pontosParaOferecerSelectSub"><option value="">- Selecione -</option>
+            </select>
+          </td>
+          <td>
+            <select id="necessidadeSub">
+              <option value="">- Selecione -</option>
+              <option value="Um irmão">Um irmão</option>
+              <option value="Uma irmã">Uma irmã</option>
+              <option value="Uma dupla">Uma dupla</option>
+            </select>
+          </td>
+          <td>
+            <select id="equipamentosParaOferecerSelectSub">
+              <option value="">- Selecione -</option>
+              <option value="Carrinho 1">Carrinho 1</option>
+              <option value="Carrinho 2">Carrinho 2</option>
+              <option value="Display">Display</option>
+            </select>
+            <td>
+            <input type="date" id="dataSelectSub" name="dataSelect">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgPesqDisponiveisSub" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveisSub" class="spinner"></div>-->
+        </div>
+        <div id="resultadoBuscaSub" style="margin-top: 20px;"></div>
+        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailTodosBtn) -->
+        <div id="dadosUsuarioContainerSb" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
+          <div style="display: flex; gap: 10px;">
+            <label for="nomeSelectUsuarioSb">Seus dados de contato</label>
+            <!--<div id="loadingDadosUsuarioSb" class="spinner" style="display: none;"></div>-->
+            </div>
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="telefoneInputUsuarioSb" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
+                <input type="email" id="emailInputUsuarioSb" placeholder="seuemail@dominio.com" style="width: 50%;">
+              </div>
+              <div style="display: flex; gap: 10px;">
+              <select id="nomeSelectUsuarioSb" style="margin-left:10px; min-width:300px;" disabled>
+              <option value="">- selecione -</option></select>
+              <input type="text" id="nomeInputUsuarioSb" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
+              </div>
+        </div>
+        <div id="confirmEmailSbContainer" style="margin-top:10px;"></div>
+        <!-- FIM: Dados do usuário -->
+        <!--<div id="loadingEnviadoEmailUsuarioSb" class="spinner" style="display: none;"></div>-->
+        <button id="enviarEmailSbTodosBtn" style="display:none; margin-top: 15px;" class="botaomail">
+          📧 Enviar email para todos
+        </button>
+  </div>
+
+    <div id="telaeventos" class="painel tela">
+  <!-- DIV DE ABERTURA DO PAINEL GERAL DE EVENTOS=============================================================================================================-->
+ 
+  <h3>🎊 Eventos</h3>
+
+  <div class="cards-menu">
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('eventos', this)">
+          <div class="icone">🗂️</div>
+          <div class="titulo">Cadastro de Eventos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('editarEventos', this)">
+          <div class="icone">✏️🎊</div>
+          <div class="titulo">Editar Eventos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('painelEventos', this)">
+          <div class="icone">👥</div>
+          <div class="titulo">Ver Designados</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('painelInscritos', this)">
+          <div class="icone">👥</div>
+          <div class="titulo">Ver Inscritos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('candidatosContainer', this)">
+          <div class="icone">📝</div>
+          <div class="titulo">Inscrever Outra Pessoa</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('minhaInscricaoContainer', this)">
+          <div class="icone">📝</div>
+          <div class="titulo">Fazer Minha Inscrição</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('painelExportarEscalaEv', this)">
+          <div class="icone">⚙️</div>
+          <div class="titulo">Gerar Relatórios</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('ajustarCandidatosEvContainer', this)">
+          <div class="icone">🔄</div>
+          <div class="titulo">Converter IDs</div>
+      </div>
+    </div>
+  </div>
+  <div id="editarEventos" class="painel-exportar tela">
+    <div>
+      <!--<label for="dataHistoricoDeEventos" style="color: black; display: block; text-align: center; margin-top: 90px;">PESQUISAR DADOS DE EVENTOS CADASTRADOS</label>-->
+      <h3>✏️🎊 Editar Evento e Enviar Vagas Disponíveis</h3>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="dataHistoricoDeEventos" style="color: #444444;">Data:</label>
+        <input type="date" id="dataHistoricoDeEventos" required>
+        <button id="btnListarEventos">🔍 Pesquisar Eventos</button>
+        </div>
+    <div id="listaEventos"></div>
+  </div>
+  </div>
+  <div id="eventos" class="painel-exportar tela">
+    <h3>📅 Cadastrar Evento</h3>
+      <table id="descricaoEv" class="tabela-sistema">
+        <thead>
+          <tr>
+          <th>Descrição</th>
+          </tr>
+        </thead>
+      <tbody>
+          <tr>
+            <td><input type="text" id="descricaoEvento" placeholder="Informe o nome do evento" style="width: 100%;"></td>
+            </tr>
+        </tbody>
+      </table>
+
+      <table id="enderecoEv" class="tabela-sistema">
+        <thead>
+          <tr>
+          <th style="width: 50%;" >Rua</th>
+          <th style="width: 20%;">Número</th>
+          <th style="width: 30%;">Bairro</th>
+          </tr>
+        </thead>
+      <tbody>
+          <tr>
+            <td><input type="text" id="ruaEv" placeholder="Rua ou Avenida" style="width: 100%;"></td>
+            <td><input type="text" id="numeroEv" placeholder="Nº" style="width: 100%;"></td>
+            <td><input type="text" id="bairroEv" placeholder="Bairro" style="width: 100%;"></td>
+            </tr>
+        </tbody>
+      </table>
+
+    <div id="containerTables">
+      <table border="1" cellpadding="5" cellspacing="0" id="tabela1">
+        <thead>
+          <tr>
+            <th colspan="5">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="dataSelectEv1" style="color: white;">Data:</label>
+                <input type="date" id="dataSelectEv1" required>
+              </div>
+            </th>
+          </tr>
+          <tr>
+            <th>Turno</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Vagas</th>
+            <th>Remover</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyTurnos1">
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" style="text-align: center;">
+              <div style="display: flex; justify-content: center; gap: 10px;">
+                <button type="button" id="btnAddTurno" class="btnAddTurno">➕ Adicionar Turno</button>
+                <button type="button" class="btnRemoverTabela">🗑 Remover Tabela</button>
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <input type="hidden" id="nomeOriginal">
+    <input type="hidden" id="dataOriginal">
+    <input type="hidden" id="ruaOriginal">
+    <input type="hidden" id="numeroOriginal">
+    <input type="hidden" id="bairroOriginal">
+
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <button id="btnAddTable">➕ Adicionar Data</button>
+      <button id="btnSalvarEdicaoEvento" style="display: none;">💾 Salvar Alterações</button>
+      <button id="btnCadastrarEvento">💾 Salvar Evento</button>
+    </div>
+
+    <div id="carrCadEv" style="display: none; align-items: center; gap: 10px;">
+      <p id="msgCadEv" class="mensagem-verde"></p><!--<div id="loadingCadEv" class="spinner"></div>-->
+    </div> 
+
+    <!--<label for="labelEnvios" style="color: black; display: block; text-align: center; margin-top: 90px;">ENVIAR COMUNICADO DO EVENTO AOS PARTICIPANTES</label>-->
+    <h3>📢 Enviar Comunicado do Evento</h3>
+
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <button id="btnGerarMensagemWhatsApp" class="botaozap">📲 Enviar WhatsApp</button>
+      <button id="btnEnviarEmail" onclick="enviarEmailInformativo()" class="botaomail">📧 Enviar E-mail</button>
+    </div>
+
+    <div id="mensagemWhatsAppContainer" style="display: none; margin-top: 20px;">
+      <label for="mensagemWhatsApp"><strong>Mensagem para WhatsApp:</strong></label><br>
+      <textarea id="mensagemWhatsApp" rows="10" style="width: 100%;" readonly></textarea><br>
+      <div style="margin-top: 10px; display: flex; gap: 10px;">
+      <button id="btnCopiarMensagemWhatsApp" class="botaozap">📋 Copiar mensagem</button></div>
+    </div>
+
+  </div>
+
+    <div id="painelEventos" class="painel-exportar tela">
+  
+    <h3>👥 Ver Designados</h3>
+      <label for="eventoSelectDesignados">Selecione o Evento</label>
+      <select id="eventoSelectDesignados">
+        <option value="">- Selecione -</option>
+      </select>
+
+      <!-- SELECT de turno (escondido inicialmente) -->
+      <div id="grupoTurnoDesignados" style="margin-top: 10px; display: flex; gap: 10px; align-items: center; display: none;">
+        <select id="turnoSelectDesignados" disabled>
+          <option value="">- Selecione turno -</option>
+        </select>
+        <button id="btnMostrarDesignados">Mostrar Designados</button>
+      </div>
+        
+          <!-- Container da tabela e botões dinâmicos -->
+          <div id="resultadoDesignadosContainerEv"></div>
+          <p id="mensagemRegistro" class="mensagem-verde"></p>
+
+    <!-- ÁREA DOS BOTÕES ENVIAR -->
+        <div id="areaBotoes" style="margin-top: 10px; display: none;">
+          <button id="btnRegistrarDesignados">Registrar Designados</button>
+          <div id="botoesEnviarEmails" style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="btnEnviarTodos">📧 Enviar designações</button>
+            <button id="btnEnviarDaAba">📬 Enviar escalas</button>
+          </div>
+        </div>
+  </div>
+  <div id="painelInscritos" class="painel-exportar tela">
+
+    <h3>👥 Ver Inscritos</h3>
+    <label for="eventoSelectInscritos">Selecione o Evento</label>
+      <select id="eventoSelectInscritos">
+        <option value="">- Selecione -</option>
+      </select>
+
+    <!-- SELECT de turno (escondido inicialmente) -->
+      <div id="grupoTurnoInscritos" style="margin-top: 10px; display: flex; gap: 10px; align-items: center; display: none;">
+        <select id="turnoSelectInscritos">
+          <option value="">- Selecione turno -</option>
+        </select>
+        <button id="btnMostrarInscritos">Mostrar Inscritos</button>
+      </div>
+        
+          <!-- CONTAINER PARA OS INSCRITOS -->
+          <div id="resultadoInscritosContainer"></div>
+          <p id="mensagemRegistroInscritos" class="mensagem-verde"></p>
+          <div id="areaBotoesInscritos" style="margin-top: 10px; display: none;">
+          <button id="btnRegistrarInscritos" onclick="mostrarConfirmacaoRegistrarInscritos()">Registrar Inscritos</button>
+          </div>
+
+  </div>
+
+    <div id="minhaInscricaoContainer" class="painel-exportar tela">
+    <h3>📝 Fazer Inscrição</h3>
+
+    <div id="formMinhaInscricao">
+
+      <div class="form-row">
+        <label for="eventoSelectUsuario">Selecione o Evento</label>
+        <select id="eventoSelectUsuario">
+          <option value="">Selecione o evento</option>
+        </select>
+      </div>
+
+      <div id="apenasMostUsuario" style="display:none">
+        <div class="form-row">
+          <label for="turnoSelectUsuario">Selecione o Turno</label>
+          <select id="turnoSelectUsuario" disabled>
+            <option value="">Selecione o turno</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btnMinhaInscricao" onclick="inscreverMinhaParticipacao();">
+        🖋️ Confirmar inscrição
+      </button>
+
+    </div>
+
+    <pre id="resultadoMinhaInscricao"
+        style="margin-top:15px;background:#f0f0f0;padding:10px;display:none;">
+    </pre>
+  </div>
+
+    <div id="candidatosContainer" class="painel-exportar tela">
+  <h3>📝 Fazer Inscrição</h3>
+  <div id="formInscricao">
+
+  <div style="display:none">
+    <div class="form-row">
+      <select id="listaNomesEv">
+        <option value="">- Selecione -</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="eventoSelect">Selecione o Evento</label>
+    <select id="eventoSelect">
+      <option value="">Selecione o evento</option>
+    </select>
+  </div>
+
+  <div style="display:none">
+  <div class="form-row">
+    <!--<label for="filtroBuscaEv">Pesquisa nome</label>-->
+    <input type="text" id="filtroBuscaEv" placeholder="Digite o nome para pesquisar...">
+  </div>
+  </div>
+
+  <div id="apenasMost" style="display: none">
+    <div class="form-row">
+      <label for="turnoSelect">Seleciona o Turno</label>
+      <select id="turnoSelect" disabled>
+        <option value="">Selecione o turno</option>
+      </select>
+    </div>
+  </div>
+
+  <!--<button id="btnInscrever" onclick="inscreverParticipanteAdmin();">🖋️ Confirmar inscrição</button>-->
+
+  <div id="candidatoEvSelecionado" classe="nome-pesquisado"></div>
+
+  <button type="button" 
+          onclick="abrirSelecaoInscreverOutro()">
+          👤 Selecionar participante
+        </button>
+  <span id="nomeSelecionadoEv" style="margin-left:10px;"></span>
+
+    </div>
+    <pre id="resultadoInscricao" style="margin-top:15px; background:#f0f0f0; padding:10px;display:none;"></pre>
+  </div>
+
+    <div id="painelExportarEscalaEv" class="painel-exportar tela">
+    <h3>⚙️ Gerar Escalas</h3>
+    <label for="abaEv">Selecione o Relatório</label>
+    <select id="abaEv" style="width: 100%;">- Selecione -</select>                          
+    <button onclick="exportarEscalaEv()" style="width: 100%;">⬇️ Baixar PDF</button>
+    <!-- <div id="mensagemEv" style="margin-top: 10px; color: green; font-size:40px"></div> -->
+    <div id="mensagemEv" style="margin-top: 10px; color: green;"></div>  
+  </div>
+
+    <div id="ajustarCandidatosEvContainer" class="painel-exportar tela">
+    <h3>🔄 Converter Designados do evento para ID</h3>
+    <h1>(Isto só foi usado quando mudamos para cadastrar inscritos de nome para ID)</h1>
+      
+      <label for="eventoSelectConversor">Selecione o Evento</label>
+      <select id="eventoSelectConversor"></select>
+      <!--<button onclick="converter()">Converter nomes para ID</button> SE PRECISAR USAR ESSA FUNÇÃO, DESCOMENTE ESSE TRECHO E EXCLUA O TRECHO ABAIXO QUE SÓ MOSTRA BOTÃO SEM UTILIDADE--> 
+      <button >Converter nomes para ID</button> 
+
+      <div id="status" style="margin-top: 10px;"></div>
+  </div>
+
+    <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
+  <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
+ 
+  <h3>📅 Escalas</h3>
+
+    <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                  onclick="abrirTela('painelPontos', this)">
+                  <div class="icone">🕒</div>
+                  <div class="titulo">Escalas Por Turno</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                  onclick="abrirTela('painelPontosTotal', this)">
+                  <div class="icone">📌</div>
+                  <div class="titulo">Escalas Por Ponto</div>
+              </div>
+            </div>
+  </div>
+
+    <div id="painelPontos" class="painel-exportar tela">
+    <h3>🕒 Escalas Por Turno</h3>
+      <div id="pesquisaDesignacoes">
+
+          <table id="tabelapesquisaDesignacoes" class="tabela-sistema">
+              <thead>
+                <tr>
+                  <th>Turno</th>
+                  <th>Dia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><select id="turnoDesignado"><option value="">- Selecione -</option></select></td>
+                  <td><select id="diaDesignado"><option value="">- Selecione -</option></select></td>
+                </tr>
+                <thead>
+                  <tr>
+                    <th>Ponto</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tr>  
+                  <td><select id="pontoDesignado"><option value="">- Selecione -</option></select></td>
+                  <td><button type="button" onclick="pesquisarDesignados()">🔍 Pesquisar</button></td>
+                </tr>
+                
+              </tbody>
+          </table>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+            <p id="msgPesqDesignados" class="mensagem-verde"></p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+            <p id="msgRemoverDesignados" class="mensagem-verde"></p>
+            </div>
+
+        <div id="resultadoDesignadosContainer"></div>
+    </div>
+
+  </div>
+
+    <div id="painelPontosTotal" class="painel-exportar tela">
+    <h3>📌 Escalas Por Ponto</h3>
+    <div id="painelVerDesignacoesPorPonto">
+      <label for="pontobepp">Selecione o Ponto:</label>
+      <select id="pontobepp">
+        <option value="">- Selecione -</option>
+        <!-- opções inseridas dinamicamente -->
+      </select>
+      <button onclick="buscarDesignacoesPorPonto()">📋 Ver Designações</button>
+
+      <div id="msgDesignacoesPorPontopppp" class="mensagem-verde"></div>
+      <!--<div id="loadingDesignacoesPorPontopppp" class="spinner" style="display:none;"></div>-->
+
+      <div id="resultadoDesignacoesPorPontopppp"></div>
+
+      <!-- ✅ Botão para gerar PDF -->
+      <div id="btnExportarPdfDesignacoes" style="margin-top: 15px; display: none;">
+        <button onclick="baixarDesignacoesPorPonto()">📄 Baixar PDF</button>
+        <div id="msgBaixarPDFPonto" class="mensagem-verde"></div>
+        <!--<div id="loadingBaixarPDFPonto" class="spinner" style="display:none;"></div>-->
+
+      </div>
+    </div>
+  </div>
+
+    <div id="designar" class="painel tela"> 
+
+  <h3>✅ Designar Participantes</h3>
+  <div id="painelDesignacoes">
+
+      <table id="tabelaDesignar" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Ponto</th>
+            <th>Dia</th>
+            <th>Frequencia</th>
+            <th>Equipamento</th>
+          </tr>
+        </thead>
+      <tbody>
+          <tr>
+            <td><select id="ponto"></select></td>
+            <td>
+              <select id="dia">
+                <option value="">- Selecione -</option>
+                <option>SEGUNDA</option>
+                <option>TERÇA</option>
+                <option>QUARTA</option>
+                <option>QUINTA</option>
+                <option>SEXTA</option>
+                <option>SABADO</option>
+                <option>DOMINGO 1</option>
+                <option>DOMINGO 2</option>
+                <option>DOMINGO 3</option>
+                <option>DOMINGO 4</option>
+              </select>
+            </td>
+            <td>
+              <select id="frequencia" name="frequencia">
+                <option value="">- Selecione -</option>
+                <option value="SEMANAL">SEMANAL</option>
+                <option value="QUINZENAL">QUINZENAL</option>
+                <option value="MENSAL">MENSAL</option>
+              </select>
+            </td>
+            <td>
+              <select id="equipamento" name="equipamento">
+                <option value="">- Selecione -</option>
+                <option value="Carrinho 1">Carrinho 1</option>
+                <option value="Carrinho 2">Carrinho 2</option>
+                <option value="Display">Display</option>
+              </select>
+            </td>
+        </tbody>
+      </table>
+
+      <table id="tabelaDesignar2" style="display: none" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Substituir</th>
+            <th>Novo Designado</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td><select id="substituirQuem"><option value="">-- Nenhum --</option></select></td>
+        </tbody>
+      </table>
+
+            <div style="display: none">
+              <button type="button"                        
+                      onclick="abrirModalDesignados()">
+                👤 Selecionar quem sai
+              </button>
+
+              <input
+                  type="text"
+                  id="nomeSubstituido"
+                  placeholder="Nenhum participante selecionado"
+                  readonly>
+            </div>
+
+            <div class="linha-designado">
+            <label for="participantesDesignado">Participante para designar</label>
+            <input
+                  type="text"
+                  id="participanteDesignacao"
+                  placeholder="Selecione '👤 Novo Designado'"
+                  readonly>
+            </div>
+
+            <div style="display:flex">
+              <button type="button"
+                      onclick="abrirSelecaoDesignacao()">
+                👤 Novo Designado
+              </button>
+
+              <button type="button"
+                      onclick="salvarDesignacao()">
+                ✅ Designar
+              </button>
+            </div>
+
+      <!--</td>-->
+
+      <div style="display: none" style="display: flex; justify-content: flex-end; margin-Bottom: 30px; margin-top: 30px;"><input type="text" id="filtroBusca1" placeholder="Pesquise o nome do participante a ser designado"></div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgDesignarParaPonto" class="mensagem-verde"></p>
+      </div>
+  </div>
+  </div> 
+
+    <div id="admin" class="painel tela"> 
+
+        <h3>👨‍💼 Administração</h3>
+        <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                  onclick="abrirTela('painelTreinadores', this); buscarTreinando();">
+                  <div class="icone">🗣️</div>
+                  <div class="titulo">Reunião de Treinamento</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                  onclick="abrirTela('painelTreinamentosAndamento', this); buscarTreinamentosEmAndamento();">
+                  <div class="icone">🎓</div>
+                  <div class="titulo">Treinamento Prático</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('painelIrregulares', this)">
+                  <div class="icone">⚠️</div>
+                  <div class="titulo">Irregulares</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('painelVerificacao', this)">
+                  <div class="icone">📝</div>
+                  <div class="titulo">Corrigir Ponto</div>
+              </div>
+            </div>
+  </div>
+
+    <div id="painelVerificacao" class="painel-exportar tela">
+
+      <h3>📝 Corrigir Ponto</h3>
+
+      <!--<div style="display: flex; align-items: center; gap: 10px;">-->
+      <td><select id="pontoCorrigir"></select></td>
+      <!--<div style="text-align: right;"><button style="width: 50vw;" type="button" onclick="corrigirDesignacoes()">🖋️ Verificar Designações</button></div>-->
+      <button onclick="converterDesignacoesParaIDs()">🔄 Converter de nomes para IDs</button>
+      <button onclick="corrigirDesignacoesPorId()">🛠️ Corrigir registros por ID</button>
+      <!--</div>-->
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgCorrigir" class="mensagem-verde"></p><!--<div id="loadingCorrigir" class="spinner"></div>-->
+      </div>
+
+      <!-- Tabela dos não encontrados -->
+      <div id="tabelaNaoEncontradosContainer" style="margin-top: 20px;"></div>
+
+  </div>
+
+    <div id="painelTreinadores" class="painel-exportar tela">
+    <h3>🗣️ Reunião de Treinamento</h3>
+    <div id="pesquisaTreinadores">
+
+      <!--<button onclick="buscarTreinando()">🔍 Ver participantes em treinamento</button>-->
+        <div id="resultadoTreinando"></div>
+        <p id="msgTreinando" class="mensagem-verde"></p>
+
+      <div id="resultadoDiasTurnos"></div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input id="idTreinando" hidden>
+        <input id="nomeTreinando" hidden>
+        <input id="congregacaoTreinando" hidden>
+        <input id="telefoneTreinando" hidden>
+        <input id="sexoTreinando" hidden>
+        <!--<input id="diaTreinando" hidden>
+        <input id="turnoTreinando" hidden>-->
+      </div>
+
+      <div id="resultadoTreinadores"></div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgTreinadores" class="mensagem-verde"></p>
+      </div>
+
+      <div id="resultadoContainer"></div>
+    </div>
+  </div>  
+
+    <div id="painelTreinamentosAndamento" class="painel-exportar tela">
+
+    <h3>📋 Treinamentos em Andamento</h3>
+
+    <!--<button onclick="buscarTreinamentosEmAndamento()">
+      🔍 Consultar Treinamentos
+    </button>-->
+
+    <div id="resultadoTreinamentosAndamento"></div>
+
+  </div>
+
+    <div id="painelMeusTreinamentos"
+      class="painel-exportar tela">
+    <h3>🎓 Meu Candidato em Treinamento</h3>
+    <div id="resultadoMeuTreinamento"></div>
+  </div>
+
+    <div id="painelIrregulares" class="painel-exportar tela">
+  <h3>⚠️ Irregulares</h3>
+    <div id="pesquisaIrregulares">
+
+      <button onclick="buscarIrregulares()">🔍 Ver participantes sem designação</button>
+        <!--<div id="resultadoIrregulares"></div>-->
+        <div id="resultadoIrregulares"
+            style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+          <!-- Aqui dentro vai o conteúdo longo gerado pelo script -->
+        </div>
+
+        <p id="msgIrregulares" class="mensagem-verde"><!--</p><div id="loadingIrregulares" class="spinner"></div>-->
+
+        <!--<div id="resultadoIrregulares"></div>-->
+        <div id="resultadoDiasTurnosIrregulares"></div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input id="nomeIrregulares" hidden>
+        <input id="congregacaoIrregulares" hidden>
+        <input id="telefoneIrregulares" hidden>
+        <input id="sexoIrregulares" hidden>
+        <!--<input id="diaIrregulares" hidden>
+        <input id="turnoIrregulares" hidden>-->
+        </div>
+
+        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailIrregularesBtn) -->
+        <div id="dadosUsuarioContainerIr" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
+          <div style="display: flex; gap: 10px;">
+            <label for="nomeSelectUsuarioIr">Seus dados de contato</label>
+            <!--<div id="loadingDadosUsuarioIr" class="spinner" style="display: none;"></div>-->
+            </div>
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="telefoneInputUsuarioIr" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
+                <input type="email" id="emailInputUsuarioIr" placeholder="seuemail@dominio.com" style="width: 50%;">
+              </div>
+              <div style="display: flex; gap: 10px;">
+              <select id="nomeSelectUsuarioIr" style="margin-left:10px; min-width:300px;" disabled>
+              <option value="">- selecione -</option></select>
+              <input type="text" id="nomeInputUsuarioIr" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
+              </div>
+        </div>
+
+        <div id="confirmEmailIrregularesContainer" style="margin-top:10px;"></div>
+
+        <button id="enviarEmailIrregularesBtn" style="display:none; margin-top: 15px;" class="botaomail">
+        📧 Enviar email para todos
+        </button>
+
+        <!--<button onclick="confirmarEnvioEmailsIrregulares()">Enviar email para todos</button>-->
+
+        <div id="resultadoTreinadoresTestesI"></div>
+
+      <div id="resultadoContainerTesteIrregulares"></div>
+    </div>
+  </div>
+
+    <div id="vagas" class="painel tela"> 
+  <h3>🪑 Vagas</h3>
+
+  <body>
+
+  <div id="painelVagas">
+    <!--<h3>Cadastrar Vaga</h3>-->
+    <table id="tabelacadastrarVaga" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Ponto</th>
+          <th>Dia</th>
+          <th>Frequencia</th>
+          <!--<th>Quem sai</th>-->
+        </tr>
+      </thead>
+    <tbody>
+        <tr>
+          <td>
+            <select id="pontoVaga"></select>
+          </td>
+          <td>
+            <select id="diaVaga">
+              <option value="">- Selecione -</option>
+              <option>SEGUNDA</option>
+              <option>TERÇA</option>
+              <option>QUARTA</option>
+              <option>QUINTA</option>
+              <option>SEXTA</option>
+              <option>SABADO</option>
+              <option>DOMINGO 1</option>
+              <option>DOMINGO 2</option>
+              <option>DOMINGO 3</option>
+              <option>DOMINGO 4</option>
+            </select>
+          </td>
+          <td>
+            <select id="frequenciaVaga" name="frequenciaVaga">
+              <option value="">- Selecione -</option>
+              <option value="SEMANAL">SEMANAL</option>
+              <option value="QUINZENAL">QUINZENAL</option>
+              <option value="MENSAL">MENSAL</option>
+            </select>
+          </td>
+          </tbody>
+          </table>
+
+          <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">
+          <tbody>
+            <tr>
+              <th>Substituir</th>
+            </tr>
+          <td>
+          <select id="substituirQuemsai">
+            <option value="">-- Ninguém --</option>
+          </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align: center; float: right;"><button style="width: 50vw;" type="button" class="botao salvar"onclick="salvarVaga()">💾 Cadastrar Vaga</button></div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <p id="msgCadastrarVaga" class="mensagem-verde"></p>
+        </div>
+
+  <table id="tabelaTotalVagasPendentes" class="tabela-sistema">
+    <thead>
+      <tr>
+        <th>Total de vagas em aberto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span id="totalVagas" style="color: red; font-weight: bold; font-size: 50px">
+            0
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+    
+    <table id="tabelaVagasPendentes" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Ponto</th>
+          <th>Dia</th>
+          <th>Frequencia</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div>
+
+      <button type="button" style="width: 50vw; float: right;" onclick="carregarTodasVagasAbertas()">🔄 Atualizar Vagas</button>
+    </div>
+  </div>
+  </div> 
+
+    <div id="congregacoes" class="painel tela"> 
+  <!-- AQUI COMEÇA O PAINEL DE CONGREGAÇÕES -->
+
+    <div id="painelCongregacoes">
+      <div id="pesquisaCongregacoes">
+
+          <table id="tabelaPesquisaCongregacoes" class="tabela-sistema">
+              <thead>
+                <tr>
+                  <th>Congregação</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" id="inputCongregacao" placeholder="Digite para filtrar congregação" ></td>
+                  <td><select id="pesqCongregacao"><option value="">- Selecione -</option></select></td>
+                </tr>
+              </tbody>
+          </table>
+
+          <td><button type="button" onclick="pesquisarParticipantesPorCongregacao()">🔍 Pesquisar</button></td>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+            <p id="msgPesqCongregacoes" class="mensagem-verde"></p><!--<div id="loadingPesqCongregacoes" class="spinner"></div>-->
+            </div>
+
+        <div id="resultadoPesquisaCongregacoes" class="so-organizadores"></div>
+    </div>
+
+  </div>
+
+  </div> 
+
+    <div id="relatorios" class="painel tela"> 
+  <!-- AQUI COMEÇA O PAINEL DE RELATÓRIOS -->
+ 
+    <h3>📈 Relatórios</h3>
+    <div class="centralizador"> 
+     <!-- <div id="painelExportar" class="painel-exportar" style="width: 90%; margin: 0 auto;"> -->
+      <div id="painelExportar" style="width: 90%; margin: 0 auto;">
+        <!--<h4>Relatórios</h4>-->
+        <label style= "text-align:center;"for="aba">Selecione o Relatório</label><br>
+        <select id="aba" style="width: 100%;">- Selecione -</select><br><br>                          
+        <button onclick="exportar()" style="width: 100%;">⬇️ Baixar PDF</button>
+       <!-- <div id="mensagem" style="margin-top: 10px; color: green; font-size:40px"></div> -->  
+        <div id="mensagem" style="margin-top: 10px; color: green;"></div>
+      </div>
+    </div>
+  </div>
+
+    <div id="estatisticas" class="painel tela"> 
+  <!-- CRIAR AQUI O PAINEL DE CONTAGEM -->
+
+    <h3>📊 Estatísticas</h3>
+  <div id="painelResumo">
+    <table id="resumoTable" class="tabela-sistema">
+      <tr><th>Aprovados</th>              <td id="totalDeAprovados"></td></tr>
+    <tr><th>Designações</th>            <td id="totalDesignacoes"></td></tr>
+    <tr><th>Pessoas designadas</th>     <td id="totalComDesignacoes"></td></tr>
+    <tr><th>Designações semanais</th>   <td id="countSemanal"></td></tr>
+    <tr><th>Designações quinzenais</th> <td id="countQuinzenal"></td></tr>
+    <tr><th>Designações mensais</th>    <td id="countMensal"></td></tr>
+    <tr><th>Pessoas com 1 designação</th><td id="totalPessoas1Designacao"></td></tr>
+    <tr><th>Pessoas com mais de 1 designação</th><td id="totalPessoasMais1Designacao"></td></tr>
+    <tr><th>Pessoas sem designação</th> <td id="totalDeIrregulares"></td></tr>
+    <tr><th>Vagas</th>                  <td id="totalVagasAbertas"></td></tr>
+    </table>
+    <!-- Adicione dentro do painelResumo -->
+    <div style="margin-top: 20px;">
+      <h3>Participantes por Circuito</h3>
+      <table id="tabelaCircuitos" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 8px;">Circuito</th>
+            <th style="border: 1px solid #ccc; padding: 8px;">Quantidade</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyCircuitos">
+          <!-- Linhas serão inseridas via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <button onclick="carregarResumo()">🔄 Atualizar resumo</button>
+  </div>
+  </div>
+
+    <div id="painelPerfil" class="painel-exportar tela">
+
+  <div id="painelPerfis" style="margin-top: 40px;">
+    <h3>🔐 Gerenciar Perfis de Acesso</h3>
+
+    <!--<div id="painelGP" class="painel-exportar">-->
+    <div id="buscaContainerGP">
+      <label>Nome</label>
+
+      <div style="display:none"> 
+        <input type="text" id="filtroBuscaGP" placeholder="Digite o nome para pesquisar...">
+        <select id="listaNomesGP" onchange="consultarPerfilAtual()"><option value="">- Selecione -</option></select>
+      </div>
+
+          <div>
+          <button type="button" 
+              onclick="abrirSelecaoPerfil()">
+              👤 Selecionar Participante
+            </button>
+
+            <input type="text"
+                  id="nomeSelecionadoPerfil"
+                  placeholder="Nenhum participante selecionado"
+                  readonly>
+          </div>
+      
+      <label>Perfil Atual</label>
+      <input type="text"
+       id="perfilAtual"
+       placeholder="Perfil atual"
+       readonly>
+
+        <!--<button type="button" onclick="consultarPerfilAtual()">
+          👤 Consultar Perfil Atual
+        </button>-->
+
+       <label>Novo Perfil</label>
+      <select id="tipoDePerfil">
+        <option value="">- Selecione -</option>
+        <option value="treinandos">treinandos</option>
+        <option value="participantes">participantes</option>
+        <option value="escalas">escalas</option>
+        <option value="organizadores">organizadores</option>
+        <option value="admin">admin</option>
+        </select>
+        
+      <button type="button" onclick="alterarPerfil()">🔍 Alterar Perfil do Participante</button>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+    <p id="msgGP" class="mensagem-verde"></p><!--<div id="loadingMinhaInfo" class="spinner"></div>-->
+    </div>
+  </div> <!--DIV de fechamento de id="painelPerfis" style="margin-top: 40px;">-->
+  </div>
+
+    <div id="painelDadosAcesso" class="painel-exportar tela"><!--Div de abertura para o painel de perfil do menu-->
+
+  <div id="painelDadosAcesso" style="margin-top: 40px;">
+    <h3>🔐 Gerenciar Dados de Acesso</h3>
+
+    <div id="buscaContainerGA">
+      <label>Nome</label>
+      <div style="display:none">
+      <input type="text" id="filtroBuscaGA" placeholder="Digite o nome para pesquisar...">
+      <select id="listaNomesGA" onchange="consultarDadosAcesso()"><option value="">- Selecione -</option></select>
+      </div>
+
+      <button type="button" 
+          onclick="abrirSelecaoAcesso()">
+          👤 Selecionar Participante
+        </button>
+
+      <input type="text"
+            id="nomeSelecionadoAcesso"
+            placeholder="Nenhum participante selecionado"
+            readonly>
+      
+      <label>Email Atual</label>
+        <input
+          type="text"
+          id="emailAtual"
+          readonly>
+
+        <label>Senha Atual</label>
+        <input
+          type="text"
+          id="senhaAtual"
+          readonly>
+
+          <label>Novo Email</label>
+          <input
+            type="email"
+            id="novoEmail"
+            placeholder="Digite o novo email">
+
+          <label>Nova Senha</label>
+          <input
+            type="text"
+            id="novaSenha"
+            placeholder="Digite a nova senha">
+
+          <button type="button" onclick="alterarDadosAcesso()">
+            🔑 Alterar Dados de Acesso
+          </button>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+    <p id="msgGP" class="mensagem-verde"></p>
+    </div>
+  </div>
+
+  </div> 
+  </div>
+
+
 
     <script src="utils.js"></script>
     <script src="api.js"></script>

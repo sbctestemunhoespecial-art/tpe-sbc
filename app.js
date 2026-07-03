@@ -1,3 +1,6 @@
+let perfilUsuario = "";
+let idUsuarioLogado = "";
+
 function iniciarSistema(res) {
 
     perfilUsuario = res.perfil;

@@ -4,19 +4,25 @@
   --cor-fundo: #FAFAFA;
   --cor-texto: #444444;
   --cor-primaria: #004080;
-  /*--cor-secundaria: #336699;*/
   --cor-secundaria: #374151;
   --cor-terciaria: #5b9bd5;
   --cor-quartiaria: #fffff0;
   --cor-quintiaria: #D3D3D3;
   --cor-azul: #1E40AF;
-  --cor-botao:#3B82F6;/*#336699;*/
+  --cor-botao:#3B82F6;
   --cor-botao-hover: #a4c2f4;
-  /*--fonte-principal: 'Arial', sans-serif;*/
   --fonte-principal: "Segoe UI";
   --fonte-media: 35px;
   --raio-borda: 0.5em;
   --raio-borda-botao: 3em;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
 }
 
 html, body {
@@ -74,9 +80,6 @@ button {
   border: none;
   border-radius: var(--raio-borda-botao);
   transition: background-color 0.2s ease;
-
-  /*margin-top: 35px;
-  margin-bottom: 35px;*/
 }
 
 button:hover {
@@ -125,21 +128,6 @@ th, td {
   padding: 0.2em;
   text-align: center;
   vertical-align: middle;
-}
-
-th {
-  /*background-color: var(--cor-secundaria);
-  color: var(--cor-branca);
-  font-weight: bold;
-  text-transform: uppercase;*/
-}
-
-#resultadoBuscaSub table tbody tr:hover,
-#resultadoBusca table tbody tr:hover,
-#resultadoDesignadosContainer tr:hover,
-#tabelaVagasPendentes tr:hover {
-  /*background-color: #b0b0b0;
-  cursor: pointer;*/
 }
 
 h1 { font-size: 1rem; color: #0074D9; margin: 1em 0 0.3em; }
@@ -219,10 +207,6 @@ h6 { font-size: 2rem; color: #0074D9; margin: 1em 0 0.3em; }
 
 @media (max-width: 768px) {
   #map { height: 60vh; }
-}
-
-.conteudo {
-  /*padding: 2vw;*/
 }
 
 .top-bar {
@@ -452,9 +436,6 @@ tr:hover {
 a {
   color: var(--cor-primaria);
   text-decoration: none;
-}
-a:hover {
-  /*text-decoration: underline;*/
 }
 
 tr:nth-child(even) {
@@ -799,7 +780,7 @@ caption {
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    border: 3px solid var(--cor-azul);/*#D1D5DB;*/
+    border: 3px solid var(--cor-azul);
 }
 
 .card-menu.ativo{
@@ -810,7 +791,6 @@ caption {
 
 .card-menu:not(.ativo):hover{
     transform:translateY(-3px);
-    /*box-shadow:0 4px 12px rgba(0,0,0,.15);*/
     box-shadow: 0 8px 20px rgba(0,0,0,.25);
 }
 
@@ -822,7 +802,6 @@ caption {
 .titulo{
     font-size:1.4rem;
     font-weight:bold;
-    /*color:#336699;*/
     color:var(--cor-azul);
 
 }
@@ -953,11 +932,8 @@ button.btn-voltar-menu:hover {
 #modalComunicarTreinador {
     position: fixed;
     inset: 0;
-
     background: rgba(0,0,0,0.5);
-
     z-index: 99999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -968,18 +944,12 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarTreinador .conteudo-modal {
-
     background: white;
-
     width: 90%;
     max-width: 700px;
-
     padding: 30px;
-
     border-radius: 10px;
-
     text-align: center;
-
     box-sizing: border-box;
 }
 
@@ -995,37 +965,25 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarTreinador .botoes-modal {
-
     display: flex;
-
     justify-content: center;
-
     gap: 15px;
 }
 
 #modalComunicarTreinador button {
-
     flex: 1;
-
     max-width: 300px;
-
     padding: 20px;
-
     font-size: 1.3em;
-
     font-weight: bold;
-
     cursor: pointer;
 }
 
 #modalComunicarTreinadorFiltrado {
     position: fixed;
     inset: 0;
-
     background: rgba(0,0,0,0.5);
-
     z-index: 99999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1035,21 +993,13 @@ button.btn-voltar-menu:hover {
     display: none;
 }
 
-/* 🔽 DUPLICAÇÃO EXATA DO ESTILO DO OUTRO MODAL */
-
 #modalComunicarTreinadorFiltrado .conteudo-modal {
-
     background: white;
-
     width: 90%;
     max-width: 700px;
-
     padding: 30px;
-
     border-radius: 10px;
-
     text-align: center;
-
     box-sizing: border-box;
 }
 
@@ -1065,106 +1015,76 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarTreinadorFiltrado .botoes-modal {
-
     display: flex;
-
     justify-content: center;
-
     gap: 15px;
 }
 
 #modalComunicarTreinadorFiltrado button {
-
     flex: 1;
-
     max-width: 300px;
-
     padding: 20px;
-
     font-size: 1.3em;
-
     font-weight: bold;
-
     cursor: pointer;
 }
-/* =========================
-   MODAL BASE (GENÉRICO)
-========================= */
 
 .modal-padrao {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.5);
   z-index: 99999;
-
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* escondido */
 .modal-padrao.oculto {
   display: none;
 }
 
-/* conteúdo */
 .modal-padrao .conteudo-modal {
   background: white;
-
   width: 90%;
   max-width: 700px;
-
   padding: 30px;
-
   border-radius: 10px;
-
   text-align: center;
-
   box-sizing: border-box;
 }
 
-/* título */
 .modal-padrao h3 {
   font-size: 1.8em;
   margin-bottom: 20px;
 }
 
-/* texto */
 .modal-padrao p {
   font-size: 1.3em;
   line-height: 1.5;
   margin-bottom: 30px;
 }
 
-/* botões */
 .modal-padrao .botoes-modal {
   display: flex;
   justify-content: center;
   gap: 15px;
 }
 
-/* botão padrão */
 .modal-padrao button {
   flex: 1;
   max-width: 300px;
-
   padding: 20px;
-
   font-size: 1.3em;
   font-weight: bold;
 
   cursor: pointer;
 }
 
-/*Modal comunicar Administrador*/
 #modalComunicarAdministrador {
     position: fixed;
     inset: 0;
-
     background: rgba(0,0,0,0.5);
-
     z-index: 99999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1175,18 +1095,12 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarAdministrador .conteudo-modal {
-
     background: white;
-
     width: 90%;
     max-width: 700px;
-
     padding: 30px;
-
     border-radius: 10px;
-
     text-align: center;
-
     box-sizing: border-box;
 }
 
@@ -1202,36 +1116,25 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarAdministrador .botoes-modal {
-
     display: flex;
-
     justify-content: center;
-
     gap: 15px;
 }
 
 #modalComunicarAdministrador button {
-
     flex: 1;
-
     max-width: 300px;
-
     padding: 30px;
-
     font-size: 1.3em;
-
     font-weight: bold;
-
     cursor: pointer;
 }
-/*Modal comunicar Administrador*/
 
 #modalAcoesTreinamento {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1273,7 +1176,6 @@ button.btn-voltar-menu:hover {
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1357,7 +1259,6 @@ button.btn-voltar-menu:hover {
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1405,11 +1306,8 @@ button.btn-voltar-menu:hover {
 #alertaGlobal {
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.5);
-
   z-index: 9999;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1443,13 +1341,11 @@ button.btn-voltar-menu:hover {
   box-sizing: border-box;
 }
 
-/*modal partiipantes novo inicia aqui*/
 #modalParticipantes {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1464,14 +1360,12 @@ button.btn-voltar-menu:hover {
     padding: 28px;
     border-radius: 10px;
     max-width: 900px;
-    /*width: 95%;*/
     width: 80vw;
     max-width: 1000px;
     text-align: center;
     box-sizing: border-box;
 }
 
-/* topo alinhado com botão X */
 #modalParticipantes .modal-topo {
     display: flex;
     justify-content: space-between;
@@ -1479,22 +1373,18 @@ button.btn-voltar-menu:hover {
     margin-bottom: 18px;
 }
 
-/* título */
 #modalParticipantes h3 {
     font-size: 1.2em;
     margin: 0;
 }
 
-/* botão X pequeno */
 #modalParticipantes .btn-fechar-modal {
     background: transparent;
     border: none;
     font-size: 1.4em;
     cursor: pointer;
     color: #d33;
-
-    width: 70px;        /* controla tamanho fixo */
-    /*text-align: right;  /* encosta na direita */
+    width: 70px;        
     padding: 6px;
 }
 
@@ -1502,7 +1392,6 @@ button.btn-voltar-menu:hover {
     color: #a00;
 }
 
-/* botão principal do modal */
 #modalParticipantes button:not(.btn-fechar-modal) {
     display: block;
     width: 100%;
@@ -1528,242 +1417,6 @@ button.btn-voltar-menu:hover {
     font-weight: bold;
 }
 
-/*novo css para o slider */
-/*.switch-container{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin:15px 0;
-}
-
-.switch{
-    position:relative;
-    display:inline-block;
-    width:160px;
-    height:70px;
-}
-
-.switch input{
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.slider{
-    position:absolute;
-    cursor:pointer;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color:#D3D3D3;
-    transition:.3s;
-    border-radius:50px;
-    border: 2px solid #0056D2;
-}
-
-.slider:before{
-    position:absolute;
-    content:"";
-    height:56px;
-    width:56px;
-    left:5px;
-    bottom:5px;
-    background-color:white;
-    transition:.1s;
-    border-radius:50%;
-}
-
-.switch input:checked + .slider{
-    background-color:#0056D2;
-}
-
-.switch input:checked + .slider:before{
-    transform:translateX(90px);
-}
-
-.texto-azul {
-    color: #0056D2;
-}
-
-
-.switchVerde-container{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin:15px 0;
-}
-
-.switchVerde{
-    position:relative;
-    display:inline-block;
-    width:160px;
-    height:70px;
-}
-
-.switchVerde input{
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.switchVerde .slider{
-    position:absolute;
-    cursor:pointer;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color:#DCFCE7;
-    transition:.3s;
-    border-radius:50px;
-    border: 2px solid #009C3B;
-}
-
-.slider:before{
-    position:absolute;
-    content:"";
-    height:56px;
-    width:56px;
-    left:5px;
-    bottom:5px;
-    background-color:white;
-    transition:.1s;
-    border-radius:50%;
-}
-
-.switchVerde input:checked + .slider{
-    background-color: #009C3B;
-}
-
-.switchVerde input:checked + .slider:before{
-    transform:translateX(90px);
-}
-
-.texto-verde {
-    color: #009C3B;
-}
-
-
-.switchVermelho-container{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin:15px 0;
-}
-
-.switchVermelho{
-    position:relative;
-    display:inline-block;
-    width:160px;
-    height:70px;
-}
-
-.switchVermelho input{
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.switchVermelho .slider{
-    position:absolute;
-    cursor:pointer;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color:#FEE2E2; 
-    transition:.3s;
-    border-radius:50px;
-    border: 2px solid #DC2626;
-}
-
-.slider:before{
-    position:absolute;
-    content:"";
-    height:56px;
-    width:56px;
-    left:5px;
-    bottom:5px;
-    background-color:white;
-    transition:.1s;
-    border-radius:50%;
-}
-
-.switchVermelho input:checked + .slider{
-    background-color: #DC2626; 
-}
-
-.switchVermelho input:checked + .slider:before{
-    transform:translateX(90px);
-}
-
-.texto-vermelho {
-    color: #DC2626;
-}
-
-
-.switchRoxo-container{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin:15px 0;
-}
-
-.switchRoxo{
-    position:relative;
-    display:inline-block;
-    width:160px;
-    height:70px;
-}
-
-.switchRoxo input{
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.switchRoxo .slider{
-    position:absolute;
-    cursor:pointer;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color:#EDE9FE; 
-    transition:.3s;
-    border-radius:50px;
-    border: 2px solid #7C3AED; 
-}
-
-.slider:before{
-    position:absolute;
-    content:"";
-    height:56px;
-    width:56px;
-    left:5px;
-    bottom:5px;
-    background-color:white;
-    transition:.1s;
-    border-radius:50%;
-}
-
-.switchRoxo input:checked + .slider{
-    background-color: #7C3AED; 
-}
-
-.switchRoxo input:checked + .slider:before{
-    transform:translateX(90px);
-}*/
-
-/* ==========================================================
-   ESTILO COMUM DOS SWITCHES
-========================================================== */
-
 .slider{
     position:absolute;
     cursor:pointer;
@@ -1786,10 +1439,6 @@ button.btn-voltar-menu:hover {
     transition:.1s;
     border-radius:50%;
 }
-
-/* ==========================================================
-   SWITCH AZUL
-========================================================== */
 
 .switch-container{
     display:flex;
@@ -1829,10 +1478,6 @@ button.btn-voltar-menu:hover {
     color:#0056D2;
 }
 
-/* ==========================================================
-   SWITCH VERDE
-========================================================== */
-
 .switchVerde-container{
     display:flex;
     align-items:center;
@@ -1871,10 +1516,6 @@ button.btn-voltar-menu:hover {
     color:#009C3B;
 }
 
-/* ==========================================================
-   SWITCH VERMELHO
-========================================================== */
-
 .switchVermelho-container{
     display:flex;
     align-items:center;
@@ -1912,10 +1553,6 @@ button.btn-voltar-menu:hover {
 .texto-vermelho{
     color:#DC2626;
 }
-
-/* ==========================================================
-   SWITCH ROXO
-========================================================== */
 
 .switchRoxo-container{
     display:flex;
@@ -2047,19 +1684,6 @@ button.btn-voltar-menu:hover {
   gap: 8px;
 }
 
-.header {
-  /*background: #f3f4f6;
-  padding: 10px;
-  text-align: center;
-  border-radius: 8px;
-  font-weight: 600;*/
-}
-
-.dia {
-  /*padding: 10px;
-  font-weight: 600;*/
-}
-
 .box {
   display: flex;
   justify-content: center;
@@ -2071,12 +1695,10 @@ button.btn-voltar-menu:hover {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 6px;
-  /*font-family: Arial, sans-serif;*/
 }
 
-/* HEADER */
 .tabela-sistema thead th {
-  background: #EAF4FF;/*#334155; //#1f2937;*/
+  background: #EAF4FF;
   color:var(--cor-azul);
   padding: 12px;
   border-radius: 10px;
@@ -2085,7 +1707,6 @@ button.btn-voltar-menu:hover {
   border: none;
 }
 
-/* CELULAS */
 .tabela-sistema tbody td {
   background: #ffffff;
   padding: 6px;
@@ -2104,13 +1725,11 @@ button.btn-voltar-menu:hover {
     background: #FACC15;
 }
 
-/* HOVER */
 .tabela-sistema tbody td:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
-/* CHECKBOX PADRÃO */
 .tabela-sistema input[type="checkbox"] {
   width: 40px;
   height: 40px;
@@ -2119,7 +1738,6 @@ button.btn-voltar-menu:hover {
   transform: scale(1.2);
 }
 
-/* STICKY HEADER OPCIONAL */
 .tabela-sistema thead th {
   position: sticky;
   top: 0;
@@ -2165,15 +1783,7 @@ td {
 }
 
 .tabela-listagem th{
-    /*background:#336699;
-    color:#FFF;
-    background: #EAF4FF;
-    color:var(--cor-azul);
-    padding:12px 16px;
-    text-align:left;
-    font-weight:600;*/
-
-    background: #EAF4FF;/*#334155; #1f2937;*/
+       background: #EAF4FF;
     color:var(--cor-azul);
     padding: 12px;
     border-radius: 10px;
@@ -2253,9 +1863,7 @@ td {
     display:flex;
     justify-content:space-between;
     align-items:center;
-
     padding:12px 16px;
-
     border-bottom:1px solid #F1F5F9;
 }
 
@@ -2282,13 +1890,10 @@ td {
   width: 100%;
   margin: 5px 0;
   text-align: left;
-
   background: #FFFEF5;
   color: #333;
-
   border: 1px solid #ccc;
   border-radius: 30px;
-
   box-shadow: none;
 }
 
@@ -2306,7 +1911,6 @@ td {
     inset:0;
     background:rgba(0,0,0,.55);
     z-index:99999;
-
     justify-content:center;
     align-items:center;
 }
@@ -2323,23 +1927,6 @@ td {
     padding:28px;
     box-shadow:0 12px 40px rgba(0,0,0,.25);
     text-align:center;
-}
-
-/*.fechar-modal-editar{
-    background: transparent;
-    border: none;
-    font-size: 1.4em;
-    cursor: pointer;
-    color: #d33;
-    justify-content: flex-end;
-
-    width: 70px;        
-    
-    padding: 6px;
-}*/
-
-.fechar-modal-editar:hover{
-    /*background:#e3e3e3;*/
 }
 
 .conteudo-modal-editar h3{
@@ -2362,15 +1949,27 @@ td {
 .fechar-modal-editar{
     width:auto;
     margin-left:auto;
-
     background:transparent;
     border:none;
-
     color:#d33;
     font-size:1.4rem;
     cursor:pointer;
-
     padding:6px;
-
     flex-shrink:0;
+}
+
+@media (max-width: 768px) {
+
+  body {
+    font-size: 1rem;
+  }
+
+  input, select, button {
+    height: auto;
+    font-size: 1rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
 }

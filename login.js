@@ -14,7 +14,7 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   window[callbackName] = function(resposta) {
 
-    console.log("✅ Callback executado:", resposta);
+    //console.log("✅ Callback executado:", resposta);
 
     if (resposta && resposta.sucesso === false) {
       if (onError) onError(resposta);
@@ -50,6 +50,9 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
   document.body.appendChild(script);
 
 }
+
+
+
 function toggleMenu() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('overlay').classList.toggle('active');
@@ -406,7 +409,7 @@ window.addEventListener("DOMContentLoaded", () => {
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
 
-    //document.getElementById("menuBtn").style.display = "inline-block";
+    document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';
     document.getElementById('conteudoProtegido').style.display = 'block';
 
@@ -635,7 +638,7 @@ function salvarDisponibilidadeIdUsuarioLogado2h() {
 
 function pesquisarDisponibilidadeUsuarioLogado2h() {
 
-  console.log("pesquisarDisponibilidadeUsuarioLogado2h");
+  //console.log("pesquisarDisponibilidadeUsuarioLogado2h");
 
   if (!idUsuarioLogado) {
 
@@ -783,7 +786,7 @@ function habilitarCamposDisponibilidadeID() {
 
 function salvarDisponibilidadeIdUsuarioLogado4h() {
 
-  console.log('Entrou na função salvarDisponibilidadeIdUsuarioLogado4h');
+  //console.log('Entrou na função salvarDisponibilidadeIdUsuarioLogado4h');
 
   const jaTenhoDesignacao =
     document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade")?.checked;
@@ -887,9 +890,9 @@ function salvarDisponibilidadeIdUsuarioLogado4h() {
 
         sincronizarCardsComSwitch();
 
-        console.log(
+        /*console.log(
           "Chamando a função de sincronizar cards pelo botão somente Substituição!!!"
-        );
+        );*/
 
       }
 
@@ -974,7 +977,7 @@ function alternarDesignadoID() {
 
 function pesquisarDisponibilidadeUsuarioLogado4h() {
 
-  console.log("pesquisarDisponibilidadeUsuarioLogado4h");
+  //console.log("pesquisarDisponibilidadeUsuarioLogado4h");
 
   if (!idUsuarioLogado) {
     mostrarAlertaGlobal("❌ Usuário inválido.");
@@ -1836,7 +1839,7 @@ function pesquisarMinhaInfo() {
       // Se essa função apenas atualiza alguma variável ou tela,
       // coloque aqui o código que antes ficava no SuccessHandler.
 
-      console.log(resultado);
+      //console.log(resultado);
 
     }
   );
@@ -3433,12 +3436,6 @@ function mostrarResultados(dados) {
           trClas = document.createElement('tr'),
           trDet = document.createElement('tr');
 
-    console.log("LINHA:", linha);
-    console.log("ID índice 17:", linha[17]);
-
-    console.log("Tamanho da linha:", linha.length);
-    console.log(linha);
-
     trDet.dataset.identificadorOriginal = (linha[17] || '').toString().trim();
 
     // ===== INFO =====
@@ -4175,8 +4172,6 @@ function salvarAlteracoes(trs, idx) {
   // API JSONP
   // =========================
   const idOrig = trDet.dataset.identificadorOriginal;
-
-  console.log("ID ORIGINAL:", idOrig);
 
   mostrarSpinner();
 
@@ -7395,7 +7390,7 @@ function transformarNomeEmSelect(td) {
           },
           function() {
             esconderSpinner();
-            console.log("Alteração salva automaticamente.");
+            //console.log("Alteração salva automaticamente.");
           },
           function(err) {
             esconderSpinner();
@@ -10424,8 +10419,8 @@ function carregarOpcoes() {
 
   apiJSONP("buscarOpcoesParaForm", {}, function(opcoes) {
 
-    console.log(opcoes);
-    console.log(opcoes.privilegios);
+    //console.log(opcoes);
+    //console.log(opcoes.privilegios);
 
     window.mapaParticipantesPorNome = {};
 
@@ -10578,7 +10573,7 @@ function popularSelects(dados) {
   const regex = /^([A-Z]+)(\d+)$/i;
 
   // 🔍 Log para depuração
-  console.log("📋 Pontos recebidos:", pontos);
+  //console.log("📋 Pontos recebidos:", pontos);
 
   // ✅ Ordena por número e prefixo
   const pontosOrdenados = pontos.slice().sort((a, b) => {
@@ -10599,7 +10594,7 @@ function popularSelects(dados) {
     return idxA - idxB;
   });
 
-  console.log("✅ Pontos ordenados:", pontosOrdenados);
+  //console.log("✅ Pontos ordenados:", pontosOrdenados);
 
   // ✅ Preenche selects com os pontos completos (ex: MA20, MB20)
   pontosOrdenados.forEach(p => {
@@ -10645,7 +10640,7 @@ function popularSelects(dados) {
     });
 
     const numerosOrdenados = Array.from(numerosUnicos).sort((a, b) => a - b);
-    console.log("📌 Números de ponto:", numerosOrdenados);
+    //console.log("📌 Números de ponto:", numerosOrdenados);
 
     numerosOrdenados.forEach(num => {
       const label = `Ponto ${num}`;
@@ -10658,7 +10653,7 @@ function popularSelects(dados) {
     });
   }
 
-  console.log("🎯 Selects populados com sucesso.");
+  //console.log("🎯 Selects populados com sucesso.");
 }
 
  async function atualizarParticipantesParaSubstituir() {
@@ -11332,7 +11327,7 @@ function voltar() {
 
     });
 
-    console.log("Tela recuperada:", telaAtual);
+    //console.log("Tela recuperada:", telaAtual);
 
     document.getElementById(telaAtual)
         ?.classList.add('aberta');
@@ -11823,9 +11818,9 @@ function sincronizarCardsComSwitch() {
 
 function renderizarDisponibilidade(dados, cfg) {
 
-  console.log("condição:", dados.condicao);
+  /*console.log("condição:", dados.condicao);
   console.log("frequência:", dados.frequencia);
-  console.log("dias:", dados.diasTurnos);
+  console.log("dias:", dados.diasTurnos);*/
 
   const chkSubstituicao =
     document.getElementById(cfg.chkSubstituicao);
@@ -11904,10 +11899,10 @@ function renderizarDisponibilidade(dados, cfg) {
 
     });
   }
-    console.log(
+    /*console.log(
     "Depois do render:",
     frequencia.disabled
-  );
+  );*/
 }
 
 function renderizarDisponibilidadeBase(dados, cfg) {
@@ -12013,7 +12008,7 @@ function executarAcaoModalEditarDisponibilidade() {
 //MEU TREINAMENTO PRÁTICO x
 function consultarMeuTreinamento() {
 
-  console.log("🔥 consultarMeuTreinamento INICIOU");
+  //console.log("🔥 consultarMeuTreinamento INICIOU");
 
   mostrarSpinner();
 
@@ -12025,7 +12020,7 @@ function consultarMeuTreinamento() {
 
     function(res) {
       
-      console.log("🔥 RESPOSTA CHEGOU:", res);
+      //console.log("🔥 RESPOSTA CHEGOU:", res);
 
       esconderSpinner();
 

@@ -1,4 +1,4 @@
-function mostrarSpinner() {
+/*function mostrarSpinner() {
   let el = document.getElementById("spinnerGlobal");
 
   if (!el) {
@@ -25,4 +25,4 @@ function esconderSpinner() {
 
 function mostrarAlertaGlobal(msg) {
   alert(msg);
-}
+}*/

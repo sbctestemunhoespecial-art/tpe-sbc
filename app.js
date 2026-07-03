@@ -1,4 +1,4 @@
-let perfilUsuario = "";
+/*let perfilUsuario = "";
 let idUsuarioLogado = "";
 
 function iniciarSistema(res) {
@@ -14,4 +14,4 @@ function iniciarSistema(res) {
 
     document.getElementById("tipoAcessoUsuario").textContent =
         "Seu tipo de acesso é " + perfilUsuario;
-}
+}*/

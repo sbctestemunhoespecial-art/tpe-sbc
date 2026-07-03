@@ -5,9 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
+    <link rel="manifest" href="manifest.json">
+
+
     <title>TPE SBC</title>
 
-    <link rel="stylesheet" href="login.css">
+
+
+    <!--<link rel="stylesheet" href="login.css">-->
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/mobile.css">
+
+
+
 </head>
 
 <body>
@@ -3681,6 +3696,14 @@
     <script src="api.js"></script>
     <script src="app.js"></script>
     <script src="login.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/painel-login-tpe/service-worker.js')
+        .then(() => console.log('SW registrado'))
+        .catch(err => console.error('Erro SW:', err));
+    }
+  </script>
 
 </body>
 

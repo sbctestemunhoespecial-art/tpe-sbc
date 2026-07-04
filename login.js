@@ -10290,25 +10290,32 @@ document.getElementById('enviarEmailIrregularesBtn').addEventListener('click', f
 
       const nomes = irregularesEncontrados.map(p => p.nome);
 
-      const callback = "cb_email_" + Date.now();
+      apiJSONP(
+        "enviarEmailParaIrregularesComUsuario",
+        {
+          nomes: JSON.stringify(nomes),
+          usuario: nomeUsuarioAtual,
+          assunto,
+          mensagem: mensagemBase
+        },
+        () => {
 
-      window[callback] = function() {
-        esconderSpinner();
-        mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
-        delete window[callback];
-      };
+          esconderSpinner();
 
-      const script = document.createElement("script");
-      script.src =
-        API_URL +
-        "?acao=enviarEmailParaIrregularesComUsuario" +
-        "&nomes=" + encodeURIComponent(JSON.stringify(nomes)) +
-        "&usuario=" + encodeURIComponent(nomeUsuarioAtual) +
-        "&assunto=" + encodeURIComponent(assunto) +
-        "&mensagem=" + encodeURIComponent(mensagemBase) +
-        "&callback=" + callback;
+          mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
 
-      document.body.appendChild(script);
+        },
+        (err) => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            "❌ " + (err?.mensagem || err?.error || "Erro ao enviar e-mails.")
+          );
+
+        }
+      );
+
     }
   );
 });

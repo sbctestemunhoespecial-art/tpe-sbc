@@ -45,50 +45,51 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 }
 
 function toggleMenu() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('active');
-  }
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+}
 
-  function mostrarPainel(idPainel) {
-    toggleMenu();
+function mostrarPainel(idPainel) {
+  toggleMenu();
 
-    document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
+  document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
 
-    const painel = document.getElementById(idPainel);
-    if (painel) painel.classList.add('ativo');
-  }
-  function mostrarPainelSemMenu(idPainel) {
+  const painel = document.getElementById(idPainel);
+  if (painel) painel.classList.add('ativo');
+}
 
-    document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
+function mostrarPainelSemMenu(idPainel) {
 
-    const painel = document.getElementById(idPainel);
-    if (painel) painel.classList.add('ativo');
-  }
+  document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
 
-  function sair() {
-    toggleMenu();
+  const painel = document.getElementById(idPainel);
+  if (painel) painel.classList.add('ativo');
+}
 
-    localStorage.removeItem("usuarioLogado");
-    perfilUsuario = null;
-    idUsuarioLogado = null;
+function sair() {
+  toggleMenu();
 
-    historico.length = 0;
-    telaAtual = 'menuCards';
+  localStorage.removeItem("usuarioLogado");
+  perfilUsuario = null;
+  idUsuarioLogado = null;
 
-    document.querySelectorAll('.tela').forEach(el => {
-        el.classList.remove('aberta');
-    });
+  historico.length = 0;
+  telaAtual = 'menuCards';
 
-    document.getElementById('menuCards')
-        ?.classList.add('aberta');
+  document.querySelectorAll('.tela').forEach(el => {
+      el.classList.remove('aberta');
+  });
 
-    atualizarBotaoVoltar();
+  document.getElementById('menuCards')
+      ?.classList.add('aberta');
 
-    document.getElementById("menuBtn").style.display = "none";
-    document.getElementById('conteudoProtegido').style.display = 'none';
-    document.getElementById('telaLogin').style.display = 'block';
+  atualizarBotaoVoltar();
 
-    mostrarAlertaGlobal("Você saiu da conta.");
+  document.getElementById("menuBtn").style.display = "none";
+  document.getElementById('conteudoProtegido').style.display = 'none';
+  document.getElementById('telaLogin').style.display = 'block';
+
+  mostrarAlertaGlobal("Você saiu da conta.");
 
 }
 
@@ -115,6 +116,174 @@ function limparMensagens() {
     const el = document.getElementById(id);
     if (el) el.textContent = '';
   });
+}
+
+function enviarCodigo() {
+  const email = document.getElementById('emailCodigo').value.trim();
+  const msg = document.getElementById('msgSolicitarCodigo');
+  msg.textContent = "";
+
+  if (!email) {
+    mostrarAlertaGlobal("⚠️ Digite seu e-mail.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "enviarCodigo",
+    { email },
+    (res) => {
+      esconderSpinner();
+      msg.textContent = res.mensagem;
+
+      if (res.sucesso) {
+        mostrarTela('telaInserirCodigo');
+        window.emailRedefinicao = email;
+      }
+    },
+    (err) => {
+      esconderSpinner();
+      console.error(err);
+    }
+  );
+}
+
+function confirmarCodigo() {
+  const inputs = document.querySelectorAll('#inputsCodigo .input-codigo');
+  const codigo = Array.from(inputs).map(i => i.value).join('');
+  const senha1 = document.getElementById('novaSenhaCodigo').value;
+  const senha2 = document.getElementById('novaSenhaConfirma').value;
+  const msg = document.getElementById('msgConfirmarCodigo');
+  msg.textContent = "";
+
+  if (senha1 === '' || senha2 === '') {
+    mostrarAlertaGlobal("⚠️ Preencha a nova senha.");
+    return;
+  }
+
+  if (senha1 !== senha2) {
+    mostrarAlertaGlobal("❌ As senhas não são iguais.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "confirmarCodigoRedefinicao",
+    {
+      email: window.emailRedefinicao,
+      codigo,
+      senha: senha1
+    },
+    (res) => {
+      esconderSpinner();
+      msg.textContent = res.mensagem;
+
+      if (res.sucesso) {
+        mostrarTela('telaLogin');
+      }
+    },
+    (err) => {
+      esconderSpinner();
+      console.error(err);
+    }
+  );
+}
+
+function autoAvancarCodigo(el) {
+  const inputs = document.querySelectorAll('#inputsCodigo .input-codigo');
+  const index = Array.from(inputs).indexOf(el);
+  
+  el.value = el.value.replace(/[^0-9]/g, '');
+
+  if (el.value.length === 1 && index < inputs.length - 1) {
+    inputs[index + 1].focus();
+  }
+
+  if (Array.from(inputs).every(input => input.value.length === 1)) {
+    const codigo = Array.from(inputs).map(i => i.value).join('');
+    validarCodigo(codigo);
+  } else {
+    document.getElementById('inputsSenha').style.display = 'none';
+    document.getElementById('msgConfirmarCodigo').textContent = '';
+  }
+}
+
+function validarCodigo(codigo) {
+  mostrarSpinner();
+
+  apiJSONP(
+    "validarCodigoRedefinicao",
+    {
+      email: window.emailRedefinicao,
+      codigo
+    },
+    (res) => {
+      esconderSpinner();
+      const msg = document.getElementById('msgConfirmarCodigo');
+
+      if (res.sucesso) {
+        msg.textContent = '';
+        document.getElementById('inputsSenha').style.display = 'block';
+      } else {
+        msg.textContent = '❌ Código inválido.';
+        document.getElementById('inputsSenha').style.display = 'none';
+      }
+    },
+    (err) => {
+      esconderSpinner();
+      console.error(err);
+    }
+  );
+}
+
+function redefinirSenha() {
+  const senha1 = document.getElementById('novaSenhaCodigo').value;
+  const senha2 = document.getElementById('novaSenhaConfirma').value;
+  const msg = document.getElementById('msgConfirmarCodigo');
+  msg.textContent = '';
+
+  if (!senha1 || !senha2) {
+    msg.textContent = '⚠️ Preencha ambos os campos de senha.';
+    return;
+  }
+
+  if (senha1 !== senha2) {
+    msg.textContent = '❌ As senhas não coincidem.';
+    return;
+  }
+
+  const email = window.emailRedefinicao;
+  if (!email) {
+    msg.textContent = '❌ E-mail não cadastrado. Verifique o email. Se necessário, contate a administração.';
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "redefinirSenha",
+    {
+      email,
+      senha: senha1
+    },
+    (res) => {
+      esconderSpinner();
+      msg.textContent = res.mensagem;
+
+      if (res.sucesso) {
+        document.getElementById('novaSenhaCodigo').value = '';
+        document.getElementById('novaSenhaConfirma').value = '';
+        document.getElementById('inputsSenha').style.display = 'none';
+        mostrarTela('telaLogin');
+      }
+    },
+    (err) => {
+      esconderSpinner();
+      console.error(err);
+    }
+  );
 }
 
 let perfilUsuario = null;
@@ -382,6 +551,643 @@ document.addEventListener('click', function (event) {
   }, 200);
 
 });
+
+function pesquisarDesignados() {
+  const turno = document.getElementById('turnoDesignado').value.trim();
+  const dia = document.getElementById('diaDesignado').value.trim();
+  const ponto = document.getElementById('pontoDesignado').value.trim();
+
+  if (!turno || !dia || !ponto) {
+    mostrarAlertaGlobal('⚠️ Por favor, selecione todos os filtros.');
+    return;
+  }
+
+  const msg = document.getElementById("msgPesqDesignados");
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "filtrarDesignadosNaAbaPontos",
+    {
+      turno,
+      dia,
+      ponto
+    },
+    (res) => {
+      esconderSpinner();
+      exibirResultados(res);
+    },
+    (err) => {
+      esconderSpinner();
+      console.error(err);
+    }
+  );
+}
+
+function exibirResultados(res) {
+  const c = document.getElementById('resultadoDesignadosContainer');
+  const msg = document.getElementById("msgPesqDesignados");
+  esconderSpinner();
+
+  if (!res || res.length === 0) {
+    c.innerHTML = '<p>Nenhum designado encontrado.</p>';
+    mostrarAlertaGlobal("❌ Nenhum designado encontrado");
+    return;
+  }
+
+  let html = `<table class="tabela-listagem">;
+        <thead>
+          <tr>
+            <th style="width: 33%;">Nome</th>
+            <th style="width: 10%;">Turno</th>
+            <th style="width: 15%;">Dia</th>
+            <th style="width: 8%;">Ponto</th>
+            <th style="width: 15%;">Freq.</th>
+            <th style="width: 19%;">Most.</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+  res.forEach(r => {
+    const partes = (r.turno || "").split(" ");
+    const pontoNumero = partes[partes.length - 1] || "";
+    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+    html += `
+        <tr class="linha-designacao" 
+            data-nome="${r.nome}" 
+            data-turno="${turnoPalavra}" 
+            data-dia="${r.dia}" 
+            data-ponto="${pontoNumero}"
+            data-frequencia="${r.frequencia}"
+            data-equipamento="${r.equipamento}"
+            style="cursor:pointer">
+          <td style="width: 33%;">${formatarNomeComNegrito(r.nome)}</td>
+          <td style="width: 10%;">${turnoPalavra}</td>
+          <td style="width: 15%;">${r.dia}</td>
+          <td style="width: 8%;">${pontoNumero}</td>
+          <td style="width: 15%;">${r.frequencia}</td>
+          <td style="width: 19%;">${r.equipamento}</td>
+        </tr>`;
+  });
+
+  html += '</tbody></table>';
+  c.innerHTML = html;
+  msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
+
+  c.querySelectorAll('.linha-designacao').forEach(linha => {
+
+    linha.addEventListener('click', () => {
+      const selectNome = linha.querySelector('td:first-child select');
+      if (selectNome) {
+        return;
+      }
+
+      const participante = linha.dataset.nome;
+
+      if (participante.trim().toUpperCase().startsWith("VAGA")) {
+        mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
+        return;
+      }
+
+      const turno = linha.dataset.turno;
+      const ponto = linha.dataset.ponto;
+      const dia = linha.dataset.dia;
+      const frequencia = linha.dataset.frequencia;
+      const equipamento = linha.dataset.equipamento;
+
+      acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linha);
+    });
+  });
+}
+
+function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
+    document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
+
+    const menuRow = document.createElement('tr');
+    menuRow.classList.add('menuDesignacao');
+
+    const td = document.createElement('td');
+    td.colSpan = 6;
+    td.style.padding = '10px';
+    td.style.backgroundColor = '#eef2ff';
+    td.style.border = '1px solid #ccc';
+
+    const btnEditar = document.createElement('button');
+    btnEditar.textContent = '✏️ Editar';
+    btnEditar.className = 'botao editar';
+    btnEditar.style.marginRight = '10px';
+    btnEditar.style.margin = '0';
+
+    btnEditar.onclick = () => {
+      menuRow.remove();
+      editarDesignacaoInline(linhaTR);
+    };
+
+    const btnExcluir = document.createElement('button');
+    btnExcluir.textContent = '🗑️ Excluir';
+    btnExcluir.className = 'botao excluir'; // <-- classe cancel
+    btnExcluir.style.margin = '0';
+    btnExcluir.onclick = () => {
+      menuRow.remove();
+      mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento);
+    };
+
+    td.appendChild(btnEditar);
+    td.appendChild(btnExcluir);
+    menuRow.appendChild(td);
+
+    linhaTR.insertAdjacentElement('afterend', menuRow);
+  }
+
+
+  function mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento) {
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
+    () => {
+
+      mostrarSpinner();
+
+      let turnoCodigo = "";
+
+      switch (turno) {
+        case "Manhã":
+          turnoCodigo = "M";
+          break;
+
+        case "Tarde":
+          turnoCodigo = "T";
+          break;
+
+        case "Noite":
+          turnoCodigo = "N";
+          break;
+
+        case "Matinal":
+          turnoCodigo = "A";
+          break;
+
+        case "Manhã (9–11h)":
+          turnoCodigo = "MA";
+          break;
+
+        case "Manhã (11–13h)":
+          turnoCodigo = "MB";
+          break;
+
+        case "Tarde (13–15h)":
+          turnoCodigo = "TA";
+          break;
+
+        case "Tarde (15–17h)":
+          turnoCodigo = "TB";
+          break;
+
+        default:
+          esconderSpinner();
+          mostrarAlertaGlobal(
+            "⚠️ Turno inválido: " + turno
+          );
+          return;
+      }
+
+      apiJSONP(
+        "deletarDesignacao",
+        {
+          participante,
+          ponto,
+          dia,
+          turno: turnoCodigo
+        },
+        () => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            `✅ ${participante} removido com sucesso.`
+          );
+
+          pesquisarDesignados();
+
+        },
+        (err) => {
+
+          esconderSpinner();
+
+          console.error(err);
+          mostrarAlertaGlobal(
+            `❌ Erro ao remover: ${err.message || err}`
+          );
+        }
+      );
+
+    }
+  );
+
+}
+
+function editarDesignacaoInline(linhaTR) {
+  const colunas = linhaTR.querySelectorAll('td');
+  const campos = ['nome', 'turno', 'dia', 'ponto', 'frequencia', 'equipamento'];
+
+  const nomeOriginal = linhaTR.dataset.nome;
+  const turnoVisivelOriginal = linhaTR.dataset.turno;
+  const diaOriginal = linhaTR.dataset.dia;
+  const pontoVisivelOriginal = linhaTR.dataset.ponto;
+  const frequenciaOriginal = linhaTR.dataset.frequencia;
+  const equipamentoOriginal = linhaTR.dataset.equipamento;
+
+  linhaTR.dataset.nomeOriginal = nomeOriginal;
+
+  if (nomeOriginal.trim().toUpperCase().startsWith("VAGA")) {
+    mostrarAlertaGlobal("⚠️ Edição de vagas não permitida por aqui.");
+    return;
+  }
+
+  const selectsOriginais = {
+    nome: document.getElementById('participante'),
+    frequencia: document.getElementById('frequencia'),
+    equipamento: document.getElementById('equipamento')
+  };
+
+  for (const [key, sel] of Object.entries(selectsOriginais)) {
+    if (!sel) {
+      mostrarAlertaGlobal(`⚠️ Select para "${key}" não encontrado.`);
+      return;
+    }
+  }
+
+  campos.forEach((campo, i) => {
+    const td = colunas[i];
+
+    if (["nome", "frequencia", "equipamento"].includes(campo)) {
+      const selectOriginal = selectsOriginais[campo];
+      const selectClone = document.createElement('select');
+
+      function normalizarTexto(str) {
+        return str ? str.replace(/\s+/g, '').trim() : '';
+      }
+
+      const valorAtual = normalizarTexto(td.textContent);
+
+      for (const option of selectOriginal.options) {
+        const opt = document.createElement('option');
+        opt.value = option.value;
+        opt.textContent = option.textContent;
+        selectClone.appendChild(opt);
+
+        if (normalizarTexto(option.value) === valorAtual) {
+          selectClone.value = option.value;
+        }
+      }
+
+      if (selectClone.value !== valorAtual) {
+        console.warn(`⚠️ Valor '${valorAtual}' não foi selecionado automaticamente!`);
+      }
+
+      td.innerHTML = '';
+      td.appendChild(selectClone);
+    } else {
+      td.innerHTML = td.textContent.trim();
+    }
+  });
+
+  const inputFiltro = document.createElement('input');
+  inputFiltro.type = 'text';
+  inputFiltro.placeholder = 'Filtrar nome...';
+  inputFiltro.style.margin = '10px 0';
+  inputFiltro.style.width = '100vw';
+  inputFiltro.style.display = 'block';
+
+  linhaTR.insertAdjacentElement('afterend', inputFiltro);
+
+  const menuRow = document.createElement('tr');
+  const tdMenu = document.createElement('td');
+  tdMenu.colSpan = 6;
+  tdMenu.style.paddingTop = '10px';
+
+  const btnSalvar = document.createElement('button');
+  btnSalvar.textContent = '💾 Salvar';
+  btnSalvar.className = 'botao salvar';
+  btnSalvar.style.marginRight = '10px';
+
+  btnSalvar.onclick = () => {
+
+    mostrarSpinner();
+
+    const novosValores = campos.map((campo, i) => {
+      const select = colunas[i].querySelector('select');
+      return select ? select.value : colunas[i].textContent.trim();
+    });
+
+    let [novoNome, novoTurnoVisivel, novoDia, novoPontoVisivel, novaFrequencia, novoEquipamento] = novosValores;
+
+    if (!novaFrequencia || !novaFrequencia.trim()) {
+      mostrarAlertaGlobal("⚠️ A frequência não pode estar vazia.");
+      return;
+    }
+
+    if (!novoEquipamento || !novoEquipamento.trim()) {
+      mostrarAlertaGlobal("⚠️ O equipamento não pode estar vazio.");
+      return;
+    }
+
+    const turnoCodigoMap = {
+      "Manhã": "M",
+      "Tarde": "T",
+      "Noite": "N",
+      "Matinal": "A",
+      "Manhã (9–11h)": "MA",
+      "Manhã (11–13h)": "MB",
+      "Tarde (13–15h)": "TA",
+      "Tarde (15–17h)": "TB"
+    };
+
+    const turnoCodigo = turnoCodigoMap[novoTurnoVisivel];
+    if (!turnoCodigo) {
+      mostrarAlertaGlobal("⚠️ Turno inválido: " + novoTurnoVisivel);
+      return;
+    }
+
+    const pontoFinal = turnoCodigo + novoPontoVisivel;
+
+    const nadaMudou =
+      nomeOriginal === novoNome &&
+      turnoVisivelOriginal === novoTurnoVisivel &&
+      diaOriginal === novoDia &&
+      pontoVisivelOriginal === novoPontoVisivel &&
+      frequenciaOriginal === novaFrequencia &&
+      equipamentoOriginal === novoEquipamento;
+
+    if (nadaMudou) {
+      mostrarAlertaGlobal("⚠️ Nenhuma alteração foi feita.");
+      return;
+    }
+
+    apiJSONP(
+      "processarEdicaoDesignacao",
+      {
+        novoNome,
+        ponto: pontoFinal,
+        dia: novoDia,
+        frequencia: novaFrequencia,
+        nomeOriginal,
+        equipamento: novoEquipamento
+      },
+      () => {
+
+        esconderSpinner();
+
+        const msg = document.getElementById("msgRemoverDesignados");
+        mostrarAlertaGlobal("✅ Designação atualizada com sucesso.");
+
+        pesquisarDesignados();
+
+        apiJSONP(
+          "atualizarStatusDaVaga",
+          {
+            ponto: pontoFinal,
+            dia: novoDia,
+            frequencia: novaFrequencia
+          },
+          () => {
+
+            apiJSONP(
+              "atualizarVagasEmAberto",
+              {},
+              () => {
+                if (typeof carregarTodasVagasAbertas === 'function') carregarTodasVagasAbertas();
+                if (typeof carregarAbas === 'function') carregarAbas();
+              },
+              (err) => console.error("Erro atualizar vagas em aberto:", err)
+            );
+
+          },
+          (err) => console.error("Erro atualizar status da vaga:", err)
+        );
+
+      },
+      (err) => {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(`❌ Erro ao atualizar: ${err.message || err}`);
+      }
+    );
+
+  };
+
+  const btnCancelar = document.createElement('button');
+  btnCancelar.textContent = '❌ Cancelar';
+  btnCancelar.className = 'botao cancel';
+  btnCancelar.onclick = () => {
+    pesquisarDesignados();
+  };
+
+  tdMenu.appendChild(btnSalvar);
+  tdMenu.appendChild(btnCancelar);
+  menuRow.appendChild(tdMenu);
+
+  inputFiltro.insertAdjacentElement('afterend', menuRow);
+
+  function norm(str) {
+    return str ? str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+  }
+
+  inputFiltro.addEventListener('input', () => {
+    const filtro = norm(inputFiltro.value);
+    const selectNome = colunas[0].querySelector('select');
+    if (!selectNome) return;
+
+    const valorSelecionadoAnterior = selectNome.value;
+
+    selectNome.innerHTML = '';
+
+    const com = [], cont = [];
+    (window.todosNomes || []).forEach(n => {
+      const nn = norm(n);
+      if (!filtro || nn.includes(filtro)) {
+        if (filtro && nn.startsWith(filtro)) com.push(n);
+        else cont.push(n);
+      }
+    });
+
+    const resultado = com.concat(cont);
+
+    resultado.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      selectNome.appendChild(opt);
+    });
+
+    if (resultado.includes(valorSelecionadoAnterior)) {
+      selectNome.value = valorSelecionadoAnterior;
+    } else if (resultado.length > 0) {
+      selectNome.value = resultado[0];
+    }
+  });
+
+  inputFiltro.dispatchEvent(new Event('input'));
+}
+
+function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
+    () => {
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "deletarDesignacao",
+        {
+          participante,
+          ponto,
+          dia,
+          turno
+        },
+        () => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            `✅ ${participante} removido com sucesso.`
+          );
+
+          pesquisarDesignados();
+
+        },
+        (err) => {
+
+          esconderSpinner();
+
+          console.error(err);
+          mostrarAlertaGlobal(
+            `❌ Erro ao remover: ${err.message || err}`
+          );
+        }
+      );
+
+    }
+  );
+
+}
+
+function carregarDadosDesignacao() {
+  apiJSONP(
+    "obterDadosFormulario",
+    {},
+    (res) => {
+      popularSelects(res);
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
+}
+
+  function popularSelects(dados) {
+    const { pontoCorrigir, pontos = [], participantes = [] } = dados;
+
+    const pontoVcorrigir = document.getElementById('pontoCorrigir');
+    const pontoSel = document.getElementById('ponto');
+    const partSel = document.getElementById('participanteDesignacao');
+
+    if (!pontoVcorrigir || !pontoSel || !partSel) return;
+
+    // 🧹 Limpa selects
+    pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
+    pontoVcorrigir.innerHTML = "<option value=''>- Sel Teste Corrigir -</option>";
+
+    const regex = /^([A-Z]+)(\d+)$/i;
+
+    // 🔍 Log para depuração
+    console.log("📋 Pontos recebidos:", pontos);
+
+    // ✅ Ordena por número e prefixo
+    const pontosOrdenados = pontos.slice().sort((a, b) => {
+      const matchA = a.match(regex);
+      const matchB = b.match(regex);
+      if (!matchA || !matchB) return 0;
+
+      const [, prefixA, numA] = matchA;
+      const [, prefixB, numB] = matchB;
+
+      const diffNum = parseInt(numA) - parseInt(numB);
+      if (diffNum !== 0) return diffNum;
+
+      const ordemPrefixos = ["A", "M", "MA", "MB", "T", "TA", "TB", "N"];
+      const idxA = ordemPrefixos.indexOf(prefixA);
+      const idxB = ordemPrefixos.indexOf(prefixB);
+      if (idxA === -1 || idxB === -1) return prefixA.localeCompare(prefixB);
+      return idxA - idxB;
+    });
+
+    console.log("✅ Pontos ordenados:", pontosOrdenados);
+
+    // ✅ Preenche selects com os pontos completos (ex: MA20, MB20)
+    pontosOrdenados.forEach(p => {
+      const opt1 = document.createElement('option');
+      opt1.value = p;
+      opt1.textContent = p;
+      pontoSel.appendChild(opt1);
+
+      const opt2 = document.createElement('option');
+      opt2.value = p;
+      opt2.textContent = p;
+      pontoVcorrigir.appendChild(opt2);
+    });
+
+    // ✅ Participantes
+    partSel.innerHTML = '<option value="">-- Selecione para designar! --</option>';
+    participantes.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      partSel.appendChild(opt);
+    });
+
+    // ✅ Popula selects de "Ponto X"
+    const selPonto1 = document.getElementById('pontobepp');
+    const selPonto2 = document.getElementById('pontoDesignado');
+    const selPonto3 = document.getElementById('pontosParaOferecerSelect');
+    const selPonto4 = document.getElementById('pontosParaOferecerSelectSub');
+    const selPonto5 = document.getElementById('pontoSelectMap2');
+    const selPonto6 = document.getElementById('pontosParaOferecerSelect2h');
+
+    if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
+      const numerosUnicos = new Set();
+
+      pontosOrdenados.forEach(ponto => {
+        const match = ponto.match(regex);
+        if (match) {
+          const num = parseInt(match[2], 10);
+          if (!isNaN(num)) numerosUnicos.add(num);
+        } else {
+          console.warn("⚠️ Ponto ignorado (regex falhou):", ponto);
+        }
+      });
+
+      const numerosOrdenados = Array.from(numerosUnicos).sort((a, b) => a - b);
+      console.log("📌 Números de ponto:", numerosOrdenados);
+
+      numerosOrdenados.forEach(num => {
+        const label = `Ponto ${num}`;
+        [selPonto1, selPonto2, selPonto3, selPonto4, selPonto5, selPonto6].forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = label;
+          opt.textContent = label;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    console.log("🎯 Selects populados com sucesso.");
+  }
+
+
 
 
 function preencherTabelaSemDisponibilidade() {
@@ -1299,7 +2105,6 @@ function alternarModoEdicao() {
   }
 }
 
-//treinamento prático
 function salvarTP() {
 
   if (!participanteSelecionadoTreinamentoPratico) {
@@ -1766,6 +2571,11 @@ function mostrarResultadosMinhaInfo(dados) {
 
       trDet.dataset.identificadorOriginal = (linha[14] || '').toString().trim();
 
+      console.log("🧩 trDet:", trDet);
+      console.log("🧩 dataset completo:", trDet.dataset);
+      console.log("🧩 identificadorOriginal:");
+      console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
+
       linha.slice(0, 2).forEach(v => {
         const td = document.createElement('td');
         td.textContent = v || '';
@@ -2128,211 +2938,216 @@ function mostrarResultadosMinhaInfo(dados) {
     btnC.style.display = 'none';
   }
 
-  function salvarAlteracoesMinhaInfo(trs, idx) {
+function salvarAlteracoesMinhaInfo(trs, idx) {
 
-  const [trInfo, trInfo2, trClas, trDet] = trs;
+const [trInfo, trInfo2, trClas, trDet] = trs;
 
-  const infoTds = trInfo.querySelectorAll('td'),
-        info2Tds = trInfo2.querySelectorAll('td'),
-        clasTds = trClas.querySelectorAll('td'),
-        detTds = trDet.querySelectorAll('td');
+const infoTds = trInfo.querySelectorAll('td'),
+      info2Tds = trInfo2.querySelectorAll('td'),
+      clasTds = trClas.querySelectorAll('td'),
+      detTds = trDet.querySelectorAll('td');
 
-  const nd = [];
+const nd = [];
 
-  infoTds.forEach(td => {
+infoTds.forEach(td => {
 
-    const input = td.querySelector('input');
-    const select = td.querySelector('select');
-
-    let valor = '';
-
-    if (input) valor = input.value;
-    else if (select) valor = select.value;
-    else valor = td.textContent.trim();
-
-    nd.push(valor);
-    td.textContent = valor;
-
-  });
-
-  // 🟩 trInfo2
-  info2Tds.forEach((td, index) => {
-
-    const input = td.querySelector('input');
-
-    let valor = '';
-
-    if (input) valor = input.value.trim();
-    else valor = td.textContent.trim();
-
-    if (input) {
-
-      input.classList.remove('erro-campo');
-
-      input.addEventListener('input', () => {
-        input.classList.remove('erro-campo');
-      }, { once: true });
-
-    }
-
-    if (index === 0) {
-
-      const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
-
-      if (!telefoneRegex.test(valor)) {
-
-        mostrarAlertaGlobal(
-          '⚠️ Telefone inválido. Use o formato: (11) 99217-3945'
-        );
-
-        if (input) {
-          input.classList.add('erro-campo');
-          input.focus();
-        }
-
-        throw new Error('Telefone inválido');
-      }
-    }
-
-    if (index === 1) {
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailRegex.test(valor)) {
-
-        mostrarAlertaGlobal('⚠️ E-mail inválido.');
-
-        if (input) {
-          input.classList.add('erro-campo');
-          input.focus();
-        }
-
-        throw new Error('Email inválido');
-      }
-    }
-
-    nd.push(valor);
-    td.textContent = valor;
-
-  });
-
-  // 🟨 trClas
-  clasTds.forEach(td => {
-
-    const input = td.querySelector('input');
-    const select = td.querySelector('select');
-
-    let valor = '';
-
-    if (input) valor = input.value;
-    else if (select) valor = select.value;
-    else valor = td.textContent.trim();
-
-    nd.push(valor);
-    td.textContent = valor;
-
-  });
-
-  // 🟥 trDet
-  const situacaoTd = detTds[0];
-
-  const input = situacaoTd.querySelector('input');
-  const select = situacaoTd.querySelector('select');
+  const input = td.querySelector('input');
+  const select = td.querySelector('select');
 
   let valor = '';
 
   if (input) valor = input.value;
   else if (select) valor = select.value;
-  else valor = situacaoTd.textContent.trim();
+  else valor = td.textContent.trim();
 
   nd.push(valor);
-  situacaoTd.textContent = valor;
+  td.textContent = valor;
 
-  // 🧩 Privilégios
-  const campos = [
-    'campoPrivOrganizacaoMi',
-    'campoPrivAACMi',
-    'campoPrivEscalasMi',
-    'campoPrivEquipesMi',
-    'campoPrivTreinadorMi'
-  ];
+});
 
-  const priv = [];
+// 🟩 trInfo2
+info2Tds.forEach((td, index) => {
 
-  campos.forEach(id => {
+  const input = td.querySelector('input');
 
-    const el = document.getElementById(id);
+  let valor = '';
 
-    let valorSelecionado = '';
+  if (input) valor = input.value.trim();
+  else valor = td.textContent.trim();
 
-    if (el && el.tagName.toLowerCase() === 'select') {
+  if (input) {
 
-      valorSelecionado = el.value;
+    input.classList.remove('erro-campo');
 
-      const span = document.createElement('span');
-      span.id = el.id;
-      span.textContent = valorSelecionado;
+    input.addEventListener('input', () => {
+      input.classList.remove('erro-campo');
+    }, { once: true });
 
-      el.replaceWith(span);
+  }
 
-    } else if (el) {
+  if (index === 0) {
 
-      valorSelecionado = el.textContent.trim();
+    const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
 
-    }
-
-    priv.push(valorSelecionado);
-
-  });
-
-  const idOrig = trDet.dataset.identificadorOriginal;
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "atualizarMinhaInfo",
-    {
-      dados: JSON.stringify({
-        primeiros8: nd,
-        privilegios: priv,
-        identificadorOriginal: idOrig
-      })
-    },
-    function(res) {
-
-      esconderSpinner();
+    if (!telefoneRegex.test(valor)) {
 
       mostrarAlertaGlobal(
-        res.mensagem || '✅ Alterado com sucesso!'
+        '⚠️ Telefone inválido. Use o formato: (11) 99217-3945'
       );
 
-      carregarOpcoes();
+      if (input) {
+        input.classList.add('erro-campo');
+        input.focus();
+      }
 
-      document
-        .querySelectorAll('.erro-campo')
-        .forEach(el => el.classList.remove('erro-campo'));
-
-    },
-    function(err) {
-
-      esconderSpinner();
-
-      mostrarAlertaGlobal(
-        '❌ Erro ao salvar: ' + (err.message || err.mensagem)
-      );
-
-      document
-        .querySelectorAll('.erro-campo')
-        .forEach(el => el.classList.remove('erro-campo'));
-
+      throw new Error('Telefone inválido');
     }
-  );
+  }
 
-  const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+  if (index === 1) {
 
-  btnE.style.display = 'inline-block';
-  btnS.style.display = 'none';
-  btnC.style.display = 'none';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(valor)) {
+
+      mostrarAlertaGlobal('⚠️ E-mail inválido.');
+
+      if (input) {
+        input.classList.add('erro-campo');
+        input.focus();
+      }
+
+      throw new Error('Email inválido');
+    }
+  }
+
+  nd.push(valor);
+  td.textContent = valor;
+
+});
+
+// 🟨 trClas
+clasTds.forEach(td => {
+
+  const input = td.querySelector('input');
+  const select = td.querySelector('select');
+
+  let valor = '';
+
+  if (input) valor = input.value;
+  else if (select) valor = select.value;
+  else valor = td.textContent.trim();
+
+  nd.push(valor);
+  td.textContent = valor;
+
+});
+
+// 🟥 trDet
+const situacaoTd = detTds[0];
+
+const input = situacaoTd.querySelector('input');
+const select = situacaoTd.querySelector('select');
+
+let valor = '';
+
+if (input) valor = input.value;
+else if (select) valor = select.value;
+else valor = situacaoTd.textContent.trim();
+
+nd.push(valor);
+situacaoTd.textContent = valor;
+
+// 🧩 Privilégios
+const campos = [
+  'campoPrivOrganizacaoMi',
+  'campoPrivAACMi',
+  'campoPrivEscalasMi',
+  'campoPrivEquipesMi',
+  'campoPrivTreinadorMi'
+];
+
+const priv = [];
+
+campos.forEach(id => {
+
+  const el = document.getElementById(id);
+
+  let valorSelecionado = '';
+
+  if (el && el.tagName.toLowerCase() === 'select') {
+
+    valorSelecionado = el.value;
+
+    const span = document.createElement('span');
+    span.id = el.id;
+    span.textContent = valorSelecionado;
+
+    el.replaceWith(span);
+
+  } else if (el) {
+
+    valorSelecionado = el.textContent.trim();
+
+  }
+
+  priv.push(valorSelecionado);
+
+});
+
+const idOrig = trDet.dataset.identificadorOriginal;
+
+console.log("🧩 trDet:", trDet);
+console.log("🧩 dataset completo:", trDet.dataset);
+console.log("🧩 identificadorOriginal:", idOrig);
+console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
+
+mostrarSpinner();
+
+apiJSONP(
+  "atualizarMinhaInfo",
+  {
+    dados: JSON.stringify({
+      primeiros8: nd,
+      privilegios: priv,
+      identificadorOriginal: idOrig
+    })
+  },
+  function(res) {
+
+    esconderSpinner();
+
+    mostrarAlertaGlobal(
+      res.mensagem || '✅ Alterado com sucesso!'
+    );
+
+    carregarOpcoes();
+
+    document
+      .querySelectorAll('.erro-campo')
+      .forEach(el => el.classList.remove('erro-campo'));
+
+  },
+  function(err) {
+
+    esconderSpinner();
+
+    mostrarAlertaGlobal(
+      '❌ Erro ao salvar: ' + (err.message || err.mensagem)
+    );
+
+    document
+      .querySelectorAll('.erro-campo')
+      .forEach(el => el.classList.remove('erro-campo'));
+
+  }
+);
+
+const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+
+btnE.style.display = 'inline-block';
+btnS.style.display = 'none';
+btnC.style.display = 'none';
 
 }
 
@@ -4514,6 +5329,8 @@ function buscarParticipantes() {
           tdNome.textContent = nome;
         }
 
+        tdNome.dataset.id = p.id || "";
+
         tdNome.classList.add('clicavel-nome');
         tdNome.style.cursor = 'pointer';
         tdNome.style.color = 'green';
@@ -4559,6 +5376,7 @@ document.addEventListener('click', function (event) {
   mostrarSpinner();
 
   const nome = alvo.innerText.trim();
+  const id = alvo.dataset.id;
 
   const campos = {
     dia: document.getElementById('diasSelect'),
@@ -4603,10 +5421,15 @@ document.addEventListener('click', function (event) {
 
   alvo.classList.remove('clicavel-nome');
 
+              console.log("🧩 nome:", nome);
+              console.log("🧩 mensagemCodificada:", mensagemCodificada);
+              console.log("🧩 mensagem:", mensagem);
+
   apiJSONP(
-    "buscarNumeroWhatsAppPorNomeComMensagem",
+    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
     {
-      nome,
+      //nome,
+      id,
       mensagem: mensagemCodificada
     },
     (url) => {
@@ -4906,6 +5729,8 @@ function buscarParticipantes2h() {
           tdNome.textContent = nome;
         }
 
+        tdNome.dataset.id = p.id || "";
+
         tdNome.classList.add('clicavel-nome2h');
         tdNome.style.cursor = 'pointer';
         tdNome.style.color = 'green';
@@ -4948,6 +5773,8 @@ document.addEventListener('click', function (event) {
   mostrarSpinner();
 
   const nome = alvo.innerText.trim();
+
+  const id = alvo.dataset.id;
 
   const campos = {
     dia: document.getElementById('diasSelect2h'),
@@ -4992,9 +5819,10 @@ document.addEventListener('click', function (event) {
   alvo.classList.remove('clicavel-nome2h');
 
   apiJSONP(
-    "buscarNumeroWhatsAppPorNomeComMensagem",
+    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
     {
-      nome,
+      //nome,
+      id,
       mensagem: mensagemCodificada
     },
     (url) => {
@@ -8101,7 +8929,6 @@ function exportarEscalaEv() {
 }
 
 function buscarDesignacoesPorPonto() {
-
   const ponto = document.getElementById("pontobepp").value;
   const msg = document.getElementById("msgDesignacoesPorPontopppp");
   const container = document.getElementById("resultadoDesignacoesPorPontopppp");
@@ -8117,66 +8944,60 @@ function buscarDesignacoesPorPonto() {
 
   mostrarSpinner();
 
-  const callbackName = "cb_" + Date.now();
+  apiJSONP(
+    "listarDesignacoesDoPonto",
+    {
+      ponto
+    },
+    (res) => {
+      esconderSpinner();
 
-  window[callbackName] = function(res) {
+      if (!res || res.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
+        return;
+      }
 
-    esconderSpinner();
+      msg.textContent = `✅ ${res.length} designações encontradas.`;
 
-    if (!res || res.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
-      delete window[callbackName];
-      return;
+      const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
+
+      let html = `<h5 style="text-align:center; margin-bottom: 20px;">Escalas do Ponto ${numeroDoPonto}</h5>`;
+
+      html += `<table class="tabela-listagem">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Nome</th>
+              <th style="width: 15%;">Turno</th>
+              <th style="width: 15%;">Dia</th>
+              <th style="width: 15%;">Freq.</th>
+              <th style="width: 20%;">Most.</th>
+            </tr>
+          </thead><tbody>`;
+
+      res.forEach(r => {
+        html += `
+            <tr>
+              <td>${formatarNomeComNegrito(r.nome)}</td>
+              <td>${r.turno}</td>
+              <td>${r.dia}</td>
+              <td>${r.frequencia}</td>
+              <td>${r.equipamento}</td>
+            </tr>`;
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+
+      document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar designações: " + (err.message || err));
     }
-
-    msg.textContent = `✅ ${res.length} designações encontradas.`;
-
-    const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
-
-    let html = `<h5 style="text-align:center; margin-bottom: 20px;">Escalas do Ponto ${numeroDoPonto}</h5>`;
-
-    html += `<table class="tabela-listagem">
-      <thead>
-        <tr>
-          <th style="width: 35%;">Nome</th>
-          <th style="width: 15%;">Turno</th>
-          <th style="width: 15%;">Dia</th>
-          <th style="width: 15%;">Freq.</th>
-          <th style="width: 20%;">Most.</th>
-        </tr>
-      </thead><tbody>`;
-
-    res.forEach(r => {
-      html += `
-        <tr>
-          <td>${formatarNomeComNegrito(r.nome)}</td>
-          <td>${r.turno}</td>
-          <td>${r.dia}</td>
-          <td>${r.frequencia}</td>
-          <td>${r.equipamento}</td>
-        </tr>`;
-    });
-
-    html += "</tbody></table>";
-
-    container.innerHTML = html;
-    document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
-
-    delete window[callbackName];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-    "?action=listarDesignacoesDoPonto" +
-    "&ponto=" + encodeURIComponent(ponto) +
-    "&callback=" + callbackName;
-
-  document.body.appendChild(script);
+  );
 }
 
 function baixarDesignacoesPorPonto() {
-
   const ponto = document.getElementById("pontobepp").value;
   const msg = document.getElementById("msgBaixarPDFPonto");
 
@@ -8189,59 +9010,22 @@ function baixarDesignacoesPorPonto() {
 
   mostrarSpinner();
 
-  const callbackName = "cb_" + Date.now();
-
-  window[callbackName] = function(link) {
-
-    esconderSpinner();
-
-    msg.innerHTML =
-      `✅ PDF pronto: <a href="${link}" target="_blank">Clique para baixar</a>`;
-
-    delete window[callbackName];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    "https://script.google.com/macros/s/SEU_DEPLOY_ID/exec" +
-    "?action=gerarPdfDesignacoesDoPonto" +
-    "&ponto=" + encodeURIComponent(ponto) +
-    "&callback=" + callbackName;
-
-  document.body.appendChild(script);
+  apiJSONP(
+    "gerarPdfDesignacoesDoPonto",
+    {
+      ponto
+    },
+    (link) => {
+      esconderSpinner();
+      msg.innerHTML = `✅ PDF pronto: <a href="${link}" target="_blank">Clique para baixar</a>`;
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro: " + (err.message || err));
+    }
+  );
 }
   
- function callJSONP(action, params, onSuccess, onFailure) {
-  const cbName = "cb_" + Math.random().toString(36).substr(2);
-
-  window[cbName] = function (res) {
-    delete window[cbName];
-    document.body.removeChild(script);
-    onSuccess && onSuccess(res);
-  };
-
-  const query = Object.keys(params || {})
-    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-    .join("&");
-
-  const script = document.createElement("script");
-
-  script.onerror = function () {
-    delete window[cbName];
-    document.body.removeChild(script);
-    onFailure && onFailure(new Error("Erro JSONP"));
-  };
-
-  script.src =
-    action +
-    "?" +
-    query +
-    "&callback=" +
-    cbName;
-
-  document.body.appendChild(script);
-}
-
 async function salvarDesignacao() {
 
   const ponto = document.getElementById("ponto").value;
@@ -8252,21 +9036,26 @@ async function salvarDesignacao() {
     return;
   }
 
-  const nomeParticipante = participanteSelecionadoDesignacao.nome;
-  const idParticipante = participanteSelecionadoDesignacao.id;
+  const nomeParticipante =
+    participanteSelecionadoDesignacao.nome;
+
+  const idParticipante =
+    participanteSelecionadoDesignacao.id;
 
   mostrarSpinner();
 
   const substituto =
     await selecionarSubstituicaoDesignados(ponto, dia);
 
-  const substituirQuem = substituto ? substituto.id : "";
+  const substituirQuem =
+    substituto ? substituto.id : "";
 
   const frequencia = document.getElementById("frequencia").value;
   const equipamento = document.getElementById("equipamento").value;
 
   if (!ponto || !dia || !idParticipante || !frequencia || !equipamento) {
     mostrarAlertaGlobal("⚠️ Preencha todos os campos obrigatórios.");
+    esconderSpinner();
     return;
   }
 
@@ -8278,7 +9067,7 @@ async function salvarDesignacao() {
 
     mostrarSpinner();
 
-    callJSONP(
+    apiJSONP(
       "processarDesignacao",
       {
         idParticipante,
@@ -8292,7 +9081,7 @@ async function salvarDesignacao() {
 
         esconderSpinner();
 
-        if (retorno.startsWith("🚫")) {
+        if (retorno && retorno.startsWith && retorno.startsWith("🚫")) {
           mostrarAlertaGlobal(retorno);
           return;
         }
@@ -8314,45 +9103,17 @@ async function salvarDesignacao() {
 
         carregarTodasVagasAbertas();
         carregarAbas();
+
       },
-      () => {
+      (err) => {
+
         esconderSpinner();
         mostrarAlertaGlobal("❌ Erro ao salvar designação");
+        console.error(err);
       }
     );
 
   });
-}
-
-function callJSONP(action, params, onSuccess, onFailure) {
-  const cbName = "cb_" + Math.random().toString(36).substr(2);
-
-  window[cbName] = function (res) {
-    delete window[cbName];
-    document.body.removeChild(script);
-    onSuccess && onSuccess(res);
-  };
-
-  const query = Object.keys(params || {})
-    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-    .join("&");
-
-  const script = document.createElement("script");
-
-  script.onerror = function () {
-    delete window[cbName];
-    document.body.removeChild(script);
-    onFailure && onFailure(new Error("Erro JSONP"));
-  };
-
-  script.src =
-    action +
-    "?" +
-    query +
-    "&callback=" +
-    cbName;
-
-  document.body.appendChild(script);
 }
 
 function converterDesignacoesParaIDs() {
@@ -8364,9 +9125,11 @@ function converterDesignacoesParaIDs() {
   tabelaContainer.innerHTML = "";
   mostrarSpinner();
 
-  callJSONP(
-    "converterDesignacoesParaIDs",
-    { ponto: pontoSelecionado },
+  apiJSONP(
+    "converterDesignacoesParaIDsTeste",
+    {
+      ponto: pontoSelecionado
+    },
     (resultado) => {
 
       msg.innerHTML = (resultado.mensagem || "").replace(/\n/g, "<br>");
@@ -8389,6 +9152,7 @@ function converterDesignacoesParaIDs() {
 
         resultado.naoEncontrados.forEach(item => {
           const row = tbody.insertRow();
+
           [item.nome, item.ponto, item.dia].forEach(texto => {
             const cell = row.insertCell();
             cell.textContent = texto;
@@ -8405,12 +9169,11 @@ function converterDesignacoesParaIDs() {
       esconderSpinner();
     },
     (erro) => {
-      mostrarAlertaGlobal("Erro: " + erro.message);
       esconderSpinner();
+      mostrarAlertaGlobal("Erro: " + (erro.message || erro));
     }
   );
 }
-
 function corrigirDesignacoesPorId() {
   const pontoSelecionado = document.getElementById('pontoCorrigir').value;
   const msg = document.getElementById("msgCorrigir");
@@ -8420,9 +9183,11 @@ function corrigirDesignacoesPorId() {
   tabelaContainer.innerHTML = "";
   mostrarSpinner();
 
-  callJSONP(
-    "corrigirDesignacoesPontosComID",
-    { ponto: pontoSelecionado },
+  apiJSONP(
+    "corrigirDesignacoesPontosComIDTeste",
+    {
+      ponto: pontoSelecionado
+    },
     (resultado) => {
 
       msg.innerHTML = (resultado.mensagem || "").replace(/\n/g, "<br>");
@@ -8445,6 +9210,7 @@ function corrigirDesignacoesPorId() {
 
         resultado.naoEncontrados.forEach(item => {
           const row = tbody.insertRow();
+
           [item.id, item.ponto, item.dia].forEach(texto => {
             const cell = row.insertCell();
             cell.textContent = texto;
@@ -8461,8 +9227,8 @@ function corrigirDesignacoesPorId() {
       esconderSpinner();
     },
     (erro) => {
-      mostrarAlertaGlobal("Erro: " + erro.message);
       esconderSpinner();
+      mostrarAlertaGlobal("Erro: " + (erro.message || erro));
     }
   );
 }
@@ -8475,112 +9241,96 @@ function buscarTreinando() {
 
   mostrarSpinner();
 
-  const callback = "cb_" + Date.now();
+  apiJSONP(
+    "buscarTreinandoCompacto",
+    {},
+    (lista) => {
 
-  window[callback] = function(lista) {
+      esconderSpinner();
 
-    esconderSpinner();
-
-    if (!lista || lista.length === 0) {
-      mostrarAlertaGlobal("❌ Nenhum participante em treinamento encontrado.");
-      delete window[callback];
-      return;
-    }
-
-    if (msg) msg.textContent = `✅ ${lista.length} treinando(s) encontrado(s).`;
-
-    const tabela = document.createElement('table');
-    tabela.className = 'tabela-listagem';
-
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
-    ['Nome', 'Congregação', 'Telefone', 'Sexo'].forEach(txt => {
-      const th = document.createElement('th');
-      th.textContent = txt;
-      trHead.appendChild(th);
-    });
-
-    const tbody = tabela.createTBody();
-    lista.forEach(item => {
-      const tr = tbody.insertRow();
-
-      const tdNome = tr.insertCell();
-      tdNome.textContent = item.nome;
-      tdNome.classList.add('clicavel-nome-treinando');
-      tdNome.style.cursor = 'pointer';
-      tdNome.style.color = 'green';
-      tdNome.title = 'Clique para ver disponibilidade';
-
-      tdNome.dataset.id = item.id || '';
-      tdNome.dataset.nome = item.nome || '';
-      tdNome.dataset.congregacao = item.congregacao || '';
-      tdNome.dataset.telefone = item.telefone || '';
-      tdNome.dataset.sexo = item.sexo || '';
-      tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
-        ? JSON.stringify(item.diasTurnos)
-        : JSON.stringify((item.diasTurnos || '').split(',').map(s => s.trim()).filter(Boolean));
-
-      tr.insertCell().textContent = item.congregacao || '';
-
-      const tdTelefone = tr.insertCell();
-      const telefoneOriginal = String(item.telefone || '');
-      const telefoneLimpo = telefoneOriginal.replace(/\D/g, '');
-
-      if (telefoneLimpo) {
-        const nome = item.nome || 'Participante';
-
-        const mensagem =
-          "*TPE SBC - Confirmação de Treinamento*\n\n" +
-          "👤 Olá, " + nome + "\n\n" +
-          "📋 Recebemos sua petição para o TPE SBC. Em breve você vai assistir à reunião de treinamento.\n\n" +
-          "📲 A data e o horário da reunião de treinamento serão informados em breve.\n\n" +
-          "👥 Para se manter informado, por favor, entre no grupo da reunião de treinamento pelo link abaixo: \n" +
-          "👉 https://chat.whatsapp.com/IzcPluEJthPKWMH5XzdFSw\n\n" +
-          "*Seus irmãos*,\n" +
-          "*Equipe do TPE SBC*";
-
-        const linkWhatsApp =
-          "https://wa.me/55" +
-          telefoneLimpo +
-          "?text=" +
-          encodeURIComponent(mensagem);
-
-        const a = document.createElement('a');
-        a.href = linkWhatsApp;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = telefoneOriginal;
-        a.style.color = 'blue';
-        a.classList.add('enviar-whatsapp-treinando');
-
-        tdTelefone.appendChild(a);
-      } else {
-        tdTelefone.textContent = telefoneOriginal;
+      if (!lista || lista.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante em treinamento encontrado.");
+        return;
       }
 
-      tr.insertCell().textContent = item.sexo || '';
-    });
+      if (msg) msg.textContent = `✅ ${lista.length} treinando(s) encontrado(s).`;
 
-    resultadoDiv.appendChild(tabela);
+      const tabela = document.createElement('table');
+      tabela.className = 'tabela-listagem';
 
-    delete window[callback];
-  };
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
 
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal("❌ Erro na busca: " + err.message);
-    delete window[callback];
-  };
+      ['Nome', 'Congregação', 'Telefone', 'Sexo'].forEach(txt => {
+        const th = document.createElement('th');
+        th.textContent = txt;
+        trHead.appendChild(th);
+      });
 
-  const script = document.createElement("script");
+      const tbody = tabela.createTBody();
 
-  script.src =
-    API_URL +
-    "?acao=buscarTreinandoCompacto" +
-    "&callback=" +
-    callback;
+      lista.forEach(item => {
+        const tr = tbody.insertRow();
 
-  document.body.appendChild(script);
+        const tdNome = tr.insertCell();
+        tdNome.textContent = item.nome;
+        tdNome.classList.add('clicavel-nome-treinando');
+        tdNome.style.cursor = 'pointer';
+        tdNome.style.color = 'green';
+        tdNome.title = 'Clique para ver disponibilidade';
+
+        tdNome.dataset.id = item.id || '';
+        tdNome.dataset.nome = item.nome || '';
+        tdNome.dataset.congregacao = item.congregacao || '';
+        tdNome.dataset.telefone = item.telefone || '';
+        tdNome.dataset.sexo = item.sexo || '';
+        tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
+          ? JSON.stringify(item.diasTurnos)
+          : JSON.stringify((item.diasTurnos || '').split(',').map(s => s.trim()).filter(Boolean));
+
+        tr.insertCell().textContent = item.congregacao || '';
+
+        const tdTelefone = tr.insertCell();
+        const telefoneOriginal = String(item.telefone || '');
+        const telefoneLimpo = telefoneOriginal.replace(/\D/g, '');
+
+        if (telefoneLimpo) {
+          const nome = item.nome || 'Participante';
+          const mensagem =
+            "*TPE SBC - Confirmação de Treinamento*\n\n" +
+            "👤 Olá, " + nome + "\n\n" +
+            "📋 Recebemos sua petição para o TPE SBC. Em breve você vai assistir à reunião de treinamento.\n\n" +
+            "📲 A data e o horário da reunião de treinamento serão informados em breve.\n\n" +
+            "👥 Para se manter informado, por favor, entre no grupo da reunião de treinamento pelo link abaixo: \n" +
+            "👉 https://chat.whatsapp.com/IzcPluEJthPKWMH5XzdFSw\n\n" +
+            "*Seus irmãos*,\n" +
+            "*Equipe do TPE SBC*";
+
+          const linkWhatsApp = "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem);
+
+          const a = document.createElement('a');
+          a.href = linkWhatsApp;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = telefoneOriginal;
+          a.style.color = 'blue';
+          a.classList.add('enviar-whatsapp-treinando');
+
+          tdTelefone.appendChild(a);
+        } else {
+          tdTelefone.textContent = telefoneOriginal;
+        }
+
+        tr.insertCell().textContent = item.sexo || '';
+      });
+
+      resultadoDiv.appendChild(tabela);
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro na busca: " + (err.message || err));
+    }
+  );
 }
 
 document.addEventListener('click', function(event) {
@@ -8779,46 +9529,62 @@ function abrirFluxoDesignacao(idTreinando, idTreinador, nomeTreinando, congregac
 
 function confirmarDesignacao() {
 
-  const modal = document.getElementById('modalConfirmarDesignacao');
+  const modal =
+    document.getElementById(
+      'modalConfirmarDesignacao'
+    );
 
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-  const nomeTreinando = modal.dataset.nomeTreinando;
-  const congregacao = modal.dataset.congregacao;
-  const telefone = modal.dataset.telefone;
+  const idTreinando =
+    modal.dataset.idTreinando;
+
+  const idTreinador =
+    modal.dataset.idTreinador;
+
+  const nomeTreinando =
+    modal.dataset.nomeTreinando;
+
+  const congregacao =
+    modal.dataset.congregacao;
+
+  const telefone =
+    modal.dataset.telefone;
 
   mostrarSpinner();
 
-  const callback = "cb_designacao_" + Date.now();
-
-  window[callback] = function() {
-
-    esconderSpinner();
-    fecharModalDesignacao();
-    buscarTreinando();
-
-    abrirModalWhatsapp(
+  apiJSONP(
+    "registrarDesignacaoTreinamento",
+    {
       idTreinando,
-      idTreinador,
-      nomeTreinando,
-      congregacao,
-      telefone
-    );
+      idTreinador
+    },
+    () => {
 
-    delete window[callback];
-  };
+      esconderSpinner();
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=registrarDesignacaoTreinamento" +
-    "&idTreinando=" + encodeURIComponent(idTreinando) +
-    "&idTreinador=" + encodeURIComponent(idTreinador) +
-    "&callback=" + callback;
+      fecharModalDesignacao();
 
-  document.body.appendChild(script);
+      buscarTreinando();
+
+      abrirModalWhatsapp(
+        idTreinando,
+        idTreinador,
+        nomeTreinando,
+        congregacao,
+        telefone
+      );
+
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ " + (err.message || err)
+      );
+
+    }
+  );
 }
-
 function abrirModalWhatsapp(idTreinando, idTreinador, nomeTreinando, congregacao, telefone) {
 
   const modal = document.getElementById('modalEnviarWhatsapp');
@@ -8834,13 +9600,23 @@ function abrirModalWhatsapp(idTreinando, idTreinador, nomeTreinando, congregacao
 
 function enviarWhatsappDesignacao() {
 
-  const modal = document.getElementById('modalEnviarWhatsapp');
+  const modal =
+    document.getElementById('modalEnviarWhatsapp');
 
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-  const nomeTreinando = modal.dataset.nomeTreinando;
-  const congregacao = modal.dataset.congregacao;
-  const telefone = modal.dataset.telefone;
+  const idTreinando =
+    modal.dataset.idTreinando;
+
+  const idTreinador =
+    modal.dataset.idTreinador;
+
+  const nomeTreinando =
+    modal.dataset.nomeTreinando;
+
+  const congregacao =
+    modal.dataset.congregacao;
+
+  const telefone =
+    modal.dataset.telefone;
 
   mostrarSpinner();
 
@@ -8854,26 +9630,34 @@ function enviarWhatsappDesignacao() {
     `Depois do treinamento, acesse o aplicativo e conclua o treinamento na seção "Meus Treinamentos".\n\n` +
     `Agradecemos por sua valiosa ajuda desde já!`;
 
-  const mensagemCodificada = encodeURIComponent(mensagem);
+  const mensagemCodificada =
+    encodeURIComponent(mensagem);
 
-  const callback = "cb_whats_" + Date.now();
+  apiJSONP(
+    "buscarNumeroWhatsAppPorIdComMensagem",
+    {
+      idTreinador,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
 
-  window[callback] = function(url) {
-    esconderSpinner();
-    window.open(url, "_blank");
-    fecharModalWhatsapp();
-    delete window[callback];
-  };
+      esconderSpinner();
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarNumeroWhatsAppPorIdComMensagem" +
-    "&idTreinador=" + encodeURIComponent(idTreinador) +
-    "&mensagem=" + mensagemCodificada +
-    "&callback=" + callback;
+      window.open(url, "_blank");
 
-  document.body.appendChild(script);
+      fecharModalWhatsapp();
+
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ " + (err.message || err)
+      );
+
+    }
+  );
 }
 
 function fecharModalDesignacao() {
@@ -8888,163 +9672,189 @@ function buscarTreinamentosEmAndamento() {
 
   mostrarSpinner();
 
-  const callback = "cb_" + Date.now();
+  apiJSONP(
+    "listarTreinamentosEmAndamento",
+    {},
+    (lista) => {
 
-  window[callback] = function(lista) {
+      esconderSpinner();
 
-    esconderSpinner();
+      const container = document.getElementById('resultadoTreinamentosAndamento');
 
-    const container = document.getElementById('resultadoTreinamentosAndamento');
+      container.innerHTML = '';
 
-    container.innerHTML = '';
+      if (!lista || lista.length === 0) {
+        container.innerHTML =
+          '<p>❌ Nenhum treinamento em andamento.</p>';
+        return;
+      }
 
-    if (!lista || lista.length === 0) {
-      container.innerHTML = '<p>❌ Nenhum treinamento em andamento.</p>';
-      delete window[callback];
+      const tabela = document.createElement('table');
+      tabela.classList.add('tabela-listagem');
+
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
+
+      [
+        'Candidato',
+        'Cong.',
+        'Treinador',
+        'Ação'
+      ].forEach(texto => {
+
+        const th = document.createElement('th');
+        th.textContent = texto;
+        trHead.appendChild(th);
+      });
+
+      const tbody = tabela.createTBody();
+
+      lista.forEach(item => {
+
+        const tr = tbody.insertRow();
+
+        tr.insertCell().textContent = item.nomeTreinando;
+        tr.insertCell().textContent = item.congregacao;
+        tr.insertCell().textContent = item.nomeTreinador;
+
+        const tdAcao = tr.insertCell();
+
+        const btnAcoes = document.createElement('button');
+
+        btnAcoes.textContent = '✏️Editar';
+        btnAcoes.classList.add('btn-acoes-treinamento');
+
+        btnAcoes.dataset.idTreinando = item.idTreinando;
+        btnAcoes.dataset.idTreinador = item.idTreinador;
+        btnAcoes.dataset.nomeTreinando = item.nomeTreinando;
+        btnAcoes.dataset.congregacao = item.congregacao;
+        btnAcoes.dataset.telefone = item.telefone;
+
+        tdAcao.appendChild(btnAcoes);
+      });
+
+      container.appendChild(tabela);
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal('❌ ' + (err.message || err));
+    }
+  );
+}
+
+document
+  .getElementById('acaoConcluir')
+  .addEventListener('click', function () {
+
+    const modal =
+      document.getElementById(
+        'modalAcoesTreinamento'
+      );
+
+    const idTreinando =
+      modal.dataset.idTreinando;
+
+    const idTreinador =
+      modal.dataset.idTreinador;
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "concluirTreinamento",
+      {
+        idTreinando,
+        idTreinador
+      },
+      () => {
+
+        esconderSpinner();
+
+        fecharModalAcoesTreinamento();
+
+        buscarTreinamentosEmAndamento();
+
+      },
+      (err) => {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          '❌ ' + (err.message || err)
+        );
+
+      }
+    );
+
+  });
+
+document
+  .getElementById('acaoDesistencia')
+  .addEventListener('click', async function () {
+
+    const modal =
+      document.getElementById(
+        'modalAcoesTreinamento'
+      );
+
+    const nomeTreinando =
+      modal.dataset.nomeTreinando;
+
+    const confirmou =
+      await confirmarDecisao(
+        `Confirma registrar a desistência de <b>${nomeTreinando}</b>?`,
+        'Sim',
+        'Cancelar'
+      );
+
+    if (!confirmou) {
       return;
     }
 
-    const tabela = document.createElement('table');
-    tabela.classList.add('tabela-listagem');
+    const idTreinando =
+      modal.dataset.idTreinando;
 
-    const thead = tabela.createTHead();
-    const trHead = thead.insertRow();
+    const idTreinador =
+      modal.dataset.idTreinador;
 
-    [
-      'Candidato',
-      'Cong.',
-      'Treinador',
-      'Ação'
-    ].forEach(texto => {
+    mostrarSpinner();
 
-      const th = document.createElement('th');
-      th.textContent = texto;
-      trHead.appendChild(th);
-    });
+    apiJSONP(
+      "marcarDesistenciaTreinamento",
+      {
+        idTreinando,
+        idTreinador
+      },
+      () => {
 
-    const tbody = tabela.createTBody();
+        esconderSpinner();
 
-    lista.forEach(item => {
+        fecharModalAcoesTreinamento();
 
-      const tr = tbody.insertRow();
+        mostrarAlertaGlobal(
+          '❌ Desistência registrada.'
+        );
 
-      tr.insertCell().textContent = item.nomeTreinando;
-      tr.insertCell().textContent = item.congregacao;
-      tr.insertCell().textContent = item.nomeTreinador;
+        buscarTreinamentosEmAndamento();
 
-      const tdAcao = tr.insertCell();
+      },
+      (err) => {
 
-      const btnAcoes = document.createElement('button');
-      btnAcoes.textContent = '✏️Editar';
-      btnAcoes.classList.add('btn-acoes-treinamento');
+        esconderSpinner();
 
-      btnAcoes.dataset.idTreinando = item.idTreinando;
-      btnAcoes.dataset.idTreinador = item.idTreinador;
-      btnAcoes.dataset.nomeTreinando = item.nomeTreinando;
-      btnAcoes.dataset.congregacao = item.congregacao;
-      btnAcoes.dataset.telefone = item.telefone;
+        mostrarAlertaGlobal(
+          '❌ ' + (err.message || err)
+        );
 
-      tdAcao.appendChild(btnAcoes);
-    });
+      }
+    );
 
-    container.appendChild(tabela);
+  });
 
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    mostrarAlertaGlobal('❌ ' + err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=listarTreinamentosEmAndamento" +
-    "&callback=" +
-    callback;
-
-  document.body.appendChild(script);
-}
-
-document.getElementById('acaoConcluir').addEventListener('click', function() {
-
-  const modal = document.getElementById('modalAcoesTreinamento');
-
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-
-  mostrarSpinner();
-
-  const callback = "cb_concluir_" + Date.now();
-
-  window[callback] = function() {
-
-    esconderSpinner();
-    fecharModalAcoesTreinamento();
-    buscarTreinamentosEmAndamento();
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=concluirTreinamento" +
-    "&idTreinando=" + encodeURIComponent(idTreinando) +
-    "&idTreinador=" + encodeURIComponent(idTreinador) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-});
-
-document.getElementById('acaoDesistencia').addEventListener('click', async function() {
-
-  const modal = document.getElementById('modalAcoesTreinamento');
-
-  const nomeTreinando = modal.dataset.nomeTreinando;
-
-  const confirmou = await confirmarDecisao(
-    `Confirma registrar a desistência de <b>${nomeTreinando}</b>?`,
-    'Sim',
-    'Cancelar'
-  );
-
-  if (!confirmou) return;
-
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-
-  mostrarSpinner();
-
-  const callback = "cb_desistencia_" + Date.now();
-
-  window[callback] = function() {
-
-    esconderSpinner();
-    fecharModalAcoesTreinamento();
-
-    mostrarAlertaGlobal('❌ Desistência registrada.');
-
-    buscarTreinamentosEmAndamento();
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=marcarDesistenciaTreinamento" +
-    "&idTreinando=" + encodeURIComponent(idTreinando) +
-    "&idTreinador=" + encodeURIComponent(idTreinador) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-});
-
-document.getElementById('acaoAlterarTreinador').addEventListener('click', function() {
+document
+.getElementById('acaoAlterarTreinador')
+.addEventListener('click', function() {
 
   const modalAcoes = document.getElementById('modalAcoesTreinamento');
   const modalTreinador = document.getElementById('modalAlterarTreinador');
@@ -9059,7 +9869,9 @@ document.getElementById('acaoAlterarTreinador').addEventListener('click', functi
   modalTreinador.classList.remove('oculto');
 });
 
-document.getElementById('acaoLembrete').addEventListener('click', function() {
+document
+.getElementById('acaoLembrete')
+.addEventListener('click', function() {
 
   const modal = document.getElementById('modalAcoesTreinamento');
 
@@ -9073,7 +9885,8 @@ document.getElementById('acaoLembrete').addEventListener('click', function() {
   );
 });
 
-document.addEventListener('click', function(e) {
+document
+.addEventListener('click', function(e) {
 
   if (e.target.classList.contains('btn-acoes-treinamento')) {
 
@@ -9118,7 +9931,6 @@ function confirmarAlteracaoTreinador() {
   mostrarSpinner();
 
   const modal = document.getElementById('modalAlterarTreinador');
-
   const idTreinando = modal.dataset.idTreinando;
   const idTreinadorAtual = modal.dataset.idTreinadorAtual;
   const nomeTreinando = modal.dataset.nomeTreinando;
@@ -9128,45 +9940,45 @@ function confirmarAlteracaoTreinador() {
 
   if (!nomeSelecionado) {
     mostrarAlertaGlobal('Selecione um treinador');
+    esconderSpinner();
     return;
   }
 
-  const callback = "cb_alt_" + Date.now();
+  apiJSONP(
+    "alterarTreinadorPorNome",
+    {
+      idTreinando,
+      idTreinadorAtual,
+      nomeSelecionado
+    },
+    (res) => {
 
-  window[callback] = function(res) {
+      esconderSpinner();
 
-    esconderSpinner();
+      if (!res || !res.sucesso) {
+        mostrarAlertaGlobal(res?.mensagem || "Erro ao alterar treinador");
+        return;
+      }
 
-    if (!res.sucesso) {
-      mostrarAlertaGlobal(res.mensagem);
-      delete window[callback];
-      return;
+      fecharModalTreinador();
+
+      const modalComunicacao = document.getElementById('modalComunicarTreinador');
+
+      modalComunicacao.dataset.idNovoTreinador = res.idNovoTreinador;
+      modalComunicacao.dataset.nomeTreinando = nomeTreinando;
+      modalComunicacao.dataset.congregacao = congregacao;
+      modalComunicacao.dataset.telefone = telefone;
+
+      modalComunicacao.classList.remove('oculto');
+
+    },
+    (err) => {
+
+      esconderSpinner();
+      mostrarAlertaGlobal('❌ ' + (err.message || err));
+
     }
-
-    fecharModalTreinador();
-
-    const modalComunicacao = document.getElementById('modalComunicarTreinador');
-
-    modalComunicacao.dataset.idNovoTreinador = res.idNovoTreinador;
-    modalComunicacao.dataset.nomeTreinando = nomeTreinando;
-    modalComunicacao.dataset.congregacao = congregacao;
-    modalComunicacao.dataset.telefone = telefone;
-
-    modalComunicacao.classList.remove('oculto');
-
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=alterarTreinadorPorNome" +
-    "&idTreinando=" + encodeURIComponent(idTreinando) +
-    "&idTreinadorAtual=" + encodeURIComponent(idTreinadorAtual) +
-    "&nomeSelecionado=" + encodeURIComponent(nomeSelecionado) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
+  );
 }
 
 function comunicarNovoTreinador() {
@@ -9174,7 +9986,6 @@ function comunicarNovoTreinador() {
   mostrarSpinner();
 
   const modal = document.getElementById('modalComunicarTreinador');
-
   const idNovoTreinador = modal.dataset.idNovoTreinador;
   const nomeTreinando = modal.dataset.nomeTreinando;
   const congregacao = modal.dataset.congregacao;
@@ -9190,36 +10001,37 @@ function comunicarNovoTreinador() {
     `Depois do treinamento, acesse o aplicativo e conclua o treinamento na seção "Meus Treinamentos".\n\n` +
     `Agradecemos por sua valiosa ajuda desde já!`;
 
-  const mensagemCodificada = encodeURIComponent(mensagem);
+  const mensagemCodificada =
+    encodeURIComponent(mensagem);
 
-  const callback = "cb_whats_" + Date.now();
+  apiJSONP(
+    "buscarNumeroWhatsAppPorIdComMensagem",
+    {
+      idNovoTreinador,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
 
-  window[callback] = function(url) {
+      esconderSpinner();
 
-    esconderSpinner();
-    window.open(url, '_blank');
-    fecharModalComunicacao();
-    buscarTreinamentosEmAndamento();
+      window.open(url, '_blank');
 
-    delete window[callback];
-  };
+      fecharModalComunicacao();
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarNumeroWhatsAppPorIdComMensagem" +
-    "&idTreinador=" + encodeURIComponent(idNovoTreinador) +
-    "&mensagem=" + mensagemCodificada +
-    "&callback=" + callback;
+      buscarTreinamentosEmAndamento();
 
-  document.body.appendChild(script);
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal('❌ ' + (err.message || err));
+
+    }
+  );
 }
 
-function comunicarLembreteTreinador(
-  idTreinador,
-  nomeTreinando,
-  congregacao,
-  telefone) {
+function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, telefone) {
 
   mostrarSpinner();
 
@@ -9232,28 +10044,32 @@ function comunicarLembreteTreinador(
     "Caso o treinamento já tenha sido realizado, por favor acesse o aplicativo e conclua o treinamento na seção *Meus Treinamentos*.\n\n" +
     "Agradecemos por sua ajuda!";
 
-  const mensagemCodificada = encodeURIComponent(mensagem);
+  const mensagemCodificada =
+    encodeURIComponent(mensagem);
 
-  const callback = "cb_lembrete_" + Date.now();
+  apiJSONP(
+    "buscarNumeroWhatsAppPorIdComMensagem",
+    {
+      idTreinador,
+      mensagem: mensagemCodificada
+    },
+    (url) => {
 
-  window[callback] = function(url) {
+      esconderSpinner();
 
-    esconderSpinner();
-    window.open(url, '_blank');
-    buscarTreinamentosEmAndamento();
+      window.open(url, '_blank');
 
-    delete window[callback];
-  };
+      buscarTreinamentosEmAndamento();
 
-  const script = document.createElement("script");
-  script.src =
-    API_URL +
-    "?acao=buscarNumeroWhatsAppPorIdComMensagem" +
-    "&idTreinador=" + encodeURIComponent(idTreinador) +
-    "&mensagem=" + mensagemCodificada +
-    "&callback=" + callback;
+    },
+    (err) => {
 
-  document.body.appendChild(script);
+      esconderSpinner();
+
+      mostrarAlertaGlobal('❌ ' + (err.message || err));
+
+    }
+  );
 }
 
 document.addEventListener('click', function(e) {

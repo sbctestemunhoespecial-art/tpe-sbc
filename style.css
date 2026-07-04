@@ -12,10 +12,13 @@
   --cor-botao:#3B82F6;
   --cor-botao-hover: #a4c2f4;
   --fonte-principal: "Segoe UI";
-  --fonte-pequena: 15px;
-  --fonte-media: 30px;
-  --fonte-grande: 50px;
-  --fonte-extraG: 70px;
+  --fonte-pequenaE: 16px;
+  --fonte-pequena: 22px;
+  --fonte-pequenaB: 26px;
+  --fonte-media: 32px;
+  --fonte-grandeA: 36px;
+  --fonte-grande: 40px;
+  --fonte-extraG: 46px;
   --raio-borda: 0.5em;
   --raio-borda-botao: 3em;
 }
@@ -42,14 +45,14 @@ html, body {
 
 input, select, button {
   font-weight: bold;
-  font-size: 1.1em;
-  padding: 0.5em;
+  font-size: var(--fonte-pequenaB);
+  padding: 0.4em;
   margin: 0;
   border: 1px solid #ccc;
   border-radius: var(--raio-borda);
   box-sizing: border-box;
   width: 100%;
-  height:100px;
+  height: 60px;
 }
 
 input,
@@ -70,8 +73,8 @@ label {
 }
 
 input[type="checkbox"] {
-  width: 1.3em;
-  height: 1.3em;
+  width: 0.5em;
+  height: 0.5em;
   transform: scale(1.4);
   margin: 0.5em;
 }
@@ -132,15 +135,15 @@ th, td {
   vertical-align: middle;
 }
 
-h1 { font-size: 1rem; color: #0074D9; margin: 1em 0 0.3em; }
-h2 { font-size: 1.2rem; color: #0074D9; margin: 1em 0 0.3em; }
-h3 { font-size: 1.8rem; color: #444444; margin: 1em 0 0.3em; }
-h4 { font-size: 1.6rem;   color: #0074D9; margin: 1em 0 0.3em; }
-h5 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
-h6 { font-size: 2rem; color: #0074D9; margin: 1em 0 0.3em; }
+h1 { font-size: 0.8rem; color: #0074D9; margin: 1em 0 0.3em; }
+h2 { font-size: 1rem; color: #0074D9; margin: 1em 0 0.3em; }
+h3 { font-size: 1.2rem; color: #444444; margin: 1em 0 0.3em; }
+h4 { font-size: 1.4rem;   color: #0074D9; margin: 1em 0 0.3em; }
+h5 { font-size: 1.6rem; color: #0074D9; margin: 1em 0 0.3em; }
+h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
 
 .nome-pesquisado {
-  font-size: 1.8rem;
+  font-size: var(--fonte-pequenaB);
   font-weight:bold; 
   color: #444444; 
   margin: 0.5em 0.5em 1em 0.5em;
@@ -163,14 +166,14 @@ h6 { font-size: 2rem; color: #0074D9; margin: 1em 0 0.3em; }
   font-size: 1em;
 }
 .titulo-login {
-  font-size: 2em;
+  font-size: var(--fonte-media);
 }
 
 .input-login {
-  width: 90%;
+  width: 60%;
   text-align: center;
-  font-size: 1.2em;
-  padding: 0.8em 1em;
+  font-size: var(--fonte-pequenaB);
+  padding: 0.5em 0.6em;
   margin-bottom: 0;
 }
 
@@ -179,11 +182,12 @@ h6 { font-size: 2rem; color: #0074D9; margin: 1em 0 0.3em; }
 }
 
 .botao-login {
-  width: 90%;
+  width: 60%;
   text-align: center;
-  font-size: 1.2em;
-  padding: 0.8em 1em;
+  font-size: var(--fonte-pequenaB);
+  padding: 0.2em 0.2em;
   margin-bottom: 0;
+  margin-top: 40px;
 }
 
 .erro-login {
@@ -197,9 +201,9 @@ h6 { font-size: 2rem; color: #0074D9; margin: 1em 0 0.3em; }
   margin-bottom: 0;
   line-height: 1;
   padding-bottom: 0;
-  text-align: left;       
+  text-align: center;       
   vertical-align: bottom; 
-  font-size: 1.2em;
+  font-size: var(--fonte-pequenaB);
 }
 
 #map {
@@ -228,7 +232,7 @@ button.menu-btn {
   margin: 0;      
   margin-top: 30px;        
   width: auto; 
-  font-size: 1.3em;  
+  font-size: var(--fonte-media);  
   width: auto;       
   z-index: 1100;      
   display: none;      
@@ -763,16 +767,16 @@ caption {
 
 .cards-menu{
     display:grid;
-    grid-template-columns:repeat(auto-fit, 150px);
+    grid-template-columns:repeat(auto-fit, 120px);
     justify-content:center;
     gap:20px;
 }
 
 .card-menu{
-    margin-top: 1em;
+    margin-top: 0.8em;
     background-color:#fff;
     border-radius:12px;
-    padding:16px;
+    padding:12px;
     text-align:center;
     cursor:pointer;
     box-shadow:0 2px 8px rgba(0,0,0,.10);
@@ -782,7 +786,7 @@ caption {
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    border: 2px solid var(--cor-azul);
+    border: 1px solid var(--cor-azul);
 }
 
 .card-menu.ativo{
@@ -803,8 +807,8 @@ caption {
 
 .titulo{
     /*font-size:1.4rem;*/
-    font-size: var(--fonte-pequena);
-    font-weight:bold;
+    font-size: var(--fonte-pequenaE);
+    /*font-weight:bold;*/
     color:var(--cor-azul);
 
 }
@@ -817,26 +821,26 @@ caption {
 }
 
 .titulo-sistema{
-    font-size: var(--fonte-media);
+    font-size: var(--fonte-grandeA);
     font-weight: bold;
     color: #333;
     margin-top: 10px; 
 }
 
 .subtitulo-sistema{
-    font-size: var(--fonte-pequena);
+    font-size: var(--fonte-pequenaB);
     color: #666;
     margin-top: 4px;
 }
 
 .usuario{
-    font-size: var(--fonte-pequena);
+    font-size: var(--fonte-media);
     font-weight: bold;
     color: #336699;
 }
 
 .acesso{
-    font-size: var(--fonte-pequena);
+    font-size: var(--fonte-media);
     color: #555;
 }
 
@@ -1310,7 +1314,7 @@ button.btn-voltar-menu:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
+  z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1434,10 +1438,10 @@ button.btn-voltar-menu:hover {
 .slider:before{
     position:absolute;
     content:"";
-    height:56px;
-    width:56px;
-    left:5px;
-    bottom:5px;
+    height:36px;
+    width:36px;
+    left:4px;
+    bottom:3px;
     background-color:white;
     transition:.1s;
     border-radius:50%;
@@ -1454,8 +1458,8 @@ button.btn-voltar-menu:hover {
 .switch{
     position:relative;
     display:inline-block;
-    width:160px;
-    height:70px;
+    width:90px;
+    height:46px;
 }
 
 .switch input{
@@ -1474,7 +1478,7 @@ button.btn-voltar-menu:hover {
 }
 
 .switch input:checked + .slider:before{
-    transform:translateX(90px);
+    transform:translateX(42px);
 }
 
 .texto-azul{
@@ -1492,8 +1496,8 @@ button.btn-voltar-menu:hover {
 .switchVerde{
     position:relative;
     display:inline-block;
-    width:160px;
-    height:70px;
+    width:90px;
+    height:46px;
 }
 
 .switchVerde input{
@@ -1512,7 +1516,7 @@ button.btn-voltar-menu:hover {
 }
 
 .switchVerde input:checked + .slider:before{
-    transform:translateX(90px);
+    transform:translateX(42px);
 }
 
 .texto-verde{
@@ -1530,8 +1534,8 @@ button.btn-voltar-menu:hover {
 .switchVermelho{
     position:relative;
     display:inline-block;
-    width:160px;
-    height:70px;
+    width:90px;
+    height:46px;
 }
 
 .switchVermelho input{
@@ -1550,7 +1554,7 @@ button.btn-voltar-menu:hover {
 }
 
 .switchVermelho input:checked + .slider:before{
-    transform:translateX(90px);
+    transform:translateX(42px);
 }
 
 .texto-vermelho{
@@ -1568,8 +1572,8 @@ button.btn-voltar-menu:hover {
 .switchRoxo{
     position:relative;
     display:inline-block;
-    width:160px;
-    height:70px;
+    width:90px;
+    height:46px;
 }
 
 .switchRoxo input{
@@ -1588,7 +1592,7 @@ button.btn-voltar-menu:hover {
 }
 
 .switchRoxo input:checked + .slider:before{
-    transform:translateX(90px);
+    transform:translateX(42px);
 }
 
 .texto-roxo {
@@ -1712,12 +1716,12 @@ button.btn-voltar-menu:hover {
 
 .tabela-sistema tbody td {
   background: #ffffff;
-  padding: 6px;
+  padding: 4px;
   text-align: center;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   transition: 0.1s;
-  height:100px;
+  height: 60px;
 }
 
 .tabela-sistema.tabela-sistemaEdicao tbody td {
@@ -1734,8 +1738,8 @@ button.btn-voltar-menu:hover {
 }
 
 .tabela-sistema input[type="checkbox"] {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   accent-color: #2563eb;
   transform: scale(1.2);

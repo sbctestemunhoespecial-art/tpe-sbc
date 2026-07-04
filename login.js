@@ -3756,6 +3756,7 @@ function carregarMapaQuandoClicar() {
   }
 }
 
+
 function pesquisarTcs() {
 
   if (!participanteSelecionadoTcs) {

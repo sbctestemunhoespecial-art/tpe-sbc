@@ -1757,6 +1757,13 @@ button.btn-voltar-menu:hover {
     color: #7C3AED;
 }
 
+.switchVerde,
+.switchVermelho,
+.switchAzul,
+.switchRoxo {
+    flex-shrink: 0;           /* Impede o switch de encolher */
+    margin: 0;
+}
 
 .card-ativo-roxo{
     position: relative;
@@ -1826,8 +1833,14 @@ button.btn-voltar-menu:hover {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 0.2rem;
-    margin: 0;
+    gap: .2rem;
+    margin: 1rem 1rem 0.5rem 0.5rem;
+}
+
+.linha-substituicao > div {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .linha-designado,

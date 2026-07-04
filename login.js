@@ -66,6 +66,8 @@ function mostrarPainelSemMenu(idPainel) {
   if (painel) painel.classList.add('ativo');
 }
 
+let campoDestinoModal = null;
+
 function sair() {
   toggleMenu();
 
@@ -92,8 +94,6 @@ function sair() {
   mostrarAlertaGlobal("Você saiu da conta.");
 
 }
-
-let campoDestinoModal = null;
 
 function abrirModalParticipantes() {
   document.getElementById("modalParticipantes").style.display = "flex";

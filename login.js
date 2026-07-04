@@ -6464,6 +6464,27 @@ function pegarContatosDoUsuarioSb(nome) {
 
   document.addEventListener("DOMContentLoaded", () => {
     adicionarTurno();
+
+                  const modais = document.querySelectorAll('[id^="modal"]');
+
+                  const abertos = [];
+
+                  modais.forEach(modal => {
+                    const estilo = window.getComputedStyle(modal);
+
+                    if (estilo.display !== "none" && estilo.visibility !== "hidden") {
+                      abertos.push(modal.id);
+                    }
+                  });
+
+                  if (abertos.length > 0) {
+                    console.log("🚨 Modais abertos na inicialização:", abertos);
+                  } else {
+                    console.log("✅ Nenhum modal aberto na inicialização.");
+                  }
+
+
+
   });
 
   document.getElementById("btnAddTurno").addEventListener("click", () => {
@@ -9575,13 +9596,27 @@ function confirmarDesignacao() {
       );
 
     },
-    (err) => {
+    /*(err) => {
 
       esconderSpinner();
 
       mostrarAlertaGlobal(
         "❌ " + (err.message || err)
       );
+
+    }*/
+    (err) => {
+
+      esconderSpinner();
+
+      console.error(err);
+
+      const mensagem =
+        err?.mensagem ||
+        err?.message ||
+        "Erro inesperado.";
+
+      mostrarAlertaGlobal("❌ " + mensagem);
 
     }
   );
@@ -9635,7 +9670,7 @@ function enviarWhatsappDesignacao() {
     encodeURIComponent(mensagem);
 
   apiJSONP(
-    "buscarNumeroWhatsAppPorIdComMensagem",
+    "buscarNumeroWhatsAppPorIdComMensagemTreinadorUm",
     {
       idTreinador,
       mensagem: mensagemCodificada
@@ -9649,12 +9684,25 @@ function enviarWhatsappDesignacao() {
       fecharModalWhatsapp();
 
     },
-    (err) => {
+    /*(err) => {
 
       esconderSpinner();
 
       mostrarAlertaGlobal(
         "❌ " + (err.message || err)
+      );
+      
+
+    }*/
+    (err) => {
+
+      esconderSpinner();
+
+      console.error(err);
+      console.log(JSON.stringify(err, null, 2));
+
+      mostrarAlertaGlobal(
+        "❌ " + (err.message || JSON.stringify(err))
       );
 
     }

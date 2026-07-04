@@ -1,30 +1,33 @@
+
 :root {
   --cor-automatica: #000000;
   --cor-branca: #ffffff;
   --cor-fundo: #FAFAFA;
   --cor-texto: #444444;
   --cor-primaria: #004080;
+  /*--cor-secundaria: #336699;*/
   --cor-secundaria: #374151;
   --cor-terciaria: #5b9bd5;
   --cor-quartiaria: #fffff0;
   --cor-quintiaria: #D3D3D3;
   --cor-azul: #1E40AF;
-  --cor-botao:#3B82F6;
+  --cor-botao:#3B82F6;/*#336699;*/
   --cor-botao-hover: #a4c2f4;
+  /*--fonte-principal: 'Arial', sans-serif;*/
   --fonte-principal: "Segoe UI";
-  --fonte-pequenaE: 16px;
-  --fonte-pequena: 22px;
-  --fonte-pequenaB: 26px;
-  --fonte-media: 32px;
-  --fonte-grandeA: 36px;
-  --fonte-grande: 40px;
-  --fonte-extraG: 46px;
+  --fonte-pequenaE: clamp(0.6rem, 1vw, 0.75rem);
+  --fonte-pequena: clamp(0.75rem, 1.2vw, 0.875rem);
+  --fonte-pequenaB: clamp(0.9rem, 1.5vw, 1rem);
+  --fonte-media: clamp(1rem, 2vw, 1.25rem);
+  --fonte-grandeA: clamp(1.25rem, 3vw, 1.5rem);
+  --fonte-grande: clamp(1.5rem, 4vw, 1.75rem);
+  --fonte-extraG: clamp(1.75rem, 5vw, 2rem);
   --raio-borda: 0.5em;
   --raio-borda-botao: 3em;
 }
 
 html {
-  font-size: 16px;
+  font-size: var(--fonte-pequenaB);
 }
 
 body {
@@ -52,7 +55,8 @@ input, select, button {
   border-radius: var(--raio-borda);
   box-sizing: border-box;
   width: 100%;
-  height: 60px;
+  min-height: 3.5rem;
+
 }
 
 input,
@@ -68,8 +72,8 @@ input, select {
 
 label {
   font-weight: bold;
-  font-size: 1.1em;
-  margin: 0.6em 0;
+  font-size: var(--fonte-media);
+  margin: 0.4em 0;
 }
 
 input[type="checkbox"] {
@@ -135,12 +139,43 @@ th, td {
   vertical-align: middle;
 }
 
-h1 { font-size: 0.8rem; color: #0074D9; margin: 1em 0 0.3em; }
-h2 { font-size: 1rem; color: #0074D9; margin: 1em 0 0.3em; }
-h3 { font-size: 1.2rem; color: #444444; margin: 1em 0 0.3em; }
-h4 { font-size: 1.4rem;   color: #0074D9; margin: 1em 0 0.3em; }
-h5 { font-size: 1.6rem; color: #0074D9; margin: 1em 0 0.3em; }
-h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
+
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: #0074D9;
+  margin: 1rem 0 0.4rem;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: #0074D9;
+  margin: 1rem 0 0.4rem;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: #444444;
+  margin: 1rem 0 0.4rem;
+}
+
+h4 {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: #0074D9;
+  margin: 1rem 0 0.4rem;
+}
+
+h5 {
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  color: #0074D9;
+  margin: 1rem 0 0.4rem;
+}
+
+h6 {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: #0074D9;
+  margin: 1rem 0 0.4rem;
+}
 
 .nome-pesquisado {
   font-size: var(--fonte-pequenaB);
@@ -157,7 +192,7 @@ h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
   background-color: var(--cor-fundo);
   padding: 4vh 4vw;
   text-align: center;
-  z-index: 9999;
+  z-index: 88888;
   width: 80vw;
   max-width: 80vw;
   display: flex;
@@ -165,12 +200,13 @@ h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
   align-items: center;
   font-size: 1em;
 }
+
 .titulo-login {
   font-size: var(--fonte-media);
 }
 
 .input-login {
-  width: 60%;
+  width: 65%;
   text-align: center;
   font-size: var(--fonte-pequenaB);
   padding: 0.5em 0.6em;
@@ -182,17 +218,17 @@ h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
 }
 
 .botao-login {
-  width: 60%;
+  width: 65%;
   text-align: center;
   font-size: var(--fonte-pequenaB);
   padding: 0.2em 0.2em;
   margin-bottom: 0;
-  margin-top: 40px;
+  margin-top: 1em;
 }
 
 .erro-login {
   color: red;
-  font-size: 1.2em;
+  font-size: var(--fonte-pequenaB);
   margin-top: 1em;
 }
 
@@ -201,7 +237,7 @@ h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
   margin-bottom: 0;
   line-height: 1;
   padding-bottom: 0;
-  text-align: center;       
+  text-align: left;       
   vertical-align: bottom; 
   font-size: var(--fonte-pequenaB);
 }
@@ -227,12 +263,13 @@ h6 { font-size: 1.8rem; color: #0074D9; margin: 1em 0 0.3em; }
   align-items: flex-start;
   padding: 0 1em;
 }
+
 button.menu-btn {
   width: fit-content;
   margin: 0;      
-  margin-top: 30px;        
+  margin-top: 1em;       
   width: auto; 
-  font-size: var(--fonte-media);  
+  font-size: var(--fonte-media);
   width: auto;       
   z-index: 1100;      
   display: none;      
@@ -292,6 +329,7 @@ button.menu-btn:hover {
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 900;
+  /*display: none;*/
 }
 
 .overlay.active {
@@ -416,7 +454,7 @@ button.confirmar:hover { background-color: #1b5e20; }
   text-align: center;
   font-size: 1em;
   box-shadow: 0 0 1em rgba(0,0,0,0.2);
-  z-index: 1200;
+  z-index: /*1200*/ 9999;
 }
 
 .loading-spinner {
@@ -442,6 +480,9 @@ tr:hover {
 a {
   color: var(--cor-primaria);
   text-decoration: none;
+}
+a:hover {
+  /*text-decoration: underline;*/
 }
 
 tr:nth-child(even) {
@@ -506,7 +547,8 @@ footer {
   background-color: var(--cor-fundo);
   margin-left: auto;
   margin-right: 1em;
-  border-radius: 0.4em;
+  /*border-radius: 0.4em;*/
+  border-radius: /*0.625rem*/ var(--raio-borda);
 }
 
 .painel-exportar.visivel {
@@ -552,7 +594,7 @@ footer {
 .confirm-box button {
   cursor: pointer;
   font-size: 1em;
-  border-radius: var(--raio-borda-botao);
+  border-radius: var(--raio-borda);
   border: 1px solid #999;
   background-color: #fff;
   transition: background-color 0.3s ease;
@@ -615,16 +657,19 @@ footer {
 }
 
 .grupo-botoes .btn-relatorios {
-    width: 190px;
-    height: 190px;   
+    width: 100%;
+    max-width: 12rem;
+    aspect-ratio: 1 / 1;
     background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    color: #336699;
-    font-size: 1.2rem;
+    border: 1px solid #E5E7EB;
+    color: var(--cor-azul);
+    font-size: var(--fonte-pequenaB);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    border-radius: var(--raio-borda);
+
 }
 
 .com-seta::after {
@@ -726,8 +771,8 @@ caption {
 
 .cardEvento {
   border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  border-radius: var(--raio-borda);
+  margin-bottom: 0.75rem;
   overflow: hidden;
   background: #FFFEF5;
 }
@@ -766,71 +811,69 @@ caption {
 }
 
 .cards-menu{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, 120px);
-    justify-content:center;
-    gap:20px;
+    display: grid;
+    /*grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));*/
+    grid-template-columns: repeat(auto-fit, 7rem);
+    justify-content: center;
+    gap: 1rem;
 }
 
 .card-menu{
-    margin-top: 0.8em;
-    background-color:#fff;
-    border-radius:12px;
-    padding:12px;
-    text-align:center;
-    cursor:pointer;
-    box-shadow:0 2px 8px rgba(0,0,0,.10);
-    transition:.2s;
-    aspect-ratio:1/1;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    margin-top: 0.75rem;
+    background-color: var(--cor-branca);
+    border-radius: var(--raio-borda);
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,.10);
+    transition: 0.2s;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border: 1px solid var(--cor-azul);
+
 }
 
 .card-menu.ativo{
     box-shadow:
-        0 0 0 3px #0074D9,
-        0 8px 20px rgba(0,0,0,.20);
+        0 0 0 0.2rem #0074D9,
+        0 0.5rem 1.25rem rgba(0,0,0,.20);
 }
 
 .card-menu:not(.ativo):hover{
-    transform:translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    transform:translateY(-0.2rem);
+    box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
 }
 
 .icone{
-    font-size:1rem;
-    /*margin-bottom:10px;*/
+    font-size: var(--fonte-pequenaB);
 }
 
 .titulo{
-    /*font-size:1.4rem;*/
-    font-size: var(--fonte-pequenaE);
-    /*font-weight:bold;*/
+    font-size: var(--fonte-media);
     color:var(--cor-azul);
-
 }
 
 .header-dashboard{
-    background: #FAFAFA;
-    padding: 35px 15px 20px 15px; 
-    margin-bottom: 15px;
-    text-align: center; 
+    background: var(--cor-fundo);
+    padding: 2rem 1rem 1.25rem 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 .titulo-sistema{
     font-size: var(--fonte-grandeA);
     font-weight: bold;
-    color: #333;
-    margin-top: 10px; 
+    color: var(--cor-texto);
+    margin-top: 0.75rem; 
 }
 
 .subtitulo-sistema{
     font-size: var(--fonte-pequenaB);
-    color: #666;
-    margin-top: 4px;
+    color: var(--cor-secundaria);
+    margin-top: 0.25rem;
 }
 
 .usuario{
@@ -850,15 +893,16 @@ caption {
 
 .btn-voltar-menu{
     width: fit-content;
-    margin-left: auto; 
-    margin-right: 60px;
-    margin-top: 30px;
-    padding: 0.2em;
+    margin-left: auto;
+    margin-right: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 0.5rem 0.75rem;
     border-radius: var(--raio-borda-botao);
     border: none;
     background: transparent;
     color: var(--cor-texto);
-    font-size: 1.8rem;
+
+    font-size: 1rem;
     font-weight:bold;
     cursor:pointer;
     transition:.2s;
@@ -871,7 +915,7 @@ button.btn-voltar-menu:hover {
 
 .btn-fechar-painel {
   float: right;
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
   cursor: pointer;
 }
 
@@ -900,39 +944,39 @@ button.btn-voltar-menu:hover {
 
 #modalAlterarTreinador .conteudo-modal {
     background: white;
-    padding: 28px;
-    border-radius: 10px;
-    max-width: 700px;  
-    width: 95%;        
+    padding: 1.5rem;
+    border-radius: var(--raio-borda);
+    width: min(95vw, 45rem);
     text-align: center;
     box-sizing: border-box;
+
 }
 
 #modalAlterarTreinador h3 {
     font-size: 1.5em;
-    margin-bottom: 18px;
+    margin-bottom: 1rem;
 }
 
 #modalAlterarTreinador select {
     width: 100%;
-    padding: 14px;
-    font-size: 1.1em;
-    margin-bottom: 12px;
+    padding: 0.8rem;
+    font-size: var(--fonte-pequenaB);
+    margin-bottom: 0.75rem;
 }
 
 #modalAlterarTreinador input {
     width: 100%;
-    padding: 14px;
-    font-size: 1.1em;
+    padding: 0.8rem;
+    font-size: var(--fonte-pequenaB);
 }
 
 #modalAlterarTreinador button {
-    margin-top: 18px;
-    padding: 16px 22px;
-    font-size: 1.2em;
+    margin-top: 1rem;
+    padding: 1rem;
+    font-size: var(--fonte-pequenaB);
     font-weight: bold;
     border: 1px solid #ccc;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     cursor: pointer;
 }
 
@@ -940,7 +984,7 @@ button.btn-voltar-menu:hover {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 99999;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -952,35 +996,33 @@ button.btn-voltar-menu:hover {
 
 #modalComunicarTreinador .conteudo-modal {
     background: white;
-    width: 90%;
-    max-width: 700px;
-    padding: 30px;
-    border-radius: 10px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
     text-align: center;
     box-sizing: border-box;
 }
 
 #modalComunicarTreinador h3 {
     font-size: 1.8em;
-    margin-bottom: 20px;
+    margin-bottom: 0.75em;
 }
 
 #modalComunicarTreinador p {
     font-size: 1.3em;
     line-height: 1.5;
-    margin-bottom: 30px;
+    margin-bottom: 0.75em;
 }
 
 #modalComunicarTreinador .botoes-modal {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 #modalComunicarTreinador button {
     flex: 1;
-    max-width: 300px;
-    padding: 20px;
+    padding: 1rem;
     font-size: 1.3em;
     font-weight: bold;
     cursor: pointer;
@@ -990,7 +1032,7 @@ button.btn-voltar-menu:hover {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 99999;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1000,98 +1042,106 @@ button.btn-voltar-menu:hover {
     display: none;
 }
 
+/* 🔽 DUPLICAÇÃO EXATA DO ESTILO DO OUTRO MODAL */
+
 #modalComunicarTreinadorFiltrado .conteudo-modal {
     background: white;
-    width: 90%;
-    max-width: 700px;
-    padding: 30px;
-    border-radius: 10px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
     text-align: center;
     box-sizing: border-box;
 }
 
 #modalComunicarTreinadorFiltrado h3 {
     font-size: 1.8em;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 #modalComunicarTreinadorFiltrado p {
     font-size: 1.3em;
     line-height: 1.5;
-    margin-bottom: 30px;
+    margin-bottom: 1rem;
 }
 
 #modalComunicarTreinadorFiltrado .botoes-modal {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 #modalComunicarTreinadorFiltrado button {
     flex: 1;
-    max-width: 300px;
-    padding: 20px;
+    padding: 1rem;
     font-size: 1.3em;
     font-weight: bold;
     cursor: pointer;
 }
+/* =========================
+   MODAL BASE (GENÉRICO)
+========================= */
 
 .modal-padrao {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.5);
-  z-index: 99999;
+  z-index: 9999;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* escondido */
 .modal-padrao.oculto {
   display: none;
 }
 
+/* conteúdo */
 .modal-padrao .conteudo-modal {
   background: white;
-  width: 90%;
-  max-width: 700px;
-  padding: 30px;
-  border-radius: 10px;
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--raio-borda);
   text-align: center;
   box-sizing: border-box;
 }
 
+/* título */
 .modal-padrao h3 {
   font-size: 1.8em;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
+/* texto */
 .modal-padrao p {
   font-size: 1.3em;
   line-height: 1.5;
-  margin-bottom: 30px;
+  margin-bottom: 1rem;
 }
 
+/* botões */
 .modal-padrao .botoes-modal {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 1rem;
 }
 
+/* botão padrão */
 .modal-padrao button {
   flex: 1;
-  max-width: 300px;
-  padding: 20px;
+  padding: 1rem;
   font-size: 1.3em;
   font-weight: bold;
-
   cursor: pointer;
 }
 
+/*Modal comunicar Administrador*/
 #modalComunicarAdministrador {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 99999;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1103,39 +1153,38 @@ button.btn-voltar-menu:hover {
 
 #modalComunicarAdministrador .conteudo-modal {
     background: white;
-    width: 90%;
-    max-width: 700px;
-    padding: 30px;
-    border-radius: 10px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
     text-align: center;
     box-sizing: border-box;
 }
 
 #modalComunicarAdministrador h3 {
     font-size: 1.8em;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 #modalComunicarAdministrador p {
     font-size: 1.3em;
     line-height: 1.5;
-    margin-bottom: 30px;
+    margin-bottom: 1rem;
 }
 
 #modalComunicarAdministrador .botoes-modal {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 #modalComunicarAdministrador button {
     flex: 1;
-    max-width: 300px;
-    padding: 30px;
+    padding: 1rem;
     font-size: 1.3em;
     font-weight: bold;
     cursor: pointer;
 }
+/*Modal comunicar Administrador*/
 
 #modalAcoesTreinamento {
     position: fixed;
@@ -1153,28 +1202,27 @@ button.btn-voltar-menu:hover {
 
 #modalAcoesTreinamento .conteudo-modal {
     background: white;
-    padding: 28px;
-    border-radius: 10px;
-    max-width: 700px;
-    width: 95%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
+    width: 100%;
     text-align: center;
     box-sizing: border-box;
 }
 
 #modalAcoesTreinamento h3 {
     font-size: 1.5em;
-    margin-bottom: 18px;
+    margin-bottom: 1rem;
 }
 
 #modalAcoesTreinamento button {
     display: block;
     width: 100%;
-    margin-top: 20px;
-    padding: 28px 22px;
+    margin-top: 1rem;
+    padding: 1rem;
     font-size: 1.3em;
     font-weight: bold;
     border: 1px solid #ccc;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     cursor: pointer;
 }
 
@@ -1194,28 +1242,27 @@ button.btn-voltar-menu:hover {
 
 #modalAcoesTreinador .conteudo-modal {
     background: white;
-    padding: 28px;
-    border-radius: 10px;
-    max-width: 700px;
-    width: 95%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
+    width: 100%;
     text-align: center;
     box-sizing: border-box;
 }
 
 #modalAcoesTreinador h3 {
     font-size: 1.5em;
-    margin-bottom: 18px;
+    margin-bottom: 1rem;
 }
 
 #modalAcoesTreinador button {
     display: block;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1rem;
     padding: 28px 22px;
     font-size: 1.3em;
     font-weight: bold;
     border: 1px solid #ccc;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     cursor: pointer;
 }
 
@@ -1233,11 +1280,11 @@ button.btn-voltar-menu:hover {
 #modalSubstituicao .conteudo-modal {
   background: #fff;
   margin: 5% auto;
-  padding: 20px;
-  width: 750px;
-  max-width: 95%;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  padding: 1rem;
+  max-width: 100%;
+  /*border-radius: 1rem;*/
+  border-radius: /*0.625rem*/ var(--raio-borda);
+  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
 }
 
 #modalDesignados {
@@ -1254,11 +1301,11 @@ button.btn-voltar-menu:hover {
 #modalDesignados .conteudo-modal {
   background: #fff;
   margin: 5% auto;
-  padding: 20px;
-  width: 750px;
-  max-width: 95%;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  padding: 1rem;
+  width: 100%;
+  /*border-radius: 1rem;*/
+  border-radius: /*0.625rem*/ var(--raio-borda);
+  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
 }
 
 #confirmacaoGlobal {
@@ -1277,10 +1324,9 @@ button.btn-voltar-menu:hover {
 
 #confirmacaoGlobal .conteudo-confirmacao {
     background: white;
-    padding: 24px;
-    border-radius: 10px;
-    max-width: 700px;
-    width: 95%;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
+    width: 100%;
     text-align: center;
     box-sizing: border-box;
 }
@@ -1288,25 +1334,24 @@ button.btn-voltar-menu:hover {
 #confirmacaoMensagem {
     font-size: 1.1em;
     line-height: 1.5;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     white-space: pre-line; /* preserva as quebras de linha */
 }
 
 #confirmacaoGlobal .botoes-confirmacao {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: 1rem;
 }
 
 #confirmacaoBotaoOk,
 #confirmacaoBotaoCancelar {
     flex: 1;
-    max-width: 280px;
-    padding: 20px 30px;
+    padding: 1rem 1rem;
     font-size: 1.2em;
     font-weight: bold;
     border: 1px solid #ccc;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     cursor: pointer;
 }
 
@@ -1314,7 +1359,7 @@ button.btn-voltar-menu:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
+  z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1333,8 +1378,6 @@ button.btn-voltar-menu:hover {
   font-size: 1.5em;
   box-shadow: 0 0 0.8em rgba(0, 0, 0, 0.2);
   text-align: center;
-  min-width: 300px;
-  max-width: 600px;
 }
 
 #alertaGlobal .alerta-btn {
@@ -1343,16 +1386,18 @@ button.btn-voltar-menu:hover {
   font-size: 1em;
   padding: 0.2em;
   border: 1px solid #ccc;
-  border-radius: var(--raio-borda-botao);
+  border-radius: var(--raio-borda);
   cursor: pointer;
   box-sizing: border-box;
 }
 
+/*modal partiipantes novo inicia aqui*/
 #modalParticipantes {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1364,41 +1409,45 @@ button.btn-voltar-menu:hover {
 
 #modalParticipantes .conteudo-modal {
     background: white;
-    padding: 28px;
-    border-radius: 10px;
-    max-width: 900px;
+    padding: 1rem;
+    border-radius: var(--raio-borda);
     width: 80vw;
-    max-width: 1000px;
     text-align: center;
     box-sizing: border-box;
 }
 
+/* topo alinhado com botão X */
 #modalParticipantes .modal-topo {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 1rem;
 }
 
+/* título */
 #modalParticipantes h3 {
     font-size: 1.2em;
     margin: 0;
 }
 
+/* botão X pequeno */
 #modalParticipantes .btn-fechar-modal {
     background: transparent;
     border: none;
     font-size: 1.4em;
     cursor: pointer;
     color: #d33;
-    width: 70px;        
-    padding: 6px;
+
+    width: 70px;        /* controla tamanho fixo */
+    /*text-align: right;  /* encosta na direita */
+    padding: 0.5rem;
 }
 
 #modalParticipantes .btn-fechar-modal:hover {
     color: #a00;
 }
 
+/* botão principal do modal */
 #modalParticipantes button:not(.btn-fechar-modal) {
     display: block;
     width: 100%;
@@ -1407,7 +1456,7 @@ button.btn-voltar-menu:hover {
     font-size: 1.1em;
     font-weight: bold;
     border: 1px solid #ccc;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     cursor: pointer;
 }
 
@@ -1424,80 +1473,114 @@ button.btn-voltar-menu:hover {
     font-weight: bold;
 }
 
+/* ==========================================================
+   ESTILO COMUM DOS SWITCHES
+========================================================== */
+
 .slider{
     position:absolute;
+    inset:0;
     cursor:pointer;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    transition:.3s;
-    border-radius:50px;
+    transition:0.2s;
+    border-radius:999px;
 }
 
 .slider:before{
     position:absolute;
     content:"";
-    height:36px;
-    width:36px;
-    left:4px;
-    bottom:3px;
+    height:1.3em;
+    width:1.3em;
+    left:0.2em;
+    top:50%;
+    transform:translateY(-50%);
     background-color:white;
-    transition:.1s;
     border-radius:50%;
+    transition:0.2s;
 }
 
-.switch-container{
+
+
+/* ==========================================================
+   SWITCH AZUL
+========================================================== */
+
+
+.switchAzul-container{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:12px;
-    margin:15px 0;
+    gap:0.75rem;
+    margin:1rem 0;
 }
 
-.switch{
+.switchAzul{
     position:relative;
     display:inline-block;
-    width:90px;
-    height:46px;
+    width:3.5em;
+    height:1.8em;
 }
 
-.switch input{
+.switchAzul input{
     opacity:0;
     width:0;
     height:0;
 }
 
-.switch .slider{
+.switchAzul .slider{
+    position:absolute;
+    inset:0;
+    cursor:pointer;
     background-color:#DBEAFE;
-    border:2px solid #0056D2;
+    border:0.125em solid #3B82F6;
+    border-radius:999px;
+    transition:0.2s;
 }
 
-.switch input:checked + .slider{
-    background-color:#0056D2;
+/* bolinha */
+.switchAzul .slider:before{
+    content:"";
+    position:absolute;
+    height:1.3em;
+    width:1.3em;
+    left:0.2em;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    border-radius:50%;
+    transition:0.2s;
 }
 
-.switch input:checked + .slider:before{
-    transform:translateX(42px);
+.switchAzul input:checked + .slider{
+    background-color:#3B82F6;
+}
+
+/* movimento da bolinha */
+.switchAzul input:checked + .slider:before{
+    transform:translate(1.6em, -50%);
 }
 
 .texto-azul{
     color:#0056D2;
 }
 
+
+/* ==========================================================
+   SWITCH VERDE
+========================================================== */
+
 .switchVerde-container{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:12px;
-    margin:15px 0;
+    gap:0.75rem;
+    margin:1rem 0;
 }
 
 .switchVerde{
     position:relative;
     display:inline-block;
-    width:90px;
-    height:46px;
+    width:3.5em;
+    height:1.8em;
 }
 
 .switchVerde input{
@@ -1507,35 +1590,59 @@ button.btn-voltar-menu:hover {
 }
 
 .switchVerde .slider{
+    position:absolute;
+    inset:0;
+    cursor:pointer;
     background-color:#DCFCE7;
-    border:2px solid #009C3B;
+    border:0.125em solid #22C55E;
+    border-radius:999px;
+    transition:0.2s;
+}
+
+/* bolinha */
+.switchVerde .slider:before{
+    content:"";
+    position:absolute;
+    height:1.3em;
+    width:1.3em;
+    left:0.2em;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    border-radius:50%;
+    transition:0.2s;
 }
 
 .switchVerde input:checked + .slider{
-    background-color:#009C3B;
+    background-color:#22C55E;
 }
 
+/* movimento da bolinha */
 .switchVerde input:checked + .slider:before{
-    transform:translateX(42px);
+    transform:translate(1.6em, -50%);
 }
 
 .texto-verde{
     color:#009C3B;
 }
 
+/* ==========================================================
+   SWITCH VERMELHO
+========================================================== */
+
 .switchVermelho-container{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:12px;
-    margin:15px 0;
+    gap:0.75rem;
+    margin:1rem 0;
 }
 
 .switchVermelho{
     position:relative;
     display:inline-block;
-    width:90px;
-    height:46px;
+    width:3.5em;
+    height:1.8em;
 }
 
 .switchVermelho input{
@@ -1545,35 +1652,59 @@ button.btn-voltar-menu:hover {
 }
 
 .switchVermelho .slider{
-    background-color:#FEE2E2;
-    border:2px solid #DC2626;
+    position:absolute;
+    inset:0;
+    cursor:pointer;
+    background-color:#EDE9FE;
+    border:0.125em solid #DC2626;
+    border-radius:999px;
+    transition:0.2s;
+}
+
+/* bolinha */
+.switchVermelho .slider:before{
+    content:"";
+    position:absolute;
+    height:1.3em;
+    width:1.3em;
+    left:0.2em;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    border-radius:50%;
+    transition:0.2s;
 }
 
 .switchVermelho input:checked + .slider{
     background-color:#DC2626;
 }
 
+/* movimento da bolinha */
 .switchVermelho input:checked + .slider:before{
-    transform:translateX(42px);
+    transform:translate(1.6em, -50%);
 }
 
 .texto-vermelho{
     color:#DC2626;
 }
 
+/* ==========================================================
+   SWITCH ROXO
+========================================================== */
+
 .switchRoxo-container{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:12px;
-    margin:15px 0;
+    gap:0.75rem;
+    margin:1rem 0;
 }
 
 .switchRoxo{
     position:relative;
     display:inline-block;
-    width:90px;
-    height:46px;
+    width:3.5em;
+    height:1.8em;
 }
 
 .switchRoxo input{
@@ -1583,39 +1714,60 @@ button.btn-voltar-menu:hover {
 }
 
 .switchRoxo .slider{
+    position:absolute;
+    inset:0;
+    cursor:pointer;
     background-color:#EDE9FE;
-    border:2px solid #7C3AED;
+    border:0.125em solid #7C3AED;
+    border-radius:999px;
+    transition:0.2s;
+}
+
+/* bolinha */
+.switchRoxo .slider:before{
+    content:"";
+    position:absolute;
+    height:1.3em;
+    width:1.3em;
+    left:0.2em;
+    top:50%;
+    transform:translateY(-50%);
+    background:white;
+    border-radius:50%;
+    transition:0.2s;
 }
 
 .switchRoxo input:checked + .slider{
     background-color:#7C3AED;
 }
 
+/* movimento da bolinha */
 .switchRoxo input:checked + .slider:before{
-    transform:translateX(42px);
+    transform:translate(1.6em, -50%);
 }
 
 .texto-roxo {
     color: #7C3AED;
 }
 
+
 .card-ativo-roxo{
     position: relative;
-    border: 10px solid #7C3AED;
+    border: 0.5rem solid #7C3AED;
     background: #FACC15;
 }
 
 .card-ativo-roxo::before{
     content: "Informe os dias aqui!";
     position: absolute;
-    top: -18px;
+    top: -1rem;
     left: 50%;
     transform: translateX(-50%);
     background: #7C3AED;
     color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 24px;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--raio-borda);
+    font-size: clamp(0.9rem, 2vw, 1.25rem);
     font-weight: bold;
     white-space: nowrap;
     z-index: 10;
@@ -1623,21 +1775,21 @@ button.btn-voltar-menu:hover {
 
 .card-ativo-azul{
     position: relative;
-    border: 10px solid #0056D2;
+    border: 0.5rem solid #0056D2;
     background: #FACC15;
 }
 
 .card-ativo-azul::before{
     content: "Informe os dias aqui!";
     position: absolute;
-    top: -18px;
+    top: -1rem;
     left: 50%;
     transform: translateX(-50%);
     background: #0056D2;
     color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 24px;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--raio-borda);
+    font-size: clamp(0.9rem, 2vw, 1.25rem);
     font-weight: bold;
     white-space: nowrap;
     z-index: 10;
@@ -1656,8 +1808,8 @@ button.btn-voltar-menu:hover {
 .painel-disponibilidade {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 .linha-designado,
@@ -1665,14 +1817,14 @@ button.btn-voltar-menu:hover {
 .linha-frequencia {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.75rem;
     justify-content: flex-end;
 }
 
 .linha-designado,
 .rotulo-substituicao,
 .linha-frequencia label {
-    font-size: 30px;
+   font-size: var(--fonte-media);
     color:var(--cor-texto);
     font-weight: bold;
 }
@@ -1691,37 +1843,56 @@ button.btn-voltar-menu:hover {
   gap: 8px;
 }
 
+.header {
+  /*background: #f3f4f6;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 600;*/
+}
+
+.dia {
+  /*padding: 10px;
+  font-weight: 600;*/
+}
+
 .box {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 0.625rem;
 }
 
 .tabela-sistema {
   width: 100%;
   border-collapse: separate !important;
-  border-spacing: 6px;
+  border-spacing: 0.375rem;
+  /*font-family: Arial, sans-serif;*/
 }
 
+/* HEADER */
 .tabela-sistema thead th {
-  background: #EAF4FF;
+  background: #EAF4FF;/*#334155; //#1f2937;*/
   color:var(--cor-azul);
-  padding: 12px;
-  border-radius: 10px;
+  padding: 0.75rem;
+  border-radius: /*0.625rem*/ var(--raio-borda);
+
   font-size: var(--fonte-media);
   text-align: center;
   border: none;
 }
 
+/* CELULAS */
 .tabela-sistema tbody td {
   background: #ffffff;
-  padding: 4px;
+  padding: /*0.5rem*/0.2rem;
   text-align: center;
-  border-radius: 10px;
+  border-radius: /*0.625rem*/ var(--raio-borda);
+
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   transition: 0.1s;
-  height: 60px;
+  min-height: 3.5rem;
+
 }
 
 .tabela-sistema.tabela-sistemaEdicao tbody td {
@@ -1732,19 +1903,22 @@ button.btn-voltar-menu:hover {
     background: #FACC15;
 }
 
+/* HOVER */
 .tabela-sistema tbody td:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.12);
 }
 
+/* CHECKBOX PADRÃO */
 .tabela-sistema input[type="checkbox"] {
-  width: 30px;
-  height: 30px;
+  width: 1.5rem;
+  height: 1.5rem;
   cursor: pointer;
   accent-color: #2563eb;
   transform: scale(1.2);
 }
 
+/* STICKY HEADER OPCIONAL */
 .tabela-sistema thead th {
   position: sticky;
   top: 0;
@@ -1784,23 +1958,26 @@ td {
 }
 
 .tabela-listagem tbody td{
-    height:90px;
-    padding:12px 16px;
+    min-height: 5.5rem;
+    padding:0.75rem 1rem;
+
     vertical-align:middle;
 }
 
 .tabela-listagem th{
-       background: #EAF4FF;
+    background: #EAF4FF;
     color:var(--cor-azul);
-    padding: 12px;
-    border-radius: 10px;
+    padding: 0.75rem;
+    /*border-radius: 0.625rem;*/
+    border-radius: /*0.625rem*/ var(--raio-borda);
     font-size: var(--fonte-media);
     text-align: center;
     border: none;
 }
 
 .tabela-listagem td{
-    padding:12px 16px;
+    padding:0.75rem 1rem;
+
 }
 
 .tabela-listagem tbody tr:nth-child(odd){
@@ -1817,24 +1994,24 @@ td {
 
 .cards-info{
     display:grid;
-    gap:12px;
-    margin-top:20px;
+    gap:0.75rem;
+    margin-top:1.25rem;
 }
 
 .card-info{
     background:#FFFFFF;
     border:1px solid #E5E7EB;
-    border-radius:12px;
-    padding:14px 18px;
+     border-radius:var(--raio-borda);
+    padding:0.9rem 1rem;
 
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    box-shadow:0 0.125rem 0.5rem rgba(0,0,0,.05);
 
     transition:.2s;
 }
 
 .card-info:hover{
     transform:translateY(-2px);
-    box-shadow:0 6px 16px rgba(0,0,0,.08);
+    box-shadow:0 0.375rem 1rem rgba(0,0,0,.08);
 }
 
 .card-info span{
@@ -1847,13 +2024,13 @@ td {
 .card-info{
     display:flex;
     align-items:center;
-    min-height:48px;
+    min-height:3rem;
     font-size:1rem;
     font-weight:500;
 }
 
 .titulo-secao{
-    margin:0 0 12px;
+   margin:0 0 0.75rem;
     font-size:1.1rem;
     font-weight:600;
     color:#374151;
@@ -1862,7 +2039,7 @@ td {
 .lista-privilegios{
     background:#FFF;
     border:1px solid #E5E7EB;
-    border-radius:12px;
+     border-radius:var(--raio-borda);
     overflow:hidden;
 }
 
@@ -1870,7 +2047,10 @@ td {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:12px 16px;
+
+    padding:0.75rem 1rem;
+
+
     border-bottom:1px solid #F1F5F9;
 }
 
@@ -1897,10 +2077,14 @@ td {
   width: 100%;
   margin: 5px 0;
   text-align: left;
+
   background: #FFFEF5;
   color: #333;
+
   border: 1px solid #ccc;
-  border-radius: 30px;
+  /*border-radius: 30px;*/
+  border-radius: /*0.625rem*/ var(--raio-borda-botao);
+
   box-shadow: none;
 }
 
@@ -1918,6 +2102,7 @@ td {
     inset:0;
     background:rgba(0,0,0,.55);
     z-index:99999;
+
     justify-content:center;
     align-items:center;
 }
@@ -1930,21 +2115,38 @@ td {
     position:relative;
     background:#FACC15;
     width:min(420px,90vw);
-    border-radius:16px;
-    padding:28px;
-    box-shadow:0 12px 40px rgba(0,0,0,.25);
+    border-radius: var(--raio-borda);
+    padding:1.5rem;
+    box-shadow:0 0.75rem 2.5rem rgba(0,0,0,.25);
     text-align:center;
+}
+
+/*.fechar-modal-editar{
+    background: transparent;
+    border: none;
+    font-size: 1.4em;
+    cursor: pointer;
+    color: #d33;
+    justify-content: flex-end;
+
+    width: 70px;        
+    
+    padding: 0.5rem;
+}*/
+
+.fechar-modal-editar:hover{
+    /*background:#e3e3e3;*/
 }
 
 .conteudo-modal-editar h3{
     margin-top:0;
-    margin-bottom:12px;
+    margin-bottom:1rem;
 }
 
 .cabecalho-modal{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:0.75rem;
 }
 
 .cabecalho-modal h3{
@@ -1959,7 +2161,7 @@ td {
     background:transparent;
     border:none;
     color:#d33;
-    font-size:1.4rem;
+    font-size:1.5rem;
     cursor:pointer;
     padding:6px;
     flex-shrink:0;

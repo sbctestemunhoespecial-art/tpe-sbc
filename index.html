@@ -48,7 +48,7 @@
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('congregacoes')" class="so-organizadores">Congregações</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('relatorios')" class="so-organizadores">Relatórios</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('estatisticas')" class="so-participantes">Estatisticas</a>
-    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('perfil')" class="so-admin">Perfil</a>
+    <!--<a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('perfil')" class="so-admin">Perfil</a>-->
   </div>
 
   <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
@@ -60,7 +60,7 @@
 
     <div class="cabecalho-modal">
 
-      <h3>Cique para alterar a sua disponbilidade</h3>
+      <h5>Cique para alterar a sua disponbilidade</h5>
 
       <button
         class="fechar-modal-editar"
@@ -88,7 +88,7 @@
 
   <div class="conteudo-modal">
 
-    <h3>Alterar Treinador</h3>
+    <h5>Alterar Treinador</h5>
 
     <select id="listaNomesTrei">
       <option value="">- Selecione -</option>
@@ -122,7 +122,7 @@
 
   <div class="conteudo-modal">
 
-    <h3>📲 Comunicar Coordenador</h3>
+    <h5>📲 Comunicar Coordenador</h5>
 
     <p>
       Deseja comunicar o coordenador do TPE pelo WhatsApp?
@@ -152,11 +152,11 @@
 
 </div>
 
-<div id="modalComunicarTreinador" class="oculto">
+<div id="modalComunicarTreinador" class="oculto modalComTrei">
 
   <div class="conteudo-modal">
 
-    <h3>📲 Comunicar Treinador</h3>
+    <h5>📲 Comunicar Treinador</h5>
 
     <p>
       Deseja comunicar o novo treinador pelo WhatsApp?
@@ -189,7 +189,7 @@
 <div id="modalConfirmarDesignacao" class="modal-padrao oculto">
   <div class="conteudo-modal">
 
-    <h3>📌 Confirmar Designação</h3>
+    <h5>📌 Confirmar Designação</h5>
 
     <p>
       Deseja realmente designar este treinador para o participante?
@@ -208,7 +208,7 @@
 <div id="modalEnviarWhatsapp" class="modal-padrao oculto">
   <div class="conteudo-modal">
 
-    <h3>📲 Enviar WhatsApp</h3>
+    <h5>📲 Enviar WhatsApp</h5>
 
     <p>
       Deseja enviar mensagem para o treinador designado?
@@ -228,7 +228,7 @@
 
   <div class="conteudo-modal">
 
-    <h3>O que você quer fazer?</h3>
+    <h5>O que você quer fazer?</h5>
 
     <button id="acaoConcluir">
       ✅ Concluir Treinamento
@@ -258,7 +258,7 @@
 
   <div class="conteudo-modal">
 
-    <h3>Q que você quer fazer?</h3>
+    <h5>Q que você quer fazer?</h5>
 
     <button id="acaoConcluirTreinador">
       ✅ Concluir Treinamento
@@ -278,9 +278,9 @@
 
 <div id="modalDesignados">
 
-    <div class="conteudo-modal">
+    <div class="conteudo-modal oculto">
 
-        <h3>Quem será substituído?</h3>
+        <h5>Quem será substituído?</h5>
 
         <div id="listaDesignados"></div>
 
@@ -295,7 +295,7 @@
 
 <div id="modalSubstituicao">
   <div class="conteudo-modal">
-    <h3>Quem deve sair?</h3>
+    <h5>Quem deve sair?</h5>
 
     <div id="listaSubstituicao"></div>
 
@@ -312,7 +312,7 @@
   <div class="conteudo-modal">
 
     <div class="modal-topo">
-      <h3>👤 Selecionar Participante</h3>
+      <h5>👤 Selecionar Participante</h5>
 
       <!-- X pequeno no canto -->
       <button
@@ -327,7 +327,7 @@
       <option value="">- Selecione -</option>
     </select>
 
-    <h3>🔎 Filtrar participante</h3>
+    <h5>🔎 Filtrar participante</h5>
 
     <input
       type="text"
@@ -385,7 +385,7 @@
 </div>
 
 <div id="telaLogin" class="quadro-centralizado">
-  <h3 class="titulo-login">TPE SBC</h3>
+  <h3 class="titulo-login">TPE SBC</h5>
 
   <label for="emailLogin">E-mail do usuário:</label>
   <input type="email" id="emailLogin" class="input-login" required>
@@ -405,7 +405,7 @@
 </div>
 
 <div id="telaSolicitarCodigo" class="quadro-centralizado" style="display:none;">
-  <h3 class="titulo-login">ESQUECI A SENHA</h3>
+  <h3 class="titulo-login">ESQUECI A SENHA</h5>
 
   <input type="email" id="emailCodigo" class="input-login" required>
 
@@ -423,7 +423,7 @@
 </div>
 
 <div id="telaInserirCodigo" class="quadro-centralizado" style="display:none;">
-  <h3 class="titulo-login">DIGITE O CÓDIGO</h3>
+  <h3 class="titulo-login">DIGITE O CÓDIGO</h5>
 
   <div id="inputsCodigo" style="display:flex; gap:5px; justify-content:center;">
     <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
@@ -444,13 +444,13 @@
   </div>
 </div>
 
-<div id="modalEditarDisponibilidade" class="modal-editar">
+<!--<div id="modalEditarDisponibilidade" class="modal-editar">
 
   <div class="conteudo-modal-editar">
 
     <div class="cabecalho-modal">
 
-      <h3>Clique para alterar a sua disponibilidade</h3>
+      <h5>Clique para alterar a sua disponibilidade</h5>
 
       <button
         type="button"
@@ -474,13 +474,13 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalAlterarTreinador" class="oculto">
+<!--<div id="modalAlterarTreinador" class="oculto">
 
   <div class="conteudo-modal">
 
-    <h3>Alterar Treinador</h3>
+    <h5>Alterar Treinador</h5>
 
     <select id="listaNomesTrei">
       <option value="">- Selecione -</option>
@@ -506,13 +506,13 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalComunicarAdministrador" class="oculto">
+<!--<div id="modalComunicarAdministrador" class="oculto">
 
   <div class="conteudo-modal">
 
-    <h3>📲 Comunicar Coordenador</h3>
+    <h5>📲 Comunicar Coordenador</h5>
 
     <p>Deseja comunicar o coordenador do TPE pelo WhatsApp?</p>
 
@@ -532,11 +532,11 @@
 
 </div>
 
-<div id="modalComunicarTreinador" class="oculto">
+<div id="modalComunicarTreinador" class="oculto modalComTrei">
 
   <div class="conteudo-modal">
 
-    <h3>📲 Comunicar Treinador</h3>
+    <h5>📲 Comunicar Treinador</h5>
 
     <p>Deseja comunicar o novo treinador pelo WhatsApp?</p>
 
@@ -554,12 +554,12 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
+<!--<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
   <div class="conteudo-modal">
 
-    <h3>📌 Confirmar Designação</h3>
+    <h5>📌 Confirmar Designação</h5>
 
     <p>Deseja realmente designar este treinador para o participante?</p>
 
@@ -571,12 +571,12 @@
     </div>
 
   </div>
-</div>
+</div>-->
 
-<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
+<!--<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
   <div class="conteudo-modal">
 
-    <h3>📲 Enviar WhatsApp</h3>
+    <h5>📲 Enviar WhatsApp</h5>
 
     <p>Deseja enviar mensagem para o treinador designado?</p>
 
@@ -588,13 +588,13 @@
     </div>
 
   </div>
-</div>
+</div>-->
 
-<div id="modalAcoesTreinamento" class="oculto">
+<!--<div id="modalAcoesTreinamento" class="oculto">
 
   <div class="conteudo-modal">
 
-    <h3>O que você quer fazer?</h3>
+    <h5>O que você quer fazer?</h5>
 
     <button type="button" id="acaoConcluir">
       ✅ Concluir Treinamento
@@ -618,13 +618,13 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalAcoesTreinador" class="oculto">
+<!--<div id="modalAcoesTreinador" class="oculto">
 
   <div class="conteudo-modal">
 
-    <h3>O que você quer fazer?</h3>
+    <h5>O que você quer fazer?</h5>
 
     <button type="button" id="acaoConcluirTreinador">
       ✅ Concluir Treinamento
@@ -640,13 +640,13 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalDesignados">
+<!--<div id="modalDesignados">
 
   <div class="conteudo-modal">
 
-    <h3>Quem será substituído?</h3>
+    <h5>Quem será substituído?</h5>
 
     <div id="listaDesignados"></div>
 
@@ -657,13 +657,13 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalSubstituicao">
+<!--<div id="modalSubstituicao">
 
   <div class="conteudo-modal">
 
-    <h3>Quem deve sair?</h3>
+    <h5>Quem deve sair?</h5>
 
     <div id="listaSubstituicao"></div>
 
@@ -674,14 +674,14 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="modalParticipantes" class="modal-overlay oculto">
+<!--<div id="modalParticipantes" class="modal-overlay oculto">
 
   <div class="conteudo-modal">
 
     <div class="modal-topo">
-      <h3>👤 Selecionar Participante</h3>
+      <h5>👤 Selecionar Participante</h5>
 
       <button
         type="button"
@@ -695,7 +695,7 @@
       <option value="">- Selecione -</option>
     </select>
 
-    <h3>🔎 Filtrar participante</h3>
+    <h5>🔎 Filtrar participante</h5>
 
     <input
       type="text"
@@ -712,9 +712,9 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="confirmacaoGlobal" class="oculto">
+<!--<div id="confirmacaoGlobal" class="oculto">
 
   <div class="conteudo-confirmacao">
 
@@ -732,9 +732,9 @@
 
   </div>
 
-</div>
+</div>-->
 
-<div id="alertaGlobal" class="oculto">
+<!--<div id="alertaGlobal" class="oculto">
 
   <div class="conteudo-alerta">
 
@@ -748,7 +748,7 @@
 
   </div>
 
-</div>
+</div>-->
 
 <div id="spinnerGlobal" style="
   position: fixed;
@@ -760,7 +760,7 @@
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 99999;
 ">
 
   <div class="spinner"></div>
@@ -897,7 +897,7 @@
 
 <div id="painelSemDisponibilidade" class="painel-exportar tela"> <!-- AQUI TERMINA O PAINEL PARTICIPANTES SEM DISPONIBILIDADE-->
 
-    <h3>📋 Participantes sem disponibilidade cadastrada</h3>
+    <h5>📋 Participantes sem disponibilidade cadastrada</h5>
 
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
 
@@ -974,7 +974,7 @@
 
 <div id="minhaInfo" class="painel tela"> 
 
-    <h3>👤 Meu Perfil</h3>
+    <h5>👤 Meu Perfil</h5>
     <div id="painelMinhaInfo">
       
     <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
@@ -1100,7 +1100,7 @@
 
   <div id="telaUsuarioLogado" class="painel tela">
   
-    <h3>🕒 Minha Disponibilidade</h3>
+    <h5>🕒 Minha Disponibilidade</h5>
 
       <div class="linha-substituicao">
 
@@ -1143,7 +1143,7 @@
       </span>
 
       <div style="margin:50px 0;">
-        <label class="switch">
+        <label class="switchAzul">
           <input
             type="checkbox"
             id="tipoDisponibilidade2h"
@@ -1186,7 +1186,7 @@
 
     <div id="disponibilidadeContainerUsuarioLogado2h" class="painel-exportar tela">
 
-    <h3>🕒 Minha Disponibilidade Para 2 Horas</h3>
+    <h5>🕒 Minha Disponibilidade Para 2 Horas</h5>
 
     <div class="painel-disponibilidade">
 
@@ -1273,7 +1273,7 @@
 
     </table>
 
-    <div style="display:flex; gap:10px; margin-top:20px;">
+    <div style="display:flex; gap:10px; margin-top:1.25rem;">
 
       <button
         id="btnEditarDisponibilidadeUsuarioLogado2h"
@@ -1300,7 +1300,7 @@
 
     <div id="disponibilidadeContainerUsuarioLogado4h" class="painel-exportar so-participantes bloquear-treinandos tela">
 
-      <h3>🕒 Minha Disponibilidade Para 4 Horas</h3>
+      <h5>🕒 Minha Disponibilidade Para 4 Horas</h5>
 
       <div class="painel-disponibilidade">
 
@@ -1374,7 +1374,7 @@
 
       </table>
 
-      <div style="display:flex;gap:10px;margin-top:20px;">
+      <div style="display:flex;gap:10px;margin-top:1.25rem;">
 
         <button id="btnEditarDisponibilidadeUsuarioLogado4h"
                 onclick="alternarModoEdicaoUsuarioLogado4h()"
@@ -1395,7 +1395,7 @@
 
     <div id="disponibilidade" class="painel tela"> 
     
-    <h3>🕒 Disponibilidade dos Participantes</h3>
+    <h5>🕒 Disponibilidade dos Participantes</h5>
             <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-participantes"
                   onclick="abrirTela('disponibilidadeContainerNovoPonto20', this)">
@@ -1412,7 +1412,7 @@
 
     <div id="disponibilidadeContainerNovoPonto20" class="painel-exportar tela">
 
-    <h3>🕒 Disponibilidade dos Participantes (2 Horas)</h3>
+    <h5>🕒 Disponibilidade dos Participantes (2 Horas)</h5>
 
       <div style="display:flex">
         <button
@@ -1438,7 +1438,7 @@
             Já tenho designação fixa
         </span>
 
-        <label class="switch">
+        <label class="switchAzul">
             <input
                 type="checkbox"
                 id="jaTenhoDesignacaoNovoPonto20"
@@ -1454,7 +1454,7 @@
             Disponível só pra substituição
         </span>
 
-        <label class="switch">
+        <label class="switchAzul">
             <input
                 type="checkbox"
                 id="somenteSubstituicaoNovoPonto20"
@@ -1529,7 +1529,7 @@
   </div>
 
     <div id="disponibilidadeContainer" class="painel-exportar so-participantes bloquear-treinandos tela">
-    <h3>🕒 Disponibilidade dos Participantes (4 Horas)</h3>
+    <h5>🕒 Disponibilidade dos Participantes (4 Horas)</h5>
 
       <div style="display:flex">
         <button
@@ -1555,7 +1555,7 @@
               Já tenho designação fixa
           </span>
 
-          <label class="switch">
+          <label class="switchAzul">
               <input
                   type="checkbox"
                   id="jaTenhoDesignacao"
@@ -1571,7 +1571,7 @@
               Disponível só pra substituição
           </span>
 
-          <label class="switch">
+          <label class="switchAzul">
               <input
                   type="checkbox"
                   id="somenteSubstituicao"
@@ -1648,9 +1648,9 @@
 
     <div id="telameutreinamentopratico" class="painel tela"> 
 
-    <h3>🎓 Dias dos Candidatos para Treinamento</h3>
+    <h5>🎓 Dias dos Candidatos para Treinamento</h5>
     <div id="treinamentoPraticoContainer">
-      <!--<h3>treinamentoPratico</h3>-->
+      <!--<h5>treinamentoPratico</h5>-->
 
     <!--<div style="display:none">
         <select id="listaNomesTP"><option value="">- Selecione -</option></select>
@@ -1720,7 +1720,7 @@
 
     <div id="telameutreinamentopraticoId" class="painel tela">
 
-    <h3>🎓 Meus Dias Para Treinamento</h3>
+    <h5>🎓 Meus Dias Para Treinamento</h5>
 
     <div id="treinamentoPraticoContainerId">
 
@@ -1816,7 +1816,7 @@
 
     <div id="minhaInfo" class="painel tela"> 
 
-      <h3>👤 Meu Perfil</h3>
+      <h5>👤 Meu Perfil</h5>
       <div id="painelMinhaInfo">
         
       <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
@@ -1942,7 +1942,7 @@
     <div id="telamapas" class="painel tela">
 
   <div id="mapas">
-  <h3>🌍 Mapas dos pontos</h3>
+  <h5>🌍 Mapas dos pontos</h5>
     <div id="topo">
       <label>Selecione um ponto:</label>
       <!--<div style="display: flex; gap: 10px; margin-bottom: 10px;">-->
@@ -1984,7 +1984,7 @@
 
   </div>
   <div id="novoMapa" class="painel-exportar tela">
-  <h3>🌍 Cadastrar Mapa</h3>
+  <h5>🌍 Cadastrar Mapa</h5>
     <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
       <label for="novoPonto" style="flex: 0 0 25%;">Ponto:</label>
       <input type="text" id="novoPonto" style="flex: 1;">
@@ -2027,7 +2027,7 @@
   </div>
 
     <div id="participantes" class="painel tela"> 
-  <h3>🧑‍🤝‍🧑 Participantes</h3>
+  <h5>🧑‍🤝‍🧑 Participantes</h5>
         <div class="cards-menu">
                 <div class="card-menu btn-relatoriosSubMenu so-escalas"
                 onclick="abrirTela('painelCadastro', this)">
@@ -2063,7 +2063,7 @@
   </div>
 
     <div id="tcsContainer" class="painel-exportar tela">
-    <h3>🈶 TCS</h3>
+    <h5>🈶 TCS</h5>
       
         <div style="display:flex">
           <button
@@ -2097,7 +2097,7 @@
   </div>
 
     <div id="painelPesquisar" class="painel-exportar tela">
-  <h3>✏️👤 Editar Participante</h3>
+  <h5>✏️👤 Editar Participante</h5>
 
         <div style="display:flex">
           <button
@@ -2257,7 +2257,7 @@
   </div>
 
     <div id="painelCadastro" class="painel-exportar tela">
-  <h3>➕👤 Cadastrar Participante</h3>
+  <h5>➕👤 Cadastrar Participante</h5>
     <form id="formParticipante" style="width: 100%; table-layout: fixed;">
 
       <div class="grupo-form">
@@ -2349,7 +2349,7 @@
   </div>
 
     <div id="criaPontoNovo" class="painel-exportar tela">
-  <h3>➕📌 Criar Novo Ponto</h3>
+  <h5>➕📌 Criar Novo Ponto</h5>
     <form id="form">
       <table>
         <tr>
@@ -2371,7 +2371,7 @@
 
     <div id="disponiveis" class="painel tela"> 
 
-  <h3>👤 Pesquisar Disponíveis</h3>
+  <h5>👤 Pesquisar Disponíveis</h5>
   <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-escalas"
                   onclick="abrirTela('disponibilidadeBuscada', this)">
@@ -2387,7 +2387,7 @@
   </div>
 
     <div id="disponibilidadeBuscada" class="painel-exportar tela">
-    <h3>👤 Disponíveis 4 Horas</h3>
+    <h5>👤 Disponíveis 4 Horas</h5>
 
     <table id="tabelaBuscarDisp" class="tabela-sistema">
       <thead>
@@ -2499,7 +2499,7 @@
   </div>
 
     <div id="disponibilidadeBuscada2h" class="painel-exportar tela">
-    <h3>👤 Disponíveis 2 Horas</h3>
+    <h5>👤 Disponíveis 2 Horas</h5>
 
     <table id="tabelaBuscarDisp2h" class="tabela-sistema">
       <thead>
@@ -2624,7 +2624,7 @@
             </div>
   </div>
   <div id="disponibilidadeBuscadaSub" class="painel-exportar tela">
-    <h3>👤 Pedir Substituição</h3>
+    <h5>👤 Pedir Substituição</h5>
     <table id="tabelaBuscarSubs" class="tabela-sistema">
       <thead>
         <tr>
@@ -2729,7 +2729,7 @@
     <div id="telaeventos" class="painel tela">
   <!-- DIV DE ABERTURA DO PAINEL GERAL DE EVENTOS=============================================================================================================-->
  
-  <h3>🎊 Eventos</h3>
+  <h5>🎊 Eventos</h5>
 
   <div class="cards-menu">
       <div class="card-menu btn-relatoriosSubMenu so-organizadores"
@@ -2777,7 +2777,7 @@
   <div id="editarEventos" class="painel-exportar tela">
     <div>
       <!--<label for="dataHistoricoDeEventos" style="color: black; display: block; text-align: center; margin-top: 90px;">PESQUISAR DADOS DE EVENTOS CADASTRADOS</label>-->
-      <h3>✏️🎊 Editar Evento e Enviar Vagas Disponíveis</h3>
+      <h5>✏️🎊 Editar Evento e Enviar Vagas Disponíveis</h5>
       <div style="display: flex; align-items: center; gap: 8px;">
         <label for="dataHistoricoDeEventos" style="color: #444444;">Data:</label>
         <input type="date" id="dataHistoricoDeEventos" required>
@@ -2787,7 +2787,7 @@
   </div>
   </div>
   <div id="eventos" class="painel-exportar tela">
-    <h3>📅 Cadastrar Evento</h3>
+    <h5>📅 Cadastrar Evento</h5>
       <table id="descricaoEv" class="tabela-sistema">
         <thead>
           <tr>
@@ -2869,7 +2869,7 @@
     </div> 
 
     <!--<label for="labelEnvios" style="color: black; display: block; text-align: center; margin-top: 90px;">ENVIAR COMUNICADO DO EVENTO AOS PARTICIPANTES</label>-->
-    <h3>📢 Enviar Comunicado do Evento</h3>
+    <h5>📢 Enviar Comunicado do Evento</h5>
 
     <div style="display: flex; justify-content: center; gap: 10px;">
       <button id="btnGerarMensagemWhatsApp" class="botaozap">📲 Enviar WhatsApp</button>
@@ -2887,7 +2887,7 @@
 
     <div id="painelEventos" class="painel-exportar tela">
   
-    <h3>👥 Ver Designados</h3>
+    <h5>👥 Ver Designados</h5>
       <label for="eventoSelectDesignados">Selecione o Evento</label>
       <select id="eventoSelectDesignados">
         <option value="">- Selecione -</option>
@@ -2916,7 +2916,7 @@
   </div>
   <div id="painelInscritos" class="painel-exportar tela">
 
-    <h3>👥 Ver Inscritos</h3>
+    <h5>👥 Ver Inscritos</h5>
     <label for="eventoSelectInscritos">Selecione o Evento</label>
       <select id="eventoSelectInscritos">
         <option value="">- Selecione -</option>
@@ -2940,7 +2940,7 @@
   </div>
 
     <div id="minhaInscricaoContainer" class="painel-exportar tela">
-    <h3>📝 Fazer Inscrição</h3>
+    <h5>📝 Fazer Inscrição</h5>
 
     <div id="formMinhaInscricao">
 
@@ -2972,7 +2972,7 @@
   </div>
 
     <div id="candidatosContainer" class="painel-exportar tela">
-  <h3>📝 Fazer Inscrição</h3>
+  <h5>📝 Fazer Inscrição</h5>
   <div id="formInscricao">
 
   <div style="display:none">
@@ -3021,7 +3021,7 @@
   </div>
 
     <div id="painelExportarEscalaEv" class="painel-exportar tela">
-    <h3>⚙️ Gerar Escalas</h3>
+    <h5>⚙️ Gerar Escalas</h5>
     <label for="abaEv">Selecione o Relatório</label>
     <select id="abaEv" style="width: 100%;">- Selecione -</select>                          
     <button onclick="exportarEscalaEv()" style="width: 100%;">⬇️ Baixar PDF</button>
@@ -3030,7 +3030,7 @@
   </div>
 
     <div id="ajustarCandidatosEvContainer" class="painel-exportar tela">
-    <h3>🔄 Converter Designados do evento para ID</h3>
+    <h5>🔄 Converter Designados do evento para ID</h5>
     <h1>(Isto só foi usado quando mudamos para cadastrar inscritos de nome para ID)</h1>
       
       <label for="eventoSelectConversor">Selecione o Evento</label>
@@ -3044,7 +3044,7 @@
     <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
   <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
  
-  <h3>📅 Escalas</h3>
+  <h5>📅 Escalas</h5>
 
     <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-organizadores"
@@ -3061,7 +3061,7 @@
   </div>
 
     <div id="painelPontos" class="painel-exportar tela">
-    <h3>🕒 Escalas Por Turno</h3>
+    <h5>🕒 Escalas Por Turno</h5>
       <div id="pesquisaDesignacoes">
 
           <table id="tabelapesquisaDesignacoes" class="tabela-sistema">
@@ -3104,7 +3104,7 @@
   </div>
 
     <div id="painelPontosTotal" class="painel-exportar tela">
-    <h3>📌 Escalas Por Ponto</h3>
+    <h5>📌 Escalas Por Ponto</h5>
     <div id="painelVerDesignacoesPorPonto">
       <label for="pontobepp">Selecione o Ponto:</label>
       <select id="pontobepp">
@@ -3130,7 +3130,7 @@
 
     <div id="designar" class="painel tela"> 
 
-  <h3>✅ Designar Participantes</h3>
+  <h5>✅ Designar Participantes</h5>
   <div id="painelDesignacoes">
 
       <table id="tabelaDesignar" class="tabela-sistema">
@@ -3238,7 +3238,7 @@
 
     <div id="admin" class="painel tela"> 
 
-        <h3>👨‍💼 Administração</h3>
+        <h5>👨‍💼 Administração</h5>
         <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-organizadores"
                   onclick="abrirTela('painelTreinadores', this); buscarTreinando();">
@@ -3265,7 +3265,7 @@
 
     <div id="painelVerificacao" class="painel-exportar tela">
 
-      <h3>📝 Corrigir Ponto</h3>
+      <h5>📝 Corrigir Ponto</h5>
 
       <!--<div style="display: flex; align-items: center; gap: 10px;">-->
       <td><select id="pontoCorrigir"></select></td>
@@ -3284,7 +3284,7 @@
   </div>
 
     <div id="painelTreinadores" class="painel-exportar tela">
-    <h3>🗣️ Reunião de Treinamento</h3>
+    <h5>🗣️ Reunião de Treinamento</h5>
     <div id="pesquisaTreinadores">
 
       <!--<button onclick="buscarTreinando()">🔍 Ver participantes em treinamento</button>-->
@@ -3315,7 +3315,7 @@
 
     <div id="painelTreinamentosAndamento" class="painel-exportar tela">
 
-    <h3>📋 Treinamentos em Andamento</h3>
+    <h5>📋 Treinamentos em Andamento</h5>
 
     <!--<button onclick="buscarTreinamentosEmAndamento()">
       🔍 Consultar Treinamentos
@@ -3327,12 +3327,12 @@
 
     <div id="painelMeusTreinamentos"
       class="painel-exportar tela">
-    <h3>🎓 Meu Candidato em Treinamento</h3>
+    <h5>🎓 Meu Candidato em Treinamento</h5>
     <div id="resultadoMeuTreinamento"></div>
   </div>
 
     <div id="painelIrregulares" class="painel-exportar tela">
-  <h3>⚠️ Irregulares</h3>
+  <h5>⚠️ Irregulares</h5>
     <div id="pesquisaIrregulares">
 
       <button onclick="buscarIrregulares()">🔍 Ver participantes sem designação</button>
@@ -3388,12 +3388,12 @@
   </div>
 
     <div id="vagas" class="painel tela"> 
-  <h3>🪑 Vagas</h3>
+  <h5>🪑 Vagas</h5>
 
   <body>
 
   <div id="painelVagas">
-    <!--<h3>Cadastrar Vaga</h3>-->
+    <!--<h5>Cadastrar Vaga</h5>-->
     <table id="tabelacadastrarVaga" class="tabela-sistema">
       <thead>
         <tr>
@@ -3526,7 +3526,7 @@
     <div id="relatorios" class="painel tela"> 
   <!-- AQUI COMEÇA O PAINEL DE RELATÓRIOS -->
  
-    <h3>📈 Relatórios</h3>
+    <h5>📈 Relatórios</h5>
     <div class="centralizador"> 
      <!-- <div id="painelExportar" class="painel-exportar" style="width: 90%; margin: 0 auto;"> -->
       <div id="painelExportar" style="width: 90%; margin: 0 auto;">
@@ -3543,7 +3543,7 @@
     <div id="estatisticas" class="painel tela"> 
   <!-- CRIAR AQUI O PAINEL DE CONTAGEM -->
 
-    <h3>📊 Estatísticas</h3>
+    <h5>📊 Estatísticas</h5>
   <div id="painelResumo">
     <table id="resumoTable" class="tabela-sistema">
       <tr><th>Aprovados</th>              <td id="totalDeAprovados"></td></tr>
@@ -3559,7 +3559,7 @@
     </table>
     <!-- Adicione dentro do painelResumo -->
     <div style="margin-top: 20px;">
-      <h3>Participantes por Circuito</h3>
+      <h5>Participantes por Circuito</h5>
       <table id="tabelaCircuitos" style="width: 100%; border-collapse: collapse;">
         <thead>
           <tr>
@@ -3580,7 +3580,7 @@
     <div id="painelPerfil" class="painel-exportar tela">
 
   <div id="painelPerfis" style="margin-top: 40px;">
-    <h3>🔐 Gerenciar Perfis de Acesso</h3>
+    <h5>🔐 Gerenciar Perfis de Acesso</h5>
 
     <!--<div id="painelGP" class="painel-exportar">-->
     <div id="buscaContainerGP">
@@ -3635,7 +3635,7 @@
     <div id="painelDadosAcesso" class="painel-exportar tela"><!--Div de abertura para o painel de perfil do menu-->
 
   <div id="painelDadosAcesso" style="margin-top: 40px;">
-    <h3>🔐 Gerenciar Dados de Acesso</h3>
+    <h5>🔐 Gerenciar Dados de Acesso</h5>
 
     <div id="buscaContainerGA">
       <label>Nome</label>
@@ -3699,7 +3699,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/painel-login-tpe/service-worker.js')
+      navigator.serviceWorker.register('/tpe-sbc/service-worker.js')
         .then(() => console.log('SW registrado'))
         .catch(err => console.error('Erro SW:', err));
     }

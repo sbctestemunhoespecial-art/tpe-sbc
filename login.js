@@ -4586,7 +4586,7 @@ function criarSelectComValorAtual(opcoes = [], valorOriginal = '') {
     btnC.style.display = 'inline-block';
   }
 
-  function cancelarEdicao1(trs, idx) {
+  function cancelarEdicao(trs, idx) {
     const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
     const infoTds = trInfo.querySelectorAll('td'),
           info1Tds = trInfo1.querySelectorAll('td'),
@@ -4680,7 +4680,7 @@ function criarSelectComValorAtual(opcoes = [], valorOriginal = '') {
     pesquisarParticipante();
   }
 
-  function cancelarEdicao() {
+  function cancelarEdicao2() {
     pesquisarParticipante();
   }
 

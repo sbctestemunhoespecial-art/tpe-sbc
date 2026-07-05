@@ -5,7 +5,7 @@
   --cor-fundo: #FAFAFA;
   --cor-texto: #444444;
   --cor-primaria: #004080;
-  /*--cor-secundaria: #336699;*/
+  --cor-amarela: #FACC15;
   --cor-secundaria: #374151;
   --cor-terciaria: #5b9bd5;
   --cor-quartiaria: #fffff0;
@@ -47,6 +47,7 @@ body {
 }
 
 html, body {
+  top: 8em;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -198,18 +199,85 @@ h6 {
   color: #444444; 
   margin: 0.2rem 0;
 }
+/*
+.top-bar-login {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8em;
+  background-color: var(--cor-amarela);
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.titulo-sistema-login {
+  font-size: var(--fonte-grande);
+  font-weight: bold;
+  color: var(--cor-texto);
+  text-align: center;
+}
+
+.subtitulo-sistema-login {
+  font-size: var(--fonte-pequenaB);
+  color: var(--cor-texto);
+  text-align: center;
+  margin-top: 0.2rem;
+}
+*/
+.top-bar-login {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6em;
+  background-color: var(--cor-amarela);
+  z-index: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.conteudo-top-bar-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.titulo-sistema-login {
+  width: 100%;
+  font-size: var(--fonte-grande);
+  font-weight: bold;
+  color: var(--cor-texto);
+  text-align: center;
+}
+
+.subtitulo-sistema-login {
+  width: 100%;
+  font-size: var(--fonte-pequenaB);
+  color: var(--cor-texto);
+  text-align: center;
+  margin-top: 0.2rem;
+}
 
 .quadro-centralizado {
   position: fixed;
-  top: 0;
+  margin-top: 6em;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--cor-fundo);
   padding: 4vh 4vw;
   text-align: center;
   z-index: 77777;
-  width: 80vw;
-  max-width: 80vw;
+  width: 95vw;
+  max-width: 95vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -221,7 +289,7 @@ h6 {
 }
 
 .input-login {
-  width: 65%;
+  width: 95%;
   text-align: center;
   font-size: var(--fonte-pequenaB);
   padding: 0.5em 0.6em;
@@ -233,7 +301,7 @@ h6 {
 }
 
 .botao-login {
-  width: 65%;
+  width: 95%;
   text-align: center;
   font-size: var(--fonte-pequenaB);
   padding: 0.2em 0.2em;
@@ -249,11 +317,9 @@ h6 {
 
 .quadro-centralizado label {
   display: block;
-  margin-bottom: 0;
+  margin-bottom: 0.5rem;
   line-height: 1;
-  padding-bottom: 0;
-  text-align: left;       
-  vertical-align: bottom; 
+  text-align: center;       
   font-size: var(--fonte-pequenaB);
 }
 
@@ -265,23 +331,25 @@ h6 {
 @media (max-width: 768px) {
   #map { height: 60vh; }
 }
-
+/*
 .top-bar {
   position: fixed;   
   top: 0;
   left: 0;
   width: 100%;       
-  height: 3em;      
-  background-color: var(--cor-fundo);                       
+  height: 8em;      
+  background-color: var(--cor-amarela);                       
   z-index: 1000;     
   display: flex;     
   align-items: flex-start;
   padding: 0 1em;
-}
+}*/
 
 button.menu-btn {
   width: fit-content;
   margin: 0;      
+    justify-self:start;
+    align-self:start;
   margin-top: 0.8rem;       
   width: auto; 
   font-size: var(--fonte-media);
@@ -294,10 +362,42 @@ button.menu-btn {
   padding: 0.2em;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
+
 }
 button.menu-btn:hover {
   background: #DCDCDC;
   transform: scale(1.05);
+}
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6em;
+    background: var(--cor-amarela);
+    z-index: 1000;
+
+    display: grid;
+    grid-template-columns: 8rem 1fr 8rem;
+
+    align-items: center;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+.header-center{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    /*gap:4px;*/
+}
+
+.linha-sistema,
+.linha-usuario{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
 .sidebar {
@@ -552,16 +652,18 @@ footer {
 
 .painel.ativo {
   display: block;
+  margin-top: 6em;
 }
 
 .painel-exportar {
   display: none;
-  margin-top: 1em;
+  margin-top: 0;
   background-color: var(--cor-fundo);
   margin-left: auto;
   margin-right: 1em;
   /*border-radius: 0.4em;*/
   border-radius: /*0.625rem*/ var(--raio-borda);
+  margin-top: 6em;
 }
 
 .painel-exportar.visivel {
@@ -823,6 +925,7 @@ caption {
 }
 
 .cards-menu{
+    margin-top: 7em;
     display: grid;
     /*grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));*/
     grid-template-columns: repeat(auto-fit, 6rem);
@@ -878,10 +981,10 @@ caption {
 }
 
 .titulo-sistema{
-    font-size: var(--fonte-grandeA);
+    font-size: var(--fonte-media);
     font-weight: bold;
     color: var(--cor-texto);
-    margin-top: 0.75rem; 
+    margin-top: 0; 
 }
 
 .subtitulo-sistema{
@@ -907,9 +1010,11 @@ caption {
 
 .btn-voltar-menu{
     width: fit-content;
-    margin-left: auto;
-    margin-right: 1.5rem;
+    /*margin-left: auto;*/
+    margin-right: 1.3rem;
     margin-top: 0.8rem;
+      justify-self:end;
+      align-self:start;
     padding: 0.5rem 0.75rem;
     border-radius: var(--raio-borda-botao);
     border: none;
@@ -939,6 +1044,7 @@ button.btn-voltar-menu:hover {
 
 .tela.aberta {
     display: block;
+    margin-top: 6em;
 }
 
 #modalAlterarTreinador {
@@ -1893,15 +1999,14 @@ button.btn-voltar-menu:hover {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 0.375rem;
-  /*font-family: Arial, sans-serif;*/
 }
 
 /* HEADER */
 .tabela-sistema thead th {
-  background: #EAF4FF;/*#334155; //#1f2937;*/
+  background: #EAF4FF;
   color:var(--cor-azul);
   padding: 0.3rem;
-  border-radius: /*0.625rem*/ var(--raio-borda);
+  border-radius: var(--raio-borda);
 
   font-size: var(--fonte-media);
   text-align: center;
@@ -1911,13 +2016,14 @@ button.btn-voltar-menu:hover {
 /* CELULAS */
 .tabela-sistema tbody td {
   background: #ffffff;
-  padding: /*0.5rem*/0.1rem;
+  padding: 0.1rem;
   text-align: center;
-  border-radius: /*0.625rem*/ var(--raio-borda);
+  border-radius: var(--raio-borda);
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  /*box-shadow: 0 2px 6px rgba(0,0,0,0.06);*/
+  box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.12);
   transition: 0.1s;
-  min-height: 2rem;
+  /*min-height: 2rem;*/
 
 }
 
@@ -1937,8 +2043,8 @@ button.btn-voltar-menu:hover {
 
 /* CHECKBOX PADRÃO */
 .tabela-sistema input[type="checkbox"] {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: /*1.1rem*/ 1em;
+  height: /*1.1rem*/ 1em;
   cursor: pointer;
   accent-color: #2563eb;
   transform: scale(1.2);
@@ -1950,6 +2056,16 @@ button.btn-voltar-menu:hover {
   top: 0;
   z-index: 2;
 }
+
+/*.tabela-sistema td.col-checkbox {
+    padding: 0;
+    width: 2.2rem;
+    text-align: center;
+}
+
+.tabela-sistema td.col-checkbox input {
+    margin: 0;
+}*/
 
 th {
     font-weight: bold;

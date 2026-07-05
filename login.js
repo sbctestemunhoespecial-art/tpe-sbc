@@ -314,11 +314,15 @@ function fazerLogin() {
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
 
       if (saudacaoEl) {
-        saudacaoEl.textContent = "Bem-vindo(a) 👋";
+        /*saudacaoEl.textContent = "Bem-vindo(a) 👋";*/
+                saudacaoEl.textContent = "";
+
       }
 
       if (tipoAcessoEl) {
-        tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+        /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
+                tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
       }
 
       document.getElementById('emailLogin').value = '';
@@ -366,13 +370,17 @@ function fazerLogin() {
           if (!saudacaoEl) return;
 
           if (resNome.sucesso && resNome.nome) {
-            saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;
+            /*saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;*/
+            saudacaoEl.textContent = `${resNome.nome}`;
+
           } else {
-            saudacaoEl.textContent = "Bem-vindo(a) 👋";
+            saudacaoEl.textContent = "";
           }
 
           if (tipoAcessoEl) {
-            tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+            /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
+                        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
           }
 
           esconderSpinner();
@@ -384,7 +392,9 @@ function fazerLogin() {
           esconderSpinner();
 
           if (tipoAcessoEl) {
-            tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;
+            /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
+                        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
           }
 
           msgErro.textContent = err.message || "❌ Erro ao buscar nome do usuário.";
@@ -471,14 +481,20 @@ window.addEventListener("DOMContentLoaded", () => {
       if (saudacaoEl) {
 
         if (resNome.sucesso && resNome.nome) {
-          saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;
+          //saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;
+                    saudacaoEl.textContent = `${resNome.nome}`;
+
         } else {
-          saudacaoEl.textContent = `Bem-vindo(a) 👋`;
+          //saudacaoEl.textContent = `Bem-vindo(a) 👋`;
+                    saudacaoEl.textContent = "";
+
         }
       }
 
       if (tipoAcessoEl) {
-        tipoAcessoEl.textContent = `Seu tipo de acesso é ${dados.perfil}`;
+        /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${dados.perfil}`;*/
+                tipoAcessoEl.textContent = `Perfil ${dados.perfil}`;
+
       }
 
       delete window[cbNome];

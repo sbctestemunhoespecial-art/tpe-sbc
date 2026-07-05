@@ -28,8 +28,33 @@
 <body>
 
 <div class="top-bar">
-  <button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
-  <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
+  <!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
+  <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
+
+  <div class="top-bar">
+    <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+    <div class="header-center">
+        <div class="linha-sistema">
+            <div class="titulo-sistema">
+                TPE SBC
+            </div>
+            <!--<div class="subtitulo-sistema">
+                Testemunho Público Especial
+            </div>-->
+        </div>
+        <div class="linha-usuario">
+            <div id="saudacaoUsuario" class="usuario">
+                <!--Bem-vindo(a)... 👋-->
+            </div>
+            <div id="tipoAcessoUsuario" class="acesso">
+                <!--Seu tipo de acesso é...-->
+            </div>
+        </div>
+    </div>
+     <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
+</div>
 
   <div id="sidebar" class="sidebar">
     <a href="#" onclick="event.preventDefault(); sair()" >Sair</a>
@@ -384,8 +409,17 @@
 
 </div>
 
+<div class="top-bar-login">
+    <div class="titulo-sistema-login">
+        TPE SBC
+    </div>
+    <div class="subtitulo-sistema-login">
+        Testemunho Público Especial
+    </div>
+</div>
+
 <div id="telaLogin" class="quadro-centralizado">
-  <h3 class="titulo-login">TPE SBC</h5>
+  <!--<h3 class="titulo-login">TPE SBC</h5>-->
 
   <label for="emailLogin">E-mail do usuário:</label>
   <input type="email" id="emailLogin" class="input-login" required>
@@ -751,16 +785,17 @@
 </div>-->
 
 <div id="spinnerGlobal" style="
-                                position: fixed;
-                                top: 0;
-                                left: 0;
-                                width: 100vw;
-                                height: 100vh;
-                                background: rgba(0, 0, 0, 0.4);
-                                display: none;
-                                align-items: center;
-                                justify-content: center;
-                                z-index: 99999;">
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+">
 
   <div class="spinner"></div>
 
@@ -778,33 +813,24 @@
 
         <!-- CABEÇALHO -->
 
-        <div id="conteudoPrincipal" class="header-dashboard">
-
+        <!--<div id="conteudoPrincipal" class="header-dashboard">
             <div class="linha-sistema">
-
                 <div class="titulo-sistema">
                     TPE SBC
                 </div>
-
                 <div class="subtitulo-sistema">
                     Testemunho Público Especial
                 </div>
-
             </div>
-
             <div class="linha-usuario">
-
                 <div id="saudacaoUsuario" class="usuario">
                     Bem-vindo(a)... 👋
                 </div>
-
                 <div id="tipoAcessoUsuario" class="acesso">
                     Seu tipo de acesso é...
                 </div>
-
             </div>
-
-        </div>
+        </div>-->
 
 
         <!-- MENU -->

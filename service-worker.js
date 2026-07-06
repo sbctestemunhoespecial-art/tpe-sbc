@@ -1,4 +1,4 @@
-importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js");
+/*importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
@@ -10,7 +10,7 @@ firebase.initializeApp({
   appId: "1:1012545018348:web:80c2160979ffebd10948c9"
 });
 
-const messaging = firebase.messaging();
+const messaging = firebase.messaging();*/
 
 //ACIMA ESTÁ A CONFIGURAÇÃO DE MENSAGENS PUSH
 

@@ -3717,10 +3717,17 @@
     <script src="login.js"></script>
 
   <script>
-    if ('serviceWorker' in navigator) {
+    /*if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/tpe-sbc/service-worker.js')
         .then(() => console.log('SW registrado'))
         .catch(err => console.error('Erro SW:', err));
+    }*/
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .then(() => console.log("PWA SW registrado"))
+        .catch(err => console.error("Erro SW PWA:", err));
     }
     
   </script>

@@ -44,6 +44,39 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
 }
 
+function salvarTokenFCM(idUsuarioLogado, token) {
+
+  if (!idUsuarioLogado) {
+    mostrarAlertaGlobal("❌ Usuário não identificado.");
+    return;
+  }
+
+  apiJSONP(
+    "salvarTokenFCM",
+    {
+      idUsuario: idUsuarioLogado,
+      token: token
+    },
+    function(res) {
+
+      console.log("✅ Token FCM salvo:", res);
+
+      mostrarAlertaGlobal("✅ Notificações ativadas com sucesso!");
+
+    },
+    function(err) {
+
+      console.error("❌ Erro ao salvar token:", err);
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao ativar notificações: " +
+        (err.mensagem || err.message)
+      );
+
+    }
+  );
+}
+
 function toggleMenu() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('active');
@@ -309,6 +342,7 @@ function fazerLogin() {
 
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
+      registrarPush(idUsuarioLogado);
 
       const saudacaoEl = document.getElementById("saudacaoUsuario");
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
@@ -541,6 +575,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
+    registrarPush(idUsuarioLogado);
 
     document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';

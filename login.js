@@ -384,9 +384,7 @@ function fazerLogin() {
       telaAtual = 'menuCards';
 
       atualizarBotaoVoltar();
-
       mostrarSecoesPorPerfil(res.perfil);
-
       limparCamposUsuario();
       restaurarCamposPerfil();
 
@@ -548,6 +546,7 @@ function mostrarSecoesPorPerfil(perfil) {
     document.getElementById('conteudoProtegido').style.display = 'none';
   }
 });*/
+
 window.addEventListener("DOMContentLoaded", () => {
 
   const usuarioSalvo = localStorage.getItem("usuarioLogado");
@@ -575,7 +574,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
-    registrarPush(idUsuarioLogado);
+    /*registrarPush(idUsuarioLogado);*/
 
     document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';
@@ -3446,9 +3445,6 @@ function salvarDisponibilidade2h() {
 
   }
 
-  // =========================
-  // SALVAR
-  // =========================
   mostrarSpinner();
 
   apiJSONP(
@@ -11087,7 +11083,7 @@ function preencherFormularioDesignacao(vaga) {
 }
 
 function carregarTodasVagasAbertas() {
-
+  console.count("carregarTodasVagasAbertas chamou");
   mostrarSpinner();
 
   // 1. Primeiro atualiza
@@ -11112,7 +11108,7 @@ function carregarTodasVagasAbertas() {
           esconderSpinner();
 
         }
-      );
+      ); 
 
     },
     function(err) {
@@ -12384,6 +12380,7 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
   }
 
   function mostrarSpinner() {
+    console.trace("🔴 SPINNER CHAMADO");
     document.getElementById('spinnerGlobal').style.display = 'flex';
   }
 

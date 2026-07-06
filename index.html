@@ -28,8 +28,8 @@
 <body>
 
 <div class="top-bar">
-  <!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
-  <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
+<!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
+<button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
 
   <div class="top-bar">
     <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
@@ -924,38 +924,30 @@
 
     <h5>📋 Participantes sem disponibilidade cadastrada</h5>
 
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+    <div>
+      <!--<div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;"></div>-->
 
         <button
-            class="botao editar"
             onclick="pesquisarParticipantesSemDisponibilidade();">
-
-            🔍 Localizar participantes
-
+            🔍 Localizar participantes sem disponibilidade
         </button>
 
-        <button
-            class="botao salvar"
+       <!-- <button
             onclick="copiarEmailsSemDisponibilidade();">
-
             📧 Copiar e-mails
-
         </button>
 
         <button
-            class="botao salvar"
             onclick="copiarTelefonesSemDisponibilidade();">
-
             📱 Copiar telefones
-
-        </button>
+        </button>-->
 
     </div>
 
     <div
         id="totalSemDisponibilidade"
         class="nome-pesquisado"
-        style="margin-bottom:15px;font-weight:bold;color:#c62828;">
+        style="color:#c62828;">
 
         Participantes sem disponibilidade: 0
 
@@ -969,19 +961,19 @@
 
             <tr>
 
-                <th style="width:90px;">
+                <!--<th style="width:90px;">
                     ID
-                </th>
+                </th>-->
 
                 <th>
                     Nome
                 </th>
 
-                <th>
+                <!--<th>
                     E-mail
-                </th>
+                </th>-->
 
-                <th style="width:220px;">
+                <th>
                     WhatsApp
                 </th>
 

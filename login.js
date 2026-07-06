@@ -1221,9 +1221,9 @@ function preencherTabelaSemDisponibilidade() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${p.id}</td>
+      <!--<td>${p.id}</td>-->
       <td>${p.nome}</td>
-      <td>${p.email}</td>
+      <!--<td>${p.email}</td>-->
       <td>
         <a href="${p.whatsapp}" target="_blank"
            style="color:#25D366;font-weight:bold;text-decoration:none;">
@@ -1349,9 +1349,9 @@ function pesquisarDisponibilidadeUsuarioLogado2h() {
   mostrarSpinner();
 
   apiJSONP(
-    "buscarDisponibilidade2h",
+    "buscarDisponibilidadeIdUsuarioLogado2h",
     {
-      idParticipante: idUsuarioLogado
+      idUsuarioLogado: idUsuarioLogado
     },
     function(dados) {
 
@@ -1392,6 +1392,8 @@ function abrirCalendario2h() {
 }
 
 function carregarDadosDisponibilidadeUsuarioLogado2h(dados) {
+
+  console.log(dados);
 
   renderizarDisponibilidade(dados, {
     chkSubstituicao: "somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade",
@@ -1686,9 +1688,9 @@ function pesquisarDisponibilidadeUsuarioLogado4h() {
   mostrarSpinner();
 
   apiJSONP(
-    "buscarDisponibilidade4h",
+    "buscarDisponibilidadeIdUsuarioLogado4h",
     {
-      id: idUsuarioLogado
+      idUsuarioLogado: idUsuarioLogado
     },
 
     function(dados) {
@@ -1735,6 +1737,8 @@ function norm(str) {
 }
 
 function carregarDadosDisponibilidadeUsuarioLogado4h(dados) {
+
+  console.log(dados);
 
   renderizarDisponibilidade(dados, {
     chkSubstituicao: "somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade",
@@ -12606,7 +12610,6 @@ function renderizarDisponibilidade(dados, cfg) {
 
   if (frequencia) {
     frequencia.value = dados.frequencia || "";
-
     frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
   }
 
@@ -12625,52 +12628,74 @@ function renderizarDisponibilidade(dados, cfg) {
       .toLowerCase();
 
   if (condicao === "somente substituição") {
-
     chkSubstituicao.checked = true;
     return;
   }
 
   if (condicao === "já possui designação") {
-
     chkDesignado.checked = true;
     return;
-  }
-
-  if (frequencia) {
-    frequencia.value = dados.frequencia || "";
-
-    frequencia.disabled = possuiDisponibilidadeCadastrada(dados);
-
   }
 
   if (Array.isArray(dados.diasTurnos)) {
 
     dados.diasTurnos.forEach(item => {
 
+      console.log("--------------------------------");
+      console.log("Item recebido:", item);
+
       const partes = item.split(" - ");
-      if (partes.length !== 2) return;
+      if (partes.length !== 2) {
+        console.warn("Formato inválido:", item);
+        return;
+      }
 
       const dia = partes[0];
       const turno = partes[1];
 
+      console.log("Procurando checkbox:");
+      console.log("Dia:", dia);
+      console.log("Turno:", turno);
+
+      console.log("Checkboxes encontrados:");
+
+      checkboxes.forEach(cb => {
+        console.log({
+          id: cb.id,
+          value: cb.value,
+          dataDia: cb.dataset.diaU,
+          dataTurno: cb.dataset.turnoU,
+          classe: cb.className
+        });
+      });
+
       const checkbox = Array.from(checkboxes).find(cb =>
-        norm(cb.dataset.dia) === norm(dia) &&
-        norm(cb.dataset.turno) === norm(turno)
+        norm(cb.dataset.diaU ?? cb.dataset.diaId) === norm(dia) &&
+        norm(cb.dataset.turnoU ?? cb.dataset.turnoId) === norm(turno)
       );
+
+      console.log("Checkbox encontrado:", checkbox);
 
       if (checkbox) {
         checkbox.checked = true;
+        console.log("✅ Marcado:", checkbox.id);
+      } else {
+        console.warn(
+          `❌ Nenhum checkbox encontrado para Dia="${dia}" Turno="${turno}"`
+        );
       }
 
     });
+
   }
-    /*console.log(
-    "Depois do render:",
-    frequencia.disabled
-  );*/
+
 }
 
 function renderizarDisponibilidadeBase(dados, cfg) {
+
+  /*console.log("condição:", dados.condicao);
+  console.log("frequência:", dados.frequencia);
+  console.log("dias:", dados.diasTurnos);*/
 
   const chkSubstituicao =
     document.getElementById(cfg.chkSubstituicao);
@@ -12734,8 +12759,8 @@ function renderizarDisponibilidadeBase(dados, cfg) {
       const turno = partes[1];
 
       const checkbox = Array.from(checkboxes).find(cb =>
-        norm(cb.dataset.dia) === norm(dia) &&
-        norm(cb.dataset.turno) === norm(turno)
+        norm(cb.dataset.dia ?? cb.dataset.diaN) === norm(dia) &&
+        norm(cb.dataset.turno ?? cb.dataset.turnoN) === norm(turno)
       );
 
       if (checkbox) {

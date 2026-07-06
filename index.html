@@ -852,7 +852,7 @@
             <div class="icone">🕒</div>
             <div class="titulo">Disponibilidade Geral</div>
         </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+        <div class="card-menu btn-relatoriosSubMenu so-participantes btn-edicao"
             onclick="abrirTela('telaUsuarioLogado', this)"><!-- onclick="abrirTela('telaUsuarioLogado', this); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);"> -->
             <div class="icone">🕒</div>
             <div class="titulo">Minha Disponibilidade</div>
@@ -1303,6 +1303,7 @@
       </button>
 
       <button
+        id="btnSalvaDisponibilidadeUsuarioLogado2h"
         onclick="salvarDisponibilidadeIdUsuarioLogado2h()"
         class="botao salvar"
         style="flex:1;">
@@ -1400,7 +1401,8 @@
                 ✏️ Editar Disponibilidade
         </button>
 
-        <button onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
+        <button id="btnSalvaDisponibilidadeUsuarioLogado4h"
+                onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
                 class="botao salvar"
                 style="flex:1;">
                 💾 Salvar Disponibilidade
@@ -2055,11 +2057,6 @@
                 onclick="abrirTela('painelPesquisar', this)">
                 <div class="icone">✏️👤</div>
                 <div class="titulo">Editar Participante</div>
-            </div>
-                <div class="card-menu btn-relatoriosSubMenu so-admin"
-                onclick="abrirTela('criaPontoNovo', this)">
-                <div class="icone">➕📌</div>
-                <div class="titulo">Criar Novo Ponto</div>
             </div>
             <div class="card-menu btn-relatoriosSubMenu so-admin"
                 onclick="abrirTela('tcsContainer', this)">
@@ -3277,6 +3274,11 @@
                   <div class="icone">📝</div>
                   <div class="titulo">Corrigir Ponto</div>
               </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('criaPontoNovo', this)">
+                  <div class="icone">➕📌</div>
+                  <div class="titulo">Criar Novo Ponto</div>
+              </div>
             </div>
   </div>
 
@@ -3720,7 +3722,10 @@
         .then(() => console.log('SW registrado'))
         .catch(err => console.error('Erro SW:', err));
     }
+    
   </script>
+
+  <script type="module" src="firebase.js"></script>
 
 </body>
 

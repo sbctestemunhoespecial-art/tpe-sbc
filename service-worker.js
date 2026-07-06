@@ -1,25 +1,18 @@
-/*const CACHE_NAME = "app-cache-v1";
+importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js");
 
-const URLS_TO_CACHE = [
-  "/tpe-sbc/",
-  "/tpe-sbc/index.html",
-  "/tpe-sbc/manifest.json"
-];
-
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(URLS_TO_CACHE))
-  );
-  self.skipWaiting();
+firebase.initializeApp({
+  apiKey: "AIzaSyBVEqO-fKJvNoW.....",
+  authDomain: "webapp-tpe-sbc.firebaseapp.com",
+  projectId: "webapp-tpe-sbc",
+  storageBucket: "webapp-tpe-sbc.firebasestorage.app",
+  messagingSenderId: "1012545018348",
+  appId: "1:1012545018348:web:80c2160979ffebd10948c9"
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
-});
+const messaging = firebase.messaging();
 
-self.addEventListener("fetch", event => {
-  event.respondWith(fetch(event.request));
-});*/
+//ACIMA ESTÁ A CONFIGURAÇÃO DE MENSAGENS PUSH
 
 const CACHE_NAME = "app-cache-v2";
 

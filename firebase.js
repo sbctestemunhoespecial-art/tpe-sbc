@@ -20,6 +20,42 @@ const messaging = getMessaging(app);
 
 console.log("Firebase inicializado.");
 
+async function registrarPush(idUsuarioLogado) {
+
+  if (!idUsuarioLogado) {
+    console.log("Usuário ainda não autenticado.");
+    return;
+  }
+
+  const permissao = await Notification.requestPermission();
+
+  console.log("Permissão:", permissao);
+
+  if (permissao !== "granted") {
+    console.log("Usuário não permitiu notificações.");
+    return;
+  }
+
+  /*const token = await getToken(messaging, {
+    vapidKey: "BAhESxPEg1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng"
+  });*/
+    const registration = await navigator.serviceWorker.register(
+    "./firebase-messaging-sw.js"
+  );
+
+  const token = await getToken(messaging, {
+    vapidKey: "BAhESxPEg1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng",
+    serviceWorkerRegistration: registration
+  });
+
+  salvarTokenFCM(idUsuarioLogado, token);
+
+  console.log("TOKEN:", token);
+}
+
+window.messaging = messaging;
+window.registrarPush = registrarPush;
+
 /*async function registrarPush(idUsuarioLogado) {
 
   if (!idUsuarioLogado) {
@@ -53,33 +89,3 @@ console.log("Firebase inicializado.");
     console.log(token);
 
 }*/
-async function registrarPush(idUsuarioLogado) {
-
-  if (!idUsuarioLogado) {
-    console.log("Usuário ainda não autenticado.");
-    return;
-  }
-
-  const permissao = await Notification.requestPermission();
-
-  console.log("Permissão:", permissao);
-
-  if (permissao !== "granted") {
-    console.log("Usuário não permitiu notificações.");
-    return;
-  }
-
-  const token = await getToken(messaging, {
-    vapidKey: "BAhESxPEg1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng"
-  });
-
-  salvarTokenFCM(idUsuarioLogado, token);
-
-  console.log("TOKEN:", token);
-}
-
-/*const token = await getToken(messaging, {
-  vapidKey: "SUA_VAPID_KEY"
-});*/
-window.messaging = messaging;
-window.registrarPush = registrarPush;

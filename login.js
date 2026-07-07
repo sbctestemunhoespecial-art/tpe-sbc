@@ -444,7 +444,7 @@ function mostrarSecoesPorPerfil(perfil) {
   });
 }
 
-/*window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
 
   const usuarioSalvo = localStorage.getItem("usuarioLogado");
 
@@ -492,7 +492,7 @@ function mostrarSecoesPorPerfil(perfil) {
       }
 
       if (tipoAcessoEl) {
-
+        /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${dados.perfil}`;*/
                 tipoAcessoEl.textContent = `Perfil ${dados.perfil}`;
 
       }
@@ -513,93 +513,8 @@ function mostrarSecoesPorPerfil(perfil) {
     document.getElementById('telaLogin').style.display = 'block';
     document.getElementById('conteudoProtegido').style.display = 'none';
   }
-});*/
-window.addEventListener("DOMContentLoaded", () => {
-
-  const usuarioSalvo = localStorage.getItem("usuarioLogado");
-
-  if (usuarioSalvo) {
-
-    const dados = JSON.parse(usuarioSalvo);
-
-    const expirou =
-      Date.now() - dados.timestamp > 60 * 60 * 1000;
-
-    if (expirou) {
-
-      localStorage.removeItem("usuarioLogado");
-
-      mostrarAlertaGlobal(
-        "⏰ Sua sessão expirou. Faça login novamente."
-      );
-
-      document.getElementById('telaLogin').style.display = 'block';
-      document.getElementById('conteudoProtegido').style.display = 'none';
-
-      return;
-    }
-
-    perfilUsuario = dados.perfil;
-    idUsuarioLogado = dados.id;
-
-    document.getElementById("menuBtn").style.display = "inline-block";
-    document.getElementById('telaLogin').style.display = 'none';
-    document.getElementById('conteudoProtegido').style.display = 'block';
-
-    mostrarSecoesPorPerfil(dados.perfil);
-
-    apiJSONP(
-      "buscarNomeDoUsuario",
-      {
-        id: dados.id
-      },
-      (resNome) => {
-
-        const saudacaoEl =
-          document.getElementById("saudacaoUsuario");
-
-        const tipoAcessoEl =
-          document.getElementById("tipoAcessoUsuario");
-
-        if (saudacaoEl) {
-
-          if (resNome.sucesso && resNome.nome) {
-
-            saudacaoEl.textContent = resNome.nome;
-
-          } else {
-
-            saudacaoEl.textContent = "";
-
-          }
-        }
-
-        if (tipoAcessoEl) {
-
-          tipoAcessoEl.textContent =
-            `Perfil ${dados.perfil}`;
-
-        }
-
-      },
-      (err) => {
-
-        console.error(
-          "Erro ao buscar nome do usuário:",
-          err.mensagem || err.error || err.message
-        );
-
-      }
-    );
-
-  } else {
-
-    document.getElementById('telaLogin').style.display = 'block';
-    document.getElementById('conteudoProtegido').style.display = 'none';
-
-  }
-
 });
+
 
 let participantesSemDisponibilidade = [];
  
@@ -1517,11 +1432,6 @@ function entrarModoEdicaoUsuarioLogado2h() {
 
   tabela.classList.add("tabela-sistemaEdicao");
 
-  const botaoSalvar =
-    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado2h");
-
-  botaoSalvar.classList.add("btn-edicao");
-
   const container =
     document.getElementById("disponibilidadeContainerUsuarioLogado2h");
 
@@ -1548,11 +1458,6 @@ function cancelarModoEdicaoUsuarioLogado2h() {
 
   tabela.classList.remove("tabela-sistemaEdicao");
 
-  const botaoSalvar =
-    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado2h");
-
-  botaoSalvar.classList.remove("btn-edicao");
-
   const container =
     document.getElementById("disponibilidadeContainerUsuarioLogado2h");
 
@@ -1567,7 +1472,7 @@ function cancelarModoEdicaoUsuarioLogado2h() {
   frequencia.classList.remove("selectEdicao");
 
   document.getElementById("btnEditarDisponibilidadeUsuarioLogado2h")
-    .textContent = "✏️ Editar Disponibilidade";
+    .textContent = "✏️ Editar";
 
   pesquisarDisponibilidadeUsuarioLogado2h();
 }
@@ -1874,17 +1779,7 @@ function entrarModoEdicaoUsuarioLogado4h() {
 
   tabela.classList.add("tabela-sistemaEdicao");
 
-  const botaoSalvar = 
-    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado4h");
-
-  botaoSalvar.classList.add("btn-edicao");
-
-  const container =
-    document.getElementById("disponibilidadeContainerUsuarioLogado4h");
-
-  container
-    .querySelectorAll(".dia-turno-id")
-    .forEach(cb => cb.disabled = false); //document.querySelectorAll(".dia-turno-id").forEach(cb => cb.disabled = false);
+  document.querySelectorAll(".dia-turno-id").forEach(cb => cb.disabled = false);
 
   const frequencia =
     document.getElementById("frequenciaDisponibilidadeUsuarioLogado4h");
@@ -1905,11 +1800,6 @@ function cancelarModoEdicaoUsuarioLogado4h() {
 
   tabela.classList.remove("tabela-sistemaEdicao");
 
-  const botaoSalvar = 
-    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado4h");
-
-  botaoSalvar.classList.remove("btn-edicao");
-
   document.querySelectorAll(".dia-turno-id").forEach(cb => cb.disabled = true);
 
   const frequencia =
@@ -1919,7 +1809,7 @@ function cancelarModoEdicaoUsuarioLogado4h() {
   frequencia.classList.remove("selectEdicao");
 
   document.getElementById("btnEditarDisponibilidadeUsuarioLogado4h")
-    .textContent = "✏️ Editar Disponibilidade";
+    .textContent = "✏️ Editar";
 
   pesquisarDisponibilidadeUsuarioLogado4h();
 }
@@ -5294,7 +5184,7 @@ document.getElementById("dataBatismo").addEventListener("change", () => {
     calcularAnosBatismo(document.getElementById("dataBatismo").value);
 });
 
-/*function abrirNovoPonto() {
+function abrirNovoPonto() {
 
   const prefixoInput = document.getElementById('prefixo');
   const numeroInput = document.getElementById('numero');
@@ -5352,68 +5242,6 @@ document.getElementById("dataBatismo").addEventListener("change", () => {
     "&callback=" + cb;
 
   document.body.appendChild(script);
-}*/
-function abrirNovoPonto() {
-
-  const prefixoInput = document.getElementById('prefixo');
-  const numeroInput = document.getElementById('numero');
-
-  const prefixo = prefixoInput.value.toUpperCase();
-  const numero = numeroInput.value;
-
-  let valid = true;
-
-  prefixoInput.classList.remove('erro-campo');
-  numeroInput.classList.remove('erro-campo');
-
-  if (!prefixo) {
-    prefixoInput.classList.add('erro-campo');
-    valid = false;
-  }
-
-  if (!numero) {
-    numeroInput.classList.add('erro-campo');
-    valid = false;
-  }
-
-  if (!valid) {
-    mostrarAlertaGlobal("⚠️ Por favor, preencha ambos os campos: Turno e Número.");
-    return;
-  }
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "criarTabelaManual",
-    {
-      prefixo,
-      numero
-    },
-    (res) => {
-
-      esconderSpinner();
-
-      prefixoInput.classList.remove('erro-campo');
-      numeroInput.classList.remove('erro-campo');
-
-      mostrarAlertaGlobal(
-        "✅ " + (res.mensagem || "Ponto criado com sucesso.")
-      );
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      prefixoInput.classList.remove('erro-campo');
-      numeroInput.classList.remove('erro-campo');
-
-      mostrarAlertaGlobal(
-        "❌ " + (err.mensagem || err.error || "Erro desconhecido.")
-      );
-
-    }
-  );
 }
 
 let participantesEncontrados = [];
@@ -10328,7 +10156,7 @@ document.addEventListener('click', function(e) {
 
 });
 
-/*document.getElementById('acaoConcluirTreinador').addEventListener('click', async function () {
+document.getElementById('acaoConcluirTreinador').addEventListener('click', async function () {
 
   const modal = document.getElementById('modalAcoesTreinador');
 
@@ -10383,67 +10211,9 @@ document.addEventListener('click', function(e) {
     "&callback=" + callback;
 
   document.body.appendChild(script);
-});*/
-document.getElementById('acaoConcluirTreinador').addEventListener('click', async function () {
-
-  const modal = document.getElementById('modalAcoesTreinador');
-
-  const nomeTreinando = modal.dataset.nomeTreinando;
-
-  const confirmou = await confirmarDecisao(
-    `Confirmar conclusão do treinamento de <b>${nomeTreinando}</b>?`,
-    'Concluir',
-    'Cancelar'
-  );
-
-  if (!confirmou) return;
-
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "concluirTreinamento",
-    {
-      idTreinando,
-      idTreinador
-    },
-    (res) => {
-
-      esconderSpinner();
-
-      fecharModalAcoesTreinador();
-
-      const modalAdmin =
-        document.getElementById('modalComunicarAdministrador');
-
-      modalAdmin.dataset.tipo = 'CONCLUSAO';
-      modalAdmin.dataset.nomeTreinador = res.nomeTreinador;
-      modalAdmin.dataset.nomeTreinando = res.nomeTreinando;
-      modalAdmin.dataset.dataHora = res.dataHora;
-
-      modalAdmin.classList.remove('oculto');
-
-      consultarMeuTreinamento();
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      fecharModalAcoesTreinador();
-
-      mostrarAlertaGlobal(
-        err.mensagem || err.error || "Erro desconhecido."
-      );
-
-    }
-  );
-
 });
 
-/*document.getElementById('acaoDesistenciaTreinador').addEventListener('click', async function () {
+document.getElementById('acaoDesistenciaTreinador').addEventListener('click', async function () {
 
   const modal = document.getElementById('modalAcoesTreinador');
 
@@ -10498,64 +10268,6 @@ document.getElementById('acaoConcluirTreinador').addEventListener('click', async
     "&callback=" + callback;
 
   document.body.appendChild(script);
-});*/
-document.getElementById('acaoDesistenciaTreinador').addEventListener('click', async function () {
-
-  const modal = document.getElementById('modalAcoesTreinador');
-
-  const nomeTreinando = modal.dataset.nomeTreinando;
-
-  const confirmou = await confirmarDecisao(
-    `Confirma registrar a desistência de <b>${nomeTreinando}</b>?`,
-    'Sim',
-    'Cancelar'
-  );
-
-  if (!confirmou) return;
-
-  const idTreinando = modal.dataset.idTreinando;
-  const idTreinador = modal.dataset.idTreinador;
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "marcarDesistenciaTreinamento",
-    {
-      idTreinando,
-      idTreinador
-    },
-    (res) => {
-
-      esconderSpinner();
-
-      fecharModalAcoesTreinador();
-
-      const modalAdmin =
-        document.getElementById('modalComunicarAdministrador');
-
-      modalAdmin.dataset.tipo = 'DESISTENCIA';
-      modalAdmin.dataset.nomeTreinador = res.nomeTreinador;
-      modalAdmin.dataset.nomeTreinando = res.nomeTreinando;
-      modalAdmin.dataset.dataHora = res.dataHora;
-
-      modalAdmin.classList.remove('oculto');
-
-      consultarMeuTreinamento();
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      fecharModalAcoesTreinador();
-
-      mostrarAlertaGlobal(
-        err.mensagem || err.error || "Erro desconhecido."
-      );
-
-    }
-  );
-
 });
 
 function confirmarDecisao(mensagem, textoSim, textoNao) {
@@ -10693,7 +10405,7 @@ document.getElementById('nomeInputUsuarioIr').addEventListener('input', function
 
 });
 
-/*function pegarContatosDoUsuarioIr(nome) {
+function pegarContatosDoUsuarioIr(nome) {
 
   mostrarSpinner();
 
@@ -10744,65 +10456,6 @@ document.getElementById('nomeInputUsuarioIr').addEventListener('input', function
     "&callback=" + callback;
 
   document.body.appendChild(script);
-}*/
-function pegarContatosDoUsuarioIr(nome) {
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "pegarContatoUsuario",
-    {
-      nome
-    },
-    (contato) => {
-
-      esconderSpinner();
-
-      if (contato) {
-
-        const telefoneInput =
-          document.getElementById('telefoneInputUsuarioIr');
-
-        const emailInput =
-          document.getElementById('emailInputUsuarioIr');
-
-        const nomeSelect =
-          document.getElementById('nomeSelectUsuarioIr');
-
-        telefoneInput.value = contato.telefone || '';
-        emailInput.value = contato.email || '';
-
-        telefoneInput.disabled = true;
-        emailInput.disabled = true;
-        nomeSelect.disabled = true;
-
-        const container = document.querySelector(
-          '#dadosUsuarioContainerIr > div[style*="display: none"]'
-        );
-
-        if (container) {
-          container.style.display = 'block';
-        }
-
-      } else {
-
-        console.warn("⚠️ Nenhum contato retornado.");
-
-      }
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      console.error(
-        "❌ Erro ao buscar contato do usuário:",
-        err.mensagem || err.error || err.message
-      );
-
-    }
-  );
-
 }
 
 let vagaContexto = {};

@@ -5,17 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
     <link rel="manifest" href="manifest.json">
+
 
     <title>TPE SBC</title>
 
+
+
+    <!--<link rel="stylesheet" href="login.css">-->
+
     <link rel="stylesheet" href="style.css">
+    <!--<link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/mobile.css">-->
+
+
 
 </head>
 
 <body>
 
 <div class="top-bar">
+<!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
+<button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
+
   <div class="top-bar">
     <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
         ☰ Menu
@@ -25,6 +40,9 @@
             <div class="titulo-sistema">
                 TPE SBC
             </div>
+            <!--<div class="subtitulo-sistema">
+                Testemunho Público Especial
+            </div>-->
         </div>
         <div class="linha-usuario">
             <div id="saudacaoUsuario" class="usuario">
@@ -834,7 +852,7 @@
             <div class="icone">🕒</div>
             <div class="titulo">Disponibilidade Geral</div>
         </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes btn-edicao"
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
             onclick="abrirTela('telaUsuarioLogado', this)"><!-- onclick="abrirTela('telaUsuarioLogado', this); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);"> -->
             <div class="icone">🕒</div>
             <div class="titulo">Minha Disponibilidade</div>
@@ -1285,7 +1303,6 @@
       </button>
 
       <button
-        id="btnSalvaDisponibilidadeUsuarioLogado2h"
         onclick="salvarDisponibilidadeIdUsuarioLogado2h()"
         class="botao salvar"
         style="flex:1;">
@@ -1383,8 +1400,7 @@
                 ✏️ Editar Disponibilidade
         </button>
 
-        <button id="btnSalvaDisponibilidadeUsuarioLogado4h"
-                onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
+        <button onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
                 class="botao salvar"
                 style="flex:1;">
                 💾 Salvar Disponibilidade
@@ -2039,6 +2055,11 @@
                 onclick="abrirTela('painelPesquisar', this)">
                 <div class="icone">✏️👤</div>
                 <div class="titulo">Editar Participante</div>
+            </div>
+                <div class="card-menu btn-relatoriosSubMenu so-admin"
+                onclick="abrirTela('criaPontoNovo', this)">
+                <div class="icone">➕📌</div>
+                <div class="titulo">Criar Novo Ponto</div>
             </div>
             <div class="card-menu btn-relatoriosSubMenu so-admin"
                 onclick="abrirTela('tcsContainer', this)">
@@ -3256,11 +3277,6 @@
                   <div class="icone">📝</div>
                   <div class="titulo">Corrigir Ponto</div>
               </div>
-              <div class="card-menu btn-relatoriosSubMenu so-admin"
-                  onclick="abrirTela('criaPontoNovo', this)">
-                  <div class="icone">➕📌</div>
-                  <div class="titulo">Criar Novo Ponto</div>
-              </div>
             </div>
   </div>
 
@@ -3691,9 +3707,11 @@
   </div> 
   </div>
 
-    <!--<script src="utils.js"></script>
+
+
+    <script src="utils.js"></script>
     <script src="api.js"></script>
-    <script src="app.js"></script>-->
+    <script src="app.js"></script>
     <script src="login.js"></script>
 
   <script>

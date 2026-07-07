@@ -23,17 +23,6 @@
   --fonte-grande: clamp(1.5rem, 4vw, 1.75rem);
   --fonte-extraG: clamp(1.75rem, 5vw, 2rem);
 
-  /*--fonte-principal: 'Arial', sans-serif;
-  --fonte-pequenaE: clamp(0.5rem, 0.65vw, 0.625rem);
-  --fonte-pequena:  clamp(0.625rem, 0.8vw, 0.75rem);
-  --fonte-pequenaB: clamp(0.75rem, 1vw, 0.875rem);
-
-  --fonte-media:    clamp(0.875rem, 1.3vw, 1rem);
-
-  --fonte-grandeA:  clamp(1rem, 1.8vw, 1.125rem);
-  --fonte-grande:   clamp(1.125rem, 2.3vw, 1.25rem);
-  --fonte-extraG:   clamp(1.25rem, 2.8vw, 1.5rem);*/
-
   --raio-borda: 0.5em;
   --raio-borda-botao: 3em;
 }
@@ -113,7 +102,7 @@ button {
   color: #fff;
   cursor: pointer;
   border: none;
-  border-radius: var(--raio-borda-botao);
+  border-radius: var(--raio-borda);
   transition: background-color 0.2s ease;
 }
 
@@ -143,6 +132,50 @@ button.editar, button.salvar {
 .botaozap {
   background-color: #25D366;
   color: #fff;
+}
+
+.btn-edicao {
+  position: relative;
+  border: 5px solid transparent;
+  overflow: visible;
+}
+
+.btn-edicao::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff5a00,
+    #ff9900,
+    #ffd400,
+    #ff9900,
+    #ff5a00,
+    #ff0000
+  );
+
+  background-size: 300% 300%;
+
+  -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  padding: 5px;
+
+  animation: brilhoBorda 2.5s linear infinite;
+  filter: drop-shadow(0 0 3px #ff6600)
+          drop-shadow(0 0 6px #ffcc00);
+}
+
+@keyframes brilhoBorda {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }
 
 table {
@@ -1000,13 +1033,13 @@ caption {
 }
 
 .usuario{
-    /*font-size: var(--fonte-media);*/
+    font-size: 0.8rem;
     font-weight: bold;
     color: #336699;
 }
 
 .acesso{
-    /*font-size: var(--fonte-media);*/
+    font-size: 0.8rem;
     color: #555;
 }
 
@@ -1022,7 +1055,7 @@ caption {
       justify-self:end;
       align-self:start;
     padding: 0.5rem 0.75rem;
-    border-radius: var(--raio-borda-botao);
+    border-radius: var(--raio-borda);
     border: none;
     background: transparent;
     color: var(--cor-texto);
@@ -2217,7 +2250,7 @@ td {
 
   border: 1px solid #ccc;
   /*border-radius: 30px;*/
-  border-radius: /*0.625rem*/ var(--raio-borda-botao);
+  border-radius: /*0.625rem*/ var(--raio-borda);
 
   box-shadow: none;
 }

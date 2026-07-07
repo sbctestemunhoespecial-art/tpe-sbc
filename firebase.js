@@ -18,12 +18,44 @@ const app = initializeApp(firebaseConfig);
 
 const messaging = getMessaging(app);
 
-onMessage(messaging, (payload) => {
+/*onMessage(messaging, (payload) => {
 
   console.log(
     "📩 FOREGROUND MESSAGE:",
     payload
   );
+
+});*/
+onMessage(messaging, async (payload) => {
+
+  console.log(
+    "📩 FOREGROUND MESSAGE:",
+    JSON.stringify(payload)
+  );
+
+  const title =
+    payload.data?.titulo ||
+    payload.notification?.title ||
+    "Nova notificação";
+
+  const body =
+    payload.data?.mensagem ||
+    payload.notification?.body ||
+    "";
+
+  const registration = await navigator.serviceWorker.ready;
+
+  registration.showNotification(title, {
+    body: body,
+    icon: "/icon-192.png",
+    data: payload.data
+  })
+  .then(() => {
+    console.log("✅ NOTIFICAÇÃO FOREGROUND EXIBIDA");
+  })
+  .catch(err => {
+    console.error("❌ ERRO AO EXIBIR FOREGROUND:", err);
+  });
 
 });
 /*onMessage(messaging, (payload) => {

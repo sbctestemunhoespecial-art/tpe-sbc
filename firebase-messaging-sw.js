@@ -23,7 +23,7 @@ const messaging = firebase.messaging();
     "📩 BACKGROUND MESSAGE:",
     JSON.stringify(payload)
   );*/
-  messaging.onBackgroundMessage((payload) => {
+  /*messaging.onBackgroundMessage((payload) => {
 
   console.log("🔥 RECEBEU NO SERVICE WORKER");
   console.log(JSON.stringify(payload));
@@ -45,5 +45,40 @@ const messaging = firebase.messaging();
     title,
     options
   );
+
+});*/
+messaging.onBackgroundMessage((payload) => {
+
+  console.log(
+    "📩 BACKGROUND MESSAGE:",
+    JSON.stringify(payload)
+  );
+
+  const title =
+    payload.data?.titulo ||
+    payload.notification?.title ||
+    "Nova notificação";
+
+  const body =
+    payload.data?.mensagem ||
+    payload.notification?.body ||
+    "";
+
+  /*self.registration.showNotification(title, {
+    body: body,
+    icon: "/icon-192.png",
+    data: payload.data
+  });*/
+  self.registration.showNotification(title, {
+    body: body,
+    icon: "/icon-192.png",
+    data: payload.data
+  })
+  .then(() => {
+    console.log("✅ NOTIFICAÇÃO EXIBIDA");
+  })
+  .catch(err => {
+    console.error("❌ ERRO AO EXIBIR:", err);
+  });
 
 });

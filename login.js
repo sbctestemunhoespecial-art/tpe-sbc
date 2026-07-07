@@ -11083,7 +11083,7 @@ function preencherFormularioDesignacao(vaga) {
 }
 
 function carregarTodasVagasAbertas() {
-  console.count("carregarTodasVagasAbertas chamou");
+  //console.count("carregarTodasVagasAbertas chamou");
   mostrarSpinner();
 
   // 1. Primeiro atualiza
@@ -12380,7 +12380,6 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
   }
 
   function mostrarSpinner() {
-    console.trace("🔴 SPINNER CHAMADO");
     document.getElementById('spinnerGlobal').style.display = 'flex';
   }
 

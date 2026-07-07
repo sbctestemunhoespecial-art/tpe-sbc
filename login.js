@@ -574,7 +574,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
-    /*registrarPush(idUsuarioLogado);*/
+    registrarPush(idUsuarioLogado);
 
     document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';

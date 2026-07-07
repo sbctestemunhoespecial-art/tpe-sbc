@@ -16,9 +16,6 @@
 <body>
 
 <div class="top-bar">
-<!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
-<button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
-
   <div class="top-bar">
     <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
         ☰ Menu
@@ -28,9 +25,6 @@
             <div class="titulo-sistema">
                 TPE SBC
             </div>
-            <!--<div class="subtitulo-sistema">
-                Testemunho Público Especial
-            </div>-->
         </div>
         <div class="linha-usuario">
             <div id="saudacaoUsuario" class="usuario">
@@ -3697,34 +3691,18 @@
   </div> 
   </div>
 
-
-
-    <script src="utils.js"></script>
-    <!--<script src="api.js"></script>-->
-    <script src="app.js"></script>
+    <!--<script src="utils.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>-->
     <script src="login.js"></script>
 
   <script>
-    /*if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/tpe-sbc/service-worker.js')
-        .then(() => console.log('SW registrado'))
-        .catch(err => console.error('Erro SW:', err));
-    }*/
-    
     if ('serviceWorker' in navigator) {
-
-      const caminhoSW =
-        location.hostname === '127.0.0.1' || location.hostname === 'localhost'
-          ? './service-worker.js'
-          : '/tpe-sbc/service-worker.js';
-
-      navigator.serviceWorker.register(caminhoSW)
+      navigator.serviceWorker.register('/tpe-sbc/service-worker.js')
         .then(() => console.log('SW registrado'))
         .catch(err => console.error('Erro SW:', err));
     }
   </script>
-
-  <script type="module" src="firebase.js"></script>
 
 </body>
 

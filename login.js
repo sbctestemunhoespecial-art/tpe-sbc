@@ -44,39 +44,6 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
 }
 
-function salvarTokenFCM(idUsuarioLogado, token) {
-
-  if (!idUsuarioLogado) {
-    mostrarAlertaGlobal("❌ Usuário não identificado.");
-    return;
-  }
-
-  apiJSONP(
-    "salvarTokenFCM",
-    {
-      idUsuario: idUsuarioLogado,
-      token: token
-    },
-    function(res) {
-
-      console.log("✅ Token FCM salvo:", res);
-
-      mostrarAlertaGlobal("✅ Notificações ativadas com sucesso!");
-
-    },
-    function(err) {
-
-      console.error("❌ Erro ao salvar token:", err);
-
-      mostrarAlertaGlobal(
-        "❌ Erro ao ativar notificações: " +
-        (err.mensagem || err.message)
-      );
-
-    }
-  );
-}
-
 function toggleMenu() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('active');
@@ -342,7 +309,6 @@ function fazerLogin() {
 
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
-      registrarPush(idUsuarioLogado);
 
       const saudacaoEl = document.getElementById("saudacaoUsuario");
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
@@ -384,7 +350,9 @@ function fazerLogin() {
       telaAtual = 'menuCards';
 
       atualizarBotaoVoltar();
+
       mostrarSecoesPorPerfil(res.perfil);
+
       limparCamposUsuario();
       restaurarCamposPerfil();
 
@@ -546,7 +514,6 @@ function mostrarSecoesPorPerfil(perfil) {
     document.getElementById('conteudoProtegido').style.display = 'none';
   }
 });*/
-
 window.addEventListener("DOMContentLoaded", () => {
 
   const usuarioSalvo = localStorage.getItem("usuarioLogado");
@@ -574,7 +541,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
-    /*registrarPush(idUsuarioLogado);*/
 
     document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';
@@ -3445,6 +3411,9 @@ function salvarDisponibilidade2h() {
 
   }
 
+  // =========================
+  // SALVAR
+  // =========================
   mostrarSpinner();
 
   apiJSONP(
@@ -11083,7 +11052,7 @@ function preencherFormularioDesignacao(vaga) {
 }
 
 function carregarTodasVagasAbertas() {
-  console.count("carregarTodasVagasAbertas chamou");
+
   mostrarSpinner();
 
   // 1. Primeiro atualiza
@@ -11108,7 +11077,7 @@ function carregarTodasVagasAbertas() {
           esconderSpinner();
 
         }
-      ); 
+      );
 
     },
     function(err) {
@@ -12380,7 +12349,6 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
   }
 
   function mostrarSpinner() {
-    console.trace("🔴 SPINNER CHAMADO");
     document.getElementById('spinnerGlobal').style.display = 'flex';
   }
 

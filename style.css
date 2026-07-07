@@ -23,6 +23,17 @@
   --fonte-grande: clamp(1.5rem, 4vw, 1.75rem);
   --fonte-extraG: clamp(1.75rem, 5vw, 2rem);
 
+  /*--fonte-principal: 'Arial', sans-serif;
+  --fonte-pequenaE: clamp(0.5rem, 0.65vw, 0.625rem);
+  --fonte-pequena:  clamp(0.625rem, 0.8vw, 0.75rem);
+  --fonte-pequenaB: clamp(0.75rem, 1vw, 0.875rem);
+
+  --fonte-media:    clamp(0.875rem, 1.3vw, 1rem);
+
+  --fonte-grandeA:  clamp(1rem, 1.8vw, 1.125rem);
+  --fonte-grande:   clamp(1.125rem, 2.3vw, 1.25rem);
+  --fonte-extraG:   clamp(1.25rem, 2.8vw, 1.5rem);*/
+
   --raio-borda: 0.5em;
   --raio-borda-botao: 3em;
 }

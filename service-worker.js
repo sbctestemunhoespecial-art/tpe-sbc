@@ -1,19 +1,3 @@
-/*importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js");
-
-firebase.initializeApp({
-  apiKey: "AIzaSyBVEqO-fKJvNoW.....",
-  authDomain: "webapp-tpe-sbc.firebaseapp.com",
-  projectId: "webapp-tpe-sbc",
-  storageBucket: "webapp-tpe-sbc.firebasestorage.app",
-  messagingSenderId: "1012545018348",
-  appId: "1:1012545018348:web:80c2160979ffebd10948c9"
-});
-
-const messaging = firebase.messaging();*/
-
-//ACIMA ESTÁ A CONFIGURAÇÃO DE MENSAGENS PUSH
-
 const CACHE_NAME = "app-cache-v2";
 
 // pega automaticamente o caminho base do app

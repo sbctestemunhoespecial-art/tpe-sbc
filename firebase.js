@@ -51,6 +51,11 @@ onMessage(messaging, async (payload) => {
     payload.notification?.body ||
     "";
 
+  const iconPath =
+  location.hostname === "127.0.0.1" ||
+  location.hostname === "localhost"
+    ? "./icon-192.png"
+    : "/tpe-sbc/icon-192.png";
 
   const registration =
     await navigator.serviceWorker.ready;
@@ -59,9 +64,8 @@ onMessage(messaging, async (payload) => {
   registration.showNotification(title, {
 
     body,
-
-    icon: "/icon-192.png",
-
+    icon: iconPath,
+    /*icon: "/icon-192.png",*/
     data: payload.data
 
   })
@@ -143,8 +147,7 @@ async function registrarPush(idUsuarioLogado) {
     await getToken(messaging, {
 
       vapidKey:
-      //"BAhESxPE1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng",
-      "BAhESxPEg1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng",
+        "BAhESxPEg1ZWMh2t6ZXLhXTHO_FqRrd9fKgETRl-VzJJ1c5ZR7nMuL54lr6uDp2UYBsznU_4w2uyoQemA83IXng",
 
       serviceWorkerRegistration:
         registration

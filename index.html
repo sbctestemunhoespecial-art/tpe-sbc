@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="icon" href="/tpe-sbc/icon-192.png" type="image/png">
+
     <link rel="manifest" href="manifest.json">
 
     <title>TPE SBC</title>
@@ -14,6 +16,97 @@
 </head>
 
 <body>
+
+<!-- =========================================
+     MODAL SELEÇÃO UNIVERSAL
+========================================= -->
+
+<div id="modalSelecaoUniversal" class="modal-padrao oculto">
+
+  <div class="modal-conteudo">
+
+
+    <h3 id="tituloModalSelecao">
+      Selecionar
+    </h3>
+
+
+    <input
+      id="filtroModalSelecao"
+      type="text"
+      placeholder="Pesquisar..."
+      autocomplete="off"
+    >
+
+
+    <div
+      id="listaModalSelecao">
+    </div>
+
+
+    <div class="botoes-modal">
+
+      <button
+        type="button"
+        onclick="fecharModalSelecaoUniversal()">
+        Cancelar
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+<!-- =========================================
+     MODAL SELEÇÃO UNIVERSAL
+  ========================================= -->
+  
+  <div id="modalAtualizacao" class="modal-padrao oculto">
+
+  <div class="modal-conteudo">
+
+   <h2>🚀 Nova versão disponível</h2>
+
+    <p>
+      Existe uma atualização do aplicativo.
+    </p>
+
+    <p>
+      <strong>Sua versão:</strong>
+      <span id="versaoAtualUsuario"></span>
+    </p>
+
+    <p>
+      <strong>Nova versão:</strong>
+      <span id="versaoAtualServidor"></span>
+    </p>
+
+    <p>
+      Recomendamos atualizar agora para receber as melhorias e correções.
+    </p>
+
+    <div id="statusAtualizacao"
+        style="
+            margin-top:20px;
+            text-align:center;
+            font-weight:bold;
+            display:none;
+        ">
+    </div>
+
+    <button
+        class="btn-confirmar"
+        onclick="atualizarAplicativo()">
+
+        ATUALIZAR AGORA
+
+    </button>
+
+  </div>
+
+</div>
 
 <div class="top-bar">
 <!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
@@ -306,13 +399,13 @@
 
 </div>
 
-<div id="modalSubstituicao">
-  <div class="conteudo-modal">
+<div id="modalSubstituicao" class="modal-padrao oculto">
+  <div class="modal-conteudo">
     <h5>Quem deve sair?</h5>
 
     <div id="listaSubstituicao"></div>
 
-    <div style="display:flex">
+    <div class="botoes-modal">
       <button onclick="confirmarNenhum()">Ninguém</button>
       <button onclick="fecharModal()">Cancelar</button>
     </div>
@@ -466,312 +559,6 @@
   </div>
 </div>
 
-<!--<div id="modalEditarDisponibilidade" class="modal-editar">
-
-  <div class="conteudo-modal-editar">
-
-    <div class="cabecalho-modal">
-
-      <h5>Clique para alterar a sua disponibilidade</h5>
-
-      <button
-        type="button"
-        class="fechar-modal-editar"
-        onclick="fecharModalEditarDisponibilidade()">
-        ❌
-      </button>
-
-    </div>
-
-    <button
-      type="button"
-      id="btnEditarDisponibilidadeUsuario"
-      onclick="executarAcaoModalEditarDisponibilidade()"
-      class="botao editar"
-      style="width:100%;">
-
-      ✏️ Editar Disponibilidade
-
-    </button>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalAlterarTreinador" class="oculto">
-
-  <div class="conteudo-modal">
-
-    <h5>Alterar Treinador</h5>
-
-    <select id="listaNomesTrei">
-      <option value="">- Selecione -</option>
-    </select>
-
-    <div style="margin-top:10px;">
-      <input type="text"
-             id="filtroBuscaTrei"
-             placeholder="Digite o nome para pesquisar...">
-    </div>
-
-    <div style="display:flex; gap:10px; margin-top:15px;">
-
-      <button type="button" onclick="confirmarAlteracaoTreinador()">
-        Alterar
-      </button>
-
-      <button type="button" onclick="fecharModalTreinador()">
-        Cancelar
-      </button>
-
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalComunicarAdministrador" class="oculto">
-
-  <div class="conteudo-modal">
-
-    <h5>📲 Comunicar Coordenador</h5>
-
-    <p>Deseja comunicar o coordenador do TPE pelo WhatsApp?</p>
-
-    <div class="botoes-modal">
-
-      <button type="button" onclick="comunicarAdministrador()">
-        ✅ Sim
-      </button>
-
-      <button type="button" onclick="fecharModalAdministrador()">
-        ❌ Não
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<div id="modalComunicarTreinador" class="oculto modalComTrei">
-
-  <div class="conteudo-modal">
-
-    <h5>📲 Comunicar Treinador</h5>
-
-    <p>Deseja comunicar o novo treinador pelo WhatsApp?</p>
-
-    <div class="botoes-modal">
-
-      <button type="button" onclick="comunicarNovoTreinador()">
-        ✅ Sim
-      </button>
-
-      <button type="button" onclick="fecharModalComunicacao()">
-        ❌ Não
-      </button>
-
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalConfirmarDesignacao" class="modal-padrao oculto">
-  <div class="conteudo-modal">
-
-    <h5>📌 Confirmar Designação</h5>
-
-    <p>Deseja realmente designar este treinador para o participante?</p>
-
-    <div class="botoes-modal">
-
-      <button type="button" onclick="confirmarDesignacao()">✅ Sim</button>
-      <button type="button" onclick="fecharModalDesignacao()">❌ Não</button>
-
-    </div>
-
-  </div>
-</div>-->
-
-<!--<div id="modalEnviarWhatsapp" class="modal-padrao oculto">
-  <div class="conteudo-modal">
-
-    <h5>📲 Enviar WhatsApp</h5>
-
-    <p>Deseja enviar mensagem para o treinador designado?</p>
-
-    <div class="botoes-modal">
-
-      <button type="button" onclick="enviarWhatsappDesignacao()">📤 Sim</button>
-      <button type="button" onclick="fecharModalWhatsapp()">❌ Não</button>
-
-    </div>
-
-  </div>
-</div>-->
-
-<!--<div id="modalAcoesTreinamento" class="oculto">
-
-  <div class="conteudo-modal">
-
-    <h5>O que você quer fazer?</h5>
-
-    <button type="button" id="acaoConcluir">
-      ✅ Concluir Treinamento
-    </button>
-
-    <button type="button" id="acaoDesistencia">
-      🚫 Registrar Desistência
-    </button>
-
-    <button type="button" id="acaoAlterarTreinador">
-      ✏️ Alterar Treinador
-    </button>
-
-    <button type="button" id="acaoLembrete">
-      🔔 Lembrete Para Treinador
-    </button>
-
-    <button type="button" onclick="fecharModalAcoesTreinamento()">
-      ❌ Fechar
-    </button>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalAcoesTreinador" class="oculto">
-
-  <div class="conteudo-modal">
-
-    <h5>O que você quer fazer?</h5>
-
-    <button type="button" id="acaoConcluirTreinador">
-      ✅ Concluir Treinamento
-    </button>
-
-    <button type="button" id="acaoDesistenciaTreinador">
-      ❌ Registrar Desistência
-    </button>
-
-    <button type="button" onclick="fecharModalAcoesTreinador()">
-      Fechar
-    </button>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalDesignados">
-
-  <div class="conteudo-modal">
-
-    <h5>Quem será substituído?</h5>
-
-    <div id="listaDesignados"></div>
-
-    <div style="display:flex">
-      <button type="button" onclick="confirmarNenhumDesignados()">Ninguém</button>
-      <button type="button" onclick="fecharModalDesignados()">Cancelar</button>
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalSubstituicao">
-
-  <div class="conteudo-modal">
-
-    <h5>Quem deve sair?</h5>
-
-    <div id="listaSubstituicao"></div>
-
-    <div style="display:flex">
-      <button type="button" onclick="confirmarNenhum()">Ninguém</button>
-      <button type="button" onclick="fecharModal()">Cancelar</button>
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="modalParticipantes" class="modal-overlay oculto">
-
-  <div class="conteudo-modal">
-
-    <div class="modal-topo">
-      <h5>👤 Selecionar Participante</h5>
-
-      <button
-        type="button"
-        class="btn-fechar-modal"
-        onclick="fecharModalParticipantes()">
-        ✖
-      </button>
-    </div>
-
-    <select id="selectModalParticipantes" size="5">
-      <option value="">- Selecione -</option>
-    </select>
-
-    <h5>🔎 Filtrar participante</h5>
-
-    <input
-      type="text"
-      id="filtroModalParticipantes"
-      placeholder="Digite o nome para pesquisar...">
-
-    <div class="modal-botoes">
-
-      <button type="button" onclick="confirmarSelecaoParticipante()">
-        ✅ Selecionar
-      </button>
-
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="confirmacaoGlobal" class="oculto">
-
-  <div class="conteudo-confirmacao">
-
-    <p id="confirmacaoMensagem"></p>
-
-    <div class="botoes-confirmacao">
-      <button type="button" id="confirmacaoBotaoOk">
-        Confirmar
-      </button>
-
-      <button type="button" id="confirmacaoBotaoCancelar">
-        Cancelar
-      </button>
-    </div>
-
-  </div>
-
-</div>-->
-
-<!--<div id="alertaGlobal" class="oculto">
-
-  <div class="conteudo-alerta">
-
-    <span id="alertaMensagem"></span>
-
-    <br><br>
-
-    <button type="button" class="alerta-btn" id="alertaBotaoOk">
-      Ok
-    </button>
-
-  </div>
-
-</div>-->
-
 <div id="spinnerGlobal" style="
   position: fixed;
   top: 0;
@@ -844,6 +631,11 @@
             onclick="abrirTela('telaUsuarioLogado', this)"><!-- onclick="abrirTela('telaUsuarioLogado', this); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);"> -->
             <div class="icone">🕒</div>
             <div class="titulo">Minha Disponibilidade</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('telaVagasDisponiveis', this); abrirVagasDisponiveis();">
+            <div class="icone">🚨</div>
+            <div class="titulo">Vagas Disponíveis</div>
         </div>
         <div class="card-menu btn-relatoriosSubMenu so-participantes"
             onclick="abrirTela('telaeventos', this)">
@@ -1954,9 +1746,14 @@
       <label>Selecione um ponto:</label>
       <!--<div style="display: flex; gap: 10px; margin-bottom: 10px;">-->
       <div style="display: flex; align-items: center; gap: 10px;">
-        <select id="pontoSelectMap">
-          <option value="">Selecione</option>
-        </select>
+
+
+
+        <input
+          id="pontoSelectMapVisual"
+          onclick="abrirSelecaoPontoSimples('pontoSelectMap')">
+
+
         <button onclick="verMapa()">Ver mapa do ponto</button>
       </div>
 
@@ -2023,11 +1820,19 @@
     </div>
 
     <div style="display: flex; align-items: center; gap: 10px;">
-      <select id="pontoSelectMap2">
-        <option value="">Selecione</option>
-      </select>
+
+      <input
+          id="pontoSelectMap2Visual"
+          readonly
+          onclick="abrirSelecaoPontoSimples('pontoSelectMap2')"
+      >
       <button onclick="editarMapa()">Verificar Mapa</button>
+
     </div>
+
+    <label>
+      
+    </label>
 
     <button onclick="cadastrarNovoMapa()">Cadastrar/Editar Mapa</button>
 
@@ -2391,7 +2196,53 @@
     <div id="disponibilidadeBuscada" class="painel-exportar tela">
     <h5>👤 Disponíveis 4 Horas</h5>
 
-    <table id="tabelaBuscarDisp" class="tabela-sistema">
+    <label>Dia</label>
+
+    <input
+      id="diasSelectVisual"
+      class="campo-selecao-visual"
+      type="text"
+      readonly
+      placeholder="Escolha o dia"
+      onclick="abrirSelecaoLista(
+          'diasSelect',
+          'Escolha o dia',
+          window.LISTAS_MODAL.dias
+      )">
+
+    <label>
+      Turno
+    </label>
+
+    <input
+          id="turnosSelectVisual"
+          class="campo-selecao-visual"
+          type="text"
+          readonly
+          placeholder="Escolha o turno"
+          onclick="abrirSelecaoLista(
+              'turnosSelect',
+              'Escolha o turno',
+              window.LISTAS_MODAL.turnos
+          )">
+
+      <label>
+      Frequência
+      </label>
+
+    <input
+          id="frequenciasSelectVisual"
+          class="campo-selecao-visual"
+          type="text"
+          readonly
+          placeholder="Escolha a necessidade"
+          onclick="abrirSelecaoLista(
+              'frequenciasSelect',
+              'Escolha a frequência',
+              window.LISTAS_MODAL.frequencias
+          )">
+
+    <!--<table id="tabelaBuscarDisp" class="tabela-sistema">
       <thead>
         <tr>
           <th>Dia</th>
@@ -2432,11 +2283,48 @@
           </td>
         </tr>
       </tbody>
-    </table>
-
+    </table>-->
+    <label>Equipamento</label>
     <button onclick="buscarParticipantes()">🔍 Pesquisar participantes disponíveis</button>
 
-    <table id="tabelaPontoEquip" class="tabela-sistema">
+    <label>Ponto</label>
+    <input
+        id="pontosParaOferecerSelectVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha o ponto"
+        readonly
+        onclick="abrirSelecaoPontoSimples('pontosParaOferecerSelect')"
+    >
+
+    <label>Necessidade</label>
+    <input
+        id="necessidadeVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha a necessidade"
+        onclick="abrirSelecaoLista(
+            'necessidade',
+            'Escolha a necessidade',
+            window.LISTAS_MODAL.necessidades
+        )">
+
+    <label>Equipamento</label>
+    <input
+        id="equipamentosParaOferecerSelectVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha o equipamento"
+        onclick="abrirSelecaoLista(
+            'equipamentosParaOferecerSelect',
+            'Escolha o equipamento',
+            window.LISTAS_MODAL.equipamentos
+        )">
+
+    <!--<table id="tabelaPontoEquip" class="tabela-sistema">
       <thead>
         <tr>
           <th>Ponto</th>
@@ -2467,7 +2355,7 @@
             </select>
         </tr>
       </tbody>
-    </table>
+    </table>-->
 
         <div style="display: flex; align-items: center; gap: 10px;">
         <p id="msgPesqDisponiveis" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
@@ -2503,7 +2391,43 @@
     <div id="disponibilidadeBuscada2h" class="painel-exportar tela">
     <h5>👤 Disponíveis 2 Horas</h5>
 
-    <table id="tabelaBuscarDisp2h" class="tabela-sistema">
+    <label>Dia</label>
+    <input
+    id="diasSelect2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha o dia"
+    onclick="abrirSelecaoLista(
+        'diasSelect2h',
+        'Escolha o dia',
+        window.LISTAS_MODAL.dias
+    )">
+
+    <label>Turno</label>
+    <input
+    id="turnosSelect2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha o turno"
+    onclick="abrirSelecaoLista(
+        'turnosSelect2h',
+        'Escolha o turno',
+        window.LISTAS_MODAL.turnos2h
+    )">
+
+    <label>Frequência</label>
+    <input
+    id="frequenciasSelect2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha a frequência"
+    onclick="abrirSelecaoLista(
+        'frequenciasSelect2h',
+        'Escolha a frequência',
+        window.LISTAS_MODAL.frequencias
+    )">
+
+    <!--<table id="tabelaBuscarDisp2h" class="tabela-sistema">
       <thead>
         <tr>
           <th>Dia</th>
@@ -2544,11 +2468,13 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table>-->
+
+    <label></label>
 
     <button onclick="buscarParticipantes2h()">🔍 Pesquisar participantes disponíveis</button>
 
-    <table id="tabelaPontoEquip2h" class="tabela-sistema">
+    <!--<table id="tabelaPontoEquip2h" class="tabela-sistema">
       <thead>
         <tr>
           <th>Ponto</th>
@@ -2560,8 +2486,6 @@
         <tr>
           <td>
             <select id="pontosParaOferecerSelect2h"><option value="">- Selecione -</option>
-            <!--Apenas um teste com o ponto 20-->
-            <!--<option value="Ponto 20">Ponto 20</option>-->
             </select>
           </td>
           <td>
@@ -2581,7 +2505,43 @@
             </select>
         </tr>
       </tbody>
-    </table>
+    </table>-->
+
+    <label>Ponto</label>
+    <input
+    id="pontosParaOferecerSelect2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha o ponto"
+    onclick="abrirSelecaoPontoSimples(
+        'pontosParaOferecerSelect2h'
+    )">
+
+    <label>Necessidade</label>
+    <input
+    id="necessidade2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha a necessidade"
+    onclick="abrirSelecaoLista(
+        'necessidade2h',
+        'Escolha a necessidade',
+        window.LISTAS_MODAL.necessidades
+    )">
+
+    <label>Equipamento</label>
+    <input
+    id="equipamentosParaOferecerSelect2hVisual"
+    class="campo-selecao-visual"
+    readonly
+    placeholder="Escolha o equipamento"
+    onclick="abrirSelecaoLista(
+        'equipamentosParaOferecerSelect2h',
+        'Escolha o equipamento',
+        window.LISTAS_MODAL.equipamentos
+    )">
+
+
 
         <div style="display: flex; align-items: center; gap: 10px;">
         <p id="msgPesqDisponiveis2h" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
@@ -3062,9 +3022,78 @@
             </div>
   </div>
 
-    <div id="painelPontos" class="painel-exportar tela">
+  <div id="painelPontos" class="painel-exportar tela">
     <h5>🕒 Escalas Por Turno</h5>
-      <div id="pesquisaDesignacoes">
+
+    <div class="campo-selecao-modal">
+
+      <label>
+        Ponto
+      </label>
+
+
+      <input
+        id="pontoDesignadoVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha o ponto"
+        onclick="abrirSelecaoPontoDesignado()"
+      >
+
+      </div>
+
+      <div class="campo-selecao-modal">
+
+        <label for="diaDesignadoVisual">
+            Dia
+        </label>
+
+        <input
+            id="diaDesignadoVisual"
+            class="campo-selecao-visual"
+            type="text"
+            readonly
+            placeholder="Escolha o dia"
+            onclick="abrirSelecaoDiaDesignado()"
+        >
+
+      </div>
+
+      <div class="campo-selecao-modal">
+
+          <label>
+              Turno
+          </label>
+
+          <input
+              id="turnoDesignadoVisual"
+              class="campo-selecao-visual"
+              type="text"
+              readonly
+              placeholder="Escolha o turno"
+              onclick="abrirSelecaoTurnoDesignado()"
+          >
+
+      </div>
+
+      <label>
+        
+      </label>
+
+      <button type="button" onclick="pesquisarDesignados()">🔍 Pesquisar</button>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgPesqDesignados" class="mensagem-verde"></p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgRemoverDesignados" class="mensagem-verde"></p>
+      </div>
+
+      <div id="resultadoDesignadosContainer"></div>
+
+      <!--<div id="pesquisaDesignacoes">
 
           <table id="tabelapesquisaDesignacoes" class="tabela-sistema">
               <thead>
@@ -3101,30 +3130,47 @@
             </div>
 
         <div id="resultadoDesignadosContainer"></div>
-    </div>
+    </div>-->
 
   </div>
 
     <div id="painelPontosTotal" class="painel-exportar tela">
     <h5>📌 Escalas Por Ponto</h5>
-    <div id="painelVerDesignacoesPorPonto">
+
+    <label>
+        Selecione o ponto
+      </label>
+
+      <input
+          id="pontobeppVisual"
+          class="campo-selecao-visual"
+          type="text"
+          readonly
+          placeholder="Escolha o ponto"
+          onclick="abrirSelecaoPontoBepp()"
+      />
+
+    <label>
+
+      </label>
+
+    <button onclick="buscarDesignacoesPorPonto()">📋 Ver Designações</button>
+
+    <!--<div id="painelVerDesignacoesPorPonto">
       <label for="pontobepp">Selecione o Ponto:</label>
       <select id="pontobepp">
         <option value="">- Selecione -</option>
-        <!-- opções inseridas dinamicamente -->
-      </select>
-      <button onclick="buscarDesignacoesPorPonto()">📋 Ver Designações</button>
+      </select>-->
+
+      
 
       <div id="msgDesignacoesPorPontopppp" class="mensagem-verde"></div>
-      <!--<div id="loadingDesignacoesPorPontopppp" class="spinner" style="display:none;"></div>-->
 
       <div id="resultadoDesignacoesPorPontopppp"></div>
 
-      <!-- ✅ Botão para gerar PDF -->
       <div id="btnExportarPdfDesignacoes" style="margin-top: 15px; display: none;">
         <button onclick="baixarDesignacoesPorPonto()">📄 Baixar PDF</button>
         <div id="msgBaixarPDFPonto" class="mensagem-verde"></div>
-        <!--<div id="loadingBaixarPDFPonto" class="spinner" style="display:none;"></div>-->
 
       </div>
     </div>
@@ -3135,8 +3181,50 @@
   <h5>✅ Designar Participantes</h5>
   <div id="painelDesignacoes">
 
-      <table id="tabelaDesignar" class="tabela-sistema">
-        <thead>
+    <label>Ponto</label>
+    <input
+        id="pontoVisual"
+        class="campo-selecao-visual"
+        readonly
+        placeholder="Selecionar ponto"
+        onclick="abrirSelecaoPontoDesignar('ponto')">
+
+        <label>Dia</label>
+
+        <input
+            id="diaVisual"
+            class="campo-selecao-visual"
+            readonly
+            placeholder="Selecionar dia"
+            onclick="abrirSelecaoDiaDesignar()"
+        >
+
+        <label>frequência</label>
+
+        <input
+            id="frequenciaVisual"
+            class="campo-selecao-visual"
+            readonly
+            placeholder="Selecionar frequência"
+            onclick="abrirSelecaoFrequenciaDesignar()"
+        >
+
+        <label>Equipamento</label>
+
+        <input
+            id="equipamentoVisual"
+            class="campo-selecao-visual"
+            readonly
+            placeholder="Selecionar equipamento"
+            onclick="abrirSelecaoEquipamentoDesignar()"
+        >
+
+        <label></label>
+
+ 
+
+      <table id="tabelaDesignar" style="display: none;"  class="tabela-sistema">
+        <thead> <!--PRECISO ELIMINAR TODAS AS REFERENCIAS A ESSA TABELA-->
           <tr>
             <th>Ponto</th>
             <th>Dia</th>
@@ -3227,8 +3315,6 @@
                 ✅ Designar
               </button>
             </div>
-
-      <!--</td>-->
 
       <div style="display: none" style="display: flex; justify-content: flex-end; margin-Bottom: 30px; margin-top: 30px;"><input type="text" id="filtroBusca1" placeholder="Pesquise o nome do participante a ser designado"></div>
 
@@ -3394,54 +3480,60 @@
     </div>
   </div>
 
+  <div id="telaVagasDisponiveis" class="painel tela">
+
+      <h2>🚨 Vagas Disponíveis</h2>
+
+      <div id="listaVagasDisponiveis">
+        <p>Carregando vagas...</p>
+      </div>
+
+  </div>
+
     <div id="vagas" class="painel tela"> 
   <h5>🪑 Vagas</h5>
 
   <body>
 
   <div id="painelVagas">
-    <!--<h5>Cadastrar Vaga</h5>-->
-    <table id="tabelacadastrarVaga" class="tabela-sistema">
-      <thead>
-        <tr>
-          <th>Ponto</th>
-          <th>Dia</th>
-          <th>Frequencia</th>
-          <!--<th>Quem sai</th>-->
-        </tr>
-      </thead>
-    <tbody>
-        <tr>
-          <td>
-            <select id="pontoVaga"></select>
-          </td>
-          <td>
-            <select id="diaVaga">
-              <option value="">- Selecione -</option>
-              <option>SEGUNDA</option>
-              <option>TERÇA</option>
-              <option>QUARTA</option>
-              <option>QUINTA</option>
-              <option>SEXTA</option>
-              <option>SABADO</option>
-              <option>DOMINGO 1</option>
-              <option>DOMINGO 2</option>
-              <option>DOMINGO 3</option>
-              <option>DOMINGO 4</option>
-            </select>
-          </td>
-          <td>
-            <select id="frequenciaVaga" name="frequenciaVaga">
-              <option value="">- Selecione -</option>
-              <option value="SEMANAL">SEMANAL</option>
-              <option value="QUINZENAL">QUINZENAL</option>
-              <option value="MENSAL">MENSAL</option>
-            </select>
-          </td>
-          </tbody>
-          </table>
 
-          <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">
+    <label>
+        Ponto
+    </label>
+
+    <input
+        id="pontoVagaVisual"
+        type="text"
+        readonly
+        placeholder="Escolha o ponto"
+        onclick="abrirSelecaoPontoVaga()"
+    />
+
+    <label>
+        Dia
+    </label>
+
+    <input
+        id="diaVagaVisual"
+        type="text"
+        readonly
+        placeholder="Escolha o dia"
+        onclick="abrirSelecaoDiaVaga()"
+    />
+
+    <label>
+        Frequência
+    </label>
+
+    <input
+        id="frequenciaVagaVisual"
+        type="text"
+        readonly
+        placeholder="Escolha a frequência"
+        onclick="abrirSelecaoFrequenciaVaga()"
+    />
+
+    <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">
           <tbody>
             <tr>
               <th>Substituir</th>
@@ -3454,11 +3546,18 @@
         </tr>
       </tbody>
     </table>
-    <div style="text-align: center; float: right;"><button style="width: 50vw;" type="button" class="botao salvar"onclick="salvarVaga()">💾 Cadastrar Vaga</button></div>
 
-        <div style="display: flex; align-items: center; gap: 10px;">
-        <p id="msgCadastrarVaga" class="mensagem-verde"></p>
-        </div>
+    <label>
+        
+    </label>
+
+      <button type="button" onclick="salvarVaga()">
+        💾 Cadastrar Vaga
+      </button>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+    <p id="msgCadastrarVaga" class="mensagem-verde"></p>
+    </div>
 
   <table id="tabelaTotalVagasPendentes" class="tabela-sistema">
     <thead>
@@ -3695,11 +3794,12 @@
   </div>
 
   </div> 
+
   </div>
 
 
 
-    <script src="utils.js"></script>
+    <!--<script src="utils.js"></script>-->
     <!--<script src="api.js"></script>-->
     <script src="app.js"></script>
     <script src="login.js"></script>

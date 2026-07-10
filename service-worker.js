@@ -6,8 +6,48 @@ importScripts(
 importScripts(
   "https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js"
 );
+console.log("VERSÃO TESTE 2");
+self.addEventListener("install", event => {
 
+  console.log("📦 Instalando novo Service Worker");
 
+  self.skipWaiting();
+
+});
+
+self.addEventListener("activate", event => {
+
+  console.log("🚀 Service Worker ativado");
+
+  event.waitUntil(
+
+    clients.claim()
+
+  );
+
+});
+
+/*self.addEventListener("message", event => {
+
+  if (event.data && event.data.type === "SKIP_WAITING") {
+
+    console.log("⚡ Ativando novo Service Worker");
+
+    self.skipWaiting();
+
+  }
+
+});*/
+
+self.addEventListener("message", event => {
+
+  if (event.data?.type === "SKIP_WAITING") {
+
+    self.skipWaiting();
+
+  }
+
+});
 
 firebase.initializeApp({
 
@@ -56,15 +96,21 @@ messaging.onBackgroundMessage((payload) => {
 
 
 
+  const iconPath =
+  self.location.hostname === "127.0.0.1" ||
+    self.location.hostname === "localhost"
+      ? "/icon-192.png"
+      : "/tpe-sbc/icon-192.png";
+
   self.registration.showNotification(title, {
 
+    body,
 
-    body: body,
+    icon: iconPath,
 
-    icon: "/icon-192.png",
+    badge: iconPath,
 
     data: payload.data
-
 
   })
   .then(() => {
@@ -75,5 +121,143 @@ messaging.onBackgroundMessage((payload) => {
 
   });
 
+
+});
+
+/*self.addEventListener("notificationclick", event => {
+
+  console.log("👆 Clique na notificação");
+
+  event.notification.close();
+
+  const idVaga = event.notification.data?.idVaga || "";
+
+  const url =
+    self.location.hostname === "127.0.0.1" ||
+    self.location.hostname === "localhost"
+      ? `/?idVaga=${encodeURIComponent(idVaga)}`
+      : `/tpe-sbc/?idVaga=${encodeURIComponent(idVaga)}`;
+
+  event.waitUntil(
+
+    clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    }).then(clientList => {
+
+      // Se o app já estiver aberto, reutiliza a janela
+      for (const client of clientList) {
+
+        client.focus();
+
+        client.navigate(url);
+
+        return;
+
+      }
+
+      // Caso contrário, abre uma nova janela
+      return clients.openWindow(url);
+
+    })
+
+  );
+
+});*/
+// DAQUI PRA CIMA FUNCIONAVA ANTES DAS NOTIFICAÇÕES AOS AACS. DQQUI PRA BAIXO NOVO - DELETAR E DESCOEMNTAR ACIMA SE DER ERRO
+self.addEventListener("notificationclick", event => {
+
+  console.log("👆 Clique na notificação");
+
+
+  event.notification.close();
+
+  const dados =
+    event.notification.data || {};
+
+    console.log(
+      "DADOS PUSH RECEBIDOS:",
+      dados
+    );
+
+  let url;
+
+  // ===============================
+  // NOVO: Notificação de Escala
+  // ===============================
+
+  if (dados.tipo === "escala") {
+
+    const params =
+      new URLSearchParams({
+
+        tipo: "escala",
+
+        ponto: dados.ponto || "",
+
+        dia: dados.dia || "",
+
+        turno: dados.turno || "",
+
+        frequencia: dados.frequencia || "",
+
+        idParticipante: dados.idParticipante || ""
+
+      });
+
+    url =
+      self.location.hostname === "127.0.0.1" ||
+      self.location.hostname === "localhost"
+
+        ? `/?${params.toString()}`
+
+        : `/tpe-sbc/?${params.toString()}`;
+
+  }
+
+  // ===============================
+  // COMPORTAMENTO ATUAL (NÃO ALTERADO)
+  // ===============================
+
+  else {
+
+    const idVaga =
+      dados.idVaga || "";
+
+    url =
+      self.location.hostname === "127.0.0.1" ||
+      self.location.hostname === "localhost"
+
+        ? `/?idVaga=${encodeURIComponent(idVaga)}`
+
+        : `/tpe-sbc/?idVaga=${encodeURIComponent(idVaga)}`;
+
+  }
+
+  event.waitUntil(
+
+    clients.matchAll({
+
+      type: "window",
+
+      includeUncontrolled: true
+
+    }).then(clientList => {
+
+      for (const client of clientList) {
+
+        client.focus();
+
+        client.navigate(url);
+
+        return;
+
+      }
+
+      return clients.openWindow(url);
+
+    })
+
+  );
 
 });

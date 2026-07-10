@@ -322,7 +322,7 @@ h6 {
   background-color: var(--cor-fundo);
   padding: 4vh 4vw;
   text-align: center;
-  z-index: 77777;
+  z-index: 66666;
   width: 95vw;
   max-width: 95vw;
   display: flex;
@@ -1237,61 +1237,223 @@ button.btn-voltar-menu:hover {
 /* =========================
    MODAL BASE (GENÉRICO)
 ========================= */
+/* =========================
+   MODAL PADRÃO
+========================= */
 
 .modal-padrao {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 9999;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+
+    inset: 0;
+
+    background:
+    rgba(0,0,0,.45);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
 }
 
-/* escondido */
+
 .modal-padrao.oculto {
-  display: none;
+
+    display:none;
+
 }
 
-/* conteúdo */
-.modal-padrao .conteudo-modal {
-  background: white;
-  width: 100%;
-  padding: 1rem;
-  border-radius: var(--raio-borda);
-  text-align: center;
-  box-sizing: border-box;
+
+
+.modal-conteudo {
+
+    width:90%;
+
+    max-width:450px;
+
+    max-height:80vh;
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.25);
+
 }
 
-/* título */
-.modal-padrao h3 {
-  /*font-size: 1.8em;*/
-  margin-bottom: 1rem;
+
+
+.modal-conteudo h3 {
+
+    margin:0;
+
+    padding:18px;
+
+    background:#2563eb;
+
+    color:white;
+
+    text-align:center;
+
+    font-size:22px;
+
 }
 
-/* texto */
-.modal-padrao p {
-  /*font-size: 1.3em;*/
-  line-height: 1.5;
-  margin-bottom: 1rem;
+
+
+#filtroModalSelecao {
+
+    margin:15px;
+
+    width:calc(100% - 30px);
+
+    padding:12px;
+
+    border-radius:8px;
+
+    border:1px solid #cbd5e1;
+
+    font-size:16px;
+
 }
 
-/* botões */
-.modal-padrao .botoes-modal {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+
+
+#listaModalSelecao {
+
+    max-height:400px;
+
+    overflow-y:auto;
+
+    padding:5px 15px;
+
 }
 
-/* botão padrão */
-.modal-padrao button {
-  flex: 1;
-  padding: 1rem;
-  /*font-size: var(--fonte-grande);*/
-  font-weight: bold;
-  cursor: pointer;
+
+.item-modal-selecao {
+
+
+    padding:14px;
+
+    margin:5px 0;
+
+    border-radius:8px;
+
+    background:#f8fafc;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    transition:.2s;
+
+
 }
+
+
+
+.item-modal-selecao:hover {
+
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+
+}
+
+
+
+.item-subnivel {
+
+
+    margin-left:20px;
+
+    background:#eff6ff;
+
+
+}
+
+
+
+.titulo-grupo-modal {
+
+
+    margin-top:12px;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    background:#1e40af;
+
+    color:white;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+
+}
+
+
+.botoes-modal {
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+
+.botoes-modal button {
+
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#ef4444;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+
+}
+
+
+.botoes-modal button:hover {
+
+    background:#dc2626;
+
+}
+
+
+
+
+
+
+
 
 /*Modal comunicar Administrador*/
 #modalComunicarAdministrador {
@@ -1422,28 +1584,27 @@ button.btn-voltar-menu:hover {
     cursor: pointer;
 }
 
-#modalSubstituicao {
+/*#modalSubstituicao {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 90vw;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
+  inset: 0;
+  background: rgba(0,0,0,0.5);
   z-index: 9999;
+  justify-content: center;
+  align-items: center;
 }
 
 #modalSubstituicao .conteudo-modal {
-  background: #fff;
-  margin: 5% auto;
+  background: white;
   padding: 1rem;
+  border-radius: var(--raio-borda);
   width: 90vw;
-  /*border-radius: 1rem;*/
-  border-radius: /*0.625rem*/ var(--raio-borda);
+  text-align: center;
+  box-sizing: border-box;
   box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
-}
+}*/
 
-#modalDesignados {
+/*#modalDesignados {
   display: none;
   position: fixed;
   top: 0;
@@ -1459,9 +1620,43 @@ button.btn-voltar-menu:hover {
   margin: 5% auto;
   padding: 1rem;
   width: 100%;
-  /*border-radius: 1rem;*/
-  border-radius: /*0.625rem*/ var(--raio-borda);
+  border-radius: var(--raio-borda);
   box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
+}*/
+
+#modalDesignados {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+}
+
+
+#modalDesignados .conteudo-modal {
+  background: #fff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  padding: 1.5rem;
+
+  width: 90%;
+  max-width: 500px;
+
+  max-height: 80vh;
+  overflow-y: auto;
+
+  border-radius: var(--raio-borda);
+  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
+
+  text-align: center;
 }
 
 #confirmacaoGlobal {
@@ -2333,20 +2528,327 @@ td {
     flex-shrink:0;
 }
 
-/*
-@media (max-width: 768px) {
+.card-vaga {
 
-  body {
-    font-size: 1rem;
-  }
+  width: 95%;
+  margin: 15px auto;
 
-  input, select, button {
-    height: auto;
-    font-size: 0.9rem;
-  }
+  padding: 20px;
 
-  table {
-    font-size: 0.9rem;
-  }
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+
 }
-*/
+
+
+.titulo-vaga {
+
+  font-size: 1.3em;
+
+  font-weight: bold;
+
+  margin-bottom: 15px;
+
+}
+
+
+.info-vaga div {
+
+  margin: 10px 0;
+
+  font-size: 1.1em;
+
+}
+
+
+.btn-aceitar-vaga {
+
+  margin-top: 20px;
+
+  width: 100%;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  border: none;
+
+  font-size: 1.1em;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+}
+
+.card-vaga-destaque {
+  border: 3px solid orange;
+  transform: scale(1.03);
+}
+
+.aviso-vaga-notificacao {
+  margin: 10px 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.card-vaga-destaque {
+
+  border: 3px solid #ff9800;
+
+  background: #fff8e1;
+
+  box-shadow: 0 0 18px rgba(255,152,0,.45);
+
+  animation: piscarVaga 1.2s ease-in-out infinite;
+
+}
+
+@keyframes piscarVaga {
+
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+.btn-aceitar-destaque {
+
+  animation: brilhoBotao 1.5s infinite;
+
+}
+
+@keyframes brilhoBotao {
+
+  0% {
+    box-shadow: 0 0 0 rgba(255,152,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 18px rgba(255,152,0,.7);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(255,152,0,0);
+  }
+
+}
+
+
+
+
+
+
+
+
+/* ===============================
+   CampoSelecao
+================================ */
+
+.modal-selecao {
+
+    width: 90%;
+    max-width: 450px;
+
+    background:white;
+
+    border-radius:12px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.25);
+
+    overflow:hidden;
+
+}
+
+
+.modal-selecao h3 {
+
+    margin:0;
+
+    padding:15px;
+
+    background:#2a4d8f;
+
+    color:white;
+
+    text-align:center;
+
+    font-size:22px;
+
+}
+
+
+.item-selecao-modal {
+
+    padding:12px 15px;
+
+    border-bottom:1px solid #ddd;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+
+
+.item-selecao-modal:hover {
+
+    background:#eaf0ff;
+
+    color:#2a4d8f;
+
+}
+
+
+
+
+/* ===============================
+   CSS PARA OS INPUTS SELECIONAVEIS
+================================ */
+/*.campo-selecao-visual {
+
+    width: 100%;
+
+    height: 45px;
+
+    padding: 0 45px 0 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    background-color: #ffffff;
+
+    color: #1f2937;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+
+    background-position: right 14px center;
+
+    transition: all .2s ease;
+
+}
+
+
+
+.campo-selecao-visual:hover {
+
+    border-color: #2563eb;
+
+    background-color: #f8fafc;
+
+}
+
+
+
+.campo-selecao-visual:focus {
+
+    outline: none;
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+
+}
+
+
+
+.campo-selecao-visual::placeholder {
+
+    color: #64748b;
+
+    font-weight: 500;
+
+}*/
+.campo-selecao-visual {
+
+    width: 100%;
+    min-height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 16px;
+
+    border: 1px solid #968c07;
+    border-radius: var(--raio-borda);
+
+    background: #ffffff;
+
+    color: #1f2937;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: 0 0 0.6em rgba(0,0,0,0.1);
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease,
+        border-color .15s ease;
+
+    background-image:
+    linear-gradient(45deg, transparent 50%, #2563eb 50%),
+    linear-gradient(135deg, #2563eb 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 18px) 20px,
+        calc(100% - 12px) 20px;
+
+    background-size:
+        6px 6px,
+        6px 6px;
+
+    background-repeat:no-repeat;
+
+}
+
+
+.campo-selecao-visual:hover {
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 4px 10px rgba(37,99,235,.18);
+
+}
+
+
+.campo-selecao-visual:active {
+
+    transform:scale(.98);
+
+}
+
+/* DESTAQUE DA LINHA DO RECEN-SESIGNADO NA PESQUISA DO AAC PELA NOTIFICAÇÃO DE ACEITE OU DESIGNAÇÃO */
+.linha-designacao-destaque {
+    background: #fff3b0 !important;
+    outline: 3px solid #f59e0b;
+    font-weight: bold;
+}

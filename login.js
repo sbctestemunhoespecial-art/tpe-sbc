@@ -1,5 +1,500 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
+let versaoServidor = "";
+let versaoLocal = "";
+
+async function verificarVersaoApp() {
+
+  try {
+
+    const resposta =
+      await fetch("version.json?ts=" + Date.now());
+
+    const dados =
+      await resposta.json();
+
+    versaoServidor =
+      dados.version;
+
+    /*const versaoLocal =
+      localStorage.getItem("appVersion");*/
+
+    versaoLocal =
+      localStorage.getItem("appVersion");
+
+    console.log("Versão servidor:", versaoServidor);
+    console.log("Versão local:", versaoLocal);
+
+    if (!versaoLocal) {
+
+      localStorage.setItem(
+        "appVersion",
+        versaoServidor
+      );
+
+      return;
+
+    }
+
+    if (versaoServidor !== versaoLocal) {
+
+      mostrarTelaAtualizacao();
+
+    }
+
+  } catch (e) {
+
+    console.error(
+      "Erro verificando versão",
+      e
+    );
+
+  }
+
+}
+
+function atualizarStatusAtualizacao(texto) {
+
+  const el =
+    document.getElementById("statusAtualizacao");
+
+  if (!el) return;
+
+  el.style.display = "block";
+
+  el.textContent = texto;
+
+}
+
+/*async function atualizarAplicativo() {
+
+  mostrarSpinner();
+
+  try {
+
+    // Atualiza a versão local
+    localStorage.setItem(
+      "appVersion",
+      versaoServidor
+    );
+
+    // Remove apenas os caches do aplicativo
+    const nomes =
+      await caches.keys();
+
+    for (const nome of nomes) {
+
+      if (nome.startsWith("tpe")) {
+
+        await caches.delete(nome);
+
+        console.log(
+          "🗑 Cache removido:",
+          nome
+        );
+
+      }
+
+    }
+
+    // Atualiza o Service Worker
+    const registro =
+      await navigator.serviceWorker.getRegistration();
+
+    if (registro) {
+
+      await registro.update();
+
+      console.log(
+        "✅ Service Worker atualizado"
+      );
+
+    }
+
+    // Pequena pausa
+    await new Promise(r => setTimeout(r, 800));
+
+    location.reload();
+
+  }
+  catch(e) {
+
+    esconderSpinner();
+
+    console.error(e);
+
+    mostrarAlertaGlobal(
+
+      "❌ Não foi possível atualizar o aplicativo."
+
+    );
+
+  }
+
+}*/
+/*async function atualizarAplicativo() {
+
+  try {
+
+    atualizarStatusAtualizacao(
+      "🚀 Preparando atualização..."
+    );
+
+    //localStorage.setItem(
+      //"appVersion",
+      //versaoServidor
+    //);
+
+    await new Promise(r =>
+      setTimeout(r, 700)
+    );
+
+    atualizarStatusAtualizacao(
+      "🔍 Verificando nova versão..."
+    );
+
+    if ("serviceWorker" in navigator) {
+
+      const registro =
+        await navigator.serviceWorker.getRegistration();
+
+      if (registro) {
+
+        //await registro.update();
+        await registro.update();
+
+        //if (registro.waiting) {
+
+          //registro.waiting.postMessage({
+
+           //type: "SKIP_WAITING"
+
+          //});
+
+       //}
+
+        if (registro.waiting) {
+
+          aguardarNovoServiceWorker();
+
+          registro.waiting.postMessage({
+            
+            type: "SKIP_WAITING"
+
+          });
+
+        }
+        else {
+
+          console.log(
+            "✅ Nenhuma atualização do Service Worker."
+          );
+
+          localStorage.setItem(
+            "appVersion",
+            versaoServidor
+          );
+
+          location.reload();
+
+        }
+
+      }
+
+    }
+
+    await new Promise(r =>
+      setTimeout(r, 700)
+    );
+
+    atualizarStatusAtualizacao(
+      "🧹 Limpando arquivos antigos..."
+    );
+
+    await new Promise(r =>
+      setTimeout(r, 700)
+    );
+
+    atualizarStatusAtualizacao(
+      "✅ Reiniciando aplicativo..."
+    );
+
+    //setTimeout(() => {
+
+      //location.reload();
+
+    //}, 800);
+
+  }
+  catch(e) {
+
+    console.error(e);
+
+    mostrarAlertaGlobal(
+      "❌ Erro ao atualizar o aplicativo."
+    );
+
+  }
+
+}*/
+async function atualizarAplicativo() {
+
+  try {
+
+    atualizarStatusAtualizacao(
+      "🚀 Preparando atualização..."
+    );
+
+
+    await new Promise(r =>
+      setTimeout(r, 700)
+    );
+
+
+    atualizarStatusAtualizacao(
+      "🔍 Verificando nova versão..."
+    );
+
+
+    if ("serviceWorker" in navigator) {
+
+      const registro =
+        await navigator.serviceWorker.getRegistration();
+
+
+      if (registro) {
+
+        await registro.update();
+
+
+        const registroAtualizado =
+          await navigator.serviceWorker.getRegistration();
+
+
+        if (registroAtualizado?.waiting) {
+
+          console.log(
+            "🆕 Novo Service Worker encontrado."
+          );
+
+
+          // prepara a escuta antes de mandar assumir
+          aguardarNovoServiceWorker();
+
+
+          registroAtualizado.waiting.postMessage({
+
+            type: "SKIP_WAITING"
+
+          });
+
+
+        }
+        else {
+
+          console.log(
+            "ℹ Nenhuma atualização do Service Worker."
+          );
+
+          // Caso não exista novo SW,
+          // considera a atualização concluída
+
+          localStorage.setItem(
+            "appVersion",
+            versaoServidor
+          );
+
+
+          location.reload();
+
+        }
+
+      }
+
+    }
+
+
+    atualizarStatusAtualizacao(
+      "🧹 Finalizando atualização..."
+    );
+
+
+  }
+  catch(e) {
+
+    console.error(
+      "Erro ao atualizar aplicativo:",
+      e
+    );
+
+
+    mostrarAlertaGlobal(
+      "❌ Erro ao atualizar o aplicativo."
+    );
+
+  }
+
+}
+
+function mostrarTelaAtualizacao() {
+
+  document.getElementById(
+    "versaoAtualUsuario"
+  ).textContent =
+    versaoLocal || "Primeiro acesso";
+
+  document.getElementById(
+    "versaoAtualServidor"
+  ).textContent =
+    versaoServidor;
+
+  document.getElementById(
+    "modalAtualizacao"
+  ).classList.remove("oculto");
+
+}
+
+function fecharTelaAtualizacao() {
+
+  document
+    .getElementById("modalAtualizacao")
+    .classList.add("oculto");
+
+}
+
+/*function monitorarAtualizacaoServiceWorker() {
+
+  if (!("serviceWorker" in navigator)) {
+
+    return;
+
+  }
+
+  navigator.serviceWorker.getRegistration()
+
+    .then(registro => {
+
+      if (!registro) {
+
+        return;
+
+      }
+
+      registro.addEventListener(
+
+        "updatefound",
+
+        () => {
+
+          console.log(
+            "🆕 Novo Service Worker encontrado."
+          );
+
+        }
+
+      );
+
+    });
+
+}*/
+/*function monitorarAtualizacaoServiceWorker() {
+
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  navigator.serviceWorker.getRegistration()
+
+    .then(registro => {
+
+      if (!registro) {
+        return;
+      }
+
+      registro.addEventListener("updatefound", () => {
+
+        console.log("🆕 Nova versão do Service Worker encontrada.");
+
+        const novoWorker = registro.installing;
+
+        if (!novoWorker) {
+          return;
+        }
+
+        novoWorker.addEventListener("statechange", () => {
+
+          if (
+            novoWorker.state === "installed" &&
+            navigator.serviceWorker.controller
+          ) {
+
+            console.log("✅ Novo Service Worker pronto.");
+
+            mostrarTelaAtualizacao();
+
+          }
+
+        });
+
+      });
+
+    });
+
+}*/
+function aguardarNovoServiceWorker() {
+
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  navigator.serviceWorker.addEventListener(
+
+    "controllerchange",
+
+    () => {
+
+      console.log("🚀 Novo Service Worker assumiu.");
+
+      localStorage.setItem(
+        "appVersion",
+        versaoServidor
+      );
+
+      location.reload();
+
+    },
+
+    { once: true }
+
+  );
+
+}
+/*function inicializarServiceWorker() {
+
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  //monitorarAtualizacaoServiceWorker();
+
+  navigator.serviceWorker.addEventListener(
+
+    "controllerchange",
+
+    () => {
+
+      console.log(
+        "🚀 Novo Service Worker assumiu."
+      );
+
+      location.reload();
+
+    }
+
+  );
+
+}*/
+
 function apiJSONP(acao, parametros = {}, callback, onError) {
 
   const callbackName =
@@ -99,7 +594,7 @@ function mostrarPainelSemMenu(idPainel) {
   if (painel) painel.classList.add('ativo');
 }
 
-let campoDestinoModal = null;
+//let campoDestinoModal = null;
 
 function sair() {
   toggleMenu();
@@ -416,7 +911,23 @@ function fazerLogin() {
           }
 
           esconderSpinner();
+          
           verificarTreinamentoPendente();
+          
+          //tratarNotificacaoAoAbrir();
+          if (idVagaNotificacao) {
+
+            console.log(
+              "📌 Abrindo vaga da notificação após login:",
+              idVagaNotificacao
+            );
+
+
+            abrirTela("telaVagasDisponiveis");
+
+            carregarVagasDisponiveis();
+
+          }
 
         },
         function(err) {
@@ -549,6 +1060,8 @@ function mostrarSecoesPorPerfil(perfil) {
 
 window.addEventListener("DOMContentLoaded", () => {
 
+  verificarVersaoApp();
+
   const usuarioSalvo = localStorage.getItem("usuarioLogado");
 
   if (usuarioSalvo) {
@@ -581,6 +1094,8 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById('conteudoProtegido').style.display = 'block';
 
     mostrarSecoesPorPerfil(dados.perfil);
+
+    //tratarNotificacaoAoAbrir();
 
     apiJSONP(
       "buscarNomeDoUsuario",
@@ -632,6 +1147,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById('conteudoProtegido').style.display = 'none';
 
   }
+  tratarNotificacaoAoAbrir();
 
 });
 
@@ -688,13 +1204,39 @@ document.addEventListener('click', function (event) {
 });
 
 function pesquisarDesignados() {
-  const turno = document.getElementById('turnoDesignado').value.trim();
-  const dia = document.getElementById('diaDesignado').value.trim();
-  const ponto = document.getElementById('pontoDesignado').value.trim();
+
+   const turno =
+    document.getElementById("turnoDesignadoVisual")?.value ||
+    window.camposSelecionados.turnoDesignado ||
+    "";
+
+  const dia =
+    document.getElementById("diaDesignadoVisual")?.value ||
+    window.camposSelecionados.diaDesignado ||
+    "";
+
+  const ponto =
+    document.getElementById("pontoDesignadoVisual")?.value ||
+    window.camposSelecionados.pontoDesignado ||
+    "";
+
+  console.log(
+    "🔎 Filtros pesquisa:",
+    {
+      ponto,
+      turno,
+      dia
+    }
+  );
 
   if (!turno || !dia || !ponto) {
-    mostrarAlertaGlobal('⚠️ Por favor, selecione todos os filtros.');
+
+    mostrarAlertaGlobal(
+      '⚠️ Por favor, selecione todos os filtros.'
+    );
+
     return;
+
   }
 
   const msg = document.getElementById("msgPesqDesignados");
@@ -750,6 +1292,7 @@ function exibirResultados(res) {
 
     html += `
         <tr class="linha-designacao" 
+            data-id="${r.idParticipante}"
             data-nome="${r.nome}" 
             data-turno="${turnoPalavra}" 
             data-dia="${r.dia}" 
@@ -768,7 +1311,35 @@ function exibirResultados(res) {
 
   html += '</tbody></table>';
   c.innerHTML = html;
+
+  // Destacar designação vinda da notificação
+  if (notificacaoEscala?.idParticipante) {
+
+    const linha = c.querySelector(
+      `[data-id="${notificacaoEscala.idParticipante}"]`
+    );
+
+    if (linha) {
+
+      linha.classList.add("linha-designacao-destaque");
+
+      setTimeout(() => {
+
+        linha.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      }, 300);
+
+    }
+
+  }
+
+
   msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
+
+
 
   c.querySelectorAll('.linha-designacao').forEach(linha => {
 
@@ -1222,108 +1793,6 @@ function carregarDadosDesignacao() {
     }
   );
 }
-
-  function popularSelects(dados) {
-    const { pontoCorrigir, pontos = [], participantes = [] } = dados;
-
-    const pontoVcorrigir = document.getElementById('pontoCorrigir');
-    const pontoSel = document.getElementById('ponto');
-    const partSel = document.getElementById('participanteDesignacao');
-
-    if (!pontoVcorrigir || !pontoSel || !partSel) return;
-
-    // 🧹 Limpa selects
-    pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
-    pontoVcorrigir.innerHTML = "<option value=''>- Sel Teste Corrigir -</option>";
-
-    const regex = /^([A-Z]+)(\d+)$/i;
-
-    // 🔍 Log para depuração
-    console.log("📋 Pontos recebidos:", pontos);
-
-    // ✅ Ordena por número e prefixo
-    const pontosOrdenados = pontos.slice().sort((a, b) => {
-      const matchA = a.match(regex);
-      const matchB = b.match(regex);
-      if (!matchA || !matchB) return 0;
-
-      const [, prefixA, numA] = matchA;
-      const [, prefixB, numB] = matchB;
-
-      const diffNum = parseInt(numA) - parseInt(numB);
-      if (diffNum !== 0) return diffNum;
-
-      const ordemPrefixos = ["A", "M", "MA", "MB", "T", "TA", "TB", "N"];
-      const idxA = ordemPrefixos.indexOf(prefixA);
-      const idxB = ordemPrefixos.indexOf(prefixB);
-      if (idxA === -1 || idxB === -1) return prefixA.localeCompare(prefixB);
-      return idxA - idxB;
-    });
-
-    console.log("✅ Pontos ordenados:", pontosOrdenados);
-
-    // ✅ Preenche selects com os pontos completos (ex: MA20, MB20)
-    pontosOrdenados.forEach(p => {
-      const opt1 = document.createElement('option');
-      opt1.value = p;
-      opt1.textContent = p;
-      pontoSel.appendChild(opt1);
-
-      const opt2 = document.createElement('option');
-      opt2.value = p;
-      opt2.textContent = p;
-      pontoVcorrigir.appendChild(opt2);
-    });
-
-    // ✅ Participantes
-    partSel.innerHTML = '<option value="">-- Selecione para designar! --</option>';
-    participantes.forEach(n => {
-      const opt = document.createElement('option');
-      opt.value = n;
-      opt.textContent = n;
-      partSel.appendChild(opt);
-    });
-
-    // ✅ Popula selects de "Ponto X"
-    const selPonto1 = document.getElementById('pontobepp');
-    const selPonto2 = document.getElementById('pontoDesignado');
-    const selPonto3 = document.getElementById('pontosParaOferecerSelect');
-    const selPonto4 = document.getElementById('pontosParaOferecerSelectSub');
-    const selPonto5 = document.getElementById('pontoSelectMap2');
-    const selPonto6 = document.getElementById('pontosParaOferecerSelect2h');
-
-    if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
-      const numerosUnicos = new Set();
-
-      pontosOrdenados.forEach(ponto => {
-        const match = ponto.match(regex);
-        if (match) {
-          const num = parseInt(match[2], 10);
-          if (!isNaN(num)) numerosUnicos.add(num);
-        } else {
-          console.warn("⚠️ Ponto ignorado (regex falhou):", ponto);
-        }
-      });
-
-      const numerosOrdenados = Array.from(numerosUnicos).sort((a, b) => a - b);
-      console.log("📌 Números de ponto:", numerosOrdenados);
-
-      numerosOrdenados.forEach(num => {
-        const label = `Ponto ${num}`;
-        [selPonto1, selPonto2, selPonto3, selPonto4, selPonto5, selPonto6].forEach(sel => {
-          const opt = document.createElement('option');
-          opt.value = label;
-          opt.textContent = label;
-          sel.appendChild(opt);
-        });
-      });
-    }
-
-    console.log("🎯 Selects populados com sucesso.");
-  }
-
-
-
 
 function preencherTabelaSemDisponibilidade() {
 
@@ -3674,7 +4143,7 @@ let infoWindow = null;
 let mapScriptLoaded = false;
 let mapaIniciado = false;
 
-function initMap() {
+/*function initMap() {
 
   if (mapaIniciado) return; // impede recriação
 
@@ -3720,6 +4189,45 @@ function initMap() {
     }
 
   );
+}*/
+
+function initMap() {
+
+  if (mapaIniciado) return;
+
+  map = new google.maps.Map(
+    document.getElementById("map"),
+    {
+      center: { lat: -14.2350, lng: -51.9253 },
+      zoom: 4,
+    }
+  );
+
+  mapaIniciado = true;
+
+  apiJSONP(
+    "getTodosOsPontos",
+    {},
+
+    function(pontos) {
+
+      todosOsPontos = pontos;
+
+      renderAllMarkers(todosOsPontos);
+
+    },
+
+    function(err) {
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar pontos: " +
+        (err?.message || err?.mensagem || err)
+      );
+
+    }
+
+  );
+
 }
 
 window.initMap = initMap;
@@ -3751,8 +4259,11 @@ function renderAllMarkers(pontos) {
 }
 
 function verMapa() {
-  const select = document.getElementById("pontoSelectMap");
-  const nomeSelecionado = select.value;
+  //const select = document.getElementById("pontoSelectMap");
+      
+  const nomeSelecionado = 
+        //select.value;
+        window.camposSelecionados.pontoSelectMap;
 
   if (!nomeSelecionado) {
     mostrarAlertaGlobal("Selecione um ponto.");
@@ -3813,7 +4324,8 @@ function verMapa() {
 function editarMapa() {
 
   const nomeSelecionado =
-    document.getElementById("pontoSelectMap2").value;
+    //document.getElementById("pontoSelectMap2").value;
+    window.camposSelecionados.pontoSelectMap2
 
   if (!nomeSelecionado) {
     mostrarAlertaGlobal("Selecione um ponto.");
@@ -3907,7 +4419,7 @@ function carregarMapaQuandoClicar() {
   if (!mapScriptLoaded) {
     const script = document.createElement("script");
     script.src =
-      //"https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
+    //"https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
@@ -5449,7 +5961,7 @@ function abrirNovoPonto() {
 
 let participantesEncontrados = [];
 
-function buscarParticipantes() {
+/*function buscarParticipantes() {
 
   const campos = {
     dia: document.getElementById('diasSelect'),
@@ -5589,10 +6101,248 @@ function buscarParticipantes() {
 
     }
   );
-}
+}*/
+function buscarParticipantes() {
 
+  const campos = {
+    dia: document.getElementById('diasSelectVisual'),
+    turno: document.getElementById('turnosSelectVisual'),
+    frequencia: document.getElementById('frequenciasSelectVisual')
+  };
+
+  const valores = {
+    dia: window.camposSelecionados.diasSelect,
+    turno: window.camposSelecionados.turnosSelect,
+    frequencia: window.camposSelecionados.frequenciasSelect
+  };
+
+  const msg = document.getElementById("msgPesqDisponiveis");
+
+  // Remove marcações de erro anteriores
+  Object.values(campos).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+  // Verifica se há campos vazios
+  const camposVazios = Object.entries(valores)
+    .filter(([_, valor]) => !valor)
+    .map(([chave]) => chave);
+
+  if (camposVazios.length > 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, selecione dia, turno e frequência."
+    );
+
+    camposVazios.forEach(campo => {
+
+      if (campos[campo]) {
+
+        campos[campo].classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+  const diasTurnos = [
+    `${valores.dia} - ${valores.turno}`
+  ];
+
+  const frequencias = [
+    valores.frequencia
+  ];
+
+  const resultadoDiv =
+    document.getElementById('resultadoBusca');
+
+  resultadoDiv.textContent = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarParticipantesPorFiltroAvancado",
+
+    {
+
+      dados: JSON.stringify({
+
+        diasTurnos,
+
+        frequencias
+
+      })
+
+    },
+
+    (participantes) => {
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+      participantesEncontrados = participantes;
+
+      esconderSpinner();
+
+      if (!participantes || participantes.length === 0) {
+
+        mostrarAlertaGlobal(
+          "❌ Nenhum participante encontrado."
+        );
+
+        resultadoDiv.textContent = '';
+
+        return;
+
+      }
+
+      msg.textContent =
+        `✅ ${participantes.length} participante(s) encontrado(s).`;
+
+      const tabela =
+        document.createElement('table');
+
+      tabela.classList.add('tabela-listagem');
+
+      const thead =
+        tabela.createTHead();
+
+      const trHead =
+        thead.insertRow();
+
+      [
+
+        'Nome Completo',
+
+        'Condição',
+
+        'Frequência',
+
+        'Dias e Turnos Disponíveis'
+
+      ].forEach(text => {
+
+        const th =
+          document.createElement('th');
+
+        th.textContent = text;
+
+        trHead.appendChild(th);
+
+      });
+
+      const tbody =
+        tabela.createTBody();
+
+      participantes.forEach(p => {
+
+        const tr =
+          tbody.insertRow();
+
+        const tdNome =
+          tr.insertCell();
+
+        const nome =
+          p.nomeCompleto || '';
+
+        const linhas =
+          nome.split('\n');
+
+        if (linhas.length > 0) {
+
+          tdNome.innerHTML =
+            `<strong>${linhas[0]}</strong>` +
+            (linhas.length > 1
+              ? '<br>' + linhas.slice(1).join('<br>')
+              : '');
+
+        } else {
+
+          tdNome.textContent = nome;
+
+        }
+
+        tdNome.dataset.id = p.id || "";
+
+        tdNome.classList.add('clicavel-nome');
+
+        tdNome.style.cursor = 'pointer';
+
+        tdNome.style.color = 'green';
+
+        tdNome.title = 'Clique para interagir';
+
+        tr.insertCell().textContent =
+          p.condicao || '';
+
+        tr.insertCell().textContent =
+          p.frequencia || '';
+
+        tr.insertCell().textContent =
+          (p.diasTurnos || []).join(', ');
+
+      });
+
+      resultadoDiv.appendChild(tabela);
+
+      document.getElementById('dadosUsuarioContainer').style.display =
+        'inline-block';
+
+      document.getElementById('enviarEmailTodosBtn').style.display =
+        'inline-block';
+
+    },
+
+    (erro) => {
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro na busca: " +
+
+        (erro?.mensagem ||
+
+         erro?.error ||
+
+         "Erro desconhecido")
+
+      );
+
+      resultadoDiv.textContent = '';
+
+    }
+
+  );
+
+}
 // clique em participante
-document.addEventListener('click', function (event) {
+/*document.addEventListener('click', function (event) {
 
   const alvo = event.target.closest('.clicavel-nome');
   if (!alvo) return;
@@ -5684,11 +6434,211 @@ document.addEventListener('click', function (event) {
       alvo.classList.add('clicavel-nome');
     }
   );
+});*/
+document.addEventListener('click', function (event) {
+
+  const alvo = event.target.closest('.clicavel-nome');
+  if (!alvo) return;
+
+  mostrarSpinner();
+
+  const nome = alvo.innerText.trim();
+  const id = alvo.dataset.id;
+
+
+  const valores = {
+
+    ponto:
+      window.camposSelecionados.pontosParaOferecerSelect,
+
+    dia:
+      window.camposSelecionados.diasSelect,
+
+    turno:
+      window.camposSelecionados.turnosSelect,
+
+    frequencia:
+      window.camposSelecionados.frequenciasSelect,
+
+    equipamento:
+      window.camposSelecionados.equipamentosParaOferecerSelect,
+
+    necessidade:
+      window.camposSelecionados.necessidade
+
+  };
+
+
+  const camposVisuais = {
+
+    ponto:
+      document.getElementById('pontosParaOferecerSelectVisual'),
+
+    dia:
+      document.getElementById('diasSelectVisual'),
+
+    turno:
+      document.getElementById('turnosSelectVisual'),
+
+    frequencia:
+      document.getElementById('frequenciasSelectVisual'),
+
+    equipamento:
+      document.getElementById('equipamentosParaOferecerSelectVisual'),
+
+    necessidade:
+      document.getElementById('necessidadeVisual')
+
+  };
+
+
+  // remove erros anteriores
+
+  Object.values(camposVisuais).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+
+  const camposVazios =
+    Object.entries(valores)
+      .filter(([_, valor]) => !valor)
+      .map(([chave]) => chave);
+
+
+  if (camposVazios.length > 0) {
+
+    esconderSpinner();
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, preencha todos os campos antes de enviar a mensagem."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (camposVisuais[campo]) {
+
+        camposVisuais[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+
+  const mensagem =
+
+    "*DESIGNAÇÃO NO TPE*\n\n" +
+
+    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
+
+    "Informações da designação:\n\n" +
+
+    `🛠️ *Necessidade:* ${valores.necessidade}\n` +
+
+    `📍 *${valores.ponto}*\n` +
+
+    `📆 *Dia:* ${valores.dia}\n` +
+
+    `🕒 *Turno:* ${valores.turno}\n` +
+
+    `📈 *Frequência:* ${valores.frequencia}\n` +
+
+    `📚 *Mostruário:* ${valores.equipamento}\n\n` +
+
+    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
+
+
+  const mensagemCodificada =
+      encodeURIComponent(mensagem);
+
+
+  console.log("🧩 nome:", nome);
+  console.log("🧩 mensagem:", mensagem);
+
+
+  alvo.classList.remove('clicavel-nome');
+
+
+  apiJSONP(
+
+    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
+
+    {
+      id,
+      mensagem: mensagemCodificada
+    },
+
+
+    (url) => {
+
+      esconderSpinner();
+
+
+      Object.values(camposVisuais).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+      window.open(url, '_blank');
+
+
+      alvo.style.color = 'gray';
+      alvo.style.fontStyle = 'italic';
+
+      alvo.innerHTML +=
+        ' <span title="Mensagem enviada">📤</span>';
+
+    },
+
+
+    (err) => {
+
+      esconderSpinner();
+
+
+      Object.values(camposVisuais).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " +
+        (err?.mensagem ||
+         err?.error ||
+         "Erro desconhecido")
+      );
+
+
+      alvo.classList.add('clicavel-nome');
+
+    }
+
+  );
+
 });
-
-
 // enviar email todos
-document.getElementById('enviarEmailTodosBtn').addEventListener('click', function () {
+/*document.getElementById('enviarEmailTodosBtn').addEventListener('click', function () {
 
   if (!participantesEncontrados || participantesEncontrados.length === 0) {
     mostrarAlertaGlobal("⚠️ Nenhum participante disponível para envio de e-mail.");
@@ -5699,7 +6649,8 @@ document.getElementById('enviarEmailTodosBtn').addEventListener('click', functio
     dia: document.getElementById('diasSelect'),
     turno: document.getElementById('turnosSelect'),
     frequencia: document.getElementById('frequenciasSelect'),
-    ponto: document.getElementById('pontosParaOferecerSelect'),
+    //ponto: document.getElementById('pontosParaOferecerSelect'),
+    ponto: window.camposSelecionados.pontosParaOferecerSelect,
     equipamento: document.getElementById('equipamentosParaOferecerSelect'),
     necessidade: document.getElementById('necessidade'),
     nomeUsuarioAtual: document.getElementById('nomeSelectUsuario'),
@@ -5795,8 +6746,276 @@ document.getElementById('enviarEmailTodosBtn').addEventListener('click', functio
 
     }
   );
-});
+});*/
+document.getElementById('enviarEmailTodosBtn')
+.addEventListener('click', function () {
 
+  if (!participantesEncontrados ||
+      participantesEncontrados.length === 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Nenhum participante disponível para envio de e-mail."
+    );
+
+    return;
+  }
+
+
+  const valores = {
+
+    dia:
+      window.camposSelecionados.diasSelect,
+
+    turno:
+      window.camposSelecionados.turnosSelect,
+
+    frequencia:
+      window.camposSelecionados.frequenciasSelect,
+
+    ponto:
+      window.camposSelecionados.pontosParaOferecerSelect,
+
+    equipamento:
+      window.camposSelecionados.equipamentosParaOferecerSelect,
+
+    necessidade:
+      window.camposSelecionados.necessidade,
+
+    nomeUsuarioAtual:
+      document.getElementById('nomeSelectUsuario').value,
+
+    telefone:
+      document.getElementById('telefoneInputUsuario').value.trim(),
+
+    email:
+      document.getElementById('emailInputUsuario').value.trim()
+
+  };
+
+
+  const camposVisuais = {
+
+    dia:
+      document.getElementById('diasSelectVisual'),
+
+    turno:
+      document.getElementById('turnosSelectVisual'),
+
+    frequencia:
+      document.getElementById('frequenciasSelectVisual'),
+
+    ponto:
+      document.getElementById('pontosParaOferecerSelectVisual'),
+
+    equipamento:
+      document.getElementById('equipamentosParaOferecerSelectVisual'),
+
+    necessidade:
+      document.getElementById('necessidadeVisual'),
+
+    nomeUsuarioAtual:
+      document.getElementById('nomeSelectUsuario'),
+
+    telefone:
+      document.getElementById('telefoneInputUsuario'),
+
+    email:
+      document.getElementById('emailInputUsuario')
+
+  };
+
+
+  Object.values(camposVisuais)
+    .forEach(el => {
+
+      if (!el) return;
+
+      el.classList.remove('erro-campo');
+
+    });
+
+
+  const camposVazios =
+    Object.entries(valores)
+
+      .filter(([_, valor]) =>
+        !valor || !String(valor).trim()
+      )
+
+      .map(([chave]) => chave);
+
+
+
+  if (camposVazios.length > 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, preencha todos os campos antes de enviar o e-mail."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (camposVisuais[campo]) {
+
+        camposVisuais[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+
+
+  const assunto =
+    "Designação no TPE";
+
+
+  const mensagem =
+
+    "Olá querido(a) irmão(ã),\n\n" +
+
+    "Temos uma designação para você no TPE, de acordo com sua disponibilidade atual.\n\n" +
+
+    "Necessidade: " + valores.necessidade + "\n" +
+
+    "Local: " + valores.ponto + "\n" +
+
+    "Dia: " + valores.dia + "\n" +
+
+    "Turno: " + valores.turno + "\n" +
+
+    "Frequência: " + valores.frequencia + "\n" +
+
+    "Mostruário: " + valores.equipamento + "\n\n" +
+
+    "Aguardamos sua confirmação. Se puder aceitar, ficaremos muito felizes!\n\n";
+
+
+
+  mostrarConfirmacaoGlobal(
+
+    `📧 Deseja enviar e-mail para aqueles dentre os <strong>${participantesEncontrados.length}</strong> disponíveis encontrados cujo sexo combine com a necessidade?`,
+
+    () => {
+
+
+      mostrarSpinner();
+
+
+      const nomes =
+        participantesEncontrados.map(
+          p => p.nomeCompleto
+        );
+
+
+
+      apiJSONP(
+
+        "buscarEmailsPorNomesEEnviarMensagem",
+
+        {
+
+          dados: JSON.stringify({
+
+            nomes,
+
+            nomeUsuarioAtual:
+              valores.nomeUsuarioAtual,
+
+            assunto,
+
+            mensagem,
+
+            necessidade:
+              valores.necessidade
+
+          })
+
+        },
+
+
+        () => {
+
+
+          esconderSpinner();
+
+
+          Object.values(camposVisuais)
+            .forEach(el => {
+
+              if (el) {
+
+                el.classList.remove('erro-campo');
+
+              }
+
+            });
+
+
+
+          document.getElementById(
+            'dadosUsuarioContainer'
+          ).style.display = 'none';
+
+
+          document.getElementById(
+            'enviarEmailTodosBtn'
+          ).style.display = 'none';
+
+
+
+          mostrarAlertaGlobal(
+            "✅ E-mails enviados com sucesso!"
+          );
+
+
+        },
+
+
+        (err) => {
+
+
+          esconderSpinner();
+
+
+          Object.values(camposVisuais)
+            .forEach(el => {
+
+              if (el) {
+
+                el.classList.remove('erro-campo');
+
+              }
+
+            });
+
+
+          mostrarAlertaGlobal(
+
+            "❌ Erro ao enviar e-mails: " +
+
+            (err?.mensagem ||
+             err?.error ||
+             "Erro desconhecido")
+
+          );
+
+
+        }
+
+      );
+
+
+    }
+
+  );
+
+
+});
 // contatos usuário
 document.getElementById('nomeInputUsuario').addEventListener('input', function () {
 
@@ -5859,7 +7078,7 @@ function pegarContatosDoUsuario(nome) {
 
 let participantesEncontrados2h = [];
 
-function buscarParticipantes2h() {
+/*function buscarParticipantes2h() {
 
   const campos = {
     dia: document.getElementById('diasSelect2h'),
@@ -5987,9 +7206,376 @@ function buscarParticipantes2h() {
       resultadoDiv.textContent = '';
     }
   );
-}
+}*/
+function buscarParticipantes2h() {
 
-document.addEventListener('click', function (event) {
+  const campos = {
+
+    dia: document.getElementById('diasSelect2hVisual'),
+    turno: document.getElementById('turnosSelect2hVisual'),
+    frequencia: document.getElementById('frequenciasSelect2hVisual')
+
+  };
+
+
+  const valores = {
+
+    dia: window.camposSelecionados.diasSelect2h,
+
+    turno: window.camposSelecionados.turnosSelect2h,
+
+    frequencia: window.camposSelecionados.frequenciasSelect2h
+
+  };
+
+
+  const msg =
+    document.getElementById("msgPesqDisponiveis2h");
+
+
+  Object.values(campos).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+
+  const camposVazios =
+    Object.entries(valores)
+
+      .filter(([_, valor]) => !valor)
+
+      .map(([chave]) => chave);
+
+
+
+  if (camposVazios.length > 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, selecione dia, turno e frequência."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (campos[campo]) {
+
+        campos[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+
+
+  const diasTurnos = [
+
+    `${valores.dia} - ${valores.turno}`
+
+  ];
+
+
+  const frequencias = [
+
+    valores.frequencia
+
+  ];
+
+
+
+  const resultadoDiv =
+    document.getElementById('resultadoBusca2h');
+
+
+  resultadoDiv.textContent = '';
+
+
+  mostrarSpinner();
+
+
+
+  apiJSONP(
+
+    "buscarParticipantesPorFiltroAvancado2h",
+
+    {
+
+      dados: JSON.stringify({
+
+        diasTurnos,
+
+        frequencias
+
+      })
+
+    },
+
+
+    (participantes) => {
+
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+
+      participantesEncontrados2h =
+        participantes;
+
+
+
+      esconderSpinner();
+
+
+
+      if (!participantes ||
+          participantes.length === 0) {
+
+
+        mostrarAlertaGlobal(
+          "❌ Nenhum participante encontrado."
+        );
+
+
+        resultadoDiv.textContent = '';
+
+        return;
+
+      }
+
+
+
+      msg.textContent =
+        `✅ ${participantes.length} participante(s) encontrado(s).`;
+
+
+
+      const tabela =
+        document.createElement('table');
+
+
+      tabela.classList.add(
+        'tabela-listagem'
+      );
+
+
+
+      const thead =
+        tabela.createTHead();
+
+
+      const trHead =
+        thead.insertRow();
+
+
+
+      [
+
+        'Nome Completo',
+
+        'Condição',
+
+        'Frequência',
+
+        'Dias e Turnos Disponíveis'
+
+      ].forEach(text => {
+
+
+        const th =
+          document.createElement('th');
+
+
+        th.textContent = text;
+
+
+        trHead.appendChild(th);
+
+
+      });
+
+
+
+      const tbody =
+        tabela.createTBody();
+
+
+
+      participantes.forEach(p => {
+
+
+
+        const tr =
+          tbody.insertRow();
+
+
+
+        const tdNome =
+          tr.insertCell();
+
+
+
+        const nome =
+          p.nomeCompleto || '';
+
+
+
+        const linhas =
+          nome.split('\n');
+
+
+
+        if (linhas.length > 0) {
+
+
+          tdNome.innerHTML =
+
+            `<strong>${linhas[0]}</strong>` +
+
+            (linhas.length > 1
+
+              ? '<br>' +
+                linhas.slice(1).join('<br>')
+
+              : '');
+
+        }
+
+        else {
+
+
+          tdNome.textContent =
+            nome;
+
+        }
+
+
+
+        tdNome.dataset.id =
+          p.id || "";
+
+
+
+        tdNome.classList.add(
+          'clicavel-nome2h'
+        );
+
+
+
+        tdNome.style.cursor =
+          'pointer';
+
+
+
+        tdNome.style.color =
+          'green';
+
+
+
+        tdNome.title =
+          'Clique para interagir';
+
+
+
+        tr.insertCell().textContent =
+          p.condicao || '';
+
+
+
+        tr.insertCell().textContent =
+          p.frequencia || '';
+
+
+
+        tr.insertCell().textContent =
+          (p.diasTurnos || [])
+            .join(', ');
+
+
+
+      });
+
+
+
+      resultadoDiv.appendChild(tabela);
+
+
+
+      document.getElementById(
+        'dadosUsuarioContainer2h'
+      ).style.display =
+        'inline-block';
+
+
+
+      document.getElementById(
+        'enviarEmailTodosBtn2h'
+      ).style.display =
+        'inline-block';
+
+
+
+    },
+
+
+    (erro) => {
+
+
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+
+      esconderSpinner();
+
+
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro na busca: " +
+
+        (erro?.mensagem ||
+
+         erro?.error ||
+
+         "Erro desconhecido")
+
+      );
+
+
+
+      resultadoDiv.textContent = '';
+
+
+
+    }
+
+  );
+
+}
+/*document.addEventListener('click', function (event) {
 
   const alvo = event.target.closest('.clicavel-nome2h');
   if (!alvo) return;
@@ -6080,9 +7666,210 @@ document.addEventListener('click', function (event) {
       alvo.classList.add('clicavel-nome2h');
     }
   );
-});
+});*/
+document.addEventListener('click', function (event) {
 
-document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', function () {
+  const alvo = event.target.closest('.clicavel-nome2h');
+  if (!alvo) return;
+
+  mostrarSpinner();
+
+  const nome = alvo.innerText.trim();
+  const id = alvo.dataset.id;
+
+
+  const valores = {
+
+    ponto:
+      window.camposSelecionados.pontosParaOferecerSelect2h,
+
+    dia:
+      window.camposSelecionados.diasSelect2h,
+
+    turno:
+      window.camposSelecionados.turnosSelect2h,
+
+    frequencia:
+      window.camposSelecionados.frequenciasSelect2h,
+
+    equipamento:
+      window.camposSelecionados.equipamentosParaOferecerSelect2h,
+
+    necessidade:
+      window.camposSelecionados.necessidade2h
+
+  };
+
+
+  const camposVisuais = {
+
+    ponto:
+      document.getElementById('pontosParaOferecerSelect2hVisual'),
+
+    dia:
+      document.getElementById('diasSelect2hVisual'),
+
+    turno:
+      document.getElementById('turnosSelect2hVisual'),
+
+    frequencia:
+      document.getElementById('frequenciasSelect2hVisual'),
+
+    equipamento:
+      document.getElementById('equipamentosParaOferecerSelect2hVisual'),
+
+    necessidade:
+      document.getElementById('necessidade2hVisual')
+
+  };
+
+
+  // remove erros anteriores
+
+  Object.values(camposVisuais).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+
+  const camposVazios =
+    Object.entries(valores)
+      .filter(([_, valor]) => !valor)
+      .map(([chave]) => chave);
+
+
+  if (camposVazios.length > 0) {
+
+    esconderSpinner();
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, preencha todos os campos antes de enviar a mensagem."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (camposVisuais[campo]) {
+
+        camposVisuais[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+
+  const mensagem =
+
+    "*DESIGNAÇÃO NO TPE*\n\n" +
+
+    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
+
+    "Informações da designação:\n\n" +
+
+    `🛠️ *Necessidade:* ${valores.necessidade}\n` +
+
+    `📍 *${valores.ponto}*\n` +
+
+    `📆 *Dia:* ${valores.dia}\n` +
+
+    `🕒 *Turno:* ${valores.turno}\n` +
+
+    `📈 *Frequência:* ${valores.frequencia}\n` +
+
+    `📚 *Mostruário:* ${valores.equipamento}\n\n` +
+
+    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
+
+
+  const mensagemCodificada =
+      encodeURIComponent(mensagem);
+
+
+  console.log("🧩 nome:", nome);
+  console.log("🧩 mensagem:", mensagem);
+
+
+  alvo.classList.remove('clicavel-nome');
+
+
+  apiJSONP(
+
+    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
+
+    {
+      id,
+      mensagem: mensagemCodificada
+    },
+
+
+    (url) => {
+
+      esconderSpinner();
+
+
+      Object.values(camposVisuais).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+      window.open(url, '_blank');
+
+
+      alvo.style.color = 'gray';
+      alvo.style.fontStyle = 'italic';
+
+      alvo.innerHTML +=
+        ' <span title="Mensagem enviada">📤</span>';
+
+    },
+
+
+    (err) => {
+
+      esconderSpinner();
+
+
+      Object.values(camposVisuais).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " +
+        (err?.mensagem ||
+         err?.error ||
+         "Erro desconhecido")
+      );
+
+
+      alvo.classList.add('clicavel-nome');
+
+    }
+
+  );
+
+});
+/*document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', function () {
 
   if (!participantesEncontrados2h || participantesEncontrados2h.length === 0) {
     mostrarAlertaGlobal("⚠️ Nenhum participante disponível para envio de e-mail.");
@@ -6182,6 +7969,319 @@ document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', funct
 
     }
   );
+});*/
+document.getElementById('enviarEmailTodosBtn2h')
+.addEventListener('click', function () {
+
+
+  if (!participantesEncontrados2h ||
+      participantesEncontrados2h.length === 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Nenhum participante disponível para envio de e-mail."
+    );
+
+    return;
+
+  }
+
+
+
+  const valores = {
+
+    dia:
+      window.camposSelecionados.diasSelect2h,
+
+    turno:
+      window.camposSelecionados.turnosSelect2h,
+
+    frequencia:
+      window.camposSelecionados.frequenciasSelect2h,
+
+    ponto:
+      window.camposSelecionados.pontosParaOferecerSelect2h,
+
+    equipamento:
+      window.camposSelecionados.equipamentosParaOferecerSelect2h,
+
+    necessidade:
+      window.camposSelecionados.necessidade2h,
+
+
+    nomeUsuarioAtual:
+      document.getElementById('nomeSelectUsuario2h').value,
+
+    telefone:
+      document.getElementById('telefoneInputUsuario2h').value.trim(),
+
+    email:
+      document.getElementById('emailInputUsuario2h').value.trim()
+
+  };
+
+
+
+  const campos = {
+
+
+    dia:
+      document.getElementById('diasSelect2hVisual'),
+
+
+    turno:
+      document.getElementById('turnosSelect2hVisual'),
+
+
+    frequencia:
+      document.getElementById('frequenciasSelect2hVisual'),
+
+
+    ponto:
+      document.getElementById('pontosParaOferecerSelect2hVisual'),
+
+
+    equipamento:
+      document.getElementById('equipamentosParaOferecerSelect2hVisual'),
+
+
+    necessidade:
+      document.getElementById('necessidade2hVisual'),
+
+
+    nomeUsuarioAtual:
+      document.getElementById('nomeSelectUsuario2h'),
+
+
+    telefone:
+      document.getElementById('telefoneInputUsuario2h'),
+
+
+    email:
+      document.getElementById('emailInputUsuario2h')
+
+  };
+
+
+
+  Object.values(campos).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+
+    el.addEventListener(
+      'input',
+      () => el.classList.remove('erro-campo'),
+      { once:true }
+    );
+
+
+    el.addEventListener(
+      'change',
+      () => el.classList.remove('erro-campo'),
+      { once:true }
+    );
+
+  });
+
+
+
+
+  const camposVazios = Object.entries(valores)
+
+    .filter(([_, valor]) =>
+      !valor || !String(valor).trim()
+    )
+
+    .map(([chave]) => chave);
+
+
+
+  if (camposVazios.length > 0) {
+
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, preencha todos os campos antes de enviar o e-mail."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (campos[campo]) {
+
+        campos[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+
+    return;
+
+  }
+
+
+
+
+  const assunto =
+    "Designação no TPE";
+
+
+
+  const mensagem =
+
+    "Olá querido(a) irmão(ã),\n\n" +
+
+    "Temos uma designação para você no TPE, de acordo com sua disponibilidade atual.\n\n" +
+
+    "Necessidade: " + valores.necessidade + "\n" +
+
+    "Local: " + valores.ponto + "\n" +
+
+    "Dia: " + valores.dia + "\n" +
+
+    "Turno: " + valores.turno + "\n" +
+
+    "Frequência: " + valores.frequencia + "\n" +
+
+    "Mostruário: " + valores.equipamento + "\n\n" +
+
+    "Aguardamos sua confirmação. Se puder aceitar, ficaremos muito felizes!\n\n";
+
+
+
+
+
+  mostrarConfirmacaoGlobal(
+
+    `📧 Deseja enviar e-mail para aqueles dentre os <strong>${participantesEncontrados2h.length}</strong> disponíveis encontrados cujo sexo combine com a necessidade?`,
+
+
+    () => {
+
+
+      mostrarSpinner();
+
+
+
+      const nomes =
+        participantesEncontrados2h.map(
+          p => p.nomeCompleto
+        );
+
+
+
+      apiJSONP(
+
+        "buscarEmailsPorNomesEEnviarMensagem",
+
+
+        {
+
+          nomes: JSON.stringify(nomes),
+
+          nomeUsuarioAtual:
+            valores.nomeUsuarioAtual,
+
+          assunto,
+
+          mensagem,
+
+          necessidade:
+            valores.necessidade
+
+        },
+
+
+        () => {
+
+
+          esconderSpinner();
+
+
+
+          Object.values(campos)
+            .forEach(el => {
+
+              if (el) {
+
+                el.classList.remove(
+                  'erro-campo'
+                );
+
+              }
+
+            });
+
+
+
+          document.getElementById(
+            'dadosUsuarioContainer2h'
+          ).style.display = 'none';
+
+
+
+          document.getElementById(
+            'enviarEmailTodosBtn2h'
+          ).style.display = 'none';
+
+
+
+          mostrarAlertaGlobal(
+            "✅ E-mails enviados com sucesso!"
+          );
+
+
+        },
+
+
+        (err) => {
+
+
+          esconderSpinner();
+
+
+
+          Object.values(campos)
+            .forEach(el => {
+
+              if (el) {
+
+                el.classList.remove(
+                  'erro-campo'
+                );
+
+              }
+
+            });
+
+
+
+          mostrarAlertaGlobal(
+
+            "❌ Erro ao enviar e-mails: " +
+
+            (
+              err?.mensagem ||
+              err?.message ||
+              err
+            )
+
+          );
+
+
+        }
+
+      );
+
+
+    }
+
+  );
+
+
 });
 
 document.getElementById('nomeInputUsuario2h').addEventListener('input', function () {
@@ -6195,7 +8295,7 @@ document.getElementById('nomeInputUsuario2h').addEventListener('input', function
   }, 300);
 });
 
-function pegarContatosDoUsuario2h(nome) {
+/*function pegarContatosDoUsuario2h(nome) {
   mostrarSpinner();
 
   google.script.run
@@ -6226,6 +8326,51 @@ function pegarContatosDoUsuario2h(nome) {
       console.error("❌ Erro:", erro.message);
     })
     .pegarContatoUsuario(nome);
+}*/
+function pegarContatosDoUsuario2h(nome) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "pegarContatoUsuario",
+    { nome },
+    (contato) => {
+
+      esconderSpinner();
+
+      if (!contato) {
+        console.warn("⚠️ Nenhum contato retornado.");
+        return;
+      }
+
+      const telefoneInput = document.getElementById('telefoneInputUsuario2h');
+      const emailInput = document.getElementById('emailInputUsuario2h');
+      const nomeSelect = document.getElementById('nomeSelectUsuario2h');
+
+      telefoneInput.value = contato.telefone || '';
+      emailInput.value = contato.email || '';
+
+      telefoneInput.disabled = true;
+      emailInput.disabled = true;
+      nomeSelect.disabled = true;
+
+      const container = document.querySelector('#dadosUsuarioContainer2h > div[style*="display: none"]');
+
+      if (container) {
+        container.style.display = 'block';
+      }
+
+    },
+    (erro) => {
+
+      esconderSpinner();
+
+      console.error(
+        "❌ Erro ao buscar contato do usuário:",
+        erro?.mensagem || erro?.error || erro?.message || erro
+      );
+    }
+  );
 }
 
 let substitutosEncontrados = [];
@@ -9174,7 +11319,8 @@ function exportarEscalaEv() {
 }
 
 function buscarDesignacoesPorPonto() {
-  const ponto = document.getElementById("pontobepp").value;
+  //const ponto = document.getElementById("pontobepp").value;
+  const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgDesignacoesPorPontopppp");
   const container = document.getElementById("resultadoDesignacoesPorPontopppp");
 
@@ -9243,7 +11389,8 @@ function buscarDesignacoesPorPonto() {
 }
 
 function baixarDesignacoesPorPonto() {
-  const ponto = document.getElementById("pontobepp").value;
+  //const ponto = document.getElementById("pontobepp").value;
+  const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgBaixarPDFPonto");
 
   msg.textContent = "";
@@ -9273,8 +11420,13 @@ function baixarDesignacoesPorPonto() {
   
 async function salvarDesignacao() {
 
-  const ponto = document.getElementById("ponto").value;
-  const dia = document.getElementById("dia").value;
+  console.log("🟢 salvarDesignacao iniciou");
+
+  //const ponto = document.getElementById("ponto").value;
+  const ponto = window.camposSelecionados.ponto;
+
+  //const dia = document.getElementById("dia").value;
+  const dia = window.camposSelecionados.dia
 
   if (!participanteSelecionadoDesignacao) {
     mostrarAlertaGlobal("⚠️ Selecione um participante.");
@@ -9289,14 +11441,25 @@ async function salvarDesignacao() {
 
   mostrarSpinner();
 
+  console.log(
+  "➡️ Chamando selecionarSubstituicaoDesignados",
+  {
+    ponto,
+    dia
+  }
+);
+
   const substituto =
     await selecionarSubstituicaoDesignados(ponto, dia);
 
   const substituirQuem =
     substituto ? substituto.id : "";
 
-  const frequencia = document.getElementById("frequencia").value;
-  const equipamento = document.getElementById("equipamento").value;
+  //const frequencia = document.getElementById("frequencia").value;
+  const frequencia = window.camposSelecionados.frequencia
+  
+  //const equipamento = document.getElementById("equipamento").value;
+  const equipamento = window.camposSelecionados.equipamento
 
   if (!ponto || !dia || !idParticipante || !frequencia || !equipamento) {
     mostrarAlertaGlobal("⚠️ Preencha todos os campos obrigatórios.");
@@ -9335,16 +11498,7 @@ async function salvarDesignacao() {
           `✅ ${nomeParticipante} designado(a) com sucesso`
         );
 
-        document.getElementById("ponto").selectedIndex = 0;
-        document.getElementById("dia").selectedIndex = 0;
-        document.getElementById("frequencia").selectedIndex = 0;
-        document.getElementById("nomeSubstituido").value = "";
-        document.getElementById("participanteDesignacao").value = "";
-        participanteSelecionadoDesignacao = null;
-        participanteSubstituido = null;
-
-        document.getElementById("substituirQuem").selectedIndex = 0;
-        document.getElementById("equipamento").selectedIndex = 0;
+        limparCamposDesignar();
 
         carregarTodasVagasAbertas();
         carregarAbas();
@@ -9359,6 +11513,71 @@ async function salvarDesignacao() {
     );
 
   });
+}
+function limparCamposDesignar(){
+
+    // limpa estado global
+    delete window.camposSelecionados.ponto;
+    delete window.camposSelecionados.dia;
+    delete window.camposSelecionados.frequencia;
+    delete window.camposSelecionados.equipamento;
+
+
+    // limpa campos visuais
+
+    const camposVisuais = [
+        "pontoVisual",
+        "diaVisual",
+        "frequenciaVisual",
+        "equipamentoVisual"
+    ];
+
+
+    camposVisuais.forEach(id => {
+
+        const campo =
+            document.getElementById(id);
+
+        if(campo){
+
+            campo.value = "";
+
+        }
+
+    });
+
+
+    // participante
+
+    const participante =
+        document.getElementById(
+            "participanteDesignacao"
+        );
+
+    if(participante){
+
+        participante.value = "";
+
+    }
+
+
+    // substituição
+
+    const substituido =
+        document.getElementById(
+            "nomeSubstituido"
+        );
+
+    if(substituido){
+
+        substituido.value = "";
+
+    }
+
+
+    participanteSelecionadoDesignacao = null;
+    participanteSubstituido = null;
+
 }
 
 function converterDesignacoesParaIDs() {
@@ -9419,7 +11638,7 @@ function converterDesignacoesParaIDs() {
     }
   );
 }
-function corrigirDesignacoesPorId() {
+/*function corrigirDesignacoesPorId() {
   const pontoSelecionado = document.getElementById('pontoCorrigir').value;
   const msg = document.getElementById("msgCorrigir");
   const tabelaContainer = document.getElementById("tabelaNaoEncontradosContainer");
@@ -9476,7 +11695,7 @@ function corrigirDesignacoesPorId() {
       mostrarAlertaGlobal("Erro: " + (erro.message || erro));
     }
   );
-}
+}*/
 
 function buscarTreinando() {
   const resultadoDiv = document.getElementById('resultadoTreinando');
@@ -10840,9 +13059,14 @@ let vagaContexto = {};
 
 function salvarVaga() {
 
-  const ponto = document.getElementById("pontoVaga").value;
-  const dia = document.getElementById("diaVaga").value;
-  const frequencia = document.getElementById("frequenciaVaga").value;
+  //const ponto = document.getElementById("pontoVaga").value;
+  const ponto = window.camposSelecionados.pontoVaga;
+
+  //const dia = document.getElementById("diaVaga").value;
+  const dia = window.camposSelecionados.diaVaga;
+
+  //const frequencia = document.getElementById("frequenciaVaga").value;
+  const frequencia = window.camposSelecionados.frequenciaVaga;
 
   if (!ponto || !dia || !frequencia) {
     mostrarAlertaGlobal("⚠️ Preencha todos os campos");
@@ -10953,7 +13177,7 @@ function mostrarModalSubstituicao(dados) {
             mostrarAlertaGlobal("✅ Vaga criada com sucesso");
 
             setTimeout(() => {
-              document.getElementById("modalSubstituicao").style.display = "none";
+              document.getElementById("modalSubstituicao").classList.add("oculto");
             }, 50);
 
             carregarTodasVagasAbertas();
@@ -10975,7 +13199,7 @@ function mostrarModalSubstituicao(dados) {
     container.appendChild(btn);
   });
 
-  document.getElementById("modalSubstituicao").style.display = "block";
+  document.getElementById("modalSubstituicao").classList.remove("oculto");
 }
 
 function confirmarNenhum() {
@@ -11022,13 +13246,16 @@ function confirmarNenhum() {
 }
 
 function fecharModal() {
-  document.getElementById("modalSubstituicao").style.display = "none";
+  document.getElementById("modalSubstituicao").classList.add("oculto");
 }
 
 async function atualizarParticipantesParaCadastrarVaga() {
 
-  const ponto = document.getElementById("pontoVaga").value;
-  const dia = document.getElementById("diaVaga").value;
+  //const ponto = document.getElementById("pontoVaga").value;
+  const ponto = window.camposSelecionados.pontoVaga;
+
+  //const dia = document.getElementById("diaVaga").value;
+  const dia = window.camposSelecionados.diaVaga;
 
   if (!ponto || !dia) {
     limparSubstituirQuemsai();
@@ -11075,15 +13302,15 @@ function atualizarContagemVagas(vagas) {
 }
 
 function preencherFormularioDesignacao(vaga) {
-  document.getElementById("ponto").value = vaga.ponto;
+  /*document.getElementById("ponto").value = vaga.ponto;
   document.getElementById("dia").value = vaga.dia;
-  document.getElementById("frequencia").value = vaga.frequencia;
+  document.getElementById("frequencia").value = vaga.frequencia;*/
   document.getElementById("substituirQuem").value = vaga.quemSai;
 
 }
 
 function carregarTodasVagasAbertas() {
-  //console.count("carregarTodasVagasAbertas chamou");
+  console.count("carregarTodasVagasAbertas chamou");
   mostrarSpinner();
 
   // 1. Primeiro atualiza
@@ -11199,6 +13426,414 @@ function mostrarVagasNaTabela(vagas) {
 
     tbody.appendChild(tr);
   });
+}
+
+let notificacaoEscala = null;
+function tratarNotificacaoAoAbrir() {
+
+  const params =
+    new URLSearchParams(location.search);
+
+  // ==========================
+  // NOTIFICAÇÃO DE ESCALA
+  // ==========================
+
+  const tipo =
+    params.get("tipo");
+
+  if (tipo === "escala") {
+
+    notificacaoEscala = {
+
+      ponto:
+        params.get("ponto"),
+
+      dia:
+        params.get("dia"),
+
+      turno:
+        params.get("turno"),
+
+      idParticipante:
+        params.get("idParticipante")
+
+    };
+
+    console.log(
+      "🔔 Tratando notificação de escala:",
+      notificacaoEscala
+    );
+
+    history.replaceState(
+      {},
+      "",
+      location.pathname
+    );
+
+    if (idUsuarioLogado) {
+
+      abrirTela("painelPontos");
+
+    }
+
+    return;
+
+  }
+
+  // ==========================
+  // NOTIFICAÇÃO DE VAGA
+  // (COMPORTAMENTO ATUAL)
+  // ==========================
+
+  const idVaga =
+    params.get("idVaga");
+
+  if (!idVaga) {
+    return;
+  }
+
+  console.log(
+    "🔔 Tratando notificação de vaga:",
+    idVaga
+  );
+
+  idVagaNotificacao =
+    idVaga;
+
+  history.replaceState(
+    {},
+    "",
+    location.pathname
+  );
+
+  if (idUsuarioLogado) {
+
+    abrirTela(
+      "telaVagasDisponiveis"
+    );
+
+    carregarVagasDisponiveis();
+
+  }
+
+}
+
+function abrirVagasDisponiveis() {
+
+  abrirTela("telaVagasDisponiveis");
+
+  carregarVagasDisponiveis();
+
+}
+
+function carregarVagasDisponiveis() {
+
+  console.log("🚨 INICIANDO BUSCA DE VAGAS");
+
+  const lista =
+    document.getElementById("listaVagasDisponiveis");
+
+  lista.innerHTML =
+    "Carregando vagas...";
+
+    mostrarSpinner();
+
+  apiJSONP(
+    "listarVagasDisponiveis",
+    {},
+    function(res) {
+
+      console.log("📋 RESPOSTA VAGAS:", res);
+
+      esconderSpinner();
+
+      if (!res.sucesso) {
+
+        lista.innerHTML =
+          "❌ Erro ao carregar vagas.";
+
+        return;
+      }
+
+      if (!res.vagas.length) {
+
+        lista.innerHTML =
+          "🎉 Nenhuma vaga disponível.";
+
+        return;
+      }
+
+      lista.innerHTML = "";
+
+      res.vagas.forEach(vaga => {
+
+        const destaque =
+          vaga.idVaga === idVagaNotificacao;
+
+        console.log(
+          vaga.idVaga,
+          idVagaNotificacao,
+          destaque
+        );
+
+        const div =
+          document.createElement("div");
+
+        div.className = "card-vaga";
+
+        if (destaque) {
+          div.classList.add("card-vaga-destaque");
+        }
+
+        div.innerHTML = `
+
+          <!--<div class="titulo-vaga">
+            🚨 Vaga disponível
+          </div>-->
+
+          <div class="titulo-vaga">
+            ${destaque
+              ? "🔔 Vaga da sua notificação"
+              : "🚨 Vaga disponível"}
+          </div>
+
+          ${destaque ? `
+            <div class="aviso-vaga-notificacao">
+              🔔 Esta é a vaga da sua notificação
+            </div>
+          ` : ""}
+
+          <div class="info-vaga">
+
+            <div>
+              📍 <strong>Ponto:</strong>
+              ${vaga.ponto}
+            </div>
+
+            <div>
+              📅 <strong>Dia:</strong>
+              ${vaga.dia}
+            </div>
+
+            <div>
+              🔄 <strong>Frequência:</strong>
+              ${vaga.frequencia}
+            </div>
+
+          </div>
+
+          <!--<button
+              class="btn-aceitar-vaga"
+              onclick="aceitarVaga('${vaga.idVaga}')">
+              ACEITAR VAGA
+          </button>-->
+
+          <button
+              class="${
+                destaque
+                  ? "btn-aceitar-vaga btn-aceitar-destaque"
+                  : "btn-aceitar-vaga"
+              }"
+              onclick="aceitarVaga('${vaga.idVaga}')">
+              ACEITAR VAGA
+          </button>
+
+        `;
+
+        lista.appendChild(div);
+
+         if (destaque) {
+
+            setTimeout(() => {
+
+              div.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+              });
+
+            }, 300);
+
+          }
+
+      });
+
+    },
+    function(err) {
+
+      console.error("❌ ERRO BUSCAR VAGAS:", err);
+
+      lista.innerHTML =
+        "❌ Erro: " + err.message;
+
+    }
+  );
+
+}
+
+function aceitarVaga(idVaga) {
+
+  mostrarConfirmacaoGlobal(
+
+    "Confirma que deseja assumir esta vaga?",
+
+    function() {
+
+      console.log({
+          idVaga,
+          idUsuarioLogado
+      });
+
+      mostrarSpinner();
+
+      apiJSONP(
+
+        "aceitarVaga",
+
+        {
+          idVaga: idVaga,
+          idParticipante: idUsuarioLogado
+        },
+
+        function(res) {
+
+          console.log("Resposta:", res);
+
+          esconderSpinner();
+
+          // Vaga já foi preenchida
+          if (typeof res === "string" && res.startsWith("🚫")) {
+
+            mostrarAlertaGlobal(res);
+
+            carregarVagasDisponiveis();
+
+            idVagaNotificacao = null;
+
+            return;
+          }
+
+          if (res.sucesso) {
+
+            mostrarAlertaGlobal(
+              "✅ Parabéns! Você assumiu esta vaga."
+            );
+
+            idVagaNotificacao = null;
+
+            setTimeout(() => {
+
+              abrirTela("menuCards");
+
+              carregarVagasDisponiveis();
+
+            }, 1200);
+
+          }
+          else {
+
+            mostrarAlertaGlobal(
+              res.mensagem || "Não foi possível assumir a vaga."
+            );
+
+          }
+
+        },
+
+        function(err) {
+
+          console.log("Erro:", err);
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+              err?.message || err?.mensagem || err
+          );
+
+        }
+
+      );
+
+    }
+
+  );
+
+}
+
+function aplicarNotificacaoEscala() {
+
+  if (!notificacaoEscala) {
+    return;
+  }
+
+  console.log(
+    "📌 Aplicando filtros da notificação:",
+    notificacaoEscala
+  );
+
+
+  const turno =
+    document.getElementById(
+      "turnoDesignadoVisual"
+    );
+
+  const dia =
+    document.getElementById(
+      "diaDesignadoVisual"
+    );
+
+  const ponto =
+    document.getElementById(
+      "pontoDesignadoVisual"
+    );
+
+
+  if (
+    !turno ||
+    !dia ||
+    !ponto
+  ) {
+
+    console.error(
+      "❌ Filtros da tela de escalas não encontrados."
+    );
+
+    return;
+
+  }
+
+  console.log(
+    "Turno recebido:",
+    notificacaoEscala.turno
+  );
+
+
+  turno.value =
+    notificacaoEscala.turno;
+
+
+  dia.value =
+    notificacaoEscala.dia;
+
+    
+  const numeroPonto =
+      notificacaoEscala.ponto.match(/\d+/);
+
+    if (numeroPonto) {
+
+      ponto.value =
+        "Ponto " + numeroPonto[0];
+
+    } else {
+
+      ponto.value =
+        notificacaoEscala.ponto;
+
+    }
+
+
+  pesquisarDesignados();
+
+
 }
 
 function pesquisarParticipantesPorCongregacao() {
@@ -11566,8 +14201,10 @@ function carregarOpcoes() {
 
   apiJSONP("buscarOpcoesParaForm", {}, function(opcoes) {
 
-    //console.log(opcoes);
-    //console.log(opcoes.privilegios);
+    console.log({
+      turnos: opcoes.turnos,
+      dias: opcoes.dias
+    });
 
     window.mapaParticipantesPorNome = {};
 
@@ -11601,7 +14238,7 @@ function carregarOpcoes() {
       sel.appendChild(o);
     });
 
-    const turnoSelect = document.getElementById("turnoDesignado");
+    /*const turnoSelect = document.getElementById("turnoDesignado");
     const diaSelect = document.getElementById("diaDesignado");
 
     turnoSelect.innerHTML = "<option value=''>- Selecione -</option>";
@@ -11619,29 +14256,41 @@ function carregarOpcoes() {
       option.value = dia;
       option.textContent = dia;
       diaSelect.appendChild(option);
-    });
+    });*/
+    window.opcoesTurnos =
+    (opcoes.turnos || []).filter(item => item !== "");
 
-    window.opcoesPrivilegios = opcoes.privilegios || {};
+    window.opcoesDias =
+    (opcoes.dias || []).filter(item => item !== "");
+
+    window.opcoesPrivilegios = 
+    opcoes.privilegios || {};
+
+    
+    if (notificacaoEscala) {
+
+      aplicarNotificacaoEscala();
+
+    }
 
   });
 
-  const pontoInput = document.getElementById("ponto");
+  /*const pontoInput = document.getElementById("ponto");
   const diaInput = document.getElementById("dia");
-
   if (pontoInput && diaInput) {
     pontoInput.addEventListener("change", atualizarParticipantesParaSubstituir);
     diaInput.addEventListener("change", atualizarParticipantesParaSubstituir);
   }
-
-  carregarDadosDesignacao();
-
   const pontoInputVaga = document.getElementById("pontoVaga");
   const diaInputVaga = document.getElementById("diaVaga");
-
   if (pontoInputVaga && diaInputVaga) {
     pontoInputVaga.addEventListener("change", atualizarParticipantesParaCadastrarVaga);
     diaInputVaga.addEventListener("change", atualizarParticipantesParaCadastrarVaga);
-  }
+  }*/
+
+  carregarDadosDesignacao();
+  const ponto = window.camposSelecionados.pontoVaga;
+  const dia = window.camposSelecionados.diaVaga;
 
   carregarDadosVaga();
 
@@ -11765,6 +14414,70 @@ function popularSelects(dados) {
     partSel.appendChild(opt);
   });
 
+                                                              //TESTE PARA MIGRAR SELECTS DE PONTOS
+                                                              // ===============================================
+                                                              // Catálogo completo dos Pontos
+                                                              // ===============================================
+
+                                                              window.pontosSistema = {};
+
+                                                              pontosOrdenados.forEach(nomeAba => {
+
+                                                                const match = nomeAba.match(regex);
+
+                                                                if (!match) return;
+
+                                                                const prefixo = match[1];
+
+                                                                const numero = Number(match[2]);
+
+                                                                const descricaoPonto =
+                                                                  `Ponto ${numero}`;
+
+                                                                if (!window.pontosSistema[descricaoPonto]) {
+
+                                                                  window.pontosSistema[descricaoPonto] = {
+
+                                                                    numero,
+
+                                                                    descricao: descricaoPonto,
+
+                                                                    turnos: {}
+
+                                                                  };
+
+                                                                }
+
+                                                                const infoTurno =
+                                                                  DESCRICOES_TURNOS[prefixo] || {
+
+                                                                    descricao: prefixo,
+
+                                                                    periodo: ""
+
+                                                                  };
+
+                                                                window.pontosSistema[descricaoPonto]
+                                                                  .turnos[prefixo] = {
+
+                                                                    codigo: prefixo,
+
+                                                                    aba: nomeAba,
+
+                                                                    descricao: infoTurno.descricao,
+
+                                                                    periodo: infoTurno.periodo
+
+                                                                  };
+
+                                                              });
+
+                                                              console.log(
+                                                                "📍 Catálogo dos Pontos",
+                                                                window.pontosSistema
+                                                              );
+                                                              // TESTE PARA MUDAR SELECT DE PONTOS
+
   // ✅ Popula selects de "Ponto X"
   const selPonto1 = document.getElementById('pontobepp');
   const selPonto2 = document.getElementById('pontoDesignado');
@@ -11773,7 +14486,7 @@ function popularSelects(dados) {
   const selPonto5 = document.getElementById('pontoSelectMap2');
   const selPonto6 = document.getElementById('pontosParaOferecerSelect2h');
 
-  if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
+  /*if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
     const numerosUnicos = new Set();
 
     pontosOrdenados.forEach(ponto => {
@@ -11798,15 +14511,69 @@ function popularSelects(dados) {
         sel.appendChild(opt);
       });
     });
-  }
+  }*/
+if (selPonto1 && selPonto2 && selPonto3 && selPonto4 && selPonto5 && selPonto6) {
+
+  const pontosCatalogados =
+    Object.values(window.pontosSistema)
+      .sort((a, b) => a.numero - b.numero);
+
+
+  pontosCatalogados.forEach(item => {
+
+    const label = item.descricao;
+
+
+    [
+      selPonto1,
+      selPonto2,
+      selPonto3,
+      selPonto4,
+      selPonto5,
+      selPonto6
+
+    ].forEach(sel => {
+
+      const opt =
+        document.createElement("option");
+
+
+      opt.value = label;
+
+      opt.textContent = label;
+
+
+      sel.appendChild(opt);
+
+    });
+
+
+  });
+
+}
 
   //console.log("🎯 Selects populados com sucesso.");
 }
 
+function listarPontosSistema(){
+
+    if(!window.pontosSistema){
+        return [];
+    }
+
+    return Object.values(window.pontosSistema)
+        .sort((a,b)=>a.numero-b.numero)
+        .map(p=>p.descricao);
+
+}
+
  async function atualizarParticipantesParaSubstituir() {
 
-  const ponto = document.getElementById("ponto").value;
-  const dia = document.getElementById("dia").value;
+  //const ponto = document.getElementById("ponto").value;
+  //const dia = document.getElementById("dia").value;
+
+  const ponto = window.camposSelecionados.ponto
+  const dia = window.camposSelecionados.dia
 
   if (!ponto || !dia) {
     limparSubstituirQuem();
@@ -11863,11 +14630,11 @@ function carregarDadosVaga() {
 
 function popularSelectsVaga(dados) {
   const { pontos, participantes } = dados;
-  const pontoSel = document.getElementById('pontoVaga');
-  if (!pontoSel) return;
+  //const pontoSel = document.getElementById('pontoVaga');
+  //if (!pontoSel) return;
 
   // ✅ Limpar o select e adicionar a primeira opção
-  pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
+  //pontoSel.innerHTML = "<option value=''>- Selecione -</option>";
 
   // ✅ Ordenar os pontos no padrão desejado
   const pontosOrdenados = pontos.slice().sort((a, b) => {
@@ -11882,12 +14649,12 @@ function popularSelectsVaga(dados) {
   });
 
   // ✅ Adicionar os pontos ao select
-  pontosOrdenados.forEach(p => {
+  /*pontosOrdenados.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p;
     opt.textContent = p;
     pontoSel.appendChild(opt);
-  });
+  });*/
 }
 
 function carregarOpcoesGenerica(inputId, selectId, metodoScript, listaKey = 'nomesCompletos') {
@@ -12060,6 +14827,12 @@ function carregarResumo() {
 
 function selecionarSubstituicaoDesignados(ponto, dia) {
 
+  console.log(
+    "🔵 entrou selecionarSubstituicaoDesignados",
+    ponto,
+    dia
+  );
+
   return new Promise((resolve) => {
 
     participanteSubstituido = null;
@@ -12077,10 +14850,24 @@ function selecionarSubstituicaoDesignados(ponto, dia) {
 
         renderizarDesignados(lista);
 
-        document.getElementById("modalDesignados").style.display = "block";
+        const modal =
+          document.getElementById("modalDesignados");
+
+        const conteudo =
+          modal.querySelector(".conteudo-modal");
+
+
+        conteudo.classList.remove("oculto");
+
+        modal.style.display = "block";
 
       },
       function(err) {
+
+        console.error(
+    "❌ erro buscarDesignadosNoPonto:",
+    err
+  );
 
         esconderSpinner();
 
@@ -12175,10 +14962,21 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
       };
     }
 
-    document.getElementById('ponto').addEventListener('change', atualizarParticipantesParaSubstituir);
-    document.getElementById('dia').addEventListener('change', atualizarParticipantesParaSubstituir);
-    document.getElementById('pontoVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
-    document.getElementById('diaVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
+    //document.getElementById('ponto').addEventListener('change', atualizarParticipantesParaSubstituir);
+    //document.getElementById('dia').addEventListener('change', atualizarParticipantesParaSubstituir);
+    
+    //document.getElementById('pontoVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
+    /*const pontoVaga = document.getElementById('pontoVaga');
+
+      if (pontoVaga) {
+          pontoVaga.addEventListener(
+              'change',
+              atualizarParticipantesParaCadastrarVaga
+          );
+      }*/
+
+    //document.getElementById('diaVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
+    
     atualizarParticipantesParaCadastrarVaga();
     carregarTodasVagasAbertas();
     atualizarParticipantesParaSubstituir();
@@ -12445,9 +15243,35 @@ function abrirTela(idTela, card = null) {
             abrirCalendario4h();
             break;
 
+          // NOVO
+          case "painelPontos":
+            inicializarPainelPontos();
+            break;
+
         }
 
     atualizarBotaoVoltar();
+
+}
+
+//por enquanto só teste
+function inicializarPainelPontos(){
+
+    console.log(
+        "Inicializando painel pontos..."
+    );
+
+    const ponto =
+        document.getElementById(
+            "pontoDesignado"
+        );
+
+
+    console.log(
+        "Elemento ponto encontrado:",
+        ponto
+    );
+
 
 }
 
@@ -12821,6 +15645,11 @@ let abrirModalDepoisDaPesquisa = false;
 
 function renderizarDesignados(lista) {
 
+  console.log(
+  "🔵 entrou renderizarDesignados:",
+  lista
+);
+
   const div = document.getElementById("listaDesignados");
   div.innerHTML = "";
 
@@ -12861,11 +15690,18 @@ function confirmarNenhumDesignados() {
   }
 }
 
-function fecharModalDesignados(){
+function fecharModalDesignados() {
 
-    document.getElementById(
-        "modalDesignados"
-    ).style.display = "none";
+  const modal =
+    document.getElementById("modalDesignados");
+
+  const conteudo =
+    modal.querySelector(".conteudo-modal");
+
+
+  conteudo.classList.add("oculto");
+
+  modal.style.display = "none";
 
 }
 
@@ -13889,3 +16725,918 @@ document.addEventListener('click', function (event) {
 
 }
 
+function definirCampoSelecionado(idCampo, objeto) {
+
+  window.camposSelecionados[idCampo] = objeto;
+
+  const campo =
+    document.getElementById(idCampo);
+
+  if (!campo) return;
+
+  campo.value =
+    objeto.descricao ||
+    objeto.nome ||
+    objeto.valor ||
+    "";
+
+}
+
+function obterCampoSelecionado(idCampo) {
+
+  return window.camposSelecionados[idCampo] || null;
+
+}
+
+function limparCampoSelecionado(idCampo) {
+
+  delete window.camposSelecionados[idCampo];
+
+  const campo =
+    document.getElementById(idCampo);
+
+  if (campo) {
+
+    campo.value = "";
+
+  }
+
+}
+
+function existeCampoSelecionado(idCampo) {
+
+  return !!window.camposSelecionados[idCampo];
+
+}
+
+function inicializarComponentesUI() {
+
+  CampoSelecao.criar(
+
+    "testePonto",
+
+    {
+
+      label:"Ponto",
+
+      placeholder:"Escolha o ponto",
+
+      abrir(){
+
+        console.log(
+          "Abrir modal de pontos"
+        );
+
+      }
+
+    }
+
+  );
+
+}
+
+function abrirModalSelecaoUniversal(config = {}) {
+
+
+    window.modalSelecaoAtual = config;
+
+
+    const modal =
+        document.getElementById(
+            "modalSelecaoUniversal"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloModalSelecao"
+        );
+
+
+    const lista =
+        document.getElementById(
+            "listaModalSelecao"
+        );
+
+
+    const filtro =
+        document.getElementById(
+            "filtroModalSelecao"
+        );
+
+
+    if(!modal || !lista) return;
+
+
+
+    titulo.textContent =
+        config.titulo || "Selecionar";
+
+
+    lista.innerHTML = "";
+
+
+    /*const valores =
+        config.valores || [];
+
+    valores.forEach(valor => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "item-modal-selecao";
+
+        const valorReal =
+            typeof valor === "object"
+                ? valor.valor
+                : valor;
+
+        const textoExibicao =
+            typeof valor === "object"
+                ? valor.texto
+                : valor;
+
+
+        item.textContent =
+            textoExibicao;
+
+
+        item.onclick = () => {
+
+            if(config.selecionar){
+
+                config.selecionar(valorReal);
+
+            }
+
+            fecharModalSelecaoUniversal();
+
+        };
+
+        lista.appendChild(item);
+
+    });*/
+    const valores =
+    config.valores || [];
+
+
+    valores.forEach(valor => {
+
+        // Lista hierárquica (Ponto -> Turnos)
+        if (valor && valor.opcoes) {
+
+            const titulo =
+                document.createElement("div");
+
+            titulo.className =
+                "titulo-grupo-modal";
+
+            titulo.textContent =
+                valor.titulo;
+
+            lista.appendChild(titulo);
+
+
+            valor.opcoes.forEach(opcao => {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "item-modal-selecao item-subnivel";
+
+                item.textContent =
+                    opcao.texto;
+
+                item.onclick = () => {
+
+                    if(config.selecionar){
+
+                        config.selecionar(opcao.valor);
+
+                    }
+
+                    fecharModalSelecaoUniversal();
+
+                };
+
+                lista.appendChild(item);
+
+            });
+
+            return;
+
+        }
+
+
+        // Lista simples (comportamento atual)
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "item-modal-selecao";
+
+        /*item.textContent =
+            valor;*/
+        item.textContent =
+            typeof valor === "object"
+                ? valor.texto
+                : valor;
+
+        item.onclick = () => {
+
+            fecharModalSelecaoUniversal();
+
+            if(config.selecionar){
+
+                config.selecionar(valor);
+              /*config.selecionar(
+                  typeof valor === "object"
+                      ? valor
+                      : valor
+              );*/
+
+            }
+
+        };
+
+        lista.appendChild(item);
+
+    });
+
+
+    filtro.value = "";
+
+
+    modal.classList.remove("oculto");
+    
+
+
+}
+
+function fecharModalSelecaoUniversal(){
+
+    const modal =
+        document.getElementById(
+            "modalSelecaoUniversal"
+        );
+
+
+    if(modal){
+
+        modal.classList.add("oculto");
+
+    }
+
+
+    window.modalSelecaoAtual = null;
+
+}
+
+// =====================================
+// Seleção Universal por Modal
+// =====================================
+/*function selecionarCampoComModal(config = {}) {
+
+    abrirModalSelecaoUniversal({
+
+        titulo: config.titulo || "Selecionar",
+
+        valores: config.valores || [],
+
+        selecionar(valor) {
+
+            if (config.campo) {
+
+                window.camposSelecionados[config.campo] = valor;
+
+            }
+
+            const elemento =
+                document.getElementById(
+                    config.campo + "Visual"
+                );
+
+            if (elemento) {
+
+                elemento.value = valor;
+
+            }
+
+            if (config.aoSelecionar) {
+
+                config.aoSelecionar(valor);
+
+            }
+
+        }
+
+    });
+
+}*/
+function selecionarCampoComModal(config = {}) {
+
+    abrirModalSelecaoUniversal({
+
+        titulo: config.titulo || "Selecionar",
+
+        valores: config.valores || [],
+
+        selecionar(valor) {
+
+
+            if (config.campo) {
+
+                window.camposSelecionados[config.campo] = valor;
+
+            }
+
+
+            // Primeiro tenta campoVisual
+            let elemento =
+                document.getElementById(
+                    config.campo + "Visual"
+                );
+
+
+            // Se não existir, tenta o próprio campo
+            if (!elemento) {
+
+                elemento =
+                    document.getElementById(
+                        config.campo
+                    );
+
+            }
+
+
+            if (elemento) {
+
+                elemento.value = valor;
+
+            }
+
+
+            if (config.aoSelecionar) {
+
+                config.aoSelecionar(valor);
+
+            }
+
+
+        }
+
+    });
+
+}
+function abrirSelecaoPontoDesignado(){
+
+
+    selecionarCampoComModal({
+
+        campo:"pontoDesignadoVisual",
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Ponto escolhido:",
+                valor
+            );
+
+
+            // mantém estado global
+
+            window.camposSelecionados.pontoDesignado =
+                valor;
+
+
+            // sincroniza temporariamente
+            // com o select antigo
+
+            //sincronizarPontoDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+
+function abrirSelecaoTurnoDesignado(){
+
+
+    selecionarCampoComModal({
+
+        campo:"turnoDesignadoVisual",
+
+        titulo:"Escolha o turno",
+
+        valores:
+          window.opcoesTurnos,
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Turno escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.turnoDesignado =
+                valor;
+
+
+            //sincronizarTurnoDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+
+function abrirSelecaoDiaDesignado(){
+
+
+    selecionarCampoComModal({
+
+        campo:"diaDesignadoVisual",
+
+        titulo:"Escolha o dia",
+
+        valores:
+
+        window.opcoesDias,
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Dia escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.diaDesignado =
+                valor;
+
+
+            //sincronizarDiaDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+
+function abrirSelecaoPontoDesignar(){
+
+    abrirModalSelecaoUniversal({
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+
+        selecionar(ponto){
+
+
+            console.log(
+                "Ponto selecionado:",
+                ponto
+            );
+
+
+            abrirModalSelecaoUniversal({
+
+                titulo:ponto,
+
+
+                valores:
+                    listarTurnosDoPonto(ponto),
+
+
+
+                selecionar(turno){
+
+
+                    const aba =
+                        obterAbaPonto(
+                            ponto,
+                            turno.valor
+                        );
+
+
+                    console.log(
+                        "Ponto escolhido:",
+                        aba
+                    );
+
+
+
+                    window.camposSelecionados.ponto =
+                        aba;
+
+
+
+                    const campo =
+                        document.getElementById(
+                            "pontoVisual"
+                        );
+
+
+
+                    if(campo){
+
+                        campo.value =
+                            `${ponto} - ${turno.texto}`;
+
+                    }
+
+                    atualizarParticipantesParaSubstituir();
+
+                }
+
+            });
+
+
+        }
+
+    });
+
+}
+function abrirSelecaoDiaDesignar(){
+
+    selecionarCampoComModal({
+
+        campo:"dia",
+
+        titulo:"Escolha o dia",
+
+        valores:window.opcoesDias,
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Dia escolhido Designar:",
+                valor
+            );
+
+
+            window.camposSelecionados.dia =
+                valor;
+
+
+            atualizarParticipantesParaSubstituir();
+
+
+        }
+
+    });
+
+}
+function abrirSelecaoFrequenciaDesignar(){
+
+    selecionarCampoComModal({
+
+        campo:"frequencia",
+
+        titulo:"Escolha a frequência",
+
+        valores:[
+            "SEMANAL",
+            "QUINZENAL",
+            "MENSAL"
+        ],
+
+        aoSelecionar(valor){
+
+            console.log(
+                "Frequência escolhida Designar:",
+                valor
+            );
+
+            window.camposSelecionados.frequencia =
+                valor;
+
+
+            atualizarParticipantesParaSubstituir();
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoEquipamentoDesignar(){
+
+    selecionarCampoComModal({
+
+        campo:"equipamento",
+
+        titulo:"Escolha o equipamento",
+
+        valores:[
+            "Carrinho 1",
+            "Carrinho 2",
+            "Display"
+        ],
+
+        aoSelecionar(valor){
+
+            console.log(
+                "Equipamento escolhido Designar:",
+                valor
+            );
+
+
+            window.camposSelecionados.equipamento =
+                valor;
+
+
+        }
+
+    });
+
+}
+
+function montarListaPontosParaModal(){
+
+    return Object.values(window.pontosSistema)
+        .sort((a, b) => a.numero - b.numero)
+        .map(ponto => ({
+
+            titulo: ponto.descricao,
+
+            opcoes: Object.values(ponto.turnos).map(turno => ({
+
+                texto:
+                    turno.periodo
+                        ? `${turno.descricao} - ${turno.periodo}`
+                        : turno.descricao,
+
+                valor: turno.aba
+
+            }))
+
+        }));
+
+}
+
+function abrirSelecaoPontoVaga(){
+
+    abrirModalSelecaoUniversal({
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+        selecionar(ponto){
+
+          console.log("Ponto selecionado:", ponto);
+
+            abrirModalSelecaoUniversal({
+
+                titulo:ponto,
+
+                valores:listarTurnosDoPonto(ponto),
+
+                /*selecionar(turno){
+
+                    const aba =
+                        obterAbaPonto(
+                            ponto,
+                            turno.valor
+                        );
+
+                    console.log(
+                        "Ponto escolhido:",
+                        aba
+                    );
+
+                    window.camposSelecionados.pontoVaga =
+                        aba;
+
+                }*/
+               selecionar(turno){
+
+                    const aba =
+                        obterAbaPonto(
+                            ponto,
+                            turno.valor
+                        );
+
+
+                    console.log(
+                        "Ponto escolhido:",
+                        aba
+                    );
+
+
+                    window.camposSelecionados.pontoVaga =
+                        aba;
+
+
+                    const campo =
+                        document.getElementById(
+                            "pontoVagaVisual"
+                        );
+
+
+                    if(campo){
+
+                        campo.value =
+                            `${ponto} - ${turno.texto}`;
+
+                    }
+
+                    atualizarParticipantesParaCadastrarVaga();
+                }
+
+            });
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoDiaVaga(){
+
+    selecionarCampoComModal({
+
+        campo:"diaVagaVisual",
+
+        titulo:"Escolha o dia",
+
+        valores:window.opcoesDias,
+
+        aoSelecionar(valor){
+
+            console.log(
+                "Dia escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.diaVaga =
+                valor;
+
+
+            atualizarParticipantesParaCadastrarVaga();
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoFrequenciaVaga(){
+
+    selecionarCampoComModal({
+
+        campo:"frequenciaVagaVisual",
+
+        titulo:"Escolha a frequência",
+
+        valores:[
+            "SEMANAL",
+            "QUINZENAL",
+            "MENSAL"
+        ],
+
+        aoSelecionar(valor){
+
+            console.log(
+                "Frequência escolhida:",
+                valor
+            );
+
+
+            window.camposSelecionados.frequenciaVaga =
+                valor;
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoPontoBepp(){
+
+    selecionarCampoComModal({
+
+        campo:"pontobeppVisual",
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+        aoSelecionar(valor){
+
+            console.log(
+                "Ponto BEPP escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.pontobepp =
+                valor;
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoPontoSimples(
+    campo,
+    titulo = "Escolha o ponto"){
+
+    selecionarCampoComModal({
+
+        campo,
+
+        titulo,
+
+        valores: listarPontosSistema(),
+
+        aoSelecionar(valor){
+
+            console.log(
+                `${campo}:`,
+                valor
+            );
+
+            window.camposSelecionados[campo] =
+                valor;
+
+            const visual =
+                document.getElementById(
+                    campo + "Visual"
+                );
+
+            if(visual){
+
+                visual.value = valor;
+
+            }
+
+        }
+
+    });
+
+}
+
+function abrirSelecaoLista(
+    campo,
+    titulo,
+    valores){
+
+    selecionarCampoComModal({
+
+        campo,
+
+        titulo,
+
+        valores,
+
+        aoSelecionar(valor){
+
+            console.log(`${campo}:`, valor);
+
+            if (!window.camposSelecionados) {
+                window.camposSelecionados = {};
+            }
+
+            window.camposSelecionados[campo] = valor;
+
+            const visual =
+                document.getElementById(campo + "Visual");
+
+            if (visual) {
+                visual.value = valor;
+            }
+
+        }
+
+    });
+
+}

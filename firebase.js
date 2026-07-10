@@ -33,6 +33,11 @@ console.log("Firebase inicializado.");
 
 onMessage(messaging, async (payload) => {
 
+  console.log(
+    "DADOS PUSH RECEBIDOS:",
+    payload.data
+  );
+
 
   console.log(
     "📩 FOREGROUND MESSAGE:",

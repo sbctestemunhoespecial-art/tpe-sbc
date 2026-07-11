@@ -1256,7 +1256,8 @@ button.btn-voltar-menu:hover {
 
     justify-content:center;
 
-    z-index:9999;
+    /*z-index:9999;*/
+    z-index:77777;
 
 }
 
@@ -2912,5 +2913,4 @@ td {
     transform:scale(1.15);
 
 }
-
 

@@ -860,17 +860,6 @@ function sair() {
   document.getElementById("menuBtn").style.display = "none";
   document.getElementById('conteudoProtegido').style.display = 'none';
   document.getElementById('telaLogin').style.display = 'block';
-  
-  //PARTE NOVA DE LIMPEZA AO SAIR
-  Object.keys(telasInicializadas)
-    .forEach(k => delete telasInicializadas[k]);
-
-  window.pontosSistema = null;
-  window.opcoesTurnos = [];
-  window.opcoesDias = [];
-  window.opcoesPrivilegios = {};
-  window.mapaParticipantesPorNome = {};
-  window.todosNomesSimples = [];
 
   idVagaNotificacao = null;
   notificacaoEscala = null;
@@ -12261,13 +12250,51 @@ function buscarDesignacoesPorPonto() {
 
       res.forEach(r => {
         html += `
-            <tr>
-              <td>${formatarNomeComNegrito(r.nome)}</td>
-              <td>${r.turno}</td>
-              <td>${r.dia}</td>
-              <td>${r.frequencia}</td>
-              <td>${r.equipamento}</td>
-            </tr>`;
+                <tr>
+
+                    <td style="width:35%;">
+
+                        <div class="nome-com-whatsapp">
+
+                            <span class="participante-info">
+
+                                <strong>${r.nome}</strong><br>
+
+                                <small>${r.congregacao || ""}</small>
+
+                            </span>
+
+                            <img
+                                src="img/whatsapp.svg"
+                                class="icone-whatsapp-designacao"
+
+                                data-id="${r.idParticipante}"
+
+                                data-nome="${r.nome}"
+
+                                data-turno="${r.turno}"
+
+                                data-dia="${r.dia}"
+
+                                data-frequencia="${r.frequencia}"
+
+                                data-equipamento="${r.equipamento}"
+
+                                title="Conversar pelo WhatsApp">
+
+                        </div>
+
+                    </td>
+
+                    <td>${r.turno}</td>
+
+                    <td>${r.dia}</td>
+
+                    <td>${r.frequencia}</td>
+
+                    <td>${r.equipamento}</td>
+
+                </tr>`;
       });
 
       html += "</tbody></table>";

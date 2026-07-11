@@ -1478,7 +1478,68 @@ function exibirResultados(res) {
             data-frequencia="${r.frequencia}"
             data-equipamento="${r.equipamento}"
             style="cursor:pointer">
-          <td style="width: 33%;">${formatarNomeComNegrito(r.nome)}</td>
+          <!--<td style="width: 33%;">${formatarNomeComNegrito(r.nome)}</td>-->
+          <!--<td style="width:33%;">
+                <div class="nome-com-whatsapp">
+
+                    <span>
+                        ${formatarNomeComNegrito(r.nome)}
+                    </span>
+
+                    <span
+                        class="icone-whatsapp-designacao"
+                        data-id="${r.idParticipante}"
+                        data-nome="${r.nome}"
+                        data-ponto="${pontoNumero}"
+                        data-dia="${r.dia}"
+                        data-turno="${turnoPalavra}"
+                        data-frequencia="${r.frequencia}"
+                        data-equipamento="${r.equipamento}"
+                        title="Enviar mensagem pelo WhatsApp">
+
+                        💬
+
+                    </span>
+
+                </div>
+            </td>-->
+
+                        <td style="width:33%;">
+
+                            <div class="nome-com-whatsapp">
+
+                                <span>
+
+                                    <strong>${r.nome}</strong><br>
+
+                                    <small>${r.congregacao}</small>
+
+                                </span>
+
+                                <img
+                                    src="img/whatsapp.svg"
+                                    class="icone-whatsapp-designacao"
+
+                                    data-id="${r.idParticipante}"
+
+                                    data-nome="${r.nome}"
+
+                                    data-turno="${turnoPalavra}"
+
+                                    data-dia="${r.dia}"
+
+                                    data-ponto="${pontoNumero}"
+
+                                    data-frequencia="${r.frequencia}"
+
+                                    data-equipamento="${r.equipamento}"
+
+                                    title="Conversar pelo WhatsApp">
+
+                            </div>
+
+                        </td>
+          
           <td style="width: 10%;">${turnoPalavra}</td>
           <td style="width: 15%;">${r.dia}</td>
           <td style="width: 8%;">${pontoNumero}</td>
@@ -1544,6 +1605,76 @@ function exibirResultados(res) {
     });
   });
 }
+//LISTENER PARA O ÍCONE DA ESCALA POR TURNO
+document.addEventListener("click", function(e){
+
+    const icone =
+        e.target.closest(".icone-whatsapp-designacao");
+
+    if (!icone) return;
+
+    // impede que o clique continue para a linha da tabela
+    e.stopPropagation();
+
+    mostrarSpinner();
+
+    const mensagem = encodeURIComponent(
+
+`*DESIGNAÇÃO NO TPE*
+
+Olá, querido(a) irmão(ã)!
+
+Esta é uma confirmação de sua designação no TPE.
+
+📍 *Ponto:* ${icone.dataset.ponto}
+📅 *Dia:* ${icone.dataset.dia}
+🕒 *Turno:* ${icone.dataset.turno}
+📈 *Frequência:* ${icone.dataset.frequencia}
+📚 *Mostruário:* ${icone.dataset.equipamento}
+
+Estou à disposição para qualquer dúvida.
+
+Grande abraço!`
+    );
+
+    apiJSONP(
+
+        "buscarNumeroWhatsAppPorId",
+
+        {
+            id: icone.dataset.id,
+            mensagem
+        },
+
+        function(url){
+
+            esconderSpinner();
+
+            window.open(url, "_blank");
+
+        },
+
+        function(err){
+
+            esconderSpinner();
+
+            mostrarAlertaGlobal(
+
+                "❌ " +
+
+                (err?.mensagem ||
+
+                 err?.message ||
+
+                 "Erro ao abrir o WhatsApp.")
+
+            );
+
+        }
+
+    );
+
+});
 
 function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
     document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
@@ -1671,7 +1802,7 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
 
 }
 
-function editarDesignacaoInline(linhaTR) {
+/*function editarDesignacaoInline(linhaTR) {
   const colunas = linhaTR.querySelectorAll('td');
   const campos = ['nome', 'turno', 'dia', 'ponto', 'frequencia', 'equipamento'];
 
@@ -1714,7 +1845,7 @@ function editarDesignacaoInline(linhaTR) {
       }
 
       const valorAtual = normalizarTexto(td.textContent);
-
+    
       for (const option of selectOriginal.options) {
         const opt = document.createElement('option');
         opt.value = option.value;
@@ -1849,7 +1980,7 @@ function editarDesignacaoInline(linhaTR) {
 
           },
           (err) => console.error("Erro atualizar status da vaga:", err)
-        );*/
+        //);
 
       },
       (err) => {
@@ -1914,6 +2045,595 @@ function editarDesignacaoInline(linhaTR) {
   });
 
   inputFiltro.dispatchEvent(new Event('input'));
+}*/
+function editarDesignacaoInline(linhaTR) {
+
+  const colunas =
+    linhaTR.querySelectorAll('td');
+
+
+  const campos = [
+    'nome',
+    'turno',
+    'dia',
+    'ponto',
+    'frequencia',
+    'equipamento'
+  ];
+
+
+  const nomeOriginal =
+    linhaTR.dataset.nome;
+
+  const turnoVisivelOriginal =
+    linhaTR.dataset.turno;
+
+  const diaOriginal =
+    linhaTR.dataset.dia;
+
+  const pontoVisivelOriginal =
+    linhaTR.dataset.ponto;
+
+  const frequenciaOriginal =
+    linhaTR.dataset.frequencia;
+
+  const equipamentoOriginal =
+    linhaTR.dataset.equipamento;
+
+
+  linhaTR.dataset.nomeOriginal =
+    nomeOriginal;
+
+
+  if (
+    nomeOriginal
+      .trim()
+      .toUpperCase()
+      .startsWith("VAGA")
+  ) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Edição de vagas não permitida por aqui."
+    );
+
+    return;
+
+  }
+
+
+  const selectsOriginais = {
+
+    frequencia:
+      document.getElementById('frequencia'),
+
+    equipamento:
+      document.getElementById('equipamento')
+
+  };
+
+
+  if (!selectsOriginais.frequencia) {
+
+    mostrarAlertaGlobal(
+      '⚠️ Select de frequência não encontrado.'
+    );
+
+    return;
+
+  }
+
+
+  if (!selectsOriginais.equipamento) {
+
+    mostrarAlertaGlobal(
+      '⚠️ Select de equipamento não encontrado.'
+    );
+
+    return;
+
+  }
+
+
+
+  function normalizarTexto(str) {
+
+    return str
+      ? str.replace(/\s+/g, '').trim()
+      : '';
+
+  }
+
+
+
+  campos.forEach((campo, i) => {
+
+
+    const td =
+      colunas[i];
+
+
+    if (
+      [
+        "nome",
+        "frequencia",
+        "equipamento"
+      ]
+      .includes(campo)
+    ) {
+
+
+      const selectClone =
+        document.createElement('select');
+
+
+      let opcoes = [];
+
+
+      if (campo === "nome") {
+
+
+        opcoes =
+          window.todosNomes || [];
+
+
+      } else {
+
+
+        opcoes =
+          Array.from(
+            selectsOriginais[campo].options
+          )
+          .map(o => ({
+
+            value:
+              o.value,
+
+            text:
+              o.textContent
+
+          }));
+
+      }
+
+
+
+      let valorAtual;
+
+
+      if (campo === "nome") {
+
+
+        valorAtual =
+          normalizarTexto(
+            linhaTR.dataset.nome
+          );
+
+
+      } else {
+
+
+        valorAtual =
+          normalizarTexto(
+            td.textContent
+          );
+
+      }
+
+
+
+      opcoes.forEach(item => {
+
+
+        const opt =
+          document.createElement('option');
+
+
+        if (
+          typeof item === "string"
+        ) {
+
+          opt.value =
+            item;
+
+          opt.textContent =
+            item;
+
+
+        } else {
+
+
+          opt.value =
+            item.value;
+
+          opt.textContent =
+            item.text;
+
+        }
+
+
+
+        selectClone.appendChild(opt);
+
+
+
+        if (
+          normalizarTexto(opt.value)
+          === valorAtual
+        ) {
+
+          selectClone.value =
+            opt.value;
+
+        }
+
+
+      });
+
+
+
+      td.innerHTML = '';
+
+      td.appendChild(selectClone);
+
+
+
+    } else {
+
+
+      td.innerHTML =
+        td.textContent.trim();
+
+
+    }
+
+
+  });
+
+
+
+  const inputFiltro =
+    document.createElement('input');
+
+
+  inputFiltro.type =
+    'text';
+
+
+  inputFiltro.placeholder =
+    'Filtrar nome...';
+
+
+  inputFiltro.style.margin =
+    '10px 0';
+
+
+  inputFiltro.style.width =
+    '100%';
+
+
+  inputFiltro.style.display =
+    'block';
+
+
+
+  linhaTR.insertAdjacentElement(
+    'afterend',
+    inputFiltro
+  );
+
+
+
+  const menuRow =
+    document.createElement('tr');
+
+
+  const tdMenu =
+    document.createElement('td');
+
+
+  tdMenu.colSpan = 6;
+
+
+
+  const btnSalvar =
+    document.createElement('button');
+
+
+  btnSalvar.textContent =
+    '💾 Salvar';
+
+
+  btnSalvar.className =
+    'botao salvar';
+
+
+
+  btnSalvar.onclick = () => {
+
+
+    mostrarSpinner();
+
+
+
+    const novosValores =
+      campos.map((campo, i) => {
+
+
+        const select =
+          colunas[i]
+            .querySelector('select');
+
+
+        return select
+          ? select.value
+          : colunas[i].textContent.trim();
+
+
+      });
+
+
+
+    let [
+      novoNome,
+      novoTurnoVisivel,
+      novoDia,
+      novoPontoVisivel,
+      novaFrequencia,
+      novoEquipamento
+
+    ] = novosValores;
+
+
+
+    if (!novaFrequencia.trim()) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "⚠️ A frequência não pode estar vazia."
+      );
+
+      return;
+
+    }
+
+
+
+    if (!novoEquipamento.trim()) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "⚠️ O equipamento não pode estar vazio."
+      );
+
+      return;
+
+    }
+
+
+
+    const turnoCodigoMap = {
+
+      "Manhã": "M",
+      "Tarde": "T",
+      "Noite": "N",
+      "Matinal": "A",
+      "Manhã (9–11h)": "MA",
+      "Manhã (11–13h)": "MB",
+      "Tarde (13–15h)": "TA",
+      "Tarde (15–17h)": "TB"
+
+    };
+
+
+
+    const turnoCodigo =
+      turnoCodigoMap[novoTurnoVisivel];
+
+
+
+    if (!turnoCodigo) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "⚠️ Turno inválido."
+      );
+
+      return;
+
+    }
+
+
+
+    const pontoFinal =
+      turnoCodigo +
+      novoPontoVisivel;
+
+
+
+    apiJSONP(
+
+      "processarEdicaoDesignacao",
+
+      {
+
+        novoNome,
+
+        ponto:
+          pontoFinal,
+
+        dia:
+          novoDia,
+
+        frequencia:
+          novaFrequencia,
+
+        nomeOriginal,
+
+        equipamento:
+          novoEquipamento
+
+      },
+
+
+      () => {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          "✅ Designação atualizada com sucesso."
+        );
+
+        pesquisarDesignados();
+
+      },
+
+
+      (err) => {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          "❌ Erro ao atualizar: " +
+          (err.message || err)
+        );
+
+      }
+
+    );
+
+
+  };
+
+
+
+  const btnCancelar =
+    document.createElement('button');
+
+
+  btnCancelar.textContent =
+    '❌ Cancelar';
+
+
+  btnCancelar.className =
+    'botao cancel';
+
+
+  btnCancelar.onclick =
+    () => pesquisarDesignados();
+
+
+
+  tdMenu.appendChild(btnSalvar);
+
+  tdMenu.appendChild(btnCancelar);
+
+  menuRow.appendChild(tdMenu);
+
+
+
+  inputFiltro.insertAdjacentElement(
+    'afterend',
+    menuRow
+  );
+
+
+
+  function norm(str) {
+
+    return str
+      ? str.toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g,'')
+      : '';
+
+  }
+
+
+
+  inputFiltro.addEventListener(
+    'input',
+    () => {
+
+
+      const filtro =
+        norm(inputFiltro.value);
+
+
+
+      const selectNome =
+        colunas[0]
+          .querySelector('select');
+
+
+
+      if (!selectNome)
+        return;
+
+
+
+      const valorAnterior =
+        selectNome.value;
+
+
+
+      selectNome.innerHTML =
+        '';
+
+
+
+      const resultado =
+        (window.todosNomes || [])
+        .filter(n =>
+          !filtro ||
+          norm(n).includes(filtro)
+        );
+
+
+
+      resultado.forEach(n => {
+
+
+        const opt =
+          document.createElement('option');
+
+
+        opt.value =
+          n;
+
+
+        opt.textContent =
+          n;
+
+
+        selectNome.appendChild(opt);
+
+
+      });
+
+
+
+      if (
+        resultado.includes(valorAnterior)
+      ) {
+
+        selectNome.value =
+          valorAnterior;
+
+      }
+
+
+    }
+  );
+
+
+
+  inputFiltro.dispatchEvent(
+    new Event('input')
+  );
+
 }
 
 function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {

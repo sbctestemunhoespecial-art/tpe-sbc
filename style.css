@@ -2886,3 +2886,31 @@ td {
     cursor: pointer;
 
 }
+
+/* NOVO PARA A TELA DE ESCALAS POR TURNO*/
+.nome-com-whatsapp{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+
+}
+
+.icone-whatsapp-designacao{
+
+    width:20px;
+    height:20px;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+
+}
+
+.icone-whatsapp-designacao:hover{
+
+    transform:scale(1.15);
+
+}
+
+

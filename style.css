@@ -1604,26 +1604,6 @@ button.btn-voltar-menu:hover {
   box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
 }*/
 
-/*#modalDesignados {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 90vw;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-}
-
-#modalDesignados .conteudo-modal {
-  background: #fff;
-  margin: 5% auto;
-  padding: 1rem;
-  width: 100%;
-  border-radius: var(--raio-borda);
-  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
-}*/
-
 #modalDesignados {
   display: none;
   position: fixed;
@@ -2851,4 +2831,58 @@ td {
     background: #fff3b0 !important;
     outline: 3px solid #f59e0b;
     font-weight: bold;
+}
+
+/*ESTILO PARA A MENSAGEM DE ERRO SE FALHAR O CARREGAMENTO */
+#modalErroCarregamento {
+
+    background: rgba(0,0,0,0.55);
+
+}
+
+
+.conteudo-erro-carregamento {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    width: 400px;
+
+    max-width: 90%;
+
+    text-align: center;
+
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+
+}
+
+
+#mensagemErroCarregamento {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 25px;
+
+    color: #333;
+
+}
+
+
+#btnTentarCarregamento {
+
+    font-size: 18px;
+
+    padding: 12px 25px;
+
+    border-radius: 10px;
+
+    border: none;
+
+    cursor: pointer;
+
 }

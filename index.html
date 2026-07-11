@@ -59,7 +59,7 @@
 
 </div>
 
-<!-- =========================================
+  <!-- =========================================
      MODAL SELEÇÃO UNIVERSAL
   ========================================= -->
   
@@ -142,7 +142,6 @@
     <!--<a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telaUsuarioLogado'); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);" class="bloquear-treinandos">Minha Disponibilidade</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('minhaInfo'); pesquisarMinhaInfo();">Meu cadastro</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telameutreinamentopratico'); pesquisarTP()" class="so-treinandos">Treinamento prático</a>
-    <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('telamapas'); carregarMapaQuandoClicar();" class="so-participantes">Mapa</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('participantes')" class="so-organizadores">Cadastro geral</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('disponiveis')" class="so-escalas">Disponíveis</a>
     <a href="#" onclick="event.preventDefault(); toggleMenu(); exibirVoltar(); abrirTela('disponibilidadeBuscadaSub')" class="so-organizadores">Substitutos</a>
@@ -633,7 +632,7 @@
             <div class="titulo">Minha Disponibilidade</div>
         </div>
         <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('telaVagasDisponiveis', this); abrirVagasDisponiveis();">
+            onclick="abrirTela('telaVagasDisponiveis', this)">
             <div class="icone">🚨</div>
             <div class="titulo">Vagas Disponíveis</div>
         </div>
@@ -1447,74 +1446,74 @@
 
     <div id="telameutreinamentopratico" class="painel tela"> 
 
-    <h5>🎓 Dias dos Candidatos para Treinamento</h5>
-    <div id="treinamentoPraticoContainer">
-      <!--<h5>treinamentoPratico</h5>-->
+      <h5>🎓 Dias dos Candidatos para Treinamento</h5>
+      <div id="treinamentoPraticoContainer">
+        <!--<h5>treinamentoPratico</h5>-->
 
-    <!--<div style="display:none">
-        <select id="listaNomesTP"><option value="">- Selecione -</option></select>
-        <div style="display: flex; align-items: center; gap: 10px;">
-        <input type="text" id="filtroBuscaTP" placeholder="Digite o nome para pesquisar...">
-        </div>
-    </div>-->
+      <!--<div style="display:none">
+          <select id="listaNomesTP"><option value="">- Selecione -</option></select>
+          <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="text" id="filtroBuscaTP" placeholder="Digite o nome para pesquisar...">
+          </div>
+      </div>-->
 
-        <div style="display: flex">
-        <button
-            type="button"
-            onclick="abrirSelecaoCandidatoTreinamentoPratico()">
-            👤 Ver Candidato
-          <!--</button>
-          <button type="button" id= "btnPesqDispTP" onclick="pesquisarTP()">🔍 Disponibilidade</button>-->
-        </div>
-
-          <div id="candidatoTreinamentoPratico" class="nome-pesquisado"></div>
-      
-      <!-- Tabela com dias e turnos   <table id="tabelaTP" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;"> -->class="tabela-sistema"
-      <table id="tabelaTP" class="tabela-sistema tabela-destaque">
-        <thead>
-          <tr>
-            <th>Dia</th>
-            <th>Matinal<br>6h às 9h</th>
-            <th>Manhã<br>9h às 1h</th>
-            <th>Tarde<br>1h às 5h</th>
-            <th>Noite<br>5h às 8h</th>
-          </tr>
-        </thead>
-        <tbody>
-          <script>
-            const diasT = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"];
-            const turnosT = ["Matinal", "Manhã", "Tarde", "Noite"];
-
-            diasT.forEach(diaT => {
-              document.write('<tr>');
-              document.write(`<td>${diaT}</td>`);
-              turnosT.forEach(turnoT => {
-                document.write(`
-                  <td>
-                    <input type="checkbox"
-                          class="dia-turno-treinamentoPratico"
-                          data-dia-t="${diaT}"
-                          data-turno-t="${turnoT}"
-                          disabled>
-
-                  </td>`);
-              });
-              document.write('</tr>');
-            });
-          </script>
-        </tbody>
-      </table>
-
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button id="btnEditarTP"
-                    onclick="alternarModoEdicaoTP()" class="botao editar"
-                    style="flex: 1;">✏️ Editar Disponibilidade</button>
-
-            <button onclick="salvarTP()" class="botao salvar"
-                    style="flex: 1;">💾 Salvar Disponibilidade</button>
+          <div style="display: flex">
+          <button
+              type="button"
+              onclick="abrirSelecaoCandidatoTreinamentoPratico()">
+              👤 Ver Candidato
+            <!--</button>
+            <button type="button" id= "btnPesqDispTP" onclick="pesquisarTP()">🔍 Disponibilidade</button>-->
           </div>
 
-    </div>
+            <div id="candidatoTreinamentoPratico" class="nome-pesquisado"></div>
+        
+        <!-- Tabela com dias e turnos   <table id="tabelaTP" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;"> -->class="tabela-sistema"
+        <table id="tabelaTP" class="tabela-sistema tabela-destaque">
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th>Matinal<br>6h às 9h</th>
+              <th>Manhã<br>9h às 1h</th>
+              <th>Tarde<br>1h às 5h</th>
+              <th>Noite<br>5h às 8h</th>
+            </tr>
+          </thead>
+          <tbody>
+            <script>
+              const diasT = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"];
+              const turnosT = ["Matinal", "Manhã", "Tarde", "Noite"];
+
+              diasT.forEach(diaT => {
+                document.write('<tr>');
+                document.write(`<td>${diaT}</td>`);
+                turnosT.forEach(turnoT => {
+                  document.write(`
+                    <td>
+                      <input type="checkbox"
+                            class="dia-turno-treinamentoPratico"
+                            data-dia-t="${diaT}"
+                            data-turno-t="${turnoT}"
+                            disabled>
+
+                    </td>`);
+                });
+                document.write('</tr>');
+              });
+            </script>
+          </tbody>
+        </table>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+              <button id="btnEditarTP"
+                      onclick="alternarModoEdicaoTP()" class="botao editar"
+                      style="flex: 1;">✏️ Editar Disponibilidade</button>
+
+              <button onclick="salvarTP()" class="botao salvar"
+                      style="flex: 1;">💾 Salvar Disponibilidade</button>
+            </div>
+
+      </div>
   </div>
 
     <div id="telameutreinamentopraticoId" class="painel tela">
@@ -2193,202 +2192,202 @@
             </div>
   </div>
 
-    <div id="disponibilidadeBuscada" class="painel-exportar tela">
-    <h5>👤 Disponíveis 4 Horas</h5>
+  <div id="disponibilidadeBuscada" class="painel-exportar tela">
+      <h5>👤 Disponíveis 4 Horas</h5>
 
-    <label>Dia</label>
+      <label>Dia</label>
 
-    <input
-      id="diasSelectVisual"
-      class="campo-selecao-visual"
-      type="text"
-      readonly
-      placeholder="Escolha o dia"
-      onclick="abrirSelecaoLista(
-          'diasSelect',
-          'Escolha o dia',
-          window.LISTAS_MODAL.dias
-      )">
+      <input
+        id="diasSelectVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha o dia"
+        onclick="abrirSelecaoLista(
+            'diasSelect',
+            'Escolha o dia',
+            window.LISTAS_MODAL.dias
+        )">
 
-    <label>
-      Turno
-    </label>
+      <label>
+        Turno
+      </label>
 
-    <input
-          id="turnosSelectVisual"
+      <input
+            id="turnosSelectVisual"
+            class="campo-selecao-visual"
+            type="text"
+            readonly
+            placeholder="Escolha o turno"
+            onclick="abrirSelecaoLista(
+                'turnosSelect',
+                'Escolha o turno',
+                window.LISTAS_MODAL.turnos
+            )">
+
+        <label>
+        Frequência
+        </label>
+
+      <input
+            id="frequenciasSelectVisual"
+            class="campo-selecao-visual"
+            type="text"
+            readonly
+            placeholder="Escolha a necessidade"
+            onclick="abrirSelecaoLista(
+                'frequenciasSelect',
+                'Escolha a frequência',
+                window.LISTAS_MODAL.frequencias
+            )">
+
+      <!--<table id="tabelaBuscarDisp" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Turno</th>
+            <th>Frequência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select id="diasSelect">
+                <option value="">- Selecione -</option>
+                <option value="Segunda">Segunda</option>
+                <option value="Terça">Terça</option>
+                <option value="Quarta">Quarta</option>
+                <option value="Quinta">Quinta</option>
+                <option value="Sexta">Sexta</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
+              </select>
+            </td>
+            <td>
+              <select id="turnosSelect">
+                <option value="">- Selecione -</option>
+                <option value="Matinal">Matinal</option>
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noite">Noite</option>
+              </select>
+            </td>
+            <td>
+              <select id="frequenciasSelect">
+                <option value="">- Selecione -</option>
+                <option value="Semanal">Semanal</option>
+                <option value="Quinzenal">Quinzenal</option>
+                <option value="Mensal">Mensal</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>-->
+      <label>Equipamento</label>
+      <button onclick="buscarParticipantes()">🔍 Pesquisar participantes disponíveis</button>
+
+      <label>Ponto</label>
+      <input
+          id="pontosParaOferecerSelectVisual"
           class="campo-selecao-visual"
           type="text"
           readonly
-          placeholder="Escolha o turno"
-          onclick="abrirSelecaoLista(
-              'turnosSelect',
-              'Escolha o turno',
-              window.LISTAS_MODAL.turnos
-          )">
+          placeholder="Escolha o ponto"
+          readonly
+          onclick="abrirSelecaoPontoSimples('pontosParaOferecerSelect')"
+      >
 
-      <label>
-      Frequência
-      </label>
-
-    <input
-          id="frequenciasSelectVisual"
+      <label>Necessidade</label>
+      <input
+          id="necessidadeVisual"
           class="campo-selecao-visual"
           type="text"
           readonly
           placeholder="Escolha a necessidade"
           onclick="abrirSelecaoLista(
-              'frequenciasSelect',
-              'Escolha a frequência',
-              window.LISTAS_MODAL.frequencias
+              'necessidade',
+              'Escolha a necessidade',
+              window.LISTAS_MODAL.necessidades
           )">
 
-    <!--<table id="tabelaBuscarDisp" class="tabela-sistema">
-      <thead>
-        <tr>
-          <th>Dia</th>
-          <th>Turno</th>
-          <th>Frequência</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <select id="diasSelect">
-              <option value="">- Selecione -</option>
-              <option value="Segunda">Segunda</option>
-              <option value="Terça">Terça</option>
-              <option value="Quarta">Quarta</option>
-              <option value="Quinta">Quinta</option>
-              <option value="Sexta">Sexta</option>
-              <option value="Sábado">Sábado</option>
-              <option value="Domingo">Domingo</option>
-            </select>
-          </td>
-          <td>
-            <select id="turnosSelect">
-              <option value="">- Selecione -</option>
-              <option value="Matinal">Matinal</option>
-              <option value="Manhã">Manhã</option>
-              <option value="Tarde">Tarde</option>
-              <option value="Noite">Noite</option>
-            </select>
-          </td>
-          <td>
-            <select id="frequenciasSelect">
-              <option value="">- Selecione -</option>
-              <option value="Semanal">Semanal</option>
-              <option value="Quinzenal">Quinzenal</option>
-              <option value="Mensal">Mensal</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>-->
-    <label>Equipamento</label>
-    <button onclick="buscarParticipantes()">🔍 Pesquisar participantes disponíveis</button>
+      <label>Equipamento</label>
+      <input
+          id="equipamentosParaOferecerSelectVisual"
+          class="campo-selecao-visual"
+          type="text"
+          readonly
+          placeholder="Escolha o equipamento"
+          onclick="abrirSelecaoLista(
+              'equipamentosParaOferecerSelect',
+              'Escolha o equipamento',
+              window.LISTAS_MODAL.equipamentos
+          )">
 
-    <label>Ponto</label>
-    <input
-        id="pontosParaOferecerSelectVisual"
-        class="campo-selecao-visual"
-        type="text"
-        readonly
-        placeholder="Escolha o ponto"
-        readonly
-        onclick="abrirSelecaoPontoSimples('pontosParaOferecerSelect')"
-    >
+      <!--<table id="tabelaPontoEquip" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Ponto</th>
+            <th>Necessidade</th>
+            <th>Equipamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select id="pontosParaOferecerSelect"><option value="">- Selecione -</option>
+              </select>
+            </td>
+            <td>
+              <select id="necessidade">
+                <option value="">- Selecione -</option>
+                <option value="Um irmão">Um irmão</option>
+                <option value="Uma irmã">Uma irmã</option>
+                <option value="Uma dupla">Uma dupla</option>
+              </select>
+            </td>
+            <td>
+              <select id="equipamentosParaOferecerSelect">
+                <option value="">- Selecione -</option>
+                <option value="Carrinho 1">Carrinho 1</option>
+                <option value="Carrinho 2">Carrinho 2</option>
+                <option value="Display">Display</option>
+              </select>
+          </tr>
+        </tbody>
+      </table>-->
 
-    <label>Necessidade</label>
-    <input
-        id="necessidadeVisual"
-        class="campo-selecao-visual"
-        type="text"
-        readonly
-        placeholder="Escolha a necessidade"
-        onclick="abrirSelecaoLista(
-            'necessidade',
-            'Escolha a necessidade',
-            window.LISTAS_MODAL.necessidades
-        )">
+          <div style="display: flex; align-items: center; gap: 10px;">
+          <p id="msgPesqDisponiveis" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
+          </div>
 
-    <label>Equipamento</label>
-    <input
-        id="equipamentosParaOferecerSelectVisual"
-        class="campo-selecao-visual"
-        type="text"
-        readonly
-        placeholder="Escolha o equipamento"
-        onclick="abrirSelecaoLista(
-            'equipamentosParaOferecerSelect',
-            'Escolha o equipamento',
-            window.LISTAS_MODAL.equipamentos
-        )">
+          <div id="resultadoBusca" style="margin-top: 20px;"></div>
 
-    <!--<table id="tabelaPontoEquip" class="tabela-sistema">
-      <thead>
-        <tr>
-          <th>Ponto</th>
-          <th>Necessidade</th>
-          <th>Equipamento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <select id="pontosParaOferecerSelect"><option value="">- Selecione -</option>
-            </select>
-          </td>
-          <td>
-            <select id="necessidade">
-              <option value="">- Selecione -</option>
-              <option value="Um irmão">Um irmão</option>
-              <option value="Uma irmã">Uma irmã</option>
-              <option value="Uma dupla">Uma dupla</option>
-            </select>
-          </td>
-          <td>
-            <select id="equipamentosParaOferecerSelect">
-              <option value="">- Selecione -</option>
-              <option value="Carrinho 1">Carrinho 1</option>
-              <option value="Carrinho 2">Carrinho 2</option>
-              <option value="Display">Display</option>
-            </select>
-        </tr>
-      </tbody>
-    </table>-->
-
-        <div style="display: flex; align-items: center; gap: 10px;">
-        <p id="msgPesqDisponiveis" class="mensagem-verde"></p><!--<div id="loadingPesqDisponiveis" class="spinner"></div>-->
-        </div>
-
-        <div id="resultadoBusca" style="margin-top: 20px;"></div>
-        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailTodosBtn) -->
-        <div id="dadosUsuarioContainer" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
-            <div style="display: flex; gap: 10px;">
-              <label for="nomeSelectUsuario">Seus dados de contato</label>
-              <!--<div id="loadingDadosUsuario" class="spinner" style="display: none;"></div>-->
-            </div>
-            <div style="display: flex; gap: 10px;">
-              <input type="text" id="telefoneInputUsuario" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
-              <input type="email" id="emailInputUsuario" placeholder="seuemail@dominio.com" style="width: 50%;">
-            </div>
-            <div style="display: flex; gap: 10px;">
-              <select id="nomeSelectUsuario" style="margin-left:10px; min-width:300px;" disabled>
-              <option value="">- selecione -</option></select>
-              <input type="text" id="nomeInputUsuario" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
-            </div>
-        </div>
-        <div id="confirmEmailContainer" style="margin-top:10px;"></div>
-        <!-- FIM: Dados do usuário -->
-        <!--<div id="loadingEnviadoEmailUsuario" class="spinner" style="display: none;"></div>-->
-        <button id="enviarEmailTodosBtn" style="display:none; margin-top: 15px;" class="botaomail">
-          📧 Enviar e-mail para todos os listados
-        </button>
-        <!--<div id="confirmEmailContainer" style="margin-top: 10px;"></div>-->
-
+          <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailTodosBtn) -->
+          <div id="dadosUsuarioContainer" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
+              <div style="display: flex; gap: 10px;">
+                <label for="nomeSelectUsuario">Seus dados de contato</label>
+                <!--<div id="loadingDadosUsuario" class="spinner" style="display: none;"></div>-->
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="telefoneInputUsuario" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
+                <input type="email" id="emailInputUsuario" placeholder="seuemail@dominio.com" style="width: 50%;">
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <select id="nomeSelectUsuario" style="margin-left:10px; min-width:300px;" disabled>
+                <option value="">- selecione -</option></select>
+                <input type="text" id="nomeInputUsuario" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
+              </div>
+          </div>
+          <div id="confirmEmailContainer" style="margin-top:10px;"></div>
+          <!-- FIM: Dados do usuário -->
+          <!--<div id="loadingEnviadoEmailUsuario" class="spinner" style="display: none;"></div>-->
+          <button id="enviarEmailTodosBtn" style="display:none; margin-top: 15px;" class="botaomail">
+            📧 Enviar e-mail para todos os listados
+          </button>
+          <!--<div id="confirmEmailContainer" style="margin-top: 10px;"></div>-->
   </div>
 
-    <div id="disponibilidadeBuscada2h" class="painel-exportar tela">
+  <div id="disponibilidadeBuscada2h" class="painel-exportar tela">
     <h5>👤 Disponíveis 2 Horas</h5>
 
     <label>Dia</label>
@@ -2585,6 +2584,7 @@
               </div>
             </div>
   </div>
+
   <div id="disponibilidadeBuscadaSub" class="painel-exportar tela">
     <h5>👤 Pedir Substituição</h5>
     <table id="tabelaBuscarSubs" class="tabela-sistema">
@@ -2729,11 +2729,11 @@
           <div class="icone">⚙️</div>
           <div class="titulo">Gerar Relatórios</div>
       </div>
-      <div class="card-menu btn-relatoriosSubMenu so-admin"
+      <!--<div class="card-menu btn-relatoriosSubMenu so-admin"
           onclick="abrirTela('ajustarCandidatosEvContainer', this)">
           <div class="icone">🔄</div>
           <div class="titulo">Converter IDs</div>
-      </div>
+      </div>-->
     </div>
   </div>
   <div id="editarEventos" class="painel-exportar tela">
@@ -2991,17 +2991,16 @@
     <div id="mensagemEv" style="margin-top: 10px; color: green;"></div>  
   </div>
 
-    <div id="ajustarCandidatosEvContainer" class="painel-exportar tela">
+  <!--<div id="ajustarCandidatosEvContainer" class="painel-exportar tela">
     <h5>🔄 Converter Designados do evento para ID</h5>
     <h1>(Isto só foi usado quando mudamos para cadastrar inscritos de nome para ID)</h1>
       
       <label for="eventoSelectConversor">Selecione o Evento</label>
       <select id="eventoSelectConversor"></select>
-      <!--<button onclick="converter()">Converter nomes para ID</button> SE PRECISAR USAR ESSA FUNÇÃO, DESCOMENTE ESSE TRECHO E EXCLUA O TRECHO ABAIXO QUE SÓ MOSTRA BOTÃO SEM UTILIDADE--> 
       <button >Converter nomes para ID</button> 
 
       <div id="status" style="margin-top: 10px;"></div>
-  </div>
+  </div>-->
 
     <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
   <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
@@ -3424,8 +3423,8 @@
     <div id="resultadoMeuTreinamento"></div>
   </div>
 
-    <div id="painelIrregulares" class="painel-exportar tela">
-  <h5>⚠️ Irregulares</h5>
+  <div id="painelIrregulares" class="painel-exportar tela">
+    <h5>⚠️ Irregulares</h5>
     <div id="pesquisaIrregulares">
 
       <button onclick="buscarIrregulares()">🔍 Ver participantes sem designação</button>
@@ -3490,109 +3489,109 @@
 
   </div>
 
-    <div id="vagas" class="painel tela"> 
-  <h5>🪑 Vagas</h5>
+  <div id="vagas" class="painel tela"> 
+    <h5>🪑 Vagas</h5>
 
-  <body>
+    <body>
 
-  <div id="painelVagas">
+    <div id="painelVagas">
 
-    <label>
-        Ponto
-    </label>
+      <label>
+          Ponto
+      </label>
 
-    <input
-        id="pontoVagaVisual"
-        type="text"
-        readonly
-        placeholder="Escolha o ponto"
-        onclick="abrirSelecaoPontoVaga()"
-    />
+      <input
+          id="pontoVagaVisual"
+          type="text"
+          readonly
+          placeholder="Escolha o ponto"
+          onclick="abrirSelecaoPontoVaga()"
+      />
 
-    <label>
-        Dia
-    </label>
+      <label>
+          Dia
+      </label>
 
-    <input
-        id="diaVagaVisual"
-        type="text"
-        readonly
-        placeholder="Escolha o dia"
-        onclick="abrirSelecaoDiaVaga()"
-    />
+      <input
+          id="diaVagaVisual"
+          type="text"
+          readonly
+          placeholder="Escolha o dia"
+          onclick="abrirSelecaoDiaVaga()"
+      />
 
-    <label>
-        Frequência
-    </label>
+      <label>
+          Frequência
+      </label>
 
-    <input
-        id="frequenciaVagaVisual"
-        type="text"
-        readonly
-        placeholder="Escolha a frequência"
-        onclick="abrirSelecaoFrequenciaVaga()"
-    />
+      <input
+          id="frequenciaVagaVisual"
+          type="text"
+          readonly
+          placeholder="Escolha a frequência"
+          onclick="abrirSelecaoFrequenciaVaga()"
+      />
 
-    <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">
-          <tbody>
-            <tr>
-              <th>Substituir</th>
-            </tr>
+      <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">
+            <tbody>
+              <tr>
+                <th>Substituir</th>
+              </tr>
+            <td>
+            <select id="substituirQuemsai">
+              <option value="">-- Ninguém --</option>
+            </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <label>
+          
+      </label>
+
+        <button type="button" onclick="salvarVaga()">
+          💾 Cadastrar Vaga
+        </button>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgCadastrarVaga" class="mensagem-verde"></p>
+      </div>
+
+    <table id="tabelaTotalVagasPendentes" class="tabela-sistema">
+      <thead>
+        <tr>
+          <th>Total de vagas em aberto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
           <td>
-          <select id="substituirQuemsai">
-            <option value="">-- Ninguém --</option>
-          </select>
+            <span id="totalVagas" style="color: red; font-weight: bold; font-size: 50px">
+              0
+            </span>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <label>
-        
-    </label>
+      
+      <table id="tabelaVagasPendentes" class="tabela-sistema">
+        <thead>
+          <tr>
+            <th>Ponto</th>
+            <th>Dia</th>
+            <th>Frequencia</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-      <button type="button" onclick="salvarVaga()">
-        💾 Cadastrar Vaga
-      </button>
+      <div>
 
-    <div style="display: flex; align-items: center; gap: 10px;">
-    <p id="msgCadastrarVaga" class="mensagem-verde"></p>
+        <button type="button" style="width: 50vw; float: right;" onclick="carregarTodasVagasAbertas()">🔄 Atualizar Vagas</button>
+      </div>
     </div>
-
-  <table id="tabelaTotalVagasPendentes" class="tabela-sistema">
-    <thead>
-      <tr>
-        <th>Total de vagas em aberto</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <span id="totalVagas" style="color: red; font-weight: bold; font-size: 50px">
-            0
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-    
-    <table id="tabelaVagasPendentes" class="tabela-sistema">
-      <thead>
-        <tr>
-          <th>Ponto</th>
-          <th>Dia</th>
-          <th>Frequencia</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <div>
-
-      <button type="button" style="width: 50vw; float: right;" onclick="carregarTodasVagasAbertas()">🔄 Atualizar Vagas</button>
-    </div>
-  </div>
   </div> 
 
     <div id="congregacoes" class="painel tela"> 

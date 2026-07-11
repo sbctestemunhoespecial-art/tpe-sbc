@@ -3,6 +3,275 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmX
 let versaoServidor = "";
 let versaoLocal = "";
 
+const telasInicializadas = {};
+
+const telasSempreAtualizar = new Set([
+  // telas que devem sempre atualizar quando abertas, ou seja, a cada abertura nova, atualiza
+  "painelVagas",
+  "telaVagasDisponiveis"
+]);
+
+/*function mostrarErroCarregamento(mensagem, tentarNovamente) {
+
+    let modal =
+        document.getElementById("modalErroCarregamento");
+
+
+    if (!modal) {
+
+        modal =
+            document.createElement("div");
+
+        modal.id =
+            "modalErroCarregamento";
+
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.display = "flex";
+        modal.style.alignItems = "center";
+        modal.style.justifyContent = "center";
+        modal.style.zIndex = "199999";
+
+
+        modal.innerHTML = `
+
+            <div class="conteudo-erro-carregamento">
+
+                <div id="mensagemErroCarregamento"></div>
+
+                <button id="btnTentarCarregamento">
+                    🔄 Tentar novamente
+                </button>
+
+            </div>
+
+        `;
+
+
+        document.body.appendChild(modal);
+
+    }
+
+
+    document
+        .getElementById("mensagemErroCarregamento")
+        .textContent =
+            "❌ " + mensagem;
+
+
+    modal.style.display = "flex";
+
+
+    document
+        .getElementById("btnTentarCarregamento")
+        .onclick = function(){
+
+            modal.style.display = "none";
+
+            tentarNovamente();
+
+        };
+
+}*/
+function mostrarErroCarregamento(mensagem, tentarNovamente) {
+
+    let modal =
+        document.getElementById("modalErroCarregamento");
+
+
+    if (!modal) {
+
+        modal =
+            document.createElement("div");
+
+        modal.id =
+            "modalErroCarregamento";
+
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.display = "flex";
+        modal.style.alignItems = "center";
+        modal.style.justifyContent = "center";
+        modal.style.zIndex = "199999";
+
+
+        modal.innerHTML = `
+
+            <div class="conteudo-erro-carregamento">
+
+                <div id="mensagemErroCarregamento"></div>
+
+                <button id="btnTentarCarregamento">
+                    🔄 Tentar novamente
+                </button>
+
+            </div>
+
+        `;
+
+
+        document.body.appendChild(modal);
+
+    }
+
+
+    document
+        .getElementById("mensagemErroCarregamento")
+        .textContent =
+            "❌ " + mensagem;
+
+
+    modal.style.display = "flex";
+
+
+    /*document
+        .getElementById("btnTentarCarregamento")
+        .onclick = function(){
+
+            modal.style.display = "none";
+
+            tentarNovamente();
+
+        };*/
+
+      document
+        .getElementById("btnTentarCarregamento")
+        .onclick = function(){
+
+            const btn = this;
+
+
+            btn.disabled = true;
+
+            btn.textContent = "⏳ Tentando novamente...";
+
+
+            modal.style.display = "none";
+
+
+            tentarNovamente();
+
+
+            setTimeout(() => {
+
+                btn.disabled = false;
+
+                btn.textContent = "🔄 Tentar novamente";
+
+            }, 3000);
+
+        };
+
+}
+
+const inicializadores = {
+
+    painelPontos: inicializarPainelPontos,
+
+    telaVagasDisponiveis: carregarVagasDisponiveis,
+
+    //vagas: carregarTodasVagasAbertas,
+
+    relatorios: carregarAbas,
+
+    estatisticas: carregarResumo,
+
+    congregacoes: carregarOpcoesCongregacoes,
+
+    disponibilidadeContainerUsuarioLogado2h: abrirCalendario2h,
+
+    disponibilidadeContainerUsuarioLogado4h: abrirCalendario4h,
+
+    disponibilidadeBuscada: inicializarBuscaUsuario,
+
+    disponibilidadeBuscadaSub: inicializarBuscaUsuarioSb,
+
+    painelIrregulares: inicializarBuscaUsuarioIr,
+
+    disponibilidadeBuscada2h: inicializarBuscaUsuario2h,
+
+    vagas() {
+
+      carregarDadosVaga();
+
+      carregarTodasVagasAbertas();
+
+    },
+
+    telaUsuarioLogado() {
+
+        atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);
+
+    },
+
+    telaeventos() {
+
+        carregarEventosNoSelectUsuario();
+
+        carregarEventosNoSelect();
+
+        carregarEventosInscritos();
+
+        carregarEventosDesignados();
+
+        carregarAbasEv();
+
+    }
+
+
+
+
+
+
+};
+
+function inicializarTela(idTela) {
+
+  const fn = inicializadores[idTela];
+
+  if (!fn) {
+    return;
+  }
+
+  if (
+    !telasSempreAtualizar.has(idTela) &&
+    telasInicializadas[idTela]
+  ) {
+    return;
+  }
+
+  telasInicializadas[idTela] = true;
+
+  try {
+
+    fn();
+
+    console.log("✅ Tela inicializada:", idTela);
+
+  } catch (e) {
+
+    console.error("❌ Erro inicializando", idTela, e);
+
+    delete telasInicializadas[idTela];
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
 async function verificarVersaoApp() {
 
   try {
@@ -469,31 +738,6 @@ function aguardarNovoServiceWorker() {
   );
 
 }
-/*function inicializarServiceWorker() {
-
-  if (!("serviceWorker" in navigator)) {
-    return;
-  }
-
-  //monitorarAtualizacaoServiceWorker();
-
-  navigator.serviceWorker.addEventListener(
-
-    "controllerchange",
-
-    () => {
-
-      console.log(
-        "🚀 Novo Service Worker assumiu."
-      );
-
-      location.reload();
-
-    }
-
-  );
-
-}*/
 
 function apiJSONP(acao, parametros = {}, callback, onError) {
 
@@ -501,8 +745,6 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
     "cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
 
   window[callbackName] = function(resposta) {
-
-    //console.log("✅ Callback executado:", resposta);
 
     if (resposta && resposta.sucesso === false) {
       if (onError) onError(resposta);
@@ -618,6 +860,20 @@ function sair() {
   document.getElementById("menuBtn").style.display = "none";
   document.getElementById('conteudoProtegido').style.display = 'none';
   document.getElementById('telaLogin').style.display = 'block';
+  
+  //PARTE NOVA DE LIMPEZA AO SAIR
+  Object.keys(telasInicializadas)
+    .forEach(k => delete telasInicializadas[k]);
+
+  window.pontosSistema = null;
+  window.opcoesTurnos = [];
+  window.opcoesDias = [];
+  window.opcoesPrivilegios = {};
+  window.mapaParticipantesPorNome = {};
+  window.todosNomesSimples = [];
+
+  idVagaNotificacao = null;
+  notificacaoEscala = null;
 
   mostrarAlertaGlobal("Você saiu da conta.");
 
@@ -843,14 +1099,12 @@ function fazerLogin() {
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
 
       if (saudacaoEl) {
-        /*saudacaoEl.textContent = "Bem-vindo(a) 👋";*/
-                saudacaoEl.textContent = "";
+        saudacaoEl.textContent = "";
 
       }
 
       if (tipoAcessoEl) {
-        /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
-                tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
 
       }
 
@@ -883,7 +1137,6 @@ function fazerLogin() {
       limparCamposUsuario();
       restaurarCamposPerfil();
 
-      // Buscar nome do usuário
       apiJSONP(
         "buscarNomeDoUsuario",
         {
@@ -897,7 +1150,6 @@ function fazerLogin() {
           if (!saudacaoEl) return;
 
           if (resNome.sucesso && resNome.nome) {
-            /*saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;*/
             saudacaoEl.textContent = `${resNome.nome}`;
 
           } else {
@@ -905,8 +1157,7 @@ function fazerLogin() {
           }
 
           if (tipoAcessoEl) {
-            /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
-                        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
 
           }
 
@@ -914,7 +1165,6 @@ function fazerLogin() {
           
           verificarTreinamentoPendente();
           
-          //tratarNotificacaoAoAbrir();
           if (idVagaNotificacao) {
 
             console.log(
@@ -925,7 +1175,7 @@ function fazerLogin() {
 
             abrirTela("telaVagasDisponiveis");
 
-            carregarVagasDisponiveis();
+            //carregarVagasDisponiveis();
 
           }
 
@@ -935,8 +1185,7 @@ function fazerLogin() {
           esconderSpinner();
 
           if (tipoAcessoEl) {
-            /*tipoAcessoEl.textContent = `Seu tipo de acesso é ${perfilUsuario}`;*/
-                        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
 
           }
 
@@ -986,77 +1235,6 @@ function mostrarSecoesPorPerfil(perfil) {
     }
   });
 }
-
-/*window.addEventListener("DOMContentLoaded", () => {
-
-  const usuarioSalvo = localStorage.getItem("usuarioLogado");
-
-  if (usuarioSalvo) {
-
-    const dados = JSON.parse(usuarioSalvo);
-
-    const expirou = Date.now() - dados.timestamp > 60 * 60 * 1000;
-
-    if (expirou) {
-      localStorage.removeItem("usuarioLogado");
-      mostrarAlertaGlobal("⏰ Sua sessão expirou. Faça login novamente.");
-      document.getElementById('telaLogin').style.display = 'block';
-      document.getElementById('conteudoProtegido').style.display = 'none';
-      return;
-    }
-
-    perfilUsuario = dados.perfil;
-    idUsuarioLogado = dados.id;
-
-    document.getElementById("menuBtn").style.display = "inline-block";
-    document.getElementById('telaLogin').style.display = 'none';
-    document.getElementById('conteudoProtegido').style.display = 'block';
-
-    mostrarSecoesPorPerfil(dados.perfil);
-
-    const cbNome = "cb_nome_" + Date.now();
-
-    window[cbNome] = function(resNome) {
-
-      const saudacaoEl = document.getElementById("saudacaoUsuario");
-      const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
-
-      if (saudacaoEl) {
-
-        if (resNome.sucesso && resNome.nome) {
-          //saudacaoEl.textContent = `Bem-vindo(a) ${resNome.nome} 👋`;
-                    saudacaoEl.textContent = `${resNome.nome}`;
-
-        } else {
-          //saudacaoEl.textContent = `Bem-vindo(a) 👋`;
-                    saudacaoEl.textContent = "";
-
-        }
-      }
-
-      if (tipoAcessoEl) {
-
-                tipoAcessoEl.textContent = `Perfil ${dados.perfil}`;
-
-      }
-
-      delete window[cbNome];
-    };
-
-    const scriptNome = document.createElement("script");
-    scriptNome.src =
-      API_URL +
-      "?acao=buscarNomeDoUsuario" +
-      "&id=" + encodeURIComponent(dados.id) +
-      "&callback=" + cbNome;
-
-    document.body.appendChild(scriptNome);
-
-  } else {
-    document.getElementById('telaLogin').style.display = 'block';
-    document.getElementById('conteudoProtegido').style.display = 'none';
-  }
-});*/
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -1650,7 +1828,7 @@ function editarDesignacaoInline(linhaTR) {
 
         pesquisarDesignados();
 
-        apiJSONP(
+        /*apiJSONP(
           "atualizarStatusDaVaga",
           {
             ponto: pontoFinal,
@@ -1671,7 +1849,7 @@ function editarDesignacaoInline(linhaTR) {
 
           },
           (err) => console.error("Erro atualizar status da vaga:", err)
-        );
+        );*/
 
       },
       (err) => {
@@ -1781,7 +1959,7 @@ function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipame
 
 }
 
-function carregarDadosDesignacao() {
+/*function carregarDadosDesignacao() {
   apiJSONP(
     "obterDadosFormulario",
     {},
@@ -1792,7 +1970,7 @@ function carregarDadosDesignacao() {
       console.error(err);
     }
   );
-}
+}*/
 
 function preencherTabelaSemDisponibilidade() {
 
@@ -1945,7 +2123,7 @@ function pesquisarDisponibilidadeUsuarioLogado2h() {
 
       esconderSpinner();
 
-      carregarDadosDisponibilidadeUsuarioLogado2h(dados);
+      preencherDispUsuarioLogado2h(dados);
 
       // 🔥 SÓ ABRE MODAL SE FOI SOLICITADO
       if (abrirModalDepoisDaPesquisa) {
@@ -1979,7 +2157,7 @@ function abrirCalendario2h() {
   pesquisarDisponibilidadeUsuarioLogado2h();
 }
 
-function carregarDadosDisponibilidadeUsuarioLogado2h(dados) {
+function preencherDispUsuarioLogado2h(dados) {
 
   console.log(dados);
 
@@ -2295,7 +2473,7 @@ function pesquisarDisponibilidadeUsuarioLogado4h() {
 
       esconderSpinner();
 
-      carregarDadosDisponibilidadeUsuarioLogado4h(dados);
+      preencherDispUsuarioLogado4h(dados);
 
       // 🔥 SÓ ABRE MODAL SE FOI SOLICITADO
       if (abrirModalDepoisDaPesquisa) {
@@ -2334,7 +2512,7 @@ function norm(str) {
   return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
 
-function carregarDadosDisponibilidadeUsuarioLogado4h(dados) {
+function preencherDispUsuarioLogado4h(dados) {
 
   console.log(dados);
 
@@ -2652,14 +2830,14 @@ function pesquisarDisponibilidade() {
 
       }
 
-      if (typeof carregarDadosDisponibilidade === "function") {
+      if (typeof preencherDisp === "function") {
 
-        carregarDadosDisponibilidade(dados);
+        preencherDisp(dados);
 
       } else {
 
         console.error(
-          "Função carregarDadosDisponibilidade não encontrada"
+          "Função preencherDisp não encontrada"
         );
 
       }
@@ -2683,7 +2861,7 @@ function norm(str) {
   return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
 
-function carregarDadosDisponibilidade(dados) {
+function preencherDisp(dados) {
 
   renderizarDisponibilidadeBase(dados, {
     chkSubstituicao: "somenteSubstituicao",
@@ -2844,7 +3022,7 @@ function pesquisarTP() {
 
       esconderSpinner();
 
-      carregarDadosTP(dados);
+      preencherDadosTP(dados);
 
     },
 
@@ -2863,7 +3041,7 @@ function pesquisarTP() {
 
 }
 
-function carregarDadosTP(dados) {
+function preencherDadosTP(dados) {
 
   if (!dados) {
     document.querySelectorAll('.dia-turno-treinamentoPratico')
@@ -3007,7 +3185,7 @@ function pesquisarTPPorId() {
 
       esconderSpinner();
 
-      carregarDadosTPId(dados);
+      preencherDadosTPId(dados);
 
     },
 
@@ -3026,7 +3204,7 @@ function pesquisarTPPorId() {
 
 }
 
-function carregarDadosTPId(dados) {
+function preencherDadosTPId(dados) {
 
   if (!dados) {
 
@@ -3755,6 +3933,7 @@ apiJSONP(
     );
 
     carregarOpcoes();
+    //carregarDadosIniciais();
 
     document
       .querySelectorAll('.erro-campo')
@@ -4067,14 +4246,14 @@ function pesquisarDisponibilidadeNovoPonto20() {
 
       }
 
-      if (typeof carregarDadosDisponibilidadeNovoPonto20 === "function") {
+      if (typeof preencherDispNovoPonto20 === "function") {
 
-        carregarDadosDisponibilidadeNovoPonto20(dados);
+        preencherDispNovoPonto20(dados);
 
       } else {
 
         console.error(
-          "Função carregarDadosDisponibilidadeNovoPonto20 não encontrada"
+          "Função preencherDispNovoPonto20 não encontrada"
         );
 
       }
@@ -4124,7 +4303,7 @@ function alternarModoEdicaoNovoPonto20() {
   }
   }
 
-  function carregarDadosDisponibilidadeNovoPonto20(dados) {
+  function preencherDispNovoPonto20(dados) {
 
   renderizarDisponibilidadeBase(dados, {
     chkSubstituicao: "somenteSubstituicaoNovoPonto20",
@@ -4182,7 +4361,7 @@ let mapaIniciado = false;
     function(err) {
 
       mostrarAlertaGlobal(
-        "❌ Erro ao carregar pontos: " +
+        "❌ Erro ao buscar pontos: " +
         (err?.message || err?.mensagem || err)
       );
 
@@ -5553,6 +5732,7 @@ function salvarAlteracoes(trs, idx) {
       esconderSpinner();
       mostrarAlertaGlobal("✅ Alterado com sucesso");
       carregarOpcoes();
+      //carregarDadosIniciais();
 
       document.querySelectorAll(".erro-campo")
         .forEach(e => e.classList.remove("erro-campo"));
@@ -5694,6 +5874,7 @@ function cadastrarParticipante() {
 
       document.getElementById("formParticipante").reset();
       carregarOpcoes();
+      //carregarDadosIniciais();
 
       Object.values(campos).forEach(el =>
         el.classList.remove("erro-campo")
@@ -9645,7 +9826,6 @@ function enviarEmailInformativo() {
 
 }
 
-   // Carrega eventos no select de designados ao carregar a página
 function carregarEventosDesignados() {
 
   apiJSONP(
@@ -9854,17 +10034,16 @@ function mostrarConfirmacaoRegistrarInscritos() {
   );
 
 }
-//*********************************************************** */
-// Configurar listeners após o DOM carregar
+
 document.addEventListener("DOMContentLoaded", function() {
 
-  carregarEventosInscritos();
+  //carregarEventosInscritos();
 
   document
     .getElementById("eventoSelectInscritos")
     .addEventListener("change", eventoMudouInscritos);
 
-  carregarEventosDesignados();
+  //carregarEventosDesignados();
 
   const selEv = document.getElementById("eventoSelectDesignados");
   selEv.addEventListener("change", eventoMudouDesignados);
@@ -10048,8 +10227,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-
-/***************************** */
 function carregarEventosInscritos() {
 
   apiJSONP(
@@ -10706,7 +10883,6 @@ function enviarEmailParaTodosDaAba() {
   );
 }
 
-/******************* */
 function carregarEventosNoSelectUsuario() {
   apiJSONP(
     "listarEventos",
@@ -10747,9 +10923,9 @@ function carregarEventosNoSelectUsuario() {
   );
 }
 
-  window.addEventListener("load", () => {
+  /*window.addEventListener("load", () => {
     carregarEventosNoSelectUsuario();
-  });
+  });*/
 
 document
   .getElementById("eventoSelectUsuario")
@@ -10950,9 +11126,9 @@ function carregarEventosNoSelect() {
   );
 }
 
-window.addEventListener("load", () => {
+/*window.addEventListener("load", () => {
   carregarEventosNoSelect();
-});
+});*/
 
 document.getElementById("eventoSelect").addEventListener("change", function() {
 
@@ -11121,7 +11297,7 @@ Confirmar inscrição?`,
 }
 
 
-function carregarAbasEv() {
+/*function carregarAbasEv() {
 
   apiJSONP(
     "listarAbasEv",
@@ -11149,7 +11325,7 @@ function carregarAbasEv() {
     }
   );
 
-}
+}*/
 
 function exportarEscalaEv() {
 
@@ -11178,6 +11354,8 @@ function exportarEscalaEv() {
 
 }
 
+/* FUNÇÕES EXTINTAS POIS JÁ MIGRAMOS AS INCRIÇÕES PARA ID - PODE APAGAR SEM MEDO
+carregarEventosConversor();
 function carregarEventosConversor() {
 
   apiJSONP(
@@ -11210,7 +11388,6 @@ function carregarEventosConversor() {
   );
 
 }
-
 function converterTeste() {
 
   const eventoId = document.getElementById("eventoSelectConversor").value;
@@ -11255,13 +11432,10 @@ function converterTeste() {
     }
   );
 
-}
-
-  carregarEventosConversor();
+}*/
 
 
-  /**************** */
-  function carregarAbasEv() {
+function carregarAbasEv() {
 
   apiJSONP(
     "listarAbasEv",
@@ -11500,7 +11674,7 @@ async function salvarDesignacao() {
 
         limparCamposDesignar();
 
-        carregarTodasVagasAbertas();
+        //carregarTodasVagasAbertas();
         carregarAbas();
 
       },
@@ -13512,19 +13686,19 @@ function tratarNotificacaoAoAbrir() {
       "telaVagasDisponiveis"
     );
 
-    carregarVagasDisponiveis();
+    //carregarVagasDisponiveis();
 
   }
 
 }
 
-function abrirVagasDisponiveis() {
+/*function abrirVagasDisponiveis() {
 
   abrirTela("telaVagasDisponiveis");
 
   carregarVagasDisponiveis();
 
-}
+}*/
 
 function carregarVagasDisponiveis() {
 
@@ -14195,7 +14369,7 @@ function norm(s) {
   window.todosNomesSimples = [];
   window.todosNomes = [];
 
-function carregarOpcoes() {
+/*function carregarOpcoes() {
 
   console.log("carregarOpcoes iniciou");
 
@@ -14238,25 +14412,6 @@ function carregarOpcoes() {
       sel.appendChild(o);
     });
 
-    /*const turnoSelect = document.getElementById("turnoDesignado");
-    const diaSelect = document.getElementById("diaDesignado");
-
-    turnoSelect.innerHTML = "<option value=''>- Selecione -</option>";
-    diaSelect.innerHTML = "<option value=''>- Selecione -</option>";
-
-    opcoes.turnos.forEach(turno => {
-      const option = document.createElement("option");
-      option.value = turno;
-      option.textContent = turno;
-      turnoSelect.appendChild(option);
-    });
-
-    opcoes.dias.forEach(dia => {
-      const option = document.createElement("option");
-      option.value = dia;
-      option.textContent = dia;
-      diaSelect.appendChild(option);
-    });*/
     window.opcoesTurnos =
     (opcoes.turnos || []).filter(item => item !== "");
 
@@ -14275,24 +14430,9 @@ function carregarOpcoes() {
 
   });
 
-  /*const pontoInput = document.getElementById("ponto");
-  const diaInput = document.getElementById("dia");
-  if (pontoInput && diaInput) {
-    pontoInput.addEventListener("change", atualizarParticipantesParaSubstituir);
-    diaInput.addEventListener("change", atualizarParticipantesParaSubstituir);
-  }
-  const pontoInputVaga = document.getElementById("pontoVaga");
-  const diaInputVaga = document.getElementById("diaVaga");
-  if (pontoInputVaga && diaInputVaga) {
-    pontoInputVaga.addEventListener("change", atualizarParticipantesParaCadastrarVaga);
-    diaInputVaga.addEventListener("change", atualizarParticipantesParaCadastrarVaga);
-  }*/
-
   carregarDadosDesignacao();
   const ponto = window.camposSelecionados.pontoVaga;
   const dia = window.camposSelecionados.diaVaga;
-
-  carregarDadosVaga();
 
   const nomeInputUser = document.getElementById("nomeInputUsuario");
   const nomeSelectUser = document.getElementById("nomeSelectUsuario");
@@ -14338,7 +14478,522 @@ function carregarOpcoes() {
     renderizarListaUser2h(nomeInputUser2h.value);
   }
 
+}*/
+
+/*function carregarOpcoes() {
+
+  console.log("carregarOpcoes iniciou");
+
+  return new Promise((resolve, reject) => {
+
+    apiJSONP(
+      "buscarOpcoesParaForm",
+      {},
+      function(opcoes) {
+
+        try {
+
+          console.log({
+            turnos: opcoes.turnos,
+            dias: opcoes.dias
+          });
+
+
+          window.mapaParticipantesPorNome = {};
+
+          (opcoes.participantes || []).forEach(p => {
+
+            window.mapaParticipantesPorNome[p.nome] = p.id;
+
+          });
+
+
+          const mapa = new Map();
+
+          for (const n of (opcoes.pesquisar || [])) {
+
+            const k = norm(n);
+
+            if (k) {
+              mapa.set(k, n);
+            }
+
+          }
+
+
+          window.todosNomesSimples =
+            Array.from(mapa.values()).sort((a, b) =>
+              a.localeCompare(b, 'pt-BR')
+            );
+
+
+          ligarFiltroAoSelect(
+            'filtroModalParticipantes',
+            'selectModalParticipantes',
+            window.todosNomesSimples
+          );
+
+
+          ligarFiltroAoSelect(
+            'filtroBuscaTrei',
+            'listaNomesTrei',
+            window.todosNomesSimples
+          );
+
+
+          window.opcoesCongregacoes =
+            opcoes.congregacao || [];
+
+
+          const sel =
+            document.getElementById('congregacao');
+
+
+          if (sel) {
+
+            sel.innerHTML =
+              '<option value="">- Selecione -</option>';
+
+
+            (opcoes.congregacao || []).forEach(item => {
+
+              const o =
+                document.createElement('option');
+
+              o.value = item;
+              o.textContent = item;
+
+              sel.appendChild(o);
+
+            });
+
+          }
+
+
+          window.opcoesTurnos =
+            (opcoes.turnos || [])
+              .filter(item => item !== "");
+
+
+          window.opcoesDias =
+            (opcoes.dias || [])
+              .filter(item => item !== "");
+
+
+          window.opcoesPrivilegios =
+            opcoes.privilegios || {};
+
+
+
+          if (notificacaoEscala) {
+
+            aplicarNotificacaoEscala();
+
+          }
+
+
+
+          // Inicializações dependentes dos dados carregados
+
+          carregarDadosDesignacao();
+
+
+
+          const nomeInputUser =
+            document.getElementById("nomeInputUsuario");
+
+          const nomeSelectUser =
+            document.getElementById("nomeSelectUsuario");
+
+
+          if (nomeInputUser && nomeSelectUser) {
+
+            nomeInputUser.addEventListener(
+              "input",
+              () => {
+                renderizarListaUser(nomeInputUser.value);
+              }
+            );
+
+            renderizarListaUser(nomeInputUser.value);
+
+          }
+
+
+
+          const nomeInputUserSb =
+            document.getElementById("nomeInputUsuarioSb");
+
+          const nomeSelectUserSb =
+            document.getElementById("nomeSelectUsuarioSb");
+
+
+          if (nomeInputUserSb && nomeSelectUserSb) {
+
+            nomeInputUserSb.addEventListener(
+              "input",
+              () => {
+                renderizarListaUserSb(nomeInputUserSb.value);
+              }
+            );
+
+            renderizarListaUserSb(nomeInputUserSb.value);
+
+          }
+
+
+
+          const nomeInputUserIr =
+            document.getElementById("nomeInputUsuarioIr");
+
+          const nomeSelectUserIr =
+            document.getElementById("nomeSelectUsuarioIr");
+
+
+          if (nomeInputUserIr && nomeSelectUserIr) {
+
+            nomeInputUserIr.addEventListener(
+              "input",
+              () => {
+                renderizarListaUserIr(nomeInputUserIr.value);
+              }
+            );
+
+            renderizarListaUserIr(nomeInputUserIr.value);
+
+          }
+
+
+
+          const nomeInputUser2h =
+            document.getElementById("nomeInputUsuario2h");
+
+          const nomeSelectUser2h =
+            document.getElementById("nomeSelectUsuario2h");
+
+
+          if (nomeInputUser2h && nomeSelectUser2h) {
+
+            nomeInputUser2h.addEventListener(
+              "input",
+              () => {
+                renderizarListaUser2h(nomeInputUser2h.value);
+              }
+            );
+
+            renderizarListaUser2h(nomeInputUser2h.value);
+
+          }
+
+
+
+          console.log("✅ carregarOpcoes finalizou");
+
+          resolve();
+
+
+        } catch (e) {
+
+          console.error(
+            "❌ Erro dentro de carregarOpcoes:",
+            e
+          );
+
+          reject(e);
+
+        }
+
+      },
+      function(err) {
+
+        console.error(
+          "❌ Erro buscarOpcoesParaForm:",
+          err
+        );
+
+        reject(err);
+
+      }
+    );
+
+  });
+
+}*/
+
+function carregarOpcoes() {
+
+  console.log("carregarOpcoes iniciou");
+
+  //TESTE TEMPORÁRIO
+  //throw new Error("TESTE DE FALHA NO CARREGAMENTO");
+
+
+  apiJSONP(
+    "buscarOpcoesParaForm",
+    {},
+    function(opcoes) {
+
+
+      console.log({
+        turnos: opcoes.turnos,
+        dias: opcoes.dias
+      });
+
+
+
+      // ===============================
+      // MAPA PARTICIPANTES
+      // ===============================
+
+      window.mapaParticipantesPorNome = {};
+
+      (opcoes.participantes || []).forEach(p => {
+
+        window.mapaParticipantesPorNome[p.nome] = p.id;
+
+      });
+
+
+
+      // ===============================
+      // NOMES PARA PESQUISA
+      // ===============================
+
+      const mapa = new Map();
+
+      for (const n of (opcoes.pesquisar || [])) {
+
+        const k = norm(n);
+
+        if (k) {
+
+          mapa.set(k, n);
+
+        }
+
+      }
+
+
+      window.todosNomesSimples =
+        Array.from(mapa.values())
+          .sort((a, b) =>
+            a.localeCompare(b, 'pt-BR')
+          );
+
+
+
+      // ===============================
+      // FILTROS DO MODAL DE PARTICIPANTES
+      // ===============================
+
+      ligarFiltroAoSelect(
+        'filtroModalParticipantes',
+        'selectModalParticipantes',
+        window.todosNomesSimples
+      );
+
+
+      ligarFiltroAoSelect(
+        'filtroBuscaTrei',
+        'listaNomesTrei',
+        window.todosNomesSimples
+      );
+
+
+
+      // ===============================
+      // CONGREGAÇÕES
+      // ===============================
+
+      window.opcoesCongregacoes =
+        opcoes.congregacao || [];
+
+
+      const sel =
+        document.getElementById('congregacao');
+
+
+      if (sel) {
+
+        sel.innerHTML =
+          '<option value="">- Selecione -</option>';
+
+
+        (opcoes.congregacao || [])
+          .forEach(item => {
+
+            const o =
+              document.createElement('option');
+
+            o.value = item;
+            o.textContent = item;
+
+            sel.appendChild(o);
+
+          });
+
+      }
+
+
+
+      // ===============================
+      // TURNOS / DIAS
+      // ===============================
+
+      window.opcoesTurnos =
+        (opcoes.turnos || [])
+          .filter(item => item !== "");
+
+
+      window.opcoesDias =
+        (opcoes.dias || [])
+          .filter(item => item !== "");
+
+
+
+      // ===============================
+      // PRIVILÉGIOS
+      // ===============================
+
+      window.opcoesPrivilegios =
+        opcoes.privilegios || {};
+
+
+
+      console.log("✅ Opções carregadas");
+
+
+
+      // ===============================
+      // NOTIFICAÇÃO ESCALA
+      // ===============================
+
+      if (notificacaoEscala) {
+
+        aplicarNotificacaoEscala();
+
+      }
+
+
+    },
+
+
+    function(err) {
+
+      console.error(
+        "❌ Erro carregarOpcoes:",
+        err
+      );
+
+
+      /*mostrarAlertaGlobal(
+        "❌ Erro ao carregar opções: " +
+        (err.message || err)
+      );*/
+      /*mostrarErroCarregamento(
+            "Não foi possível carregar os dados iniciais.",
+            carregarOpcoes
+        );*/
+      mostrarErroCarregamento(
+            "Não foi possível carregar as opções do sistema.",
+            carregarDadosIniciais
+        );
+
+    }
+
+  );
+
 }
+
+/*function inicializarBuscasUsuarios() {
+
+  const nomeInputUser =
+    document.getElementById("nomeInputUsuario");
+
+  const nomeSelectUser =
+    document.getElementById("nomeSelectUsuario");
+
+
+  if (nomeInputUser && nomeSelectUser) {
+
+    nomeInputUser.addEventListener(
+      "input",
+      () => {
+        renderizarListaUser(nomeInputUser.value);
+      }
+    );
+
+    renderizarListaUser(nomeInputUser.value);
+
+  }
+
+
+
+  const nomeInputUserSb =
+    document.getElementById("nomeInputUsuarioSb");
+
+  const nomeSelectUserSb =
+    document.getElementById("nomeSelectUsuarioSb");
+
+
+  if (nomeInputUserSb && nomeSelectUserSb) {
+
+    nomeInputUserSb.addEventListener(
+      "input",
+      () => {
+        renderizarListaUserSb(nomeInputUserSb.value);
+      }
+    );
+
+    renderizarListaUserSb(nomeInputUserSb.value);
+
+  }
+
+
+
+  const nomeInputUserIr =
+    document.getElementById("nomeInputUsuarioIr");
+
+  const nomeSelectUserIr =
+    document.getElementById("nomeSelectUsuarioIr");
+
+
+  if (nomeInputUserIr && nomeSelectUserIr) {
+
+    nomeInputUserIr.addEventListener(
+      "input",
+      () => {
+        renderizarListaUserIr(nomeInputUserIr.value);
+      }
+    );
+
+    renderizarListaUserIr(nomeInputUserIr.value);
+
+  }
+
+
+
+  const nomeInputUser2h =
+    document.getElementById("nomeInputUsuario2h");
+
+  const nomeSelectUser2h =
+    document.getElementById("nomeSelectUsuario2h");
+
+
+  if (nomeInputUser2h && nomeSelectUser2h) {
+
+    nomeInputUser2h.addEventListener(
+      "input",
+      () => {
+        renderizarListaUser2h(nomeInputUser2h.value);
+      }
+    );
+
+    renderizarListaUser2h(nomeInputUser2h.value);
+
+  }
+
+}*/
 
 function carregarDadosDesignacao() {
 
@@ -14697,11 +15352,23 @@ function carregarOpcoesGenerica(inputId, selectId, metodoScript, listaKey = 'nom
       }
 
     },
-    function(err) {
+    /*function(err) {
 
       mostrarAlertaGlobal(
         '❌ Erro ao carregar opções para participantes: ' + err.message
       );
+
+    }*/
+      function(err) {
+
+        mostrarErroCarregamento(
+            "Não foi possível carregar participantes.",
+            () => carregarOpcoesGenerica(
+                "filtroBusca1",
+                "participante",
+                "buscarOpcoesParaForm"
+            )
+        );
 
     }
   );
@@ -14953,6 +15620,47 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
 
 }
 
+/*function carregarDadosIniciais() {
+
+    console.log("🚀 Carregando dados iniciais...");
+
+
+    carregarOpcoes();
+
+
+    carregarCatalogoPontos();
+
+
+}*/
+function carregarDadosIniciais() {
+
+    console.log("🚀 Carregando dados iniciais...");
+
+
+    try {
+
+        carregarOpcoes();
+
+        carregarCatalogoPontos();
+
+
+    } catch(e) {
+
+        console.error(
+            "❌ Erro iniciando carregamento:",
+            e
+        );
+
+
+        mostrarErroCarregamento(
+            "Erro ao iniciar o sistema.",
+            carregarDadosIniciais
+        );
+
+    }
+
+}
+
   window.addEventListener('DOMContentLoaded', () => {
   const participante = document.getElementById('participante');
     if (participante) {
@@ -14961,31 +15669,11 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
         return originalAppendChild.call(this, child);
       };
     }
-
-    //document.getElementById('ponto').addEventListener('change', atualizarParticipantesParaSubstituir);
-    //document.getElementById('dia').addEventListener('change', atualizarParticipantesParaSubstituir);
-    
-    //document.getElementById('pontoVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
-    /*const pontoVaga = document.getElementById('pontoVaga');
-
-      if (pontoVaga) {
-          pontoVaga.addEventListener(
-              'change',
-              atualizarParticipantesParaCadastrarVaga
-          );
-      }*/
-
-    //document.getElementById('diaVaga').addEventListener('change', atualizarParticipantesParaCadastrarVaga);
     
     atualizarParticipantesParaCadastrarVaga();
-    carregarTodasVagasAbertas();
     atualizarParticipantesParaSubstituir();
-    carregarOpcoes();
+    carregarDadosIniciais();
     carregarOpcoesGenerica("filtroBusca1", "participante", "buscarOpcoesParaForm");
-    carregarAbas();
-    carregarAbasEv();
-    carregarResumo();
-    carregarOpcoesCongregacoes();
 
   });
 
@@ -15185,8 +15873,8 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
     document.getElementById('spinnerGlobal').style.display = 'none';
   }
 
-  window.onload=function(){
-  };
+  /*window.onload=function(){
+  };*/
 
   function formatarNomeComNegrito(nome) {
     if (!nome) return "";
@@ -15229,7 +15917,7 @@ function abrirTela(idTela, card = null) {
     document.querySelectorAll('.card-menu')
         .forEach(c => c.classList.remove('ativo'));
 
-        switch (telaAtual) {
+        /*switch (telaAtual) {
 
           case "telaUsuarioLogado":
             atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
@@ -15248,7 +15936,8 @@ function abrirTela(idTela, card = null) {
             inicializarPainelPontos();
             break;
 
-        }
+        }*/
+       inicializarTela(idTela);
 
     atualizarBotaoVoltar();
 
@@ -15906,10 +16595,6 @@ function renderizarDisponibilidade(dados, cfg) {
 }
 
 function renderizarDisponibilidadeBase(dados, cfg) {
-
-  /*console.log("condição:", dados.condicao);
-  console.log("frequência:", dados.frequencia);
-  console.log("dias:", dados.diasTurnos);*/
 
   const chkSubstituicao =
     document.getElementById(cfg.chkSubstituicao);
@@ -16996,46 +17681,144 @@ function fecharModalSelecaoUniversal(){
 }
 
 // =====================================
-// Seleção Universal por Modal
+// GARANTIR CATALOGO DOS PONTO FOI SUGERIDO PELO CHATGPT E ESTÁ COMENTADO no arquivo catalogoPontos.js
 // =====================================
-/*function selecionarCampoComModal(config = {}) {
+/*function garantirCatalogoPontos(callback) {
 
-    abrirModalSelecaoUniversal({
+    if (window.pontosSistema) {
 
-        titulo: config.titulo || "Selecionar",
+        callback();
 
-        valores: config.valores || [],
+        return;
+    }
 
-        selecionar(valor) {
 
-            if (config.campo) {
+    apiJSONP(
+        "obterDadosFormulario",
+        {},
+        (dados)=>{
 
-                window.camposSelecionados[config.campo] = valor;
+            popularSelects(dados);
 
-            }
+            callback();
 
-            const elemento =
-                document.getElementById(
-                    config.campo + "Visual"
-                );
+        },
+        (err)=>{
 
-            if (elemento) {
+            mostrarAlertaGlobal(
+                "❌ Erro ao carregar pontos: " + err.message
+            );
 
-                elemento.value = valor;
+        }
+    );
 
-            }
+}*/
+function carregarCatalogoPontos() {
 
-            if (config.aoSelecionar) {
+  apiJSONP(
+    "obterDadosFormulario",
+    {},
+    (dados) => {
 
-                config.aoSelecionar(valor);
+      const pontos =
+        dados.pontos || [];
 
-            }
+      const regex = /^([A-Z]+)(\d+)$/i;
+
+
+      window.pontosSistema = {};
+
+
+      pontos.forEach(nomeAba => {
+
+        const match =
+          nomeAba.match(regex);
+
+        if (!match) return;
+
+
+        const prefixo = match[1];
+
+        const numero =
+          Number(match[2]);
+
+
+        const descricaoPonto =
+          `Ponto ${numero}`;
+
+
+        if (!window.pontosSistema[descricaoPonto]) {
+
+          window.pontosSistema[descricaoPonto] = {
+
+            numero,
+
+            descricao:
+              descricaoPonto,
+
+            turnos:{}
+
+          };
 
         }
 
-    });
 
-}*/
+        const infoTurno =
+          DESCRICOES_TURNOS[prefixo] || {
+
+            descricao: prefixo,
+
+            periodo:""
+
+          };
+
+
+        window.pontosSistema[descricaoPonto]
+          .turnos[prefixo] = {
+
+            codigo: prefixo,
+
+            aba:nomeAba,
+
+            descricao:
+              infoTurno.descricao,
+
+            periodo:
+              infoTurno.periodo
+
+          };
+
+
+      });
+
+
+      console.log(
+        "📍 Catálogo de pontos carregado:",
+        window.pontosSistema
+      );
+
+
+    },
+    (err)=>{
+
+      /*console.error(
+        "❌ Erro carregando catálogo de pontos:",
+        err
+      );*/
+       mostrarErroCarregamento(
+            "Não foi possível carregar os pontos.",
+            carregarDadosIniciais
+        );
+
+    }
+  );
+
+}
+
+// =====================================
+// Seleção Universal por Modal
+// =====================================
+
 function selecionarCampoComModal(config = {}) {
 
     abrirModalSelecaoUniversal({
@@ -17091,8 +17874,8 @@ function selecionarCampoComModal(config = {}) {
     });
 
 }
-function abrirSelecaoPontoDesignado(){
 
+function abrirSelecaoPontoDesignado(){
 
     selecionarCampoComModal({
 
@@ -17130,6 +17913,44 @@ function abrirSelecaoPontoDesignado(){
 
 
 }
+
+/*function abrirSelecaoPontoDesignado(){
+
+
+    garantirCatalogoPontos(()=>{
+
+
+        selecionarCampoComModal({
+
+            campo:"pontoDesignadoVisual",
+
+            titulo:"Escolha o ponto",
+
+            valores:listarPontosSistema(),
+
+
+            aoSelecionar(valor){
+
+
+                console.log(
+                    "Ponto escolhido:",
+                    valor
+                );
+
+
+                window.camposSelecionados.pontoDesignado =
+                    valor;
+
+
+            }
+
+        });
+
+
+    });
+
+
+}*/
 
 function abrirSelecaoTurnoDesignado(){
 
@@ -17640,3 +18461,124 @@ function abrirSelecaoLista(
     });
 
 }
+
+
+// =====================================
+// SUBSTITUI CARREGAMENTO DOS IMPUTS NA CARREGAR OPCOES, MAS DARIA PARA FAZER UM MODAL UNICO PARA TODOS COMO JA FIZEMOS COM PONTOS ETC
+// =====================================
+function inicializarBuscaUsuario() {
+
+    const input =
+        document.getElementById("nomeInputUsuario");
+
+    const select =
+        document.getElementById("nomeSelectUsuario");
+
+
+    if (!input || !select) {
+        return;
+    }
+
+
+    input.addEventListener("input", () => {
+
+        renderizarListaUser(
+            input.value
+        );
+
+    });
+
+
+    renderizarListaUser(
+        input.value
+    );
+
+}
+
+function inicializarBuscaUsuarioSb() {
+
+    const input =
+        document.getElementById("nomeInputUsuarioSb");
+
+    const select =
+        document.getElementById("nomeSelectUsuarioSb");
+
+
+    if (!input || !select) {
+        return;
+    }
+
+
+    input.addEventListener("input", () => {
+
+        renderizarListaUserSb(
+            input.value
+        );
+
+    });
+
+
+    renderizarListaUserSb(
+        input.value
+    );
+
+}
+
+function inicializarBuscaUsuarioIr() {
+
+    const input =
+        document.getElementById("nomeInputUsuarioIr");
+
+    const select =
+        document.getElementById("nomeSelectUsuarioIr");
+
+
+    if (!input || !select) {
+        return;
+    }
+
+
+    input.addEventListener("input", () => {
+
+        renderizarListaUserIr(
+            input.value
+        );
+
+    });
+
+
+    renderizarListaUserIr(
+        input.value
+    );
+
+}
+
+function inicializarBuscaUsuario2h() {
+
+    const input =
+        document.getElementById("nomeInputUsuario2h");
+
+    const select =
+        document.getElementById("nomeSelectUsuario2h");
+
+
+    if (!input || !select) {
+        return;
+    }
+
+
+    input.addEventListener("input", () => {
+
+        renderizarListaUser2h(
+            input.value
+        );
+
+    });
+
+
+    renderizarListaUser2h(
+        input.value
+    );
+
+}
+

@@ -11,71 +11,6 @@ const telasSempreAtualizar = new Set([
   "telaVagasDisponiveis"
 ]);
 
-/*function mostrarErroCarregamento(mensagem, tentarNovamente) {
-
-    let modal =
-        document.getElementById("modalErroCarregamento");
-
-
-    if (!modal) {
-
-        modal =
-            document.createElement("div");
-
-        modal.id =
-            "modalErroCarregamento";
-
-        modal.style.position = "fixed";
-        modal.style.top = "0";
-        modal.style.left = "0";
-        modal.style.width = "100%";
-        modal.style.height = "100%";
-        modal.style.display = "flex";
-        modal.style.alignItems = "center";
-        modal.style.justifyContent = "center";
-        modal.style.zIndex = "199999";
-
-
-        modal.innerHTML = `
-
-            <div class="conteudo-erro-carregamento">
-
-                <div id="mensagemErroCarregamento"></div>
-
-                <button id="btnTentarCarregamento">
-                    🔄 Tentar novamente
-                </button>
-
-            </div>
-
-        `;
-
-
-        document.body.appendChild(modal);
-
-    }
-
-
-    document
-        .getElementById("mensagemErroCarregamento")
-        .textContent =
-            "❌ " + mensagem;
-
-
-    modal.style.display = "flex";
-
-
-    document
-        .getElementById("btnTentarCarregamento")
-        .onclick = function(){
-
-            modal.style.display = "none";
-
-            tentarNovamente();
-
-        };
-
-}*/
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
 
     let modal =
@@ -98,7 +33,7 @@ function mostrarErroCarregamento(mensagem, tentarNovamente) {
         modal.style.display = "flex";
         modal.style.alignItems = "center";
         modal.style.justifyContent = "center";
-        modal.style.zIndex = "199999";
+        modal.style.zIndex = "99999";
 
 
         modal.innerHTML = `
@@ -126,19 +61,7 @@ function mostrarErroCarregamento(mensagem, tentarNovamente) {
         .textContent =
             "❌ " + mensagem;
 
-
     modal.style.display = "flex";
-
-
-    /*document
-        .getElementById("btnTentarCarregamento")
-        .onclick = function(){
-
-            modal.style.display = "none";
-
-            tentarNovamente();
-
-        };*/
 
       document
         .getElementById("btnTentarCarregamento")
@@ -151,12 +74,9 @@ function mostrarErroCarregamento(mensagem, tentarNovamente) {
 
             btn.textContent = "⏳ Tentando novamente...";
 
-
             modal.style.display = "none";
 
-
             tentarNovamente();
-
 
             setTimeout(() => {
 
@@ -1370,6 +1290,559 @@ document.addEventListener('click', function (event) {
 
 });
 
+function pesquisarLembretesParticipantes() {
+
+  const turno =
+    document.getElementById("turnoLembreteVisual")?.value ||
+    window.camposSelecionados.turnoLembrete ||
+    "";
+
+  const dia =
+    document.getElementById("diaLembreteVisual")?.value ||
+    window.camposSelecionados.diaLembrete ||
+    "";
+
+  const ponto =
+    document.getElementById("pontoLembreteVisual")?.value ||
+    window.camposSelecionados.pontoLembrete ||
+    "";
+
+
+  console.log(
+    "🔎 Filtros lembretes:",
+    {
+      ponto,
+      turno,
+      dia
+    }
+  );
+
+
+  if (!turno || !dia || !ponto) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, selecione todos os filtros."
+    );
+
+    return;
+
+  }
+
+
+  const msg =
+    document.getElementById("msgPesqLembretesParticipantes");
+
+
+  mostrarSpinner();
+
+
+  apiJSONP(
+
+    "buscarDesignadosParaLembrete",
+
+    {
+      turno,
+      dia,
+      ponto
+    },
+
+
+    (res) => {
+
+      esconderSpinner();
+
+      exibirResultadosLembretes(res);
+
+    },
+
+
+    (err) => {
+
+      esconderSpinner();
+
+      console.error(
+        "Erro busca lembretes:",
+        err
+      );
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao buscar designações."
+      );
+
+    }
+
+  );
+
+}
+
+function exibirResultadosLembretes(res) {
+
+  const c =
+    document.getElementById("resultadoLembretesParticipantes");
+
+  const msg =
+    document.getElementById("msgPesqLembretesParticipantes");
+
+
+  if (!res || res.length === 0) {
+
+    c.innerHTML =
+      "<p>Nenhum participante encontrado.</p>";
+
+    mostrarAlertaGlobal(
+      "❌ Nenhuma designação encontrada."
+    );
+
+    return;
+
+  }
+
+  // Ordena pelos dias restantes
+  res.sort((a, b) => {
+
+      const da = Number.isFinite(a.diasFaltam) ? a.diasFaltam : 999;
+
+      const db = Number.isFinite(b.diasFaltam) ? b.diasFaltam : 999;
+
+      return da - db;
+
+  });
+
+
+  /*let html = `
+  <table class="tabela-listagem">
+    <thead>
+      <tr>
+        <th style="width:40%;">
+          Nome
+        </th>
+        <th style="width:25%;">
+          Frequência
+        </th>
+        <th style="width:25%;">
+          Most.
+        </th>
+        <th style="width:10%;">
+          Ação
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+  `;*/
+  html = `
+          <table class="tabela-listagem">
+          <thead>
+          <tr>
+
+          <th style="width:40%">Nome</th>
+
+          <th style="width:10%">Dias</th>
+
+          <th style="width:20%">Freq.</th>
+
+          <th style="width:20%">Most.</th>
+
+          <th style="width:10%">Zap</th>
+
+          </tr>
+          </thead>
+          <tbody>
+          `;
+
+
+  res.forEach(r => {
+
+    //incluido para calcular os dias que faltam para a designação
+    let corDias = "#2e7d32";
+    let textoDias = `${r.diasFaltam} dias`;
+
+    if (r.diasFaltam === 0) {
+
+        corDias = "#d32f2f";
+        textoDias = "HOJE";
+
+    }
+    else if (r.diasFaltam === 1) {
+
+        corDias = "#ef6c00";
+        textoDias = "AMANHÃ";
+
+    }
+    else if (r.diasFaltam === 2) {
+
+        corDias = "#f9a825";
+
+    }
+
+
+    const partes =
+      (r.turno || "").split(" ");
+
+
+    const pontoNumero =
+      partes[partes.length - 1] || "";
+
+
+    const turnoPalavra =
+      partes
+      .slice(0, partes.length - 1)
+      .join(" ");
+
+    const ehVaga =
+      (r.nome || "")
+        .toUpperCase()
+        .startsWith("VAGA");
+
+      html += `
+
+    <tr class="linha-lembrete"
+
+        data-id="${r.idParticipante}"
+
+        data-nome="${r.nome}"
+
+        data-telefone="${r.telefone}"
+
+        data-ponto="${pontoNumero}"
+
+        data-dia="${r.dia}"
+
+        data-turno="${turnoPalavra}"
+
+        data-frequencia="${r.frequencia}"
+
+        data-equipamento="${r.equipamento}"
+
+        data-dias="${r.diasFaltam}">
+
+
+        <td>
+
+          <div class="nome-com-whatsapp">
+
+
+            <span>
+
+              <strong>${r.nome}</strong><br>
+
+              <small>
+                ${r.congregacao || ""}
+              </small>
+
+
+            </span>
+
+
+          </div>
+
+
+        </td>
+  
+
+        <td>
+
+          ${r.frequencia || ""}
+
+
+        </td>
+
+
+        <td>
+
+          ${r.equipamento || ""}
+
+
+        </td>
+
+
+<!-- coluna acrescentada para os dias formatados com cores -->
+  <td
+      style="
+          text-align:center;
+          font-weight:bold;
+          color:${corDias};
+      ">
+
+      ${textoDias}
+
+  </td>
+
+
+        <td>
+
+
+          ${!ehVaga ? `
+
+                      <img
+
+                          src="img/whatsapp.svg"
+
+                          class="icone-whatsapp-lembrete"
+
+                          data-id="${r.idParticipante}"
+
+                          data-nome="${r.nome}"
+
+                          data-telefone="${r.telefone}"
+
+                          data-ponto="${pontoNumero}"
+
+                          data-dia="${r.dia}"
+
+                          data-turno="${turnoPalavra}"
+
+                          data-frequencia="${r.frequencia}"
+
+                          data-equipamento="${r.equipamento}"
+
+                          data-dias="${r.diasFaltam}"
+
+                          title="Enviar lembrete pelo WhatsApp">
+
+                      ` : ""}
+
+
+        </td>
+
+
+    </tr>
+
+    `;
+
+
+  });
+
+
+  html += `
+
+    </tbody>
+
+  </table>
+
+  `;
+
+
+  c.innerHTML = html;
+
+
+  msg.textContent =
+    `✅ ${res.length} lembrete(s) encontrado(s).`;
+
+}
+function montarFraseLembrete(diasFaltam) {
+
+    if (diasFaltam === 0) {
+
+        return "Sua designação é hoje.";
+
+    }
+
+    if (diasFaltam === 1) {
+
+        return "Sua designação será amanhã.";
+
+    }
+
+    return `Sua designação será daqui a ${diasFaltam} dias.`;
+
+}
+
+function enviarPushLembreteDesignacao(dados) {
+
+  const frase =
+    montarFraseLembrete(dados.diasFaltam);
+
+  const titulo =
+    "📍 Lembrete de Designação TPE";
+
+
+  const mensagem =
+`Olá, querido(a) irmão(ã)!
+
+Este é um lembrete de que sua designação está próxima.
+
+${frase}
+
+📍 *Ponto:* ${dados.ponto}
+
+📅 *Dia:* ${dados.dia}
+
+🕒 *Turno:* ${dados.turno}
+
+
+Por favor, confirme sua participação.
+
+Caso não seja possível cumprir essa designação,
+peça substituição no grupo dos participantes.
+
+Grande abraço!
+
+Equipe TPE SBC`;
+
+console.log("DADOS DO PUSH:", dados);
+
+  apiJSONP(
+
+    "enviarPushParaParticipante",
+
+    {
+
+      idParticipante:
+        dados.idParticipante,
+
+      titulo,
+
+      mensagem
+
+    },
+
+    (res)=>{
+
+      console.log(
+        "✅ Push enviado",
+        res
+      );
+
+    },
+
+    (err)=>{
+
+      console.error(
+        "❌ Erro Push",
+        err
+      );
+
+    }
+
+  );
+
+}
+document.addEventListener("click", function(e){
+
+  const icone =
+    e.target.closest(".icone-whatsapp-lembrete");
+
+
+  if (!icone) return;
+
+  console.log(icone.dataset);
+
+  e.stopPropagation();
+
+
+  const dados = {
+
+    idParticipante:
+        icone.dataset.id,
+
+    nome:
+      icone.dataset.nome,
+
+    telefone:
+      icone.dataset.telefone,
+
+    ponto:
+      icone.dataset.ponto,
+
+    dia:
+      icone.dataset.dia,
+
+    turno:
+      icone.dataset.turno,
+
+    frequencia:
+      icone.dataset.frequencia,
+
+    equipamento:
+      icone.dataset.equipamento,
+
+    diasFaltam: 
+      Number(icone.dataset.dias)
+
+  };
+
+  console.log("DADOS DO PUSH:", dados);
+
+  const mensagem =
+    montarMensagemLembreteDesignacao(dados);
+
+  if (!dados.telefone) {
+
+    mostrarAlertaGlobal(
+      "❌ Este participante não possui telefone cadastrado."
+    );
+
+    return;
+
+  }
+
+  abrirWhatsApp(
+    dados.telefone,
+    mensagem
+  );
+
+  // Push
+  enviarPushLembreteDesignacao(dados);
+
+
+});
+
+function montarMensagemLembreteDesignacao(dados) {
+
+  /*let frase;
+
+  if (dados.diasFaltam == 0) {
+
+      frase =
+          "Sua designação é hoje.";
+
+  }
+  else if (dados.diasFaltam == 1) {
+
+      frase =
+          "Sua designação será amanhã.";
+
+  }
+  else {
+
+      frase =
+          `Sua designação será daqui a ${dados.diasFaltam} dias.`;
+
+  }*/
+  const frase =
+    montarFraseLembrete(dados.diasFaltam);
+
+  return `*LEMBRETE DE DESIGNAÇÃO - TPE*
+
+  Olá, querido(a) irmão(ã)!
+
+  Este é um lembrete de que sua designação está próxima.
+
+  ${frase}
+
+  📍 *Ponto:* ${dados.ponto}
+
+  📅 *Dia:* ${dados.dia}
+
+  🕒 *Turno:* ${dados.turno}
+
+  📈 *Frequência:* ${dados.frequencia}
+
+  📚 *Mostruário:* ${dados.equipamento}
+
+
+  Por favor, confirme sua participação.
+
+  Caso não seja possível cumprir essa designação,
+  peça substituição no grupo dos participantes.
+
+  Grande abraço!
+
+  Equipe TPE SBC`;
+
+}
+
+
 function pesquisarDesignados() {
 
    const turno =
@@ -1443,11 +1916,11 @@ function exibirResultados(res) {
         <thead>
           <tr>
             <th style="width: 33%;">Nome</th>
-            <th style="width: 10%;">Turno</th>
-            <th style="width: 15%;">Dia</th>
-            <th style="width: 8%;">Ponto</th>
-            <th style="width: 15%;">Freq.</th>
-            <th style="width: 19%;">Most.</th>
+            <th class="oculta-edicao">Turno</th>
+            <th class="oculta-edicao">Dia</th>
+            <th class="oculta-edicao">Ponto</th>
+            <th style="width: 33%;">Freq.</th>
+            <th style="width: 33%;">Most.</th>
           </tr>
         </thead>
         <tbody>`;
@@ -1457,84 +1930,110 @@ function exibirResultados(res) {
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
-    html += `
+    /*html += `
         <tr class="linha-designacao" 
             data-id="${r.idParticipante}"
             data-nome="${r.nome}" 
+            data-telefone="${r.telefone}"
             data-turno="${turnoPalavra}" 
             data-dia="${r.dia}" 
             data-ponto="${pontoNumero}"
             data-frequencia="${r.frequencia}"
             data-equipamento="${r.equipamento}"
             style="cursor:pointer">
-          <!--<td style="width: 33%;">${formatarNomeComNegrito(r.nome)}</td>-->
-          <!--<td style="width:33%;">
+          
+            <td style="width:33%;">
                 <div class="nome-com-whatsapp">
-
                     <span>
-                        ${formatarNomeComNegrito(r.nome)}
+                        <strong>${r.nome}</strong><br>
+                        <small>${r.congregacao}</small>
                     </span>
-
-                    <span
+                    <img
+                        src="img/whatsapp.svg"
                         class="icone-whatsapp-designacao"
                         data-id="${r.idParticipante}"
                         data-nome="${r.nome}"
-                        data-ponto="${pontoNumero}"
-                        data-dia="${r.dia}"
+                        data-telefone="${r.telefone}"
                         data-turno="${turnoPalavra}"
+                        data-dia="${r.dia}"
+                        data-ponto="${pontoNumero}"
                         data-frequencia="${r.frequencia}"
                         data-equipamento="${r.equipamento}"
-                        title="Enviar mensagem pelo WhatsApp">
-
-                        💬
-
-                    </span>
-
+                        title="Conversar pelo WhatsApp">
                 </div>
-            </td>-->
 
-                        <td style="width:33%;">
-
-                            <div class="nome-com-whatsapp">
-
-                                <span>
-
-                                    <strong>${r.nome}</strong><br>
-
-                                    <small>${r.congregacao}</small>
-
-                                </span>
-
-                                <img
-                                    src="img/whatsapp.svg"
-                                    class="icone-whatsapp-designacao"
-
-                                    data-id="${r.idParticipante}"
-
-                                    data-nome="${r.nome}"
-
-                                    data-turno="${turnoPalavra}"
-
-                                    data-dia="${r.dia}"
-
-                                    data-ponto="${pontoNumero}"
-
-                                    data-frequencia="${r.frequencia}"
-
-                                    data-equipamento="${r.equipamento}"
-
-                                    title="Conversar pelo WhatsApp">
-
-                            </div>
-
-                        </td>
+            </td>
           
           <td style="width: 10%;">${turnoPalavra}</td>
           <td style="width: 15%;">${r.dia}</td>
           <td style="width: 8%;">${pontoNumero}</td>
           <td style="width: 15%;">${r.frequencia}</td>
           <td style="width: 19%;">${r.equipamento}</td>
-        </tr>`;
+        </tr>`;*/
+        html += `
+          <tr class="linha-designacao"
+              data-id="${r.idParticipante}"
+              data-nome="${r.nome}"
+              data-telefone="${r.telefone}"
+              data-turno="${turnoPalavra}"
+              data-dia="${r.dia}"
+              data-ponto="${pontoNumero}"
+              data-frequencia="${r.frequencia}"
+              data-equipamento="${r.equipamento}"
+              style="cursor:pointer">
+
+              <td style="width:33%;">
+
+                  <div class="nome-com-whatsapp">
+
+                      <span>
+
+                          <strong>${r.nome}</strong><br>
+
+                          <small>${r.congregacao}</small>
+
+                      </span>
+
+                      <img
+                          src="img/whatsapp.svg"
+                          class="icone-whatsapp-designacao"
+
+                          data-id="${r.idParticipante}"
+                          data-nome="${r.nome}"
+                          data-telefone="${r.telefone}"
+                          data-turno="${turnoPalavra}"
+                          data-dia="${r.dia}"
+                          data-ponto="${pontoNumero}"
+                          data-frequencia="${r.frequencia}"
+                          data-equipamento="${r.equipamento}"
+
+                          title="Conversar pelo WhatsApp">
+
+                  </div>
+
+              </td>
+
+              <td class="oculta-edicao">
+                  ${turnoPalavra}
+              </td>
+
+              <td class="oculta-edicao">
+                  ${r.dia}
+              </td>
+
+              <td class="oculta-edicao">
+                  ${pontoNumero}
+              </td>
+
+              <td>
+                  ${r.frequencia}
+              </td>
+
+              <td>
+                  ${r.equipamento}
+              </td>
+
+          </tr>`;
   });
 
   html += '</tbody></table>';
@@ -1602,65 +2101,29 @@ document.addEventListener("click", function(e){
 
     if (!icone) return;
 
-    // impede que o clique continue para a linha da tabela
+    // impede que o clique abra o menu da linha
     e.stopPropagation();
 
-    mostrarSpinner();
+    const mensagem =
+                    `*DESIGNAÇÃO NO TPE*
 
-    const mensagem = encodeURIComponent(
+                    Olá, querido(a) irmão(ã)!
 
-`*DESIGNAÇÃO NO TPE*
+                    Esta é uma confirmação de sua designação no TPE.
 
-Olá, querido(a) irmão(ã)!
+                    📍 *Ponto:* ${icone.dataset.ponto}
+                    📅 *Dia:* ${icone.dataset.dia}
+                    🕒 *Turno:* ${icone.dataset.turno}
+                    📈 *Frequência:* ${icone.dataset.frequencia}
+                    📚 *Mostruário:* ${icone.dataset.equipamento}
 
-Esta é uma confirmação de sua designação no TPE.
+                    Estou à disposição para qualquer dúvida.
 
-📍 *Ponto:* ${icone.dataset.ponto}
-📅 *Dia:* ${icone.dataset.dia}
-🕒 *Turno:* ${icone.dataset.turno}
-📈 *Frequência:* ${icone.dataset.frequencia}
-📚 *Mostruário:* ${icone.dataset.equipamento}
+                    Grande abraço!`;
 
-Estou à disposição para qualquer dúvida.
-
-Grande abraço!`
-    );
-
-    apiJSONP(
-
-        "buscarNumeroWhatsAppPorId",
-
-        {
-            id: icone.dataset.id,
-            mensagem
-        },
-
-        function(url){
-
-            esconderSpinner();
-
-            window.open(url, "_blank");
-
-        },
-
-        function(err){
-
-            esconderSpinner();
-
-            mostrarAlertaGlobal(
-
-                "❌ " +
-
-                (err?.mensagem ||
-
-                 err?.message ||
-
-                 "Erro ao abrir o WhatsApp.")
-
-            );
-
-        }
-
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
     );
 
 });
@@ -1684,7 +2147,13 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
     btnEditar.style.margin = '0';
 
     btnEditar.onclick = () => {
+
+      document
+        .querySelectorAll(".oculta-edicao")
+        .forEach(el => el.classList.remove("oculta-edicao"));
+
       menuRow.remove();
+
       editarDesignacaoInline(linhaTR);
     };
 
@@ -1714,6 +2183,8 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
       mostrarSpinner();
 
       let turnoCodigo = "";
+
+      console.log("Turno recebido:", JSON.stringify(turno));
 
       switch (turno) {
         case "Manhã":
@@ -7147,7 +7618,7 @@ function buscarParticipantes() {
         const tdNome =
           tr.insertCell();
 
-        const nome =
+        /*const nome =
           p.nomeCompleto || '';
 
         const linhas =
@@ -7166,6 +7637,7 @@ function buscarParticipantes() {
           tdNome.textContent = nome;
 
         }
+        
 
         tdNome.dataset.id = p.id || "";
 
@@ -7175,7 +7647,35 @@ function buscarParticipantes() {
 
         tdNome.style.color = 'green';
 
-        tdNome.title = 'Clique para interagir';
+        tdNome.title = 'Clique para interagir';*/
+
+        tdNome.innerHTML = `
+
+        <div class="nome-com-whatsapp">
+
+            <span>
+
+                <strong>${p.nome}</strong><br>
+
+                <small>${p.congregacao}</small>
+
+            </span>
+
+            <img
+                src="img/whatsapp.svg"
+                class="icone-whatsapp-participante"
+
+                data-id="${p.id}"
+
+                data-nome="${p.nome}"
+
+                data-telefone="${p.telefone}"
+
+                title="Conversar pelo WhatsApp">
+
+        </div>
+
+        `;
 
         tr.insertCell().textContent =
           p.condicao || '';
@@ -7233,99 +7733,6 @@ function buscarParticipantes() {
 }
 // clique em participante
 /*document.addEventListener('click', function (event) {
-
-  const alvo = event.target.closest('.clicavel-nome');
-  if (!alvo) return;
-
-  mostrarSpinner();
-
-  const nome = alvo.innerText.trim();
-  const id = alvo.dataset.id;
-
-  const campos = {
-    dia: document.getElementById('diasSelect'),
-    turno: document.getElementById('turnosSelect'),
-    frequencia: document.getElementById('frequenciasSelect'),
-    ponto: document.getElementById('pontosParaOferecerSelect'),
-    equipamento: document.getElementById('equipamentosParaOferecerSelect'),
-    necessidade: document.getElementById('necessidade')
-  };
-
-  // remove erros + listeners
-  Object.values(campos).forEach(el => {
-    el.classList.remove('erro-campo');
-    el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
-    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
-  });
-
-  const camposVazios = Object.entries(campos)
-    .filter(([_, el]) => !el.value)
-    .map(([chave]) => chave);
-
-  if (camposVazios.length > 0) {
-    esconderSpinner();
-    mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar a mensagem.");
-    camposVazios.forEach(c => campos[c].classList.add('erro-campo'));
-    return;
-  }
-
-  const mensagem =
-    "*DESIGNAÇÃO NO TPE*\n\n" +
-    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
-    "Informações da designação:\n\n" +
-    `🛠️ *Necessidade* ${campos.necessidade.value}\n` +
-    `📍 *${campos.ponto.value}*\n` +
-    `📆 *Dia:* ${campos.dia.value}\n` +
-    `🕒 *Turno:* ${campos.turno.value}\n` +
-    `📈 *Frequência:* ${campos.frequencia.value}\n` +
-    `📚 *Mostruário:* ${campos.equipamento.value}\n\n` +
-    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
-
-  const mensagemCodificada = encodeURIComponent(mensagem);
-
-  alvo.classList.remove('clicavel-nome');
-
-              console.log("🧩 nome:", nome);
-              console.log("🧩 mensagemCodificada:", mensagemCodificada);
-              console.log("🧩 mensagem:", mensagem);
-
-  apiJSONP(
-    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
-    {
-      //nome,
-      id,
-      mensagem: mensagemCodificada
-    },
-    (url) => {
-
-      esconderSpinner();
-
-      Object.values(campos).forEach(el =>
-        el.classList.remove('erro-campo')
-      );
-
-      window.open(url, '_blank');
-
-      alvo.style.color = 'gray';
-      alvo.style.fontStyle = 'italic';
-      alvo.innerHTML += ' <span title="Mensagem enviada">📤</span>';
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      Object.values(campos).forEach(el =>
-        el.classList.remove('erro-campo')
-      );
-
-      mostrarAlertaGlobal("❌ Erro: " + (err?.mensagem || err?.error || "Erro desconhecido"));
-
-      alvo.classList.add('clicavel-nome');
-    }
-  );
-});*/
-document.addEventListener('click', function (event) {
 
   const alvo = event.target.closest('.clicavel-nome');
   if (!alvo) return;
@@ -7526,117 +7933,178 @@ document.addEventListener('click', function (event) {
 
   );
 
-});
-// enviar email todos
-/*document.getElementById('enviarEmailTodosBtn').addEventListener('click', function () {
+});*/
+document.addEventListener('click', function (event) {
 
-  if (!participantesEncontrados || participantesEncontrados.length === 0) {
-    mostrarAlertaGlobal("⚠️ Nenhum participante disponível para envio de e-mail.");
-    return;
-  }
+  const alvo = event.target.closest('.icone-whatsapp-participante');
+  if (!alvo) return;
 
-  const campos = {
-    dia: document.getElementById('diasSelect'),
-    turno: document.getElementById('turnosSelect'),
-    frequencia: document.getElementById('frequenciasSelect'),
-    //ponto: document.getElementById('pontosParaOferecerSelect'),
-    ponto: window.camposSelecionados.pontosParaOferecerSelect,
-    equipamento: document.getElementById('equipamentosParaOferecerSelect'),
-    necessidade: document.getElementById('necessidade'),
-    nomeUsuarioAtual: document.getElementById('nomeSelectUsuario'),
-    telefone: document.getElementById('telefoneInputUsuario'),
-    email: document.getElementById('emailInputUsuario')
+  mostrarSpinner();
+
+  const nome = alvo.innerText.trim();
+  const id = alvo.dataset.id;
+
+
+  const valores = {
+
+    ponto:
+      window.camposSelecionados.pontosParaOferecerSelect,
+
+    dia:
+      window.camposSelecionados.diasSelect,
+
+    turno:
+      window.camposSelecionados.turnosSelect,
+
+    frequencia:
+      window.camposSelecionados.frequenciasSelect,
+
+    equipamento:
+      window.camposSelecionados.equipamentosParaOferecerSelect,
+
+    necessidade:
+      window.camposSelecionados.necessidade
+
   };
 
-  Object.values(campos).forEach(el => {
+
+  const camposVisuais = {
+
+    ponto:
+      document.getElementById('pontosParaOferecerSelectVisual'),
+
+    dia:
+      document.getElementById('diasSelectVisual'),
+
+    turno:
+      document.getElementById('turnosSelectVisual'),
+
+    frequencia:
+      document.getElementById('frequenciasSelectVisual'),
+
+    equipamento:
+      document.getElementById('equipamentosParaOferecerSelectVisual'),
+
+    necessidade:
+      document.getElementById('necessidadeVisual')
+
+  };
+
+
+  // remove erros anteriores
+
+  Object.values(camposVisuais).forEach(el => {
+
+    if (!el) return;
+
     el.classList.remove('erro-campo');
-    el.addEventListener('input', () => el.classList.remove('erro-campo'), { once: true });
-    el.addEventListener('change', () => el.classList.remove('erro-campo'), { once: true });
+
   });
 
-  const camposVazios = Object.entries(campos)
-    .filter(([_, el]) => !el.value || !el.value.trim())
-    .map(([chave]) => chave);
+
+  const camposVazios =
+    Object.entries(valores)
+      .filter(([_, valor]) => !valor)
+      .map(([chave]) => chave);
+
 
   if (camposVazios.length > 0) {
-    mostrarAlertaGlobal("⚠️ Por favor, preencha todos os campos antes de enviar o e-mail.");
-    camposVazios.forEach(c => campos[c].classList.add('erro-campo'));
+
+    esconderSpinner();
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, preencha todos os campos antes de enviar a mensagem."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (camposVisuais[campo]) {
+
+        camposVisuais[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
     return;
+
   }
 
-  const dia = campos.dia.value;
-  const turno = campos.turno.value;
-  const frequencia = campos.frequencia.value;
-  const ponto = campos.ponto.value;
-  const equipamento = campos.equipamento.value;
-  const necessidade = campos.necessidade.value;
-  const nomeUsuarioAtual = campos.nomeUsuarioAtual.value;
-  const telefone = campos.telefone.value.trim();
-  const email = campos.email.value.trim();
-
-  const assunto = "Designação no TPE";
 
   const mensagem =
-    "Olá querido(a) irmão(ã),\n\n" +
-    "Temos uma designação para você no TPE, de acordo com sua disponibilidade atual.\n\n" +
-    "Necessidade: " + necessidade + "\n" +
-    "Local: " + ponto + "\n" +
-    "Dia: " + dia + "\n" +
-    "Turno: " + turno + "\n" +
-    "Frequência: " + frequencia + "\n" +
-    "Mostruário: " + equipamento + "\n\n" +
-    "Aguardamos sua confirmação. Se puder aceitar, ficaremos muito felizes!\n\n";
 
-  mostrarConfirmacaoGlobal(
-    `📧 Deseja enviar e-mail para aqueles dentre os <strong>${participantesEncontrados.length}</strong> disponíveis encontrados cujo sexo combine com a necessidade?`,
-    () => {
+    "*DESIGNAÇÃO NO TPE*\n\n" +
 
-      mostrarSpinner();
+    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
 
-      const nomes = participantesEncontrados.map(p => p.nomeCompleto);
+    "Informações da designação:\n\n" +
 
-      apiJSONP(
-        "buscarEmailsPorNomesEEnviarMensagem",
-        {
-          dados: JSON.stringify({
-            nomes,
-            nomeUsuarioAtual,
-            assunto,
-            mensagem,
-            necessidade
-          })
-        },
-        () => {
+    `🛠️ *Necessidade:* ${valores.necessidade}\n` +
 
-          esconderSpinner();
+    `📍 *${valores.ponto}*\n` +
 
-          Object.values(campos)
-            .forEach(el => el.classList.remove('erro-campo'));
+    `📆 *Dia:* ${valores.dia}\n` +
 
-          document.getElementById('dadosUsuarioContainer').style.display = 'none';
-          document.getElementById('enviarEmailTodosBtn').style.display = 'none';
+    `🕒 *Turno:* ${valores.turno}\n` +
 
-          mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
+    `📈 *Frequência:* ${valores.frequencia}\n` +
 
-        },
-        (err) => {
+    `📚 *Mostruário:* ${valores.equipamento}\n\n` +
 
-          esconderSpinner();
+    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
 
-          Object.values(campos)
-            .forEach(el => el.classList.remove('erro-campo'));
+    try {
 
-          mostrarAlertaGlobal(
-            "❌ Erro ao enviar e-mails: " +
-            (err?.mensagem || err?.error || "Erro desconhecido")
-          );
-
-        }
+      abrirWhatsApp(
+          alvo.dataset.telefone,
+          mensagem
       );
 
-    }
-  );
-});*/
+      esconderSpinner();
+
+      Object.values(camposVisuais).forEach(el => {
+
+          if (el) {
+
+              el.classList.remove("erro-campo");
+
+          }
+
+      });
+
+      alvo.classList.remove("clicavel-nome");
+
+      alvo.style.color = "gray";
+      alvo.style.fontStyle = "italic";
+
+      alvo.innerHTML +=
+          ' <span title="Mensagem enviada">📤</span>';
+
+  } catch (err) {
+
+      esconderSpinner();
+
+      Object.values(camposVisuais).forEach(el => {
+
+          if (el) {
+
+              el.classList.remove("erro-campo");
+
+          }
+
+      });
+
+      mostrarAlertaGlobal(
+          "❌ " + (err.message || err)
+      );
+
+      alvo.classList.add("clicavel-nome");
+
+  }
+});
+// enviar email todos
 document.getElementById('enviarEmailTodosBtn')
 .addEventListener('click', function () {
 
@@ -8319,7 +8787,7 @@ function buscarParticipantes2h() {
 
 
 
-        const nome =
+        /*const nome =
           p.nomeCompleto || '';
 
 
@@ -8377,7 +8845,35 @@ function buscarParticipantes2h() {
 
 
         tdNome.title =
-          'Clique para interagir';
+          'Clique para interagir';*/
+
+          tdNome.innerHTML = `
+
+          <div class="nome-com-whatsapp">
+
+              <span>
+
+                  <strong>${p.nome}</strong><br>
+
+                  <small>${p.congregacao}</small>
+
+              </span>
+
+              <img
+                  src="img/whatsapp.svg"
+                  class="icone-whatsapp-participante2h"
+
+                  data-id="${p.id}"
+
+                  data-nome="${p.nome}"
+
+                  data-telefone="${p.telefone}"
+
+                  title="Conversar pelo WhatsApp">
+
+          </div>
+
+          `;
 
 
 
@@ -8559,7 +9055,8 @@ function buscarParticipantes2h() {
 });*/
 document.addEventListener('click', function (event) {
 
-  const alvo = event.target.closest('.clicavel-nome2h');
+  //const alvo = event.target.closest('.clicavel-nome2h'); 
+  const alvo = event.target.closest('.icone-whatsapp-participante2h');
   if (!alvo) return;
 
   mostrarSpinner();
@@ -8679,7 +9176,7 @@ document.addEventListener('click', function (event) {
     "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
 
 
-  const mensagemCodificada =
+  /*const mensagemCodificada =
       encodeURIComponent(mensagem);
 
 
@@ -8756,7 +9253,55 @@ document.addEventListener('click', function (event) {
 
     }
 
-  );
+  );*/
+  try {
+
+      abrirWhatsApp(
+          alvo.dataset.telefone,
+          mensagem
+      );
+
+      esconderSpinner();
+
+      Object.values(camposVisuais).forEach(el => {
+
+          if (el) {
+
+              el.classList.remove("erro-campo");
+
+          }
+
+      });
+
+      alvo.classList.remove("clicavel-nome");
+
+      alvo.style.color = "gray";
+      alvo.style.fontStyle = "italic";
+
+      alvo.innerHTML +=
+          ' <span title="Mensagem enviada">📤</span>';
+
+  } catch (err) {
+
+      esconderSpinner();
+
+      Object.values(camposVisuais).forEach(el => {
+
+          if (el) {
+
+              el.classList.remove("erro-campo");
+
+          }
+
+      });
+
+      mostrarAlertaGlobal(
+          "❌ " + (err.message || err)
+      );
+
+      alvo.classList.add("clicavel-nome");
+
+  }
 
 });
 /*document.getElementById('enviarEmailTodosBtn2h').addEventListener('click', function () {
@@ -10744,7 +11289,7 @@ function mostrarConfirmacaoRegistrarInscritos() {
 
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+//document.addEventListener("DOMContentLoaded", function() {
 
   //carregarEventosInscritos();
 
@@ -10776,7 +11321,7 @@ document.addEventListener("DOMContentLoaded", function() {
     mostrarSpinner();
     container.innerHTML = "<p>Carregando designados...</p>";
 
-    apiJSONP(
+    /*apiJSONP(
       "listarDesignadosDoEvento",
       { eventoId, turno },
       function(designados) {
@@ -10871,7 +11416,216 @@ document.addEventListener("DOMContentLoaded", function() {
         mostrarAlertaGlobal("❌ Erro: " + err.message);
       }
     );
+  });*/
+  apiJSONP(
+    "listarDesignadosDoEvento",
+    { eventoId, turno },
+
+    function(designados) {
+
+      esconderSpinner();
+
+      if (!designados || (Array.isArray(designados) && designados.length === 0)) {
+
+        container.innerHTML =
+          "<p>❌ Nenhum designado encontrado para esse turno.</p>";
+
+      } else if (typeof designados === "string") {
+
+        container.innerHTML =
+          `<p style="color: gray;">${designados}</p>`;
+
+      } else {
+
+        const selEv =
+          document.getElementById("eventoSelectDesignados");
+
+        const evento =
+          selEv.options[selEv.selectedIndex].text;
+
+        const selectTurno =
+          document.getElementById("turnoSelectDesignados");
+
+        const turnoTxt =
+          selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
+
+        let html =
+          "<table class='tabela-listagem'>";
+
+        html += `
+          <thead>
+            <tr>
+              <th style="width:20%;">Mostruário</th>
+              <th style="width:40%;">Nome</th>
+              <th style="width:15%;">Sexo</th>
+              <th style="width:20%;">WhatsApp</th>
+              <th style="display:none;width:5%;">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+        `;
+
+        designados.forEach(function(d){
+
+          html += `
+            <tr>
+
+              <td
+                  class="carrinho-editavel"
+                  style="color:blue;cursor:pointer;"
+                  data-carrinho="${d.carrinho || ""}">
+
+                  ${d.carrinho || "Carrinho do Evento"}
+
+              </td>
+
+              <td
+                  class="nome-editavel"
+                  data-id="${d.id}">
+
+                  ${d.nome || "Participante"}
+
+              </td>
+
+              <td>
+
+                  ${d.sexo || ""}
+
+              </td>
+
+              <td>
+
+                  ${d.telefone ?
+
+                  `<img
+                      src="img/whatsapp.svg"
+                      class="icone-whatsapp-evento"
+
+                      data-telefone="${d.telefone}"
+
+                      data-nome="${d.nome || ""}"
+
+                      data-evento="${evento}"
+
+                      data-turno="${turnoTxt}"
+
+                      title="Conversar pelo WhatsApp">`
+
+                  : ""}
+
+              </td>
+
+              <td style="display:none;">
+
+                  ${d.email || ""}
+
+              </td>
+
+            </tr>
+          `;
+
+        });
+
+        html += `
+          </tbody>
+        </table>`;
+
+        container.innerHTML = html;
+
+        container.querySelectorAll(".carrinho-editavel")
+          .forEach(td => {
+
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+
+            td.addEventListener("click", () => {
+
+              transformarCarrinhoEmSelect(td);
+
+            });
+
+          });
+
+        document.getElementById("areaBotoes").style.display = "block";
+
+        document.getElementById("btnEnviarTodos")
+          .addEventListener("click", () => {
+
+            enviarEmailParaTodos(container);
+
+          });
+
+        document.getElementById("btnEnviarDaAba")
+          .addEventListener("click", () => {
+
+            enviarEmailParaTodosDaAba();
+
+          });
+
+        container.querySelectorAll(".nome-editavel")
+          .forEach(td => {
+
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+
+            td.addEventListener("click", () => {
+
+              mostrarSpinner();
+
+              transformarNomeEmSelect(td);
+
+            });
+
+          });
+
+      }
+
+    },
+
+    function(err){
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " + err.message
+      );
+
+    }
+
+  );
+
+  document.addEventListener("click", function(e){
+
+    const icone =
+        e.target.closest(".icone-whatsapp-evento");
+
+    if (!icone) return;
+
+    e.stopPropagation();
+
+    const mensagem =
+                      "*Evento do TPE - Confirmação de Participação*\n\n" +
+
+                      "👤 Olá,\n" +
+                      icone.dataset.nome + "\n\n" +
+
+                      "✍️ Você foi designado para o evento *" +
+                      icone.dataset.evento +
+                      "*, para o dia *" +
+                      icone.dataset.turno +
+                      "*.\n\n" +
+
+                      "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
+
+                      "*Equipe de Eventos do TPE SBC*";
+
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
+    );
+
   });
+  
 
   const btnRegistrarInscritos = document.getElementById("btnRegistrarInscritos");
   btnRegistrarInscritos.replaceWith(btnRegistrarInscritos.cloneNode(true));
@@ -12240,11 +12994,12 @@ function buscarDesignacoesPorPonto() {
       html += `<table class="tabela-listagem">
           <thead>
             <tr>
-              <th style="width: 35%;">Nome</th>
-              <th style="width: 15%;">Turno</th>
-              <th style="width: 15%;">Dia</th>
-              <th style="width: 15%;">Freq.</th>
-              <th style="width: 20%;">Most.</th>
+              <th style="width: 33%;">Nome</th>
+              <th class="oculta-edicao">Turno</th>
+              <th class="oculta-edicao">Dia</th>
+              <th class="oculta-edicao">Ponto</th>
+              <th style="width: 33%;">Freq.</th>
+              <th style="width: 33%;">Most.</th>
             </tr>
           </thead><tbody>`;
 
@@ -12252,7 +13007,7 @@ function buscarDesignacoesPorPonto() {
         html += `
                 <tr>
 
-                    <td style="width:35%;">
+                    <td style="width:33%;">
 
                         <div class="nome-com-whatsapp">
 
@@ -12266,11 +13021,15 @@ function buscarDesignacoesPorPonto() {
 
                             <img
                                 src="img/whatsapp.svg"
-                                class="icone-whatsapp-designacao"
+                                class="icone-whatsapp-ponto"
 
                                 data-id="${r.idParticipante}"
 
                                 data-nome="${r.nome}"
+
+                                data-telefone="${r.telefone}"
+
+                                data-ponto="${numeroDoPonto}"
 
                                 data-turno="${r.turno}"
 
@@ -12286,9 +13045,11 @@ function buscarDesignacoesPorPonto() {
 
                     </td>
 
-                    <td>${r.turno}</td>
+                    <td class="oculta-edicao">${r.turno}</td>
 
-                    <td>${r.dia}</td>
+                    <td class="oculta-edicao">${r.dia}</td>
+
+                    <td class="oculta-edicao">${numeroDoPonto}</td>
 
                     <td>${r.frequencia}</td>
 
@@ -12308,6 +13069,41 @@ function buscarDesignacoesPorPonto() {
     }
   );
 }
+document.addEventListener("click", function (e) {
+
+    const icone = e.target.closest(".icone-whatsapp-ponto");
+
+    if (!icone) return;
+
+    e.stopPropagation();
+
+    mostrarSpinner();
+
+    const mensagem = 
+                  `*DESIGNAÇÃO NO TPE*
+
+                  Olá, querido(a) irmão(ã)!
+
+                  Esta é uma confirmação de sua designação no TPE.
+
+                  📍 *Ponto:* ${icone.dataset.ponto}
+                  📅 *Dia:* ${icone.dataset.dia}
+                  🕒 *Turno:* ${icone.dataset.turno}
+                  📈 *Frequência:* ${icone.dataset.frequencia}
+                  📚 *Mostruário:* ${icone.dataset.equipamento}
+
+                  Estou à disposição para qualquer dúvida.
+
+                  Grande abraço!`
+
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
+    );
+
+    esconderSpinner();
+
+});
 
 function baixarDesignacoesPorPonto() {
   //const ponto = document.getElementById("pontobepp").value;
@@ -12618,7 +13414,7 @@ function converterDesignacoesParaIDs() {
   );
 }*/
 
-function buscarTreinando() {
+/*function buscarTreinando() {
   const resultadoDiv = document.getElementById('resultadoTreinando');
   const msg = document.getElementById('msgTreinando') || { textContent: () => {} };
 
@@ -12791,6 +13587,204 @@ document.addEventListener('click', function(event) {
 
     container.appendChild(tabela);
   }
+});*/
+
+function buscarTreinando() {
+  const resultadoDiv = document.getElementById('resultadoTreinando');
+  const msg = document.getElementById('msgTreinando') || { textContent: () => {} };
+
+  resultadoDiv.innerHTML = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "buscarTreinandoCompacto",
+    {},
+    (lista) => {
+
+      esconderSpinner();
+
+      if (!lista || lista.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante em treinamento encontrado.");
+        return;
+      }
+
+      if (msg) msg.textContent = `✅ ${lista.length} treinando(s) encontrado(s).`;
+
+      const tabela = document.createElement('table');
+      tabela.className = 'tabela-listagem';
+
+      const thead = tabela.createTHead();
+      const trHead = thead.insertRow();
+
+      ['Nome', 'Congregação', 'WhatsApp', 'Sexo'].forEach(txt => {
+        const th = document.createElement('th');
+        th.textContent = txt;
+        trHead.appendChild(th);
+      });
+
+      const tbody = tabela.createTBody();
+
+      lista.forEach(item => {
+        const tr = tbody.insertRow();
+
+        const tdNome = tr.insertCell();
+        tdNome.textContent = item.nome;
+        tdNome.classList.add('clicavel-nome-treinando');
+        tdNome.style.cursor = 'pointer';
+        tdNome.style.color = 'green';
+        tdNome.title = 'Clique para ver disponibilidade';
+
+        tdNome.dataset.id = item.id || '';
+        tdNome.dataset.nome = item.nome || '';
+        tdNome.dataset.congregacao = item.congregacao || '';
+        tdNome.dataset.telefone = item.telefone || '';
+        tdNome.dataset.sexo = item.sexo || '';
+        tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
+          ? JSON.stringify(item.diasTurnos)
+          : JSON.stringify((item.diasTurnos || '').split(',').map(s => s.trim()).filter(Boolean));
+
+        tr.insertCell().textContent = item.congregacao || '';
+
+        const tdTelefone = tr.insertCell();
+
+        if (item.telefone) {
+
+            tdTelefone.innerHTML = `
+                <img
+                    src="img/whatsapp.svg"
+                    class="icone-whatsapp-treinando"
+
+                    data-telefone="${item.telefone}"
+
+                    data-nome="${item.nome || ""}"
+
+                    title="Enviar mensagem pelo WhatsApp">
+            `;
+
+        } else {
+
+            tdTelefone.textContent = "";
+
+        }
+
+        tr.insertCell().textContent = item.sexo || '';
+      });
+
+      resultadoDiv.appendChild(tabela);
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro na busca: " + (err.message || err));
+    }
+  );
+}
+
+document.addEventListener('click', function(event) {
+  if (event.target && event.target.classList.contains('clicavel-nome-treinando')) {
+
+    if (perfilUsuario !== 'admin') {
+      mostrarAlertaGlobal("⚠️ Permitido apenas consultar quem está alistado para o próximo treinamento.");
+      return;
+    }
+
+    const nome = event.target.dataset.nome || event.target.textContent.trim();
+    const idTreinando = event.target.dataset.id || '';
+    const sexo = event.target.dataset.sexo || '';
+    const congregacao = event.target.dataset.congregacao || '';
+    const telefone = event.target.dataset.telefone || '';
+
+    let diasTurnosArray;
+    try {
+      diasTurnosArray = JSON.parse(event.target.dataset.diasTurnos || '[]');
+    } catch (e) {
+      diasTurnosArray = [];
+    }
+
+    document.getElementById('idTreinando').value = idTreinando;
+    document.getElementById('nomeTreinando').value = nome;
+    document.getElementById('congregacaoTreinando').value = congregacao;
+    document.getElementById('telefoneTreinando').value = telefone;
+    document.getElementById('sexoTreinando').value = sexo;
+
+    const container = document.getElementById('resultadoDiasTurnos');
+    const containerTreinadores = document.getElementById('resultadoTreinadores');
+    container.innerHTML = '';
+    if (containerTreinadores) containerTreinadores.innerHTML = '';
+
+    if (!diasTurnosArray || diasTurnosArray.length === 0) {
+      mostrarAlertaGlobal(`❌ Nenhum dia/turno disponível para ${nome}.`);
+      return;
+    }
+
+    const titulo = document.createElement('h4');
+    titulo.textContent = `Dias disponíveis de ${nome}:`;
+    container.appendChild(titulo);
+
+    const tabela = document.createElement('table');
+    tabela.className = 'tabela-listagem';
+
+    const thead = tabela.createTHead();
+    const trHead = thead.insertRow();
+    ['Dia', 'Turno', 'Ação'].forEach(txt => {
+      const th = document.createElement('th');
+      th.textContent = txt;
+      trHead.appendChild(th);
+    });
+
+    const tbody = tabela.createTBody();
+    diasTurnosArray.forEach(dt => {
+      const [dia, turno] = dt.split(" - ").map(s => s.trim());
+      if (!dia || !turno) return;
+
+      const tr = tbody.insertRow();
+      tr.insertCell().textContent = dia;
+      tr.insertCell().textContent = turno;
+
+      const tdAcao = tr.insertCell();
+      tdAcao.textContent = "Buscar treinador";
+      tdAcao.style.color = 'blue';
+      tdAcao.style.cursor = 'pointer';
+      tdAcao.classList.add('btn-dia-turno');
+      tdAcao.dataset.sexo = sexo;
+      tdAcao.dataset.dia = dia;
+      tdAcao.dataset.turno = turno;
+    });
+
+    container.appendChild(tabela);
+  }
+});
+
+document.addEventListener("click", function(e){
+
+    const icone =
+        e.target.closest(".icone-whatsapp-treinando");
+
+    if (!icone) return;
+
+    e.stopPropagation();
+
+    const mensagem =
+`*TPE SBC - Confirmação de Treinamento*
+
+👤 Olá, ${icone.dataset.nome}
+
+📋 Recebemos sua petição para o TPE SBC. Em breve você participará da reunião de treinamento.
+
+📲 A data e o horário serão informados em breve.
+
+👥 Para acompanhar todas as informações, entre no grupo do WhatsApp:
+
+👉 https://chat.whatsapp.com/IzcPluEJthPKWMH5XzdFSw
+
+*Seus irmãos,*
+*Equipe do TPE SBC*`;
+
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
+    );
+
 });
 
 document.addEventListener('click', function (event) {
@@ -13123,6 +14117,8 @@ function buscarTreinamentosEmAndamento() {
 
       lista.forEach(item => {
 
+        console.log("ITEM:", item);
+
         const tr = tbody.insertRow();
 
         tr.insertCell().textContent = item.nomeTreinando;
@@ -13137,10 +14133,16 @@ function buscarTreinamentosEmAndamento() {
         btnAcoes.classList.add('btn-acoes-treinamento');
 
         btnAcoes.dataset.idTreinando = item.idTreinando;
-        btnAcoes.dataset.idTreinador = item.idTreinador;
         btnAcoes.dataset.nomeTreinando = item.nomeTreinando;
         btnAcoes.dataset.congregacao = item.congregacao;
         btnAcoes.dataset.telefone = item.telefone;
+
+        btnAcoes.dataset.idTreinador = item.idTreinador;
+        btnAcoes.dataset.nomeTreinador = item.nomeTreinador;
+        btnAcoes.dataset.telefoneTreinador = item.telefoneTreinador;
+        btnAcoes.dataset.congregacaoTreinador = item.congregacaoTreinador;
+
+        console.log("DATASET:", btnAcoes.dataset);
 
         tdAcao.appendChild(btnAcoes);
       });
@@ -13287,15 +14289,29 @@ document
 
   const modal = document.getElementById('modalAcoesTreinamento');
 
+  console.log(modal.dataset);
+
   fecharModalAcoesTreinamento();
 
-  comunicarLembreteTreinador(
+  /*comunicarLembreteTreinador(
     modal.dataset.idTreinador,
     modal.dataset.nomeTreinando,
     modal.dataset.congregacao,
     modal.dataset.telefone
-  );
+  );*/
+  comunicarLembreteTreinador(modal);
 });
+/*document
+.getElementById("acaoLembrete")
+.addEventListener("click", function () {
+
+    const modal = document.getElementById("modalAcoesTreinamento");
+
+    fecharModalAcoesTreinamento();
+
+    comunicarLembreteTreinador(modal);
+
+});*/
 
 document
 .addEventListener('click', function(e) {
@@ -13305,10 +14321,14 @@ document
     const modal = document.getElementById('modalAcoesTreinamento');
 
     modal.dataset.idTreinando = e.target.dataset.idTreinando;
-    modal.dataset.idTreinador = e.target.dataset.idTreinador;
     modal.dataset.nomeTreinando = e.target.dataset.nomeTreinando;
     modal.dataset.congregacao = e.target.dataset.congregacao;
     modal.dataset.telefone = e.target.dataset.telefone;
+
+    modal.dataset.idTreinador = e.target.dataset.idTreinador;
+    modal.dataset.nomeTreinador = e.target.dataset.nomeTreinador;
+    modal.dataset.telefoneTreinador = e.target.dataset.telefoneTreinador;
+    modal.dataset.congregacaoTreinador = e.target.dataset.congregacaoTreinador;
 
     modal.classList.remove('oculto');
   }
@@ -13376,10 +14396,27 @@ function confirmarAlteracaoTreinador() {
 
       const modalComunicacao = document.getElementById('modalComunicarTreinador');
 
-      modalComunicacao.dataset.idNovoTreinador = res.idNovoTreinador;
+      /*modalComunicacao.dataset.idNovoTreinador = res.idNovoTreinador;
       modalComunicacao.dataset.nomeTreinando = nomeTreinando;
       modalComunicacao.dataset.congregacao = congregacao;
-      modalComunicacao.dataset.telefone = telefone;
+      modalComunicacao.dataset.telefone = telefone;*/
+
+      modalComunicacao.dataset.idNovoTreinador = res.idNovoTreinador;
+
+      modalComunicacao.dataset.nomeNovoTreinador =
+        res.nomeNovoTreinador;
+
+      modalComunicacao.dataset.telefoneNovoTreinador =
+        res.telefoneNovoTreinador;
+
+      modalComunicacao.dataset.nomeTreinando =
+        res.nomeTreinando;
+
+      modalComunicacao.dataset.telefoneTreinando =
+        res.telefoneTreinando;
+
+      modalComunicacao.dataset.congregacaoTreinando =
+        res.congregacaoTreinando;
 
       modalComunicacao.classList.remove('oculto');
 
@@ -13393,7 +14430,7 @@ function confirmarAlteracaoTreinador() {
   );
 }
 
-function comunicarNovoTreinador() {
+/*function comunicarNovoTreinador() {
 
   mostrarSpinner();
 
@@ -13441,9 +14478,57 @@ function comunicarNovoTreinador() {
 
     }
   );
+}*/
+function comunicarNovoTreinador() {
+
+  const modal =
+    document.getElementById('modalComunicarTreinador');
+
+
+  const mensagem =
+              `*TREINAMENTO PRÁTICO DO TPE*
+
+              Prezado(a) participante do TPE!
+
+              Gostaríamos de contar com sua ajuda para treinar um novo participante do TPE.
+
+              👤 *Novo participante:* ${modal.dataset.nomeTreinando}
+
+              🏛️ *Congregação:* ${modal.dataset.congregacaoTreinando}
+
+              📲 *Telefone:* ${modal.dataset.telefoneTreinando}
+
+
+              Por favor, confirme sua disponibilidade.
+
+              Depois do treinamento, acesse o aplicativo e conclua o treinamento na seção *Meus Treinamentos*.
+
+              Agradecemos por sua valiosa ajuda!
+
+              *Equipe do TPE SBC*`;
+
+
+  console.log("Novo treinador:");
+  console.log(modal.dataset.nomeNovoTreinador);
+
+  console.log("Telefone treinador:");
+  console.log(modal.dataset.telefoneNovoTreinador);
+
+
+  abrirWhatsApp(
+    modal.dataset.telefoneNovoTreinador,
+    mensagem
+  );
+
+
+  fecharModalComunicacao();
+
+  buscarTreinamentosEmAndamento();
+
 }
 
-function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, telefone) {
+/*function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, telefone) {
+  console.log("ENTROU comunicarLembreteTreinador");
 
   mostrarSpinner();
 
@@ -13459,6 +14544,8 @@ function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, tel
   const mensagemCodificada =
     encodeURIComponent(mensagem);
 
+    console.log("mensagem criada");
+
   apiJSONP(
     "buscarNumeroWhatsAppPorIdComMensagem",
     {
@@ -13466,6 +14553,9 @@ function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, tel
       mensagem: mensagemCodificada
     },
     (url) => {
+
+      console.log("SUCESSO");
+      console.log(url);
 
       esconderSpinner();
 
@@ -13475,6 +14565,8 @@ function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, tel
 
     },
     (err) => {
+      console.log("ERRO");
+      console.log(err);
 
       esconderSpinner();
 
@@ -13482,6 +14574,36 @@ function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, tel
 
     }
   );
+  console.log("apiJSONP chamada");
+}*/
+function comunicarLembreteTreinador(modal) {
+
+    const mensagem =
+`*LEMBRETE DE TREINAMENTO DO TPE*
+
+Olá!
+
+Este é um lembrete sobre um treinamento que está em andamento.
+
+👤 *Participante:* ${modal.dataset.nomeTreinando}
+🏛️ *Congregação:* ${modal.dataset.congregacao}
+📲 *Telefone:* ${modal.dataset.telefone}
+
+Caso o treinamento já tenha sido realizado, por favor acesse o aplicativo e conclua o treinamento na seção *Meus Treinamentos*.
+
+Agradecemos por sua ajuda!
+
+*Equipe do TPE SBC*`;
+
+console.log(modal.dataset);
+console.log("Telefone treinador:", modal.dataset.telefoneTreinador);
+
+    abrirWhatsApp(
+        modal.dataset.telefoneTreinador,
+        mensagem
+    );
+
+    buscarTreinamentosEmAndamento();
 }
 
 document.addEventListener('click', function(e) {
@@ -14546,7 +15668,7 @@ function carregarVagasDisponiveis() {
           <!--<button
               class="btn-aceitar-vaga"
               onclick="aceitarVaga('${vaga.idVaga}')">
-              ACEITAR VAGA
+              Quero assumir esta vaga
           </button>-->
 
           <button
@@ -14556,7 +15678,7 @@ function carregarVagasDisponiveis() {
                   : "btn-aceitar-vaga"
               }"
               onclick="aceitarVaga('${vaga.idVaga}')">
-              ACEITAR VAGA
+              Quero assumir esta vaga
           </button>
 
         `;
@@ -18622,6 +19744,117 @@ function selecionarCampoComModal(config = {}) {
 
 }
 
+
+function abrirSelecaoLembretePonto(){
+
+    selecionarCampoComModal({
+
+        campo:"pontoLembreteVisual",
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Ponto escolhido:",
+                valor
+            );
+
+
+            // mantém estado global
+
+            window.camposSelecionados.pontoDesignado =
+                valor;
+
+
+            // sincroniza temporariamente
+            // com o select antigo
+
+            //sincronizarPontoDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+function abrirSelecaoLembreteDia(){
+
+
+    selecionarCampoComModal({
+
+        campo:"diaLembreteVisual",
+
+        titulo:"Escolha o dia",
+
+        valores:
+
+        window.opcoesDias,
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Dia escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.diaDesignado =
+                valor;
+
+
+            //sincronizarDiaDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+function abrirSelecaoLembreteTurno(){
+
+
+    selecionarCampoComModal({
+
+        campo:"turnoLembreteVisual",
+
+        titulo:"Escolha o turno",
+
+        valores:
+          window.opcoesTurnos,
+
+
+        aoSelecionar(valor){
+
+
+            console.log(
+                "Turno escolhido:",
+                valor
+            );
+
+
+            window.camposSelecionados.turnoDesignado =
+                valor;
+
+
+            //sincronizarTurnoDesignadoAntigo(valor);
+
+
+        }
+
+    });
+
+
+}
+
 function abrirSelecaoPontoDesignado(){
 
     selecionarCampoComModal({
@@ -18660,44 +19893,6 @@ function abrirSelecaoPontoDesignado(){
 
 
 }
-
-/*function abrirSelecaoPontoDesignado(){
-
-
-    garantirCatalogoPontos(()=>{
-
-
-        selecionarCampoComModal({
-
-            campo:"pontoDesignadoVisual",
-
-            titulo:"Escolha o ponto",
-
-            valores:listarPontosSistema(),
-
-
-            aoSelecionar(valor){
-
-
-                console.log(
-                    "Ponto escolhido:",
-                    valor
-                );
-
-
-                window.camposSelecionados.pontoDesignado =
-                    valor;
-
-
-            }
-
-        });
-
-
-    });
-
-
-}*/
 
 function abrirSelecaoTurnoDesignado(){
 
@@ -19329,3 +20524,52 @@ function inicializarBuscaUsuario2h() {
 
 }
 
+function abrirWhatsApp(telefone, mensagem) {
+
+  if (!telefone) {
+
+    mostrarAlertaGlobal(
+      "❌ Número de telefone não informado."
+    );
+
+    return;
+
+  }
+
+  // Remove tudo que não é número
+  let numero =
+    telefone.toString().replace(/\D/g, "");
+
+  // Acrescenta DDI se necessário
+  if (
+    numero.length === 10 ||
+    numero.length === 11
+  ) {
+
+    numero = "55" + numero;
+
+  }
+
+  // Validação simples
+  if (
+    numero.length < 12 ||
+    numero.length > 13
+  ) {
+
+    mostrarAlertaGlobal(
+      "❌ Número de telefone inválido."
+    );
+
+    return;
+
+  }
+
+  const url =
+    `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}

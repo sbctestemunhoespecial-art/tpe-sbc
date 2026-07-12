@@ -11,7 +11,7 @@
   --cor-quartiaria: #fffff0;
   --cor-quintiaria: #D3D3D3;
   --cor-azul: #1E40AF;
-  --cor-botao:#3B82F6;/*#336699;*/
+  --cor-botao:#1e40af; /*#3B82F6;/*#336699;*/
   --cor-botao-hover: #a4c2f4;
   
   --fonte-principal: "Segoe UI";
@@ -246,36 +246,7 @@ h6 {
   color: #444444; 
   margin: 0.2rem 0;
 }
-/*
-.top-bar-login {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8em;
-  background-color: var(--cor-amarela);
-  z-index: 1;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.titulo-sistema-login {
-  font-size: var(--fonte-grande);
-  font-weight: bold;
-  color: var(--cor-texto);
-  text-align: center;
-}
-
-.subtitulo-sistema-login {
-  font-size: var(--fonte-pequenaB);
-  color: var(--cor-texto);
-  text-align: center;
-  margin-top: 0.2rem;
-}
-*/
 .top-bar-login {
   position: fixed;
   top: 0;
@@ -308,7 +279,6 @@ h6 {
 
 .subtitulo-sistema-login {
   width: 100%;
-  /*font-size: var(--fonte-pequenaB);*/
   color: var(--cor-texto);
   text-align: center;
   margin-top: 0.2rem;
@@ -322,23 +292,21 @@ h6 {
   background-color: var(--cor-fundo);
   padding: 4vh 4vw;
   text-align: center;
-  z-index: 66666;
+  z-index: 99;
   width: 95vw;
   max-width: 95vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /*font-size: 1em;*/
 }
 
 .titulo-login {
-  /*font-size: var(--fonte-media);*/
+
 }
 
 .input-login {
   width: 95%;
   text-align: center;
-  /*font-size: var(--fonte-pequenaB);*/
   padding: 0.5em 0.6em;
   margin-bottom: 0;
 }
@@ -350,7 +318,6 @@ h6 {
 .botao-login {
   width: 95%;
   text-align: center;
-  /*font-size: var(--fonte-pequenaB);*/
   padding: 0.2em 0.2em;
   margin-bottom: 0;
   margin-top: 1em;
@@ -358,7 +325,6 @@ h6 {
 
 .erro-login {
   color: red;
-  /*font-size: var(--fonte-pequenaB);*/
   margin-top: 1em;
 }
 
@@ -367,29 +333,15 @@ h6 {
   margin-bottom: 0.5rem;
   line-height: 1;
   text-align: center;       
-  /*font-size: var(--fonte-pequenaB);*/
 }
-
-/*
-#map {
-  width: 100%;
-  height: 70vh;
-}
-
-@media (max-width: 768px) {
-  #map { height: 60vh; }
-}
-*/
 
 button.menu-btn {
   width: fit-content;
   margin: 0;      
-    justify-self:start;
-    align-self:start;
+  justify-self:start;
+  align-self:start;
   margin-top: 0.8rem;       
   width: auto; 
-  /*font-size: var(--fonte-media);*/
-  /*font-size: 0.8rem;*/
   width: auto;       
   z-index: 1100;      
   display: none;      
@@ -427,7 +379,6 @@ button.menu-btn:hover {
     justify-content:center;
     align-items:center;
     text-align:center;
-    /*gap:4px;*/
 }
 
 .linha-sistema,
@@ -448,7 +399,6 @@ button.menu-btn:hover {
   transition: width 0.4s ease;
   padding-top: 8vh;
   z-index: 1000;
-  /*font-size: 1em;*/
 }
 
 .sidebar.open {
@@ -460,7 +410,6 @@ button.menu-btn:hover {
   padding: 0.6em 0.8em;
   color: #ddd;
   text-decoration: none;
-  /*font-size: 1.2em;*/
   transition: background 0.3s, color 0.3s;
 }
 
@@ -480,7 +429,6 @@ button.menu-btn:hover {
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 900;
-  /*display: none;*/
 }
 
 .overlay.active {
@@ -518,7 +466,6 @@ label {
 select, textarea {
   width: 100%;
   border-radius: var(--raio-borda);
-  /*border: 1px solid #ccc;*/
   border: 1px solid #0056D2;
   box-sizing: border-box;
   resize: vertical;
@@ -558,7 +505,6 @@ button.voltar,
 button.prosseguir,
 button.procurar,
 button.confirmar {
-  /*font-size: 0.8rem;*/
   font-weight: bold;
   margin: 0.5em;
   border-radius: 0.6em;
@@ -602,7 +548,6 @@ button.confirmar:hover { background-color: #1b5e20; }
   border: 0.2em solid var(--cor-primaria);
   border-radius: var(--raio-borda);
   text-align: center;
-  /*font-size: 1em;*/
   box-shadow: 0 0 1em rgba(0,0,0,0.2);
   z-index: 9999;
 }
@@ -632,7 +577,6 @@ a {
   text-decoration: none;
 }
 a:hover {
-  /*text-decoration: underline;*/
 }
 
 tr:nth-child(even) {
@@ -656,12 +600,10 @@ ul.lista-personalizada {
 ul.lista-personalizada li::before {
   content: "•";
   color: var(--cor-primaria);
-  /*margin-right: 0.5em;*/
 }
 
 footer {
   text-align: center;
-  /*font-size: 0.8em;*/
   color: #666;
   padding: 2vh 0;
   margin-top: 5vh;
@@ -696,18 +638,14 @@ footer {
   display: none;
   margin-top: 0;
   background-color: var(--cor-fundo);
-  /*margin-left: auto;*/
-  /*margin-right: 1em;*/
-  /*border-radius: 0.4em;*/
-  border-radius: /*0.625rem*/ var(--raio-borda);
+  border-radius: var(--raio-borda);
   margin-top: 6em;
 }
 
 .painel-exportar.visivel {
   display: block;
-  width: 90vw;        
-  /*margin-left: 0;*/     
-  /*margin-right: 0;*/    
+  width: 100%;        
+ 
 }
 
 #buscaContainer, #buscaContainerMinhaInfo {
@@ -745,7 +683,6 @@ footer {
 
 .confirm-box button {
   cursor: pointer;
-  /*font-size: 0.8rem;*/
   border: 1px solid #999;
   background-color: #fff;
   transition: background-color 0.3s ease;
@@ -789,7 +726,6 @@ footer {
   background-color: transparent;
   color: #336699;
   text-align: right;
-  /*font-size: 1.8rem;*/
   padding: 0.4em 0.5em;
 }
 
@@ -798,7 +734,6 @@ footer {
   border: none;
   color: #556B2F;
   text-align: right;
-  /*font-size: 1.8rem;*/
   padding: 0.4em 0.5em;
 }
 
@@ -814,7 +749,6 @@ footer {
     background-color: #f8f8f8;
     border: 1px solid #E5E7EB;
     color: var(--cor-azul);
-    /*font-size: var(--fonte-pequenaB);*/
     display: flex;
     align-items: center;
     justify-content: center;
@@ -826,7 +760,6 @@ footer {
 .com-seta::after {
   content: "";
   display: inline-block;
-  /*margin-left: 0.4em;*/
   vertical-align: middle;
   width: 0;
   height: 0;
@@ -847,7 +780,6 @@ footer {
 
 #senhaDigitada,
 #senhaDigitada::placeholder {
-  /*font-size: 1.3rem;*/
 }
 
 .centralizador {
@@ -860,15 +792,8 @@ footer {
 #detalhesDesignacoesMinhaInfo,
 #detalhesPrivilegios,
 #detalhesDesignacoes {
-  /*font-size: 1em;*/
   margin: 0.4em 0;
 }
-
-/*.painel-exportar {
-  /*margin-left: auto;*/
-  /*margin-right: 1em;*/
-  /*background-color: var(--cor-fundo);
-}*/
 
 .hidden { display: none !important; }
 .center { text-align: center; }
@@ -903,7 +828,6 @@ caption {
   caption-side: top;
   font-weight: bold;
   color: var(--cor-primaria);
-  /*font-size: 1em;*/
 }
 
 .sidebar {
@@ -944,7 +868,6 @@ caption {
 .cabecalhoMetricas {
   font-size: 0.4rem;
   font-weight: bold;
-  /*font-size: 0.6em;*/
 }
 
 .cabecalhoEvento div,
@@ -958,21 +881,18 @@ caption {
 
 .dadosMetricas,
 .dadosEvento {
-  /*font-size: 1.1em;*/
   font-weight: bold;
 }
 
 .cards-menu{
     margin-top: 7em;
     display: grid;
-    /*grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));*/
     grid-template-columns: repeat(auto-fit, 6rem);
     justify-content: center;
     gap: 1rem;
 }
 
 .card-menu{
-    /*margin-top: 0.75rem;*/
     margin-top: 0.3rem;
     background-color: var(--cor-branca);
     border-radius: var(--raio-borda);
@@ -1006,7 +926,6 @@ caption {
 }
 
 .titulo{
-    /*font-size: var(--fonte-pequena);*/
     font-size: 0.8rem;
     color:var(--cor-azul);
     font-weight: bold;
@@ -1020,14 +939,12 @@ caption {
 }
 
 .titulo-sistema{
-    /*font-size: var(--fonte-media);*/
     font-weight: bold;
     color: var(--cor-texto);
     margin-top: 0; 
 }
 
 .subtitulo-sistema{
-    /*font-size: var(--fonte-pequenaB);*/
     color: var(--cor-secundaria);
     margin-top: 0.25rem;
 }
@@ -1049,11 +966,9 @@ caption {
 
 .btn-voltar-menu{
     width: fit-content;
-    /*margin-left: auto;*/
-    /*margin-right: 0.6rem;*/
     margin-top: 0.8rem;
-      justify-self:end;
-      align-self:start;
+    justify-self:end;
+    align-self:start;
     padding: 0.5rem 0.75rem;
     border-radius: var(--raio-borda);
     border: none;
@@ -1110,27 +1025,23 @@ button.btn-voltar-menu:hover {
 }
 
 #modalAlterarTreinador h3 {
-    /*font-size: 1.5em;*/
     margin-bottom: 1rem;
 }
 
 #modalAlterarTreinador select {
     width: 90vw;
     padding: 0.8rem;
-    /*font-size: var(--fonte-pequenaB);*/
     margin-bottom: 0.75rem;
 }
 
 #modalAlterarTreinador input {
     width: 90vw;
     padding: 0.8rem;
-    /*font-size: var(--fonte-pequenaB);*/
 }
 
 #modalAlterarTreinador button {
     margin-top: 1rem;
     padding: 1rem;
-    /*font-size: var(--fonte-grande);*/
     font-weight: bold;
     border: 1px solid #ccc;
     cursor: pointer;
@@ -1144,7 +1055,7 @@ button.btn-voltar-menu:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90vw;
+    width: 100%;
 }
 
 #modalComunicarTreinador.oculto {
@@ -1153,7 +1064,7 @@ button.btn-voltar-menu:hover {
 
 #modalComunicarTreinador .conteudo-modal {
     background: white;
-    width: 90vw;
+    width: 100%;
     padding: 1rem;
     border-radius: var(--raio-borda);
     text-align: center;
@@ -1161,12 +1072,10 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarTreinador h3 {
-    /*font-size: 1.8em;*/
     margin-bottom: 0.75em;
 }
 
 #modalComunicarTreinador p {
-    /*font-size: 1.3em;*/
     line-height: 1.5;
     margin-bottom: 0.75em;
 }
@@ -1180,7 +1089,6 @@ button.btn-voltar-menu:hover {
 #modalComunicarTreinador button {
     flex: 1;
     padding: 1rem;
-    /*font-size: var(--fonte-grande);*/
     font-weight: bold;
     cursor: pointer;
 }
@@ -1203,7 +1111,7 @@ button.btn-voltar-menu:hover {
 
 #modalComunicarTreinadorFiltrado .conteudo-modal {
     background: white;
-    width: 90vw;
+    width: 100%;
     padding: 1rem;
     border-radius: var(--raio-borda);
     text-align: center;
@@ -1211,12 +1119,10 @@ button.btn-voltar-menu:hover {
 }
 
 #modalComunicarTreinadorFiltrado h3 {
-    /*font-size: 1.8em;*/
     margin-bottom: 1rem;
 }
 
 #modalComunicarTreinadorFiltrado p {
-    /*font-size: 1.3em;*/
     line-height: 1.5;
     margin-bottom: 1rem;
 }
@@ -1230,13 +1136,10 @@ button.btn-voltar-menu:hover {
 #modalComunicarTreinadorFiltrado button {
     flex: 1;
     padding: 1rem;
-    /*font-size: var(--fonte-grande);*/
     font-weight: bold;
     cursor: pointer;
 }
-/* =========================
-   MODAL BASE (GENÉRICO)
-========================= */
+
 /* =========================
    MODAL PADRÃO
 ========================= */
@@ -1256,8 +1159,7 @@ button.btn-voltar-menu:hover {
 
     justify-content:center;
 
-    /*z-index:9999;*/
-    z-index:77777;
+    z-index:9999;
 
 }
 
@@ -1272,7 +1174,7 @@ button.btn-voltar-menu:hover {
 
 .modal-conteudo {
 
-    width:90%;
+    width:100%;
 
     max-width:450px;
 
@@ -1429,7 +1331,7 @@ button.btn-voltar-menu:hover {
 
     border-radius:8px;
 
-    background:#ef4444;
+    /*background:#ef4444;*/
 
     color:white;
 
@@ -1443,11 +1345,11 @@ button.btn-voltar-menu:hover {
 }
 
 
-.botoes-modal button:hover {
+/*.botoes-modal button:hover {
 
     background:#dc2626;
 
-}
+}*/
 
 
 
@@ -1515,7 +1417,7 @@ button.btn-voltar-menu:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90vw;
+    width: 100%;
 }
 
 #modalAcoesTreinamento.oculto {
@@ -1584,26 +1486,6 @@ button.btn-voltar-menu:hover {
     border: 1px solid #ccc;
     cursor: pointer;
 }
-
-/*#modalSubstituicao {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-}
-
-#modalSubstituicao .conteudo-modal {
-  background: white;
-  padding: 1rem;
-  border-radius: var(--raio-borda);
-  width: 90vw;
-  text-align: center;
-  box-sizing: border-box;
-  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.25);
-}*/
 
 #modalDesignados {
   display: none;
@@ -2894,14 +2776,14 @@ td {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:8px;
+    gap:0.5rem;
 
 }
 
 .icone-whatsapp-designacao{
 
-    width:20px;
-    height:20px;
+    width:2.5rem;
+    height:2.5rem;
     cursor:pointer;
     flex-shrink:0;
     transition:transform .15s;
@@ -2914,3 +2796,95 @@ td {
 
 }
 
+.icone-whatsapp-ponto{
+
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+
+}
+
+.icone-whatsapp-ponto:hover{
+
+    transform:scale(1.15);
+
+}
+
+.icone-whatsapp-participante{
+
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+
+}
+
+.icone-whatsapp-participante:hover{
+
+    transform:scale(1.15);
+
+}
+
+.icone-whatsapp-participante2h{
+
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+
+}
+
+.icone-whatsapp-participante2h:hover{
+
+    transform:scale(1.15);
+
+}
+
+.icone-whatsapp-evento{
+
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+
+}
+
+.icone-whatsapp-evento:hover{
+
+    transform:scale(1.15);
+
+}
+
+.icone-whatsapp-treinando{
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+}
+
+.icone-whatsapp-treinando:hover{
+    transform:scale(1.15);
+}
+
+.icone-whatsapp-lembrete{
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+}
+
+.icone-whatsapp-lembrete:hover{
+    transform:scale(1.15);
+}
+
+/* Colunas ocultas na visualização */
+.oculta-edicao{
+    display:none;
+}

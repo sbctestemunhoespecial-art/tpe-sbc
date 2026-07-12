@@ -292,7 +292,7 @@
 </div>
 
 <div id="modalConfirmarDesignacao" class="modal-padrao oculto">
-  <div class="conteudo-modal">
+  <div class="modal-conteudo">
 
     <h5>📌 Confirmar Designação</h5>
 
@@ -645,6 +645,11 @@
             onclick="abrirTela('escalas', this)">
             <div class="icone">📅</div>
             <div class="titulo">Escalas</div>
+        </div>
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('lembretesParticipantes', this)">
+            <div class="icone">📢</div>
+            <div class="titulo">Lembrar Participantes</div>
         </div>
         <div class="card-menu btn-relatoriosSubMenu so-participantes"
             onclick="abrirTela('telamapas', this); carregarMapaQuandoClicar();">
@@ -3002,23 +3007,97 @@
       <div id="status" style="margin-top: 10px;"></div>
   </div>-->
 
-    <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
-  <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
- 
-  <h5>📅 Escalas</h5>
+  <div id="lembretesParticipantes" class="painel-exportar tela">
+    <h5>🕒 Escalas Por Turno</h5>
 
-    <div class="cards-menu">
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('painelPontos', this)">
-                  <div class="icone">🕒</div>
-                  <div class="titulo">Escalas Por Turno</div>
+    <div class="campo-selecao-modal">
+
+      <label>
+        Ponto
+      </label>
+
+
+      <input
+        id="pontoLembreteVisual"
+        class="campo-selecao-visual"
+        type="text"
+        readonly
+        placeholder="Escolha o ponto"
+        onclick="abrirSelecaoLembretePonto()"
+      >
+
+      </div>
+
+      <div class="campo-selecao-modal">
+
+        <label for="diaLembreteVisual">
+            Dia
+        </label>
+
+        <input
+            id="diaLembreteVisual"
+            class="campo-selecao-visual"
+            type="text"
+            readonly
+            placeholder="Escolha o dia"
+            onclick="abrirSelecaoLembreteDia()"
+        >
+
+      </div>
+
+      <div class="campo-selecao-modal">
+
+          <label>
+              Turno
+          </label>
+
+          <input
+              id="turnoLembreteVisual"
+              class="campo-selecao-visual"
+              type="text"
+              readonly
+              placeholder="Escolha o turno"
+              onclick="abrirSelecaoLembreteTurno()"
+          >
+
+      </div>
+
+      <label>
+        
+      </label>
+
+      <button type="button" onclick="pesquisarLembretesParticipantes()">🔍 Pesquisar</button>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgPesqLembretesParticipantes" class="mensagem-verde"></p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgRemoverDesignadosLP" class="mensagem-verde"></p>
+      </div>
+
+      <div id="resultadoLembretesParticipantes"></div>
+
+  </div>
+
+
+  <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
+    <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
+  
+    <h5>📅 Escalas</h5>
+
+      <div class="cards-menu">
+                <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                    onclick="abrirTela('painelPontos', this)">
+                    <div class="icone">🕒</div>
+                    <div class="titulo">Escalas Por Turno</div>
+                </div>
+                <div class="card-menu btn-relatoriosSubMenu so-participantes"
+                    onclick="abrirTela('painelPontosTotal', this)">
+                    <div class="icone">📌</div>
+                    <div class="titulo">Escalas Por Ponto</div>
+                </div>
               </div>
-              <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                  onclick="abrirTela('painelPontosTotal', this)">
-                  <div class="icone">📌</div>
-                  <div class="titulo">Escalas Por Ponto</div>
-              </div>
-            </div>
   </div>
 
   <div id="painelPontos" class="painel-exportar tela">

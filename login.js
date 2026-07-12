@@ -1387,10 +1387,10 @@ function exibirResultadosLembretes(res) {
   if (!res || res.length === 0) {
 
     c.innerHTML =
-      "<p>Nenhum participante encontrado.</p>";
+      '<p>📅 Não há designações nos próximos 7 dias para este filtro.</p>';
 
     mostrarAlertaGlobal(
-      "❌ Nenhuma designação encontrada."
+      "📅 Não há designações nos próximos 7 dias."
     );
 
     return;
@@ -1434,15 +1434,15 @@ function exibirResultadosLembretes(res) {
           <thead>
           <tr>
 
-          <th style="width:40%">Nome</th>
+          <th style="width:35%">Nome</th>
 
-          <th style="width:10%">Dias</th>
-
-          <th style="width:20%">Freq.</th>
+          <th style="width:25%">Freq.</th>
 
           <th style="width:20%">Most.</th>
 
-          <th style="width:10%">Zap</th>
+          <th style="width:15%">Dias</th>
+
+          <th style="width:5%">Zap</th>
 
           </tr>
           </thead>

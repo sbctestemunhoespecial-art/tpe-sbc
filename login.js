@@ -666,10 +666,26 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   window[callbackName] = function(resposta) {
 
-    if (resposta && resposta.sucesso === false) {
+    /*if (resposta && resposta.sucesso === false) {
       if (onError) onError(resposta);
     } else {
       callback(resposta);
+    }*/
+    if (resposta && resposta.sucesso === false) {
+
+        if (onError) {
+
+            onError({
+                ...resposta,
+                message: resposta.mensagem
+            });
+
+        }
+
+    } else {
+
+        callback(resposta);
+
     }
 
     delete window[callbackName];
@@ -1000,6 +1016,17 @@ function fazerLogin() {
     },
     function(res) {
 
+      if (!res.sucesso) {
+
+        esconderSpinner();
+
+        msgErro.textContent =
+          res.mensagem || "❌ Erro ao fazer login.";
+
+        return;
+
+      }
+
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
       registrarPush(idUsuarioLogado);
@@ -1108,8 +1135,10 @@ function fazerLogin() {
 
       esconderSpinner();
 
-      msgErro.textContent =
-        err.message || "❌ Erro ao fazer login.";
+     msgErro.textContent =
+      err?.mensagem ||
+      err?.message ||
+      "❌ Não foi possível comunicar com o servidor.";
 
     }
   );
@@ -2154,7 +2183,20 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
 
       menuRow.remove();
 
-      editarDesignacaoInline(linhaTR);
+      window.designacaoEmEdicao = {
+
+        idOriginal: participante,
+        ponto,
+        dia,
+        turno,
+        frequencia,
+        equipamento
+
+      };
+
+      //iniciarEdicaoDesignacao(linhaTR);
+      abrirSelecaoEditarDesignadoEscalaTurno();
+
     };
 
     const btnExcluir = document.createElement('button');
@@ -2506,7 +2548,12 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
 
   inputFiltro.dispatchEvent(new Event('input'));
 }*/
-function editarDesignacaoInline(linhaTR) {
+
+
+
+
+
+/*function editarDesignacaoInline(linhaTR) {
 
   const colunas =
     linhaTR.querySelectorAll('td');
@@ -3094,7 +3141,142 @@ function editarDesignacaoInline(linhaTR) {
     new Event('input')
   );
 
+}*/
+
+/* ==== NOVAS FUNÇÕES PARA EDITAR E SALVAR ALTERAÇÃO PELA ESCCALA POR TURNO ==== */
+/*function iniciarEdicaoDesignacao(linhaTR) {
+
+  if (
+    linhaTR.dataset.nome
+      .trim()
+      .toUpperCase()
+      .startsWith("VAGA")
+  ) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Edição de vagas não permitida por aqui."
+    );
+
+    return;
+
+  }
+
+  window.designacaoEmEdicao = {
+
+    idOriginal:
+      linhaTR.dataset.idparticipante,
+
+    nomeOriginal:
+      linhaTR.dataset.nome,
+
+    ponto:
+      linhaTR.dataset.ponto,
+
+    dia:
+      linhaTR.dataset.dia,
+
+    turno:
+      linhaTR.dataset.turno,
+
+    frequencia:
+      linhaTR.dataset.frequencia,
+
+    equipamento:
+      linhaTR.dataset.equipamento
+
+  };
+
+  abrirSelecaoEditarDesignadoEscalaTurno();
+
+}*/
+function salvarEdicaoEscalaTurno() {
+
+  mostrarSpinner();
+
+  const turnoCodigoMap = {
+    "Manhã": "M",
+    "Tarde": "T",
+    "Noite": "N",
+    "Matinal": "A",
+    "Manhã (9–11h)": "MA",
+    "Manhã (11–13h)": "MB",
+    "Tarde (13–15h)": "TA",
+    "Tarde (15–17h)": "TB"
+  };
+
+  const pontoFinal =
+    turnoCodigoMap[window.designacaoEmEdicao.turno] +
+    window.designacaoEmEdicao.ponto;
+
+console.log("designacaoEmEdicao =", window.designacaoEmEdicao);
+
+console.log({
+  novoNome: participanteSelecionadoEdicaoEscalaTurno.id,
+  ponto: window.designacaoEmEdicao.turno + window.designacaoEmEdicao.ponto,
+  dia: window.designacaoEmEdicao.dia,
+  frequencia: document.getElementById("edtFrequencia").value,
+  equipamento: document.getElementById("edtEquipamento").value,
+  nomeOriginal: window.designacaoEmEdicao.idOriginal
+});
+
+  apiJSONP(
+
+    "processarEdicaoDesignacao",
+
+    {
+
+      novoNome:
+        participanteSelecionadoEdicaoEscalaTurno.id,
+
+      ponto: pontoFinal,
+        
+      dia:
+        window.designacaoEmEdicao.dia,
+
+      frequencia:
+        document.getElementById("edtFrequencia").value,
+
+      equipamento:
+        document.getElementById("edtEquipamento").value,
+
+      nomeOriginal:
+        window.designacaoEmEdicao.idOriginal
+
+    },
+
+    () => {
+
+      esconderSpinner();
+
+      fecharModalEditarEscalaTurno();
+
+      mostrarAlertaGlobal(
+        "✅ Designação atualizada."
+      );
+
+      pesquisarDesignados();
+
+    },
+
+    err => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err.message || err
+      );
+
+    }
+
+  );
+
 }
+
+/* ==== NOVAS FUNÇÕES PARA EDITAR E SALVAR ALTERAÇÃO PELA ESCCALA POR TURNO ==== */
+
+
+
+
 
 function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
 
@@ -15111,7 +15293,9 @@ function salvarVaga() {
   //const frequencia = document.getElementById("frequenciaVaga").value;
   const frequencia = window.camposSelecionados.frequenciaVaga;
 
-  if (!ponto || !dia || !frequencia) {
+  const equipamento = window.camposSelecionados.equipamentoVaga;
+
+  if (!ponto || !dia || !frequencia || !equipamento) {
     mostrarAlertaGlobal("⚠️ Preencha todos os campos");
     return;
   }
@@ -15138,7 +15322,8 @@ function salvarVaga() {
   );
 
   // guarda contexto global
-  window.vagaContexto = { ponto, dia, frequencia };
+  //window.vagaContexto = { ponto, dia, frequencia };
+  window.vagaContexto = { ponto, dia, frequencia, equipamento: window.camposSelecionados.equipamentoVaga };
 }
 
 function mostrarModalSubstituicao(dados) {
@@ -15190,7 +15375,7 @@ function mostrarModalSubstituicao(dados) {
       const id = e.currentTarget.dataset.valor;
       const nome = e.currentTarget.dataset.nome;
 
-      const { ponto, dia, frequencia } = window.vagaContexto;
+      const { ponto, dia, frequencia, equipamento } = window.vagaContexto;
 
       if (!id) {
         mostrarAlertaGlobal("❌ ID do participante não encontrado.");
@@ -15211,6 +15396,7 @@ function mostrarModalSubstituicao(dados) {
             ponto,
             dia,
             frequencia,
+            equipamento,
             id
           },
           function() {
@@ -15247,7 +15433,8 @@ function mostrarModalSubstituicao(dados) {
 
 function confirmarNenhum() {
 
-  const { ponto, dia, frequencia } = window.vagaContexto;
+  //const { ponto, dia, frequencia } = window.vagaContexto;
+  const { ponto, dia, frequencia, equipamento } = window.vagaContexto;
 
   const mensagem =
     `⚠️ Tem certeza que quer criar uma vaga "<b>${frequencia}</b>"<br>` +
@@ -15264,7 +15451,8 @@ function confirmarNenhum() {
       {
         ponto,
         dia,
-        frequencia
+        frequencia,
+        equipamento
       },
       function() {
 
@@ -15661,6 +15849,11 @@ function carregarVagasDisponiveis() {
             <div>
               🔄 <strong>Frequência:</strong>
               ${vaga.frequencia}
+            </div>
+
+            <div>
+              🧰 <strong>Equipamento:</strong>
+              ${vaga.equipamento}
             </div>
 
           </div>
@@ -18036,6 +18229,13 @@ function abrirSelecaoTrocaDesignacao() {
   abrirModalParticipantes();
 }
 
+function abrirSelecaoEditarDesignadoEscalaTurno() {
+
+  window.destinoModalParticipantes = "editarDesignacaoEscalaTurno";
+
+  abrirModalParticipantes();
+}
+
 function confirmarSelecaoParticipante() {
 
   const nome =
@@ -18181,10 +18381,96 @@ function confirmarSelecaoParticipante() {
       document.getElementById("troca").value = nome;
 
       break;
+
+      case "editarDesignacaoEscalaTurno":
+
+      participanteSelecionadoEdicaoEscalaTurno = {
+
+        nome,
+        id
+
+      };
+
+      abrirModalEditarEscalaTurno();
+
+      break;
   }
 
   fecharModalParticipantes();
 }
+
+function abrirModalEditarEscalaTurno() {
+
+  popularCombosModalEditarEscalaTurno();
+
+  document.getElementById("edtParticipante").value =
+    participanteSelecionadoEdicaoEscalaTurno.nome;
+
+  document.getElementById("edtFrequencia").value =
+    window.designacaoEmEdicao.frequencia;
+
+  document.getElementById("edtEquipamento").value =
+    window.designacaoEmEdicao.equipamento;
+
+  document.getElementById("modalEditarEscalaTurno").classList.remove("oculto");
+
+  
+
+  /*document.getElementById("edtFrequencia").value = frequenciaAtual;
+  document.getElementById("edtEquipamento").value = equipamentoAtual;*/
+
+}
+
+function popularCombosModalEditarEscalaTurno() {
+
+  const origemFrequencia =
+    document.getElementById("frequencia");
+
+  const origemEquipamento =
+    document.getElementById("equipamento");
+
+  const destinoFrequencia =
+    document.getElementById("edtFrequencia");
+
+  const destinoEquipamento =
+    document.getElementById("edtEquipamento");
+
+  destinoFrequencia.innerHTML = "";
+  destinoEquipamento.innerHTML = "";
+
+  Array.from(origemFrequencia.options).forEach(o => {
+
+    destinoFrequencia.appendChild(
+      new Option(o.textContent, o.value)
+    );
+
+  });
+
+  Array.from(origemEquipamento.options).forEach(o => {
+
+    destinoEquipamento.appendChild(
+      new Option(o.textContent, o.value)
+    );
+
+  });
+
+}
+
+function fecharModalEditarEscalaTurno() {
+
+  document.getElementById("modalEditarEscalaTurno").classList.add("oculto");
+
+}
+
+/*function abrirSelecaoEquipamentoVaga() {
+
+  window.destinoModalParticipantes = "equipamentoVaga";
+
+  // aqui depois vamos abrir o modal correto de equipamentos
+}*/
+
+let equipamentoSelecionadoVaga = "";
+let participanteSelecionadoEdicaoEscalaTurno = null;
 
 let participanteSelecionadoEditar = null;
 let participanteSelecionadoTreinamentoPratico = null;
@@ -20294,6 +20580,36 @@ function abrirSelecaoFrequenciaVaga(){
 
 
             window.camposSelecionados.frequenciaVaga =
+                valor;
+
+        }
+
+    });
+
+}
+function abrirSelecaoEquipamentoVaga() {
+
+    const equipamentos =
+        Array.from(
+            document.getElementById("equipamento").options
+        ).map(o => o.value).filter(v => v);
+
+    selecionarCampoComModal({
+
+        campo: "equipamentoVagaVisual",
+
+        titulo: "Escolha o equipamento",
+
+        valores: equipamentos,
+
+        aoSelecionar(valor) {
+
+            console.log(
+                "Equipamento escolhido:",
+                valor
+            );
+
+            window.camposSelecionados.equipamentoVaga =
                 valor;
 
         }

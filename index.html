@@ -18,6 +18,56 @@
 <body>
 
 <!-- =========================================
+     NOVO MODAL PARA A TELA DE ESCALAS POR TURNO
+
+<div id="modalParticipantes" class="modal-overlay oculto">
+
+<div class="conteudo-modal">
+========================================= -->
+<div id="modalEditarEscalaTurno" class="modal-padrao oculto">
+
+<div class="modal-conteudo">
+
+  <h3>Editar designação</h3>
+
+  <label>Participante</label>
+
+  <input
+  id="edtParticipante"
+  readonly>
+
+  <label>Frequência</label>
+
+  <select id="edtFrequencia"></select>
+
+  <label>Equipamento</label>
+
+  <select id="edtEquipamento"></select>
+
+  <div>
+
+    <label></label>
+      <button
+      onclick="salvarEdicaoEscalaTurno()">
+      Salvar
+      </button>
+
+    <label></label>
+      <button
+      onclick="fecharModalEditarEscalaTurno()">
+      Cancelar
+      </button>
+  </div>
+
+</div>
+
+</div>
+<!-- =========================================
+     NOVO MODAL PARA A TELA DE ESCALAS POR TURNO
+========================================= -->
+
+
+<!-- =========================================
      MODAL SELEÇÃO UNIVERSAL
 ========================================= -->
 
@@ -3609,6 +3659,18 @@
           readonly
           placeholder="Escolha a frequência"
           onclick="abrirSelecaoFrequenciaVaga()"
+      />
+
+      <label>
+          Equipamento
+      </label>
+
+      <input
+          id="equipamentoVagaVisual"
+          type="text"
+          readonly
+          placeholder="Escolha o equipamento"
+          onclick="abrirSelecaoEquipamentoVaga()"
       />
 
       <table id="tabelaQuemsai" style="display:none;" class="tabela-sistema">

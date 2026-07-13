@@ -1182,7 +1182,7 @@ button.btn-voltar-menu:hover {
 
     background:white;
 
-    border-radius:15px;
+    border-radius:var(--raio-borda);
 
     overflow:hidden;
 

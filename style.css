@@ -23,7 +23,7 @@
   --fonte-grande: clamp(1.5rem, 4vw, 1.75rem);
   --fonte-extraG: clamp(1.75rem, 5vw, 2rem);
 
-  --raio-borda: 0.5em;
+  --raio-borda: 0.4em;
   --raio-borda-botao: 3em;
 }
 
@@ -51,17 +51,6 @@ body {
   font-family: var(--fonte-principal);
 }
 
-/*html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  background-color: var(--cor-fundo);
-  color: var(--cor-texto);
-  font-family: var(--fonte-principal);
-  overflow-x: auto;
-  overflow-y: auto;
-}*/
-
 input, select, button {
   font-weight: bold;
   padding: 0.2em;
@@ -87,7 +76,7 @@ input, select {
 
 label {
   font-weight: bold;
-  margin: 0.4em 0;
+  margin: 0.2rem 0;
 }
 
 input[type="checkbox"] {
@@ -114,8 +103,17 @@ button:hover {
 .botao,
 button.confirm, button.cancel, button.excluir, 
 button.editar, button.salvar {
-  /*font-size: 0.8rem;*/
   width: 10em;
+}
+
+.botoes-lado-a-lado {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.botoes-lado-a-lado .botao {
+  flex: 1;
 }
 
 .botao-mini {
@@ -187,7 +185,8 @@ table {
   vertical-align: middle;
   border: none;
   table-layout: fixed;
-  margin: 30px 0 30px 5px;
+  /*margin: 30px 0 30px 5px;*/
+  margin: 0.2rem 0 0.2rem 0;
   font-size: 0.95rem;
 }
 
@@ -636,7 +635,6 @@ footer {
 
 .painel-exportar {
   display: none;
-  margin-top: 0;
   background-color: var(--cor-fundo);
   border-radius: var(--raio-borda);
   margin-top: 6em;
@@ -645,7 +643,6 @@ footer {
 .painel-exportar.visivel {
   display: block;
   width: 100%;        
- 
 }
 
 #buscaContainer, #buscaContainerMinhaInfo {
@@ -1639,7 +1636,6 @@ button.btn-voltar-menu:hover {
 
 /* título */
 #modalParticipantes h3 {
-    /*font-size: 1.2em;*/
     margin: 0;
 }
 
@@ -1647,12 +1643,10 @@ button.btn-voltar-menu:hover {
 #modalParticipantes .btn-fechar-modal {
     background: transparent;
     border: none;
-    /*font-size: 1.4em;*/
     cursor: pointer;
     color: #d33;
 
-    width: 70px;        /* controla tamanho fixo */
-    /*text-align: right;  /* encosta na direita */
+    width: 70px; 
     padding: 0.5rem;
 }
 
@@ -1665,8 +1659,6 @@ button.btn-voltar-menu:hover {
     display: block;
     width: 100%;
     margin-top: 1em;
-    /*padding: 32px 22px;*/
-    /*font-size: var(--fonte-grande);*/
     font-weight: bold;
     border: 1px solid #ccc;
     cursor: pointer;
@@ -1675,12 +1667,10 @@ button.btn-voltar-menu:hover {
 #selectModalParticipantes {
     width: 100%;
     height: 8rem;
-    /*font-size: var(--fonte-grande);*/
     line-height: 2;
 }
 
 #selectModalParticipantes option {
-    /*font-size: var(--fonte-grande);*/
     padding: 0.5rem;
     font-weight: bold;
 }
@@ -1966,7 +1956,7 @@ button.btn-voltar-menu:hover {
 .switchVermelho,
 .switchAzul,
 .switchRoxo {
-    flex-shrink: 0;           /* Impede o switch de encolher */
+    flex-shrink: 0;
     margin: 0;
 }
 
@@ -1986,7 +1976,6 @@ button.btn-voltar-menu:hover {
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: var(--raio-borda);
-    /*font-size: clamp(0.9rem, 2vw, 1.25rem);*/
     font-weight: bold;
     white-space: nowrap;
     z-index: 10;
@@ -2008,7 +1997,6 @@ button.btn-voltar-menu:hover {
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: var(--raio-borda);
-    /*font-size: clamp(0.9rem, 2vw, 1.25rem);*/
     font-weight: bold;
     white-space: nowrap;
     z-index: 10;
@@ -2027,8 +2015,7 @@ button.btn-voltar-menu:hover {
 .painel-disponibilidade {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    gap: 0.5rem;
 }
 
 .linha-designado,
@@ -2036,10 +2023,10 @@ button.btn-voltar-menu:hover {
 .linha-frequencia {
     display: flex;
     align-items: center;
-    justify-content: /*space-between*/ flex-end;
+    justify-content: flex-end;
     width: 100%;
-    gap: .2rem;
-    margin: 1rem 1rem 0.5rem 0.5rem;
+    gap: .1rem;
+    margin: 0.5rem 0 0.5rem 0;
 }
 .linha-substituicao > div {
     display: flex;
@@ -2050,7 +2037,6 @@ button.btn-voltar-menu:hover {
 .linha-designado,
 .rotulo-substituicao,
 .linha-frequencia label {
-    /*font-size: var(--fonte-pequenaB);*/
     color:var(--cor-texto);
     font-weight: bold;
 }
@@ -2112,7 +2098,6 @@ button.btn-voltar-menu:hover {
   text-align: center;
   border-radius: var(--raio-borda);
 
-  /*box-shadow: 0 2px 6px rgba(0,0,0,0.06);*/
   box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.12);
   transition: 0.1s;
   min-height: 2rem;
@@ -2390,11 +2375,11 @@ td {
 .card-vaga {
 
   width: 95%;
-  margin: 15px auto;
+  margin: 10px auto;
 
-  padding: 20px;
+  padding: 15px;
 
-  border-radius: 16px;
+  border-radius: var(--raio-borda);
 
   background: #ffffff;
 
@@ -2405,7 +2390,7 @@ td {
 
 .titulo-vaga {
 
-  font-size: 1.3em;
+  font-size: 1.2rem;
 
   font-weight: bold;
 
@@ -2425,17 +2410,17 @@ td {
 
 .btn-aceitar-vaga {
 
-  margin-top: 20px;
+  margin-top: 1rem;
 
   width: 100%;
 
-  padding: 15px;
+  padding: 1rem;
 
-  border-radius: 10px;
+  border-radius: var(--raio-borda);
 
   border: none;
 
-  font-size: 1.1em;
+  font-size: 1rem;
 
   font-weight: bold;
 
@@ -2766,6 +2751,12 @@ td {
 
 }
 
+.icone-whatsapp{
+    width:20px;
+    height:20px;
+    vertical-align:middle;
+}
+
 /* NOVO PARA A TELA DE ESCALAS POR TURNO*/
 .nome-com-whatsapp{
 
@@ -2880,7 +2871,114 @@ td {
     transform:scale(1.15);
 }
 
+.icone-whatsapp-semdesignacao{
+    width:2.5rem;
+    height:2.5rem;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .15s;
+}
+
+.icone-whatsapp-semdesignacao:hover{
+    transform:scale(1.15);
+}
+
 /* Colunas ocultas na visualização */
 .oculta-edicao{
     display:none;
+}
+
+#resultadoDesignadosContainer:not(.modo-edicao) .oculta-edicao {
+  display: none;
+}
+
+/* =========================================
+   TABELA COM CHECKBOXES
+========================================= */
+
+.tabela-checkbox {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0.375rem;
+  table-layout: fixed;
+  font-size: 0.8rem;
+}
+
+
+/* HEADER */
+.tabela-checkbox thead th {
+  background: #EAF4FF;
+  color: var(--cor-azul);
+  /*padding: 0.3rem;*/
+  text-align: center;
+  /*border: none;*/
+  /*border: 0.5px solid #0056D2;*/
+}
+
+
+/* PRIMEIRA COLUNA (TH DO CORPO) */
+.tabela-checkbox tbody th {
+
+  background: #EAF4FF;
+  color: var(--cor-azul);
+
+  /*padding: 0.3rem;*/
+
+  text-align: center;
+
+}
+
+
+/* CÉLULAS DOS CHECKBOXES */
+.tabela-checkbox tbody td {
+
+  background: #ffffff;
+
+  padding: 0.000003rem !important;
+
+  height: 1.3rem;
+
+  text-align: center;
+
+  border-radius: var(--raio-borda);
+
+  box-shadow: 0 0.15rem 0.4rem rgba(0,0,0,0.10);
+  /*border: none;*/
+
+}
+
+
+/* CHECKBOX */
+.tabela-checkbox input[type="checkbox"] {
+
+  width: 0.8rem;
+
+  height: 0.8rem;
+
+  margin: 0;
+
+  padding: 0;
+
+  cursor: pointer;
+
+  accent-color: #2563eb;
+
+}
+
+
+/* HOVER */
+.tabela-checkbox tbody td:hover {
+
+  transform: scale(1.05);
+
+}
+
+
+/* LARGURA DA PRIMEIRA COLUNA */
+.tabela-checkbox tbody th:first-child,
+.tabela-checkbox thead th:first-child {
+
+  width: 4rem;
+  border: none;
+
 }

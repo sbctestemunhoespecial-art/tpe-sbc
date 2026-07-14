@@ -956,7 +956,7 @@
       <div class="linha-substituicao">
 
           <span id="textoDesignacaoFixa" class="nome-pesquisado texto-verde">
-              JÁ TENHO DESIGNAÇÃO FIXA
+              Já tenho designação fixa
           </span>
         
         <div>
@@ -973,7 +973,7 @@
       <div class="linha-substituicao">
 
           <span id="textoSubstituicao" class="nome-pesquisado texto-vermelho">
-              SOMENTE SUBSTITUIÇÃO
+              Somente substituição
           </span>
 
         <div>
@@ -990,7 +990,7 @@
     <div class="linha-substituicao">
       
       <span id="textoTipoDisponibilidade2h" class="nome-pesquisado texto-azul">
-        DISPONÍVEL SOMENTE PARA 2 HORAS
+        Disponível até 2 horas 
       </span>
 
       <div>
@@ -1007,7 +1007,7 @@
     <div class="linha-substituicao">
 
     <span id="textoTipoDisponibilidade4h" class="nome-pesquisado texto-roxo">
-      DISPONÍVEL PARA 4 HORAS
+      Disponível até 4 horas 
     </span>
          
       <div>
@@ -1039,12 +1039,12 @@
 
     <h5>🕒 Minha Disponibilidade Para 2 Horas</h5>
 
-    <div class="painel-disponibilidade">
+    <!--<div class="painel-disponibilidade">-->
 
         <div class="linha-frequencia">
 
             <label for="frequenciaDisponibilidadeUsuarioLogado2h">
-                Selecione sua disponibilidade
+                Frequência
             </label>
 
             <select id="frequenciaDisponibilidadeUsuarioLogado2h">
@@ -1056,17 +1056,17 @@
 
         </div>
 
-    </div>
+    <!--</div>-->
 
-    <table id="tabelaDisponibilidadeUsuarioLogado2h" class="tabela-sistema tabela-destaque"> <!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+    <table id="tabelaDisponibilidadeUsuarioLogado2h" class="tabela-sistema tabela-checkbox tabela-destaque">
 
       <thead>
         <tr>
           <th>Dia</th>
-          <th>Manhã 09-11h</th>
-          <th>Manhã 11-13h</th>
-          <th>Tarde 13-15h</th>
-          <th>Tarde 15-17h</th>
+          <th>Manhã<br>09-11h</th>
+          <th>Manhã<br>11-13h</th>
+          <th>Tarde<br>13-15h</th>
+          <th>Tarde<br>15-17h</th>
         </tr>
       </thead>
 
@@ -1123,7 +1123,7 @@
       </tbody>
 
     </table>
-
+<!--
     <div style="display:flex; gap:10px; margin-top:1.25rem;">
 
       <button
@@ -1147,6 +1147,22 @@
       </button>
 
     </div>
+  -->
+    <div class="botoes-lado-a-lado">
+
+      <button
+        id="btnEditarDisponibilidadeUsuarioLogado2h"
+        onclick="alternarModoEdicaoUsuarioLogado2h()">
+        ✏️ Editar Disponibilidade
+      </button>
+
+      <button
+        id="btnSalvaDisponibilidadeUsuarioLogado2h"
+        onclick="salvarDisponibilidadeIdUsuarioLogado2h()">
+        💾 Salvar Disponibilidade
+      </button>
+
+    </div>
 
   </div>
 
@@ -1154,12 +1170,12 @@
 
       <h5>🕒 Minha Disponibilidade Para 4 Horas</h5>
 
-      <div class="painel-disponibilidade">
+      <!--<div class="painel-disponibilidade">-->
 
         <div class="linha-frequencia">
 
             <label for="frequenciaDisponibilidadeUsuarioLogado4h">
-                Selecione sua disponibilidade
+                Frequência
             </label>
 
             <select id="frequenciaDisponibilidadeUsuarioLogado4h">
@@ -1171,10 +1187,10 @@
 
         </div>
 
-    </div>
+    <!--</div>-->
 
 
-      <table id="tabelaDisponibilidadeUsuarioLogado4h" class="tabela-sistema tabela-destaque">
+      <table id="tabelaDisponibilidadeUsuarioLogado4h" class="tabela-sistema tabela-checkbox tabela-destaque">
             <!--border="1"
             cellpadding="8"
             cellspacing="0"
@@ -1183,10 +1199,10 @@
         <thead>
           <tr>
             <th>Dia</th>
-            <th>Matinal</th>
-            <th>Manhã</th>
-            <th>Tarde</th>
-            <th>Noite</th>
+            <th>Matinal<br>06-09h</th>
+            <th>Manhã<br>09-13h</th>
+            <th>Tarde<br>13-17h</th>
+            <th>Noite<br>17-20h</th>
           </tr>
         </thead>
 
@@ -1225,23 +1241,32 @@
         </tbody>
 
       </table>
-
+      <!--
       <div style="display:flex;gap:10px;margin-top:1.25rem;">
-
         <button id="btnEditarDisponibilidadeUsuarioLogado4h"
                 onclick="alternarModoEdicaoUsuarioLogado4h()"
                 class="botao editar"
                 style="flex:1;">
                 ✏️ Editar Disponibilidade
         </button>
-
         <button id="btnSalvaDisponibilidadeUsuarioLogado4h"
                 onclick="salvarDisponibilidadeIdUsuarioLogado4h()"
                 class="botao salvar"
                 style="flex:1;">
                 💾 Salvar Disponibilidade
         </button>
+      </div>
+      -->
 
+      <div class="botoes-lado-a-lado">
+        <button id="btnEditarDisponibilidadeUsuarioLogado4h"
+                onclick="alternarModoEdicaoUsuarioLogado4h()">
+                ✏️ Editar Disponibilidade
+        </button>
+        <button id="btnSalvaDisponibilidadeUsuarioLogado4h"
+                onclick="salvarDisponibilidadeIdUsuarioLogado4h()">
+                💾 Salvar Disponibilidade
+        </button>
       </div>
 
   </div>
@@ -1251,7 +1276,7 @@
     <h5>🕒 Disponibilidade dos Participantes</h5>
             <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-participantes"
-                  onclick="abrirTela('disponibilidadeContainerNovoPonto20', this)">
+                  onclick="abrirTela('disponibilidadeContainer2h', this)">
                   <div class="icone">🕒</div>
                   <div class="titulo">Turnos de 2 Horas</div>
               </div>
@@ -1263,27 +1288,25 @@
             </div>
   </div>
 
-    <div id="disponibilidadeContainerNovoPonto20" class="painel-exportar tela">
+    <div id="disponibilidadeContainer2h" class="painel-exportar tela">
 
     <h5>🕒 Disponibilidade dos Participantes (2 Horas)</h5>
 
-      <div style="display:flex">
-        <button
-          type="button"
+      <div class="botoes-lado-a-lado">
+        <button type="button"
           onclick="abrirSelecao2horas()">
           👤 Selecionar
         </button>
-        <button 
-          type="button" 
-          id= "btnPesqDispNovoPonto20" 
-          onclick="pesquisarDisponibilidadeNovoPonto20()">
+        <button type="button" 
+          id= "btnPesquisarDisponibilidade2h" 
+          onclick="pesquisarDisponibilidade2h()">
           🔍 Ver disponibilidade
         </button>
       </div>
 
       <div id="duasHoras" class="nome-pesquisado"></div>
 
-<div class="painel-disponibilidade">
+<!--<div class="painel-disponibilidade">-->
 
     <div class="linha-substituicao">
 
@@ -1294,8 +1317,8 @@
         <label class="switchAzul">
             <input
                 type="checkbox"
-                id="jaTenhoDesignacaoNovoPonto20"
-                onchange="alternarDesignadoNovoPonto20()">
+                id="jaTenhoDesignacao2h"
+                onchange="alternarDesignado2h()">
             <span class="slider"></span>
         </label>
 
@@ -1310,8 +1333,8 @@
         <label class="switchAzul">
             <input
                 type="checkbox"
-                id="somenteSubstituicaoNovoPonto20"
-                onchange="alternarSomenteSubstituicaoNovoPonto20()">
+                id="somenteSubstituicao2h"
+                onchange="alternarSomenteSubstituicao2h()">
             <span class="slider"></span>
         </label>
 
@@ -1319,11 +1342,11 @@
 
     <div class="linha-frequencia">
 
-        <label for="frequenciaDisponibilidadeNovoPonto20">
-            Selecione sua disponibilidade
+        <label for="frequenciaDisponibilidade2h">
+            Frequência
         </label>
 
-        <select id="frequenciaDisponibilidadeNovoPonto20">
+        <select id="frequenciaDisponibilidade2h">
             <option value="">Selecione a frequência</option>
             <option value="Semanal">Uma vez por semana</option>
             <option value="Quinzenal">Uma vez a cada 15 dias</option>
@@ -1332,17 +1355,16 @@
 
     </div>
 
-</div>
+<!--</div>-->
     
-    <!-- Tabela com dias e turnos -->
-    <table id="tabelaDisponibilidadeNovoPonto20" class="tabela-sistema tabela-destaque"> <!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+    <table id="tabelaDisponibilidade2h" class="tabela-sistema tabela-checkbox tabela-destaque">
       <thead>
         <tr>
           <th>Dia</th>
-          <th>Manhã 09-11h</th>
-          <th>Manhã 11-13h</th>
-          <th>Tarde 13-15h</th>
-          <th>Tarde 15-17h</th>
+          <th>Manhã<br>09-11h</th>
+          <th>Manhã<br>11-13h</th>
+          <th>Tarde<br>13-15h</th>
+          <th>Tarde<br>15-17h</th>
         </tr>
       </thead>
       <tbody>
@@ -1352,7 +1374,7 @@
 
           diasN.forEach(diaN => {
             document.write('<tr>');
-            document.write(`<td>${diaN}</td>`);
+            document.write(`<th>${diaN}</th>`);
             turnosN.forEach(turnoN => {
               document.write(`
                 <td>
@@ -1370,28 +1392,28 @@
       </tbody>
     </table>
 
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <div class="botoes-lado-a-lado">
           <button id="btnEditarDisponibilidadeNovoPonto20"
-                  onclick="alternarModoEdicaoNovoPonto20()" class="botao editar"
-                  style="flex: 1;">✏️ Editar Disponibilidade</button>
-
-          <button onclick="salvarDisponibilidade2h()" class="botao salvar"
-                  style="flex: 1;">💾 Salvar Disponibilidade</button>
-        </div>
+                  onclick="alternarModoEdicaoNovoPonto20()">
+                  ✏️ Editar Disponibilidade
+          </button>
+          <button 
+                  onclick="salvarDisponibilidade2h()">
+                  💾 Salvar Disponibilidade
+          </button>
+      </div>
 
   </div>
 
     <div id="disponibilidadeContainer" class="painel-exportar so-participantes bloquear-treinandos tela">
     <h5>🕒 Disponibilidade dos Participantes (4 Horas)</h5>
 
-      <div style="display:flex">
-        <button
-          type="button"
+      <div class="botoes-lado-a-lado">
+        <button type="button"
           onclick="abrirSelecao4horas()">
           👤 Selecionar
         </button>
-        <button 
-          type="button" 
+        <button type="button" 
           id= "btnPesqDisp" 
           onclick="pesquisarDisponibilidade()">
           🔍 Ver disponibilidade
@@ -1400,7 +1422,7 @@
 
     <div id="quatroHoras" class="nome-pesquisado"></div>
 
-    <div class="painel-disponibilidade">
+    <!--<div class="painel-disponibilidade">-->
 
       <div class="linha-substituicao">
 
@@ -1437,7 +1459,7 @@
       <div class="linha-frequencia">
 
           <label for="frequenciaDisponibilidade">
-              Selecione sua disponibilidade
+              Frequência
           </label>
 
           <select id="frequenciaDisponibilidade">
@@ -1449,18 +1471,16 @@
 
       </div>
 
-  </div>
+  <!--</div>-->
     
-
-    <!-- Tabela com dias e turnos -->
-    <table id="tabelaDisponibilidade" class="tabela-sistema tabela-destaque"><!--border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
+    <table id="tabelaDisponibilidade" class="tabela-sistema tabela-checkbox tabela-destaque">
       <thead>
         <tr>
           <th>Dia</th>
-          <th>Matinal</th>
-          <th>Manhã</th>
-          <th>Tarde</th>
-          <th>Noite</th>
+          <th>Matinal<br>06-09h</th>
+          <th>Manhã<br>09-13hh</th>
+          <th>Tarde<br>13-17h</th>
+          <th>Noite<br>17-20h</th>
         </tr>
       </thead>
       <tbody>
@@ -1470,7 +1490,7 @@
 
           dias.forEach(dia => {
             document.write('<tr>');
-            document.write(`<td>${dia}</td>`);
+            document.write(`<th>${dia}</th>`);
             turnos.forEach(turno => {
               document.write(`
                 <td>
@@ -1488,13 +1508,15 @@
       </tbody>
     </table>
 
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div class="botoes-lado-a-lado">
           <button id="btnEditarDisponibilidade"
-                  onclick="alternarModoEdicao()" class="botao editar"
-                  style="flex: 1;">✏️ Editar Disponibilidade</button>
-
-          <button onclick="salvarDisponibilidadeParticipante4h()" class="botao salvar"
-                  style="flex: 1;">💾 Salvar Disponibilidade</button>
+                  onclick="alternarModoEdicao()">
+                  ✏️ Editar Disponibilidade
+          </button>
+          <button 
+                  onclick="salvarDisponibilidadeParticipante4h()">
+                  💾 Salvar Disponibilidade
+          </button>
         </div>
 
   </div>
@@ -1503,35 +1525,24 @@
 
       <h5>🎓 Dias dos Candidatos para Treinamento</h5>
       <div id="treinamentoPraticoContainer">
-        <!--<h5>treinamentoPratico</h5>-->
-
-      <!--<div style="display:none">
-          <select id="listaNomesTP"><option value="">- Selecione -</option></select>
-          <div style="display: flex; align-items: center; gap: 10px;">
-          <input type="text" id="filtroBuscaTP" placeholder="Digite o nome para pesquisar...">
-          </div>
-      </div>-->
 
           <div style="display: flex">
           <button
               type="button"
               onclick="abrirSelecaoCandidatoTreinamentoPratico()">
               👤 Ver Candidato
-            <!--</button>
-            <button type="button" id= "btnPesqDispTP" onclick="pesquisarTP()">🔍 Disponibilidade</button>-->
           </div>
 
             <div id="candidatoTreinamentoPratico" class="nome-pesquisado"></div>
         
-        <!-- Tabela com dias e turnos   <table id="tabelaTP" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;"> -->class="tabela-sistema"
-        <table id="tabelaTP" class="tabela-sistema tabela-destaque">
+         <table id="tabelaTP" class="tabela-sistema tabela-checkbox tabela-destaque">
           <thead>
             <tr>
               <th>Dia</th>
-              <th>Matinal<br>6h às 9h</th>
-              <th>Manhã<br>9h às 1h</th>
-              <th>Tarde<br>1h às 5h</th>
-              <th>Noite<br>5h às 8h</th>
+              <th>Matinal<br>06-09h</th>
+              <th>Manhã<br>09-13h</th>
+              <th>Tarde<br>13-17h</th>
+              <th>Noite<br>17-20h</th>
             </tr>
           </thead>
           <tbody>
@@ -1541,7 +1552,7 @@
 
               diasT.forEach(diaT => {
                 document.write('<tr>');
-                document.write(`<td>${diaT}</td>`);
+                document.write(`<th>${diaT}</th>`);
                 turnosT.forEach(turnoT => {
                   document.write(`
                     <td>
@@ -1559,13 +1570,14 @@
           </tbody>
         </table>
 
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div class="botoes-lado-a-lado">
               <button id="btnEditarTP"
-                      onclick="alternarModoEdicaoTP()" class="botao editar"
-                      style="flex: 1;">✏️ Editar Disponibilidade</button>
-
-              <button onclick="salvarTP()" class="botao salvar"
-                      style="flex: 1;">💾 Salvar Disponibilidade</button>
+                      onclick="alternarModoEdicaoTP()">
+                      ✏️ Editar Disponibilidade
+              </button>
+              <button onclick="salvarTP()">
+                      💾 Salvar Disponibilidade
+              </button>
             </div>
 
       </div>
@@ -1577,24 +1589,15 @@
 
     <div id="treinamentoPraticoContainerId">
 
-      <!--<div style="display: flex; align-items: center; gap: 10px;">
-        <button type="button"
-                id="btnPesqDispTPId"
-                onclick="pesquisarTPPorId()">
-          🔍 Ver disponibilidade
-        </button>
-      </div>-->
-
-      <!--<table id="tabelaTPId" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">-->
-      <table id="tabelaTPId" class="tabela-sistema tabela-destaque">
+      <table id="tabelaTPId" class="tabela-sistema tabela-checkbox tabela-destaque">
 
         <thead>
           <tr>
             <th>Dia</th>
-            <th>Matinal<br>6h às 9h</th>
-            <th>Manhã<br>9h às 1h</th>
-            <th>Tarde<br>1h às 5h</th>
-            <th>Noite<br>5h às 8h</th>
+            <th>Matinal<br>06-09h</th>
+            <th>Manhã<br>09-13h</th>
+            <th>Tarde<br>13-17h</th>
+            <th>Noite<br>17-20h</th>
           </tr>
         </thead>
 
@@ -1621,7 +1624,7 @@
             diasTId.forEach(diaTId => {
 
               document.write('<tr>');
-              document.write(`<td>${diaTId}</td>`);
+              document.write(`<th>${diaTId}</th>`);
 
               turnosTId.forEach(turnoTId => {
 
@@ -1646,21 +1649,14 @@
 
       </table>
 
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-
+      <div class="botoes-lado-a-lado">
         <button id="btnEditarTPId"
-                onclick="alternarModoEdicaoTPId()"
-                class="botao editar"
-                style="flex: 1;">
+                onclick="alternarModoEdicaoTPId()">
           ✏️ Editar Disponibilidade
         </button>
-
-        <button onclick="salvarTPPorId()"
-                class="botao salvar"
-                style="flex: 1;">
+        <button onclick="salvarTPPorId()">
           💾 Salvar Disponibilidade
         </button>
-
       </div>
 
     </div>
@@ -1933,6 +1929,8 @@
             👤 Selecionar Nome
           </button>
         </div>
+        
+        <label></label>
 
         <div id="participanteTcs" class="nome-pesquisado"></div>
         
@@ -1942,13 +1940,15 @@
         <p id="msgPesqtcs" class="mensagem-verde"></p>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div class="botoes-lado-a-lado">
           <button id="btnEditartcs"
-                  onclick="alternarModoEdicaotcs()" class="botao editar"
-                  style="flex: 1;">✏️ Editar e-mail pro TCS</button>
-
-          <button onclick="salvartcs()" class="botao salvar"
-                  style="flex: 1;">💾 Salvar e-mail pro TCS</button>
+                  onclick="alternarModoEdicaotcs()">
+                  ✏️ Editar e-mail pro TCS
+          </button>
+          <button 
+                  onclick="salvartcs()" >
+                  💾 Salvar e-mail pro TCS
+          </button>
         </div>
 
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -2203,8 +2203,12 @@
         </select>
       </div>
 
-      <button type="button" class="botao salvar" onclick="cadastrarParticipante()">💾 Cadastrar</button>
-      <!-- <p id="msgCadastrarPart" class="mensagem-verde"></p> -->
+      <label></label>
+
+      <button type="button"  
+              onclick="cadastrarParticipante()">
+              💾 Cadastrar
+      </button>
 
     </form>
   </div>
@@ -2841,7 +2845,7 @@
           <tr>
             <th colspan="5">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <label for="dataSelectEv1" style="color: white;">Data:</label>
+                <label for="dataSelectEv1" style="color: rgb(12, 12, 12);">Data:</label>
                 <input type="date" id="dataSelectEv1" required>
               </div>
             </th>
@@ -2888,9 +2892,19 @@
     <!--<label for="labelEnvios" style="color: black; display: block; text-align: center; margin-top: 90px;">ENVIAR COMUNICADO DO EVENTO AOS PARTICIPANTES</label>-->
     <h5>📢 Enviar Comunicado do Evento</h5>
 
-    <div style="display: flex; justify-content: center; gap: 10px;">
-      <button id="btnGerarMensagemWhatsApp" class="botaozap">📲 Enviar WhatsApp</button>
-      <button id="btnEnviarEmail" onclick="enviarEmailInformativo()" class="botaomail">📧 Enviar E-mail</button>
+    <div class="botoes-lado-a-lado">
+      <!--<button id="btnGerarMensagemWhatsApp" class="botaozap">📲 Enviar WhatsApp</button>-->
+      
+      <button
+          id="btnGerarMensagemWhatsApp">
+          <img
+              src="img/whatsapp.svg"
+              class="icone-whatsapp"
+              alt="WhatsApp">
+      </button>
+      
+      <button id="btnEnviarEmail" onclick="enviarEmailInformativo()">📤 Enviar E-mail</button>
+    
     </div>
 
     <div id="mensagemWhatsAppContainer" style="display: none; margin-top: 20px;">
@@ -3432,15 +3446,14 @@
                   readonly>
             </div>
 
-            <div style="display:flex">
+            <div class="botoes-lado-a-lado">
               <button type="button"
                       onclick="abrirSelecaoDesignacao()">
-                👤 Novo Designado
+                      👤 Novo Designado
               </button>
-
               <button type="button"
                       onclick="salvarDesignacao()">
-                ✅ Designar
+                      ✅ Designar
               </button>
             </div>
 
@@ -3610,7 +3623,7 @@
 
   <div id="telaVagasDisponiveis" class="painel tela">
 
-      <h2>🚨 Vagas Disponíveis</h2>
+      <h3>🚨 Vagas Disponíveis</h3>
 
       <div id="listaVagasDisponiveis">
         <p>Carregando vagas...</p>
@@ -3730,7 +3743,10 @@
 
       <div>
 
-        <button type="button" style="width: 50vw; float: right;" onclick="carregarTodasVagasAbertas()">🔄 Atualizar Vagas</button>
+        <button type="button"
+                onclick="carregarTodasVagasAbertas()">
+                🔄 Atualizar Vagas
+              </button>
       </div>
     </div>
   </div> 
@@ -3843,6 +3859,8 @@
               👤 Selecionar Participante
             </button>
 
+            <label></label>
+
             <input type="text"
                   id="nomeSelecionadoPerfil"
                   placeholder="Nenhum participante selecionado"
@@ -3867,7 +3885,9 @@
         <option value="escalas">escalas</option>
         <option value="organizadores">organizadores</option>
         <option value="admin">admin</option>
-        </select>
+      </select>
+
+      <label></label>
         
       <button type="button" onclick="alterarPerfil()">🔍 Alterar Perfil do Participante</button>
     </div>
@@ -3893,7 +3913,9 @@
       <button type="button" 
           onclick="abrirSelecaoAcesso()">
           👤 Selecionar Participante
-        </button>
+      </button>
+
+        <label></label>
 
       <input type="text"
             id="nomeSelecionadoAcesso"
@@ -3923,6 +3945,8 @@
             type="text"
             id="novaSenha"
             placeholder="Digite a nova senha">
+
+            <label></label>
 
           <button type="button" onclick="alterarDadosAcesso()">
             🔑 Alterar Dados de Acesso

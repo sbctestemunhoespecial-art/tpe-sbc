@@ -1297,7 +1297,7 @@ function pesquisarParticipantesSemDisponibilidade() {
 
 
 // mantém exatamente igual
-document.addEventListener('click', function (event) {
+/*document.addEventListener('click', function (event) {
 
   const link = event.target.closest('a[href*="wa.me"]');
 
@@ -1312,6 +1312,33 @@ document.addEventListener('click', function (event) {
 
       link.innerHTML += ' <span title="Mensagem enviada">📤</span>';
       link.dataset.enviado = 'true';
+
+    }
+
+  }, 200);
+
+});*/
+document.addEventListener("click", function(event) {
+
+  const link = event.target.closest('a[href*="wa.me"]');
+
+  if (!link) return;
+
+  setTimeout(() => {
+
+    link.style.opacity = "0.65";
+
+    if (!link.querySelector(".icone-enviado")) {
+
+      const enviado = document.createElement("span");
+
+      enviado.className = "icone-enviado";
+
+      enviado.title = "Mensagem enviada";
+
+      enviado.textContent = " 📤";
+
+      link.appendChild(enviado);
 
     }
 
@@ -1959,46 +1986,6 @@ function exibirResultados(res) {
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
-    /*html += `
-        <tr class="linha-designacao" 
-            data-id="${r.idParticipante}"
-            data-nome="${r.nome}" 
-            data-telefone="${r.telefone}"
-            data-turno="${turnoPalavra}" 
-            data-dia="${r.dia}" 
-            data-ponto="${pontoNumero}"
-            data-frequencia="${r.frequencia}"
-            data-equipamento="${r.equipamento}"
-            style="cursor:pointer">
-          
-            <td style="width:33%;">
-                <div class="nome-com-whatsapp">
-                    <span>
-                        <strong>${r.nome}</strong><br>
-                        <small>${r.congregacao}</small>
-                    </span>
-                    <img
-                        src="img/whatsapp.svg"
-                        class="icone-whatsapp-designacao"
-                        data-id="${r.idParticipante}"
-                        data-nome="${r.nome}"
-                        data-telefone="${r.telefone}"
-                        data-turno="${turnoPalavra}"
-                        data-dia="${r.dia}"
-                        data-ponto="${pontoNumero}"
-                        data-frequencia="${r.frequencia}"
-                        data-equipamento="${r.equipamento}"
-                        title="Conversar pelo WhatsApp">
-                </div>
-
-            </td>
-          
-          <td style="width: 10%;">${turnoPalavra}</td>
-          <td style="width: 15%;">${r.dia}</td>
-          <td style="width: 8%;">${pontoNumero}</td>
-          <td style="width: 15%;">${r.frequencia}</td>
-          <td style="width: 19%;">${r.equipamento}</td>
-        </tr>`;*/
         html += `
           <tr class="linha-designacao"
               data-id="${r.idParticipante}"
@@ -2178,8 +2165,8 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
     btnEditar.onclick = () => {
 
       document
-        .querySelectorAll(".oculta-edicao")
-        .forEach(el => el.classList.remove("oculta-edicao"));
+        .getElementById("resultadoDesignadosContainer")
+        .classList.add("modo-edicao");
 
       menuRow.remove();
 
@@ -2194,14 +2181,13 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
 
       };
 
-      //iniciarEdicaoDesignacao(linhaTR);
       abrirSelecaoEditarDesignadoEscalaTurno();
 
     };
 
     const btnExcluir = document.createElement('button');
     btnExcluir.textContent = '🗑️ Excluir';
-    btnExcluir.className = 'botao excluir'; // <-- classe cancel
+    btnExcluir.className = 'botao excluir';
     btnExcluir.style.margin = '0';
     btnExcluir.onclick = () => {
       menuRow.remove();
@@ -3348,7 +3334,7 @@ function preencherTabelaSemDisponibilidade() {
 
     const tr = document.createElement("tr");
 
-    tr.innerHTML = `
+    /*tr.innerHTML = `
       <!--<td>${p.id}</td>-->
       <td>${p.nome}</td>
       <!--<td>${p.email}</td>-->
@@ -3356,6 +3342,22 @@ function preencherTabelaSemDisponibilidade() {
         <a href="${p.whatsapp}" target="_blank"
            style="color:#25D366;font-weight:bold;text-decoration:none;">
           📱 ${p.telefone}
+        </a>
+      </td>
+    `;*/
+    tr.innerHTML = `
+      <td>${p.nome}</td>
+
+      <td style="text-align:center;">
+        <a href="${p.whatsapp}"
+          target="_blank"
+          title="Conversar pelo WhatsApp">
+
+          <img
+            src="img/whatsapp.svg"
+            class="icone-whatsapp-semdesignacao"
+            alt="WhatsApp">
+
         </a>
       </td>
     `;
@@ -5368,13 +5370,13 @@ let modoEdicaoAtivoNovoPonto20 = false;
 function salvarDisponibilidade2h() {
 
   const jaTenhoDesignacao =
-    document.getElementById("jaTenhoDesignacaoNovoPonto20")?.checked;
+    document.getElementById("jaTenhoDesignacao2h")?.checked;
 
   const somenteSubstituicao =
-    document.getElementById("somenteSubstituicaoNovoPonto20")?.checked;
+    document.getElementById("somenteSubstituicao2h")?.checked;
 
   const frequenciaEl =
-    document.getElementById("frequenciaDisponibilidadeNovoPonto20");
+    document.getElementById("frequenciaDisponibilidade2h");
 
   if (!participanteSelecionado2horas) {
 
@@ -5494,10 +5496,10 @@ function salvarDisponibilidade2h() {
 
 }
 
-function alternarSomenteSubstituicaoNovoPonto20() {
+function alternarSomenteSubstituicao2h() {
 
   const ativo =
-    document.getElementById("somenteSubstituicaoNovoPonto20")
+    document.getElementById("somenteSubstituicao2h")
       ?.checked;
 
   document.querySelectorAll(".dia-turno-novoPonto20")
@@ -5512,7 +5514,7 @@ function alternarSomenteSubstituicaoNovoPonto20() {
 
   const freq =
     document.getElementById(
-      "frequenciaDisponibilidadeNovoPonto20"
+      "frequenciaDisponibilidade2h"
     );
 
   if (freq) {
@@ -5528,10 +5530,10 @@ function alternarSomenteSubstituicaoNovoPonto20() {
     salvarDisponibilidade2h();
     }
   }
-  function alternarDesignadoNovoPonto20() {
+  function alternarDesignado2h() {
 
   const ativo =
-    document.getElementById("jaTenhoDesignacaoNovoPonto20")
+    document.getElementById("jaTenhoDesignacao2h")
       ?.checked;
 
   document.querySelectorAll(".dia-turno-novoPonto20")
@@ -5546,7 +5548,7 @@ function alternarSomenteSubstituicaoNovoPonto20() {
 
   const freq =
     document.getElementById(
-      "frequenciaDisponibilidadeNovoPonto20"
+      "frequenciaDisponibilidade2h"
     );
 
   if (freq) {
@@ -5558,7 +5560,7 @@ function alternarSomenteSubstituicaoNovoPonto20() {
     }
   }
 
-    const substituicao2h = document.getElementById("somenteSubstituicaoNovoPonto20");
+    const substituicao2h = document.getElementById("somenteSubstituicao2h");
     if (substituicao2h) {
       substituicao2h.disabled = ativo;
     }
@@ -5568,7 +5570,7 @@ function alternarSomenteSubstituicaoNovoPonto20() {
     }
   }
 
-function pesquisarDisponibilidadeNovoPonto20() {
+function pesquisarDisponibilidade2h() {
 
   if (!participanteSelecionado2horas) {
 
@@ -5639,13 +5641,13 @@ function alternarModoEdicaoNovoPonto20() {
 
   modoEdicaoAtivoNovoPonto20 = !modoEdicaoAtivoNovoPonto20;
 
-  const container = document.getElementById("disponibilidadeContainerNovoPonto20");
+  const container = document.getElementById("disponibilidadeContainer2h");
 
   const checkboxes = container.querySelectorAll('.dia-turno-novoPonto20');
   checkboxes.forEach(cb => cb.disabled = !modoEdicaoAtivoNovoPonto20);
 
   const selects = [
-    document.getElementById('frequenciaDisponibilidadeNovoPonto20')
+    document.getElementById('frequenciaDisponibilidade2h')
   ];
 
   selects.forEach(select => {
@@ -5660,7 +5662,7 @@ function alternarModoEdicaoNovoPonto20() {
 
   if (!modoEdicaoAtivoNovoPonto20) {
 
-    pesquisarDisponibilidadeNovoPonto20();
+    pesquisarDisponibilidade2h();
 
   }
   }
@@ -5668,9 +5670,9 @@ function alternarModoEdicaoNovoPonto20() {
   function preencherDispNovoPonto20(dados) {
 
   renderizarDisponibilidadeBase(dados, {
-    chkSubstituicao: "somenteSubstituicaoNovoPonto20",
-    chkDesignado: "jaTenhoDesignacaoNovoPonto20",
-    frequencia: "frequenciaDisponibilidadeNovoPonto20",
+    chkSubstituicao: "somenteSubstituicao2h",
+    chkDesignado: "jaTenhoDesignacao2h",
+    frequencia: "frequenciaDisponibilidade2h",
     checkboxes: ".dia-turno-novoPonto20"
   });
   }
@@ -13799,7 +13801,7 @@ function buscarTreinando() {
       const thead = tabela.createTHead();
       const trHead = thead.insertRow();
 
-      ['Nome', 'Congregação', 'WhatsApp', 'Sexo'].forEach(txt => {
+      ['Nome', 'Cong.', 'WhatsApp', 'Sexo'].forEach(txt => {
         const th = document.createElement('th');
         th.textContent = txt;
         trHead.appendChild(th);
@@ -15852,7 +15854,7 @@ function carregarVagasDisponiveis() {
             </div>
 
             <div>
-              🧰 <strong>Equipamento:</strong>
+              🚗 <strong>Equipamento:</strong>
               ${vaga.equipamento}
             </div>
 
@@ -18113,7 +18115,7 @@ function restaurarCamposPerfil() {
     [
         "btnPesqMinhaInfo",
         "btnPesqDisp",
-        "btnPesqDispNovoPonto20"
+        "btnPesquisarDisponibilidade2h"
     ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "";
@@ -18304,7 +18306,7 @@ function confirmarSelecaoParticipante() {
 
       document.getElementById("duasHoras").textContent = nome;
 
-      pesquisarDisponibilidadeNovoPonto20();
+      pesquisarDisponibilidade2h();
 
       break;
 
@@ -18414,11 +18416,6 @@ function abrirModalEditarEscalaTurno() {
 
   document.getElementById("modalEditarEscalaTurno").classList.remove("oculto");
 
-  
-
-  /*document.getElementById("edtFrequencia").value = frequenciaAtual;
-  document.getElementById("edtEquipamento").value = equipamentoAtual;*/
-
 }
 
 function popularCombosModalEditarEscalaTurno() {
@@ -18458,16 +18455,15 @@ function popularCombosModalEditarEscalaTurno() {
 
 function fecharModalEditarEscalaTurno() {
 
-  document.getElementById("modalEditarEscalaTurno").classList.add("oculto");
+  document
+      .getElementById("modalEditarEscalaTurno")
+      .classList.add("oculto");
+
+  document
+    .getElementById("resultadoDesignadosContainer")
+    .classList.remove("modo-edicao");
 
 }
-
-/*function abrirSelecaoEquipamentoVaga() {
-
-  window.destinoModalParticipantes = "equipamentoVaga";
-
-  // aqui depois vamos abrir o modal correto de equipamentos
-}*/
 
 let equipamentoSelecionadoVaga = "";
 let participanteSelecionadoEdicaoEscalaTurno = null;
@@ -20841,6 +20837,7 @@ function inicializarBuscaUsuario2h() {
 }
 
 function abrirWhatsApp(telefone, mensagem) {
+  console.trace("abrirWhatsApp chamada");
 
   if (!telefone) {
 

@@ -1957,7 +1957,7 @@ function pesquisarDesignados() {
   );
 }
 
-function exibirResultados(res) {
+/*function exibirResultados(res) {
   const c = document.getElementById('resultadoDesignadosContainer');
   const msg = document.getElementById("msgPesqDesignados");
   esconderSpinner();
@@ -2055,6 +2055,236 @@ function exibirResultados(res) {
   html += '</tbody></table>';
   c.innerHTML = html;
 
+  if (notificacaoEscala?.idParticipante) {
+
+    const linha = c.querySelector(
+      `[data-id="${notificacaoEscala.idParticipante}"]`
+    );
+
+    if (linha) {
+
+      linha.classList.add("linha-designacao-destaque");
+
+      setTimeout(() => {
+
+        linha.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      }, 300);
+
+    }
+
+  }
+
+  msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
+
+  c.querySelectorAll('.linha-designacao').forEach(linha => {
+
+    linha.addEventListener('click', () => {
+      const selectNome = linha.querySelector('td:first-child select');
+      if (selectNome) {
+        return;
+      }
+
+      const participante = linha.dataset.nome;
+      const idParticipante = linha.dataset.id;
+
+      console.log(
+        "ID:",
+        idParticipante,
+        "Nome:",
+        participante
+      );
+
+      if (participante.trim().toUpperCase().startsWith("VAGA")) {
+        mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
+        return;
+      }
+
+      const turno = linha.dataset.turno;
+      const ponto = linha.dataset.ponto;
+      const dia = linha.dataset.dia;
+      const frequencia = linha.dataset.frequencia;
+      const equipamento = linha.dataset.equipamento;
+
+      console.log(
+        "DADOS COMPANHEIROS:",
+        {
+          turno,
+          ponto,
+          dia
+        }
+      );
+
+      acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
+    });
+  });
+}*/
+
+function exibirResultados(res) {
+
+  console.table(
+      res.map(r => ({
+          nome: r.nome,
+          grupo: r.grupo,
+          posicao: r.posicao
+      }))
+  );
+
+  const c = document.getElementById('resultadoDesignadosContainer');
+  const msg = document.getElementById("msgPesqDesignados");
+  esconderSpinner();
+
+  if (!res || res.length === 0) {
+    c.innerHTML = '<p>Nenhum designado encontrado.</p>';
+    mostrarAlertaGlobal("❌ Nenhum designado encontrado");
+    return;
+  }
+
+  let html = `<table class="tabela-listagem">;
+        <thead>
+          <tr>
+            <th style="width: 33%;">Nome</th>
+            <th class="oculta-edicao">Turno</th>
+            <th class="oculta-edicao">Dia</th>
+            <th class="oculta-edicao">Ponto</th>
+            <th style="width: 33%;">Freq.</th>
+            <th style="width: 33%;">Most.</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+  let grupoAnterior = "";
+
+  res.forEach(r => {
+
+  // Quando muda o grupo, cria um cabeçalho
+ if (r.grupo && r.grupo !== grupoAnterior) {
+
+    const qtd =
+        res.filter(x => x.grupo === r.grupo).length;
+
+    let tituloGrupo = "";
+    let estiloTitulo = "";
+
+    switch (qtd) {
+
+        case 1:
+            tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+            estiloTitulo = "color:#d32f2f;font-weight:bold;";
+            break;
+
+        case 2:
+            tituloGrupo = "👥 DUPLA";
+            break;
+
+        case 3:
+            tituloGrupo = "👥 TRIO";
+            break;
+
+        case 4:
+            tituloGrupo = "👥 GRUPO";
+            break;
+
+        default:
+            tituloGrupo = `👥 GRUPO (${qtd})`;
+            break;
+
+    }
+
+    html += `
+        <tr class="linha-grupo">
+            <td colspan="6">
+                <strong>${tituloGrupo}</strong>
+            </td>
+        </tr>
+    `;
+
+    grupoAnterior = r.grupo;
+
+}
+
+    const partes = (r.turno || "").split(" ");
+    const pontoNumero = partes[partes.length - 1] || "";
+    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+        html += `
+          <tr class="linha-designacao"
+              data-id="${r.idParticipante}"
+              data-nome="${r.nome}"
+              data-telefone="${r.telefone}"
+              data-turno="${turnoPalavra}"
+              data-dia="${r.dia}"
+              data-ponto="${pontoNumero}"
+              data-frequencia="${r.frequencia}"
+              data-equipamento="${r.equipamento}"
+              style="cursor:pointer">
+
+              <td style="width:33%;">
+
+                  <div class="nome-com-whatsapp">
+
+                      <span>
+
+                          <strong>${r.nome}</strong><br>
+
+                          <small>
+
+                            ${r.congregacao}
+
+                            ${r.grupo ? `<br>👤 ${r.posicao}` : ""}
+
+                          </small>
+
+                      </span>
+
+                      <img
+                          src="img/whatsapp.svg"
+                          class="icone-whatsapp-designacao"
+
+                          data-id="${r.idParticipante}"
+                          data-nome="${r.nome}"
+                          data-telefone="${r.telefone}"
+                          data-turno="${turnoPalavra}"
+                          data-dia="${r.dia}"
+                          data-ponto="${pontoNumero}"
+                          data-frequencia="${r.frequencia}"
+                          data-equipamento="${r.equipamento}"
+
+                          title="Conversar pelo WhatsApp">
+
+                  </div>
+
+              </td>
+
+              <td class="oculta-edicao">
+                  ${turnoPalavra}
+              </td>
+
+              <td class="oculta-edicao">
+                  ${r.dia}
+              </td>
+
+              <td class="oculta-edicao">
+                  ${pontoNumero}
+              </td>
+
+              <td>
+                  ${r.frequencia}
+              </td>
+
+              <td>
+                  ${r.equipamento}
+              </td>
+
+          </tr>`;
+  });
+
+  html += '</tbody></table>';
+  c.innerHTML = html;
+
   // Destacar designação vinda da notificação
   if (notificacaoEscala?.idParticipante) {
 
@@ -2079,10 +2309,7 @@ function exibirResultados(res) {
 
   }
 
-
   msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
-
-
 
   c.querySelectorAll('.linha-designacao').forEach(linha => {
 
@@ -2093,6 +2320,14 @@ function exibirResultados(res) {
       }
 
       const participante = linha.dataset.nome;
+      const idParticipante = linha.dataset.id;
+
+      console.log(
+        "ID:",
+        idParticipante,
+        "Nome:",
+        participante
+      );
 
       if (participante.trim().toUpperCase().startsWith("VAGA")) {
         mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
@@ -2105,7 +2340,16 @@ function exibirResultados(res) {
       const frequencia = linha.dataset.frequencia;
       const equipamento = linha.dataset.equipamento;
 
-      acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linha);
+      console.log(
+        "DADOS COMPANHEIROS:",
+        {
+          turno,
+          ponto,
+          dia
+        }
+      );
+
+      acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
     });
   });
 }
@@ -2144,7 +2388,7 @@ document.addEventListener("click", function(e){
 
 });
 
-function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
+/*function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
     document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
 
     const menuRow = document.createElement('tr');
@@ -2199,94 +2443,253 @@ function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equi
     menuRow.appendChild(td);
 
     linhaTR.insertAdjacentElement('afterend', menuRow);
-  }
+  }*/
 
 
-  function mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento) {
+/*function acionarMenuDesignacao( idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
+  document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
 
-  mostrarConfirmacaoGlobal(
-    `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
-    () => {
+  const menuRow = document.createElement('tr');
+  menuRow.classList.add('menuDesignacao');
 
-      mostrarSpinner();
+  const td = document.createElement('td');
+  td.colSpan = 6;
+  td.style.padding = '10px';
+  td.style.backgroundColor = '#eef2ff';
+  td.style.border = '1px solid #ccc';
 
-      let turnoCodigo = "";
+  const btnEditar = document.createElement('button');
+  btnEditar.textContent = '✏️ Editar';
+  btnEditar.className = 'botao editar';
+  btnEditar.style.marginRight = '10px';
+  btnEditar.style.margin = '0';
 
-      console.log("Turno recebido:", JSON.stringify(turno));
+  btnEditar.onclick = () => {
 
-      switch (turno) {
-        case "Manhã":
-          turnoCodigo = "M";
-          break;
+    document
+      .getElementById("resultadoDesignadosContainer")
+      .classList.add("modo-edicao");
 
-        case "Tarde":
-          turnoCodigo = "T";
-          break;
+    menuRow.remove();
 
-        case "Noite":
-          turnoCodigo = "N";
-          break;
+    window.designacaoEmEdicao = {
 
-        case "Matinal":
-          turnoCodigo = "A";
-          break;
+      idOriginal: participante,
+      ponto,
+      dia,
+      turno,
+      frequencia,
+      equipamento
 
-        case "Manhã (9–11h)":
-          turnoCodigo = "MA";
-          break;
+    };
 
-        case "Manhã (11–13h)":
-          turnoCodigo = "MB";
-          break;
+    abrirSelecaoEditarDesignadoEscalaTurno();
 
-        case "Tarde (13–15h)":
-          turnoCodigo = "TA";
-          break;
+  };
 
-        case "Tarde (15–17h)":
-          turnoCodigo = "TB";
-          break;
+  const btnExcluir = document.createElement('button');
+  btnExcluir.textContent = '🗑️ Excluir';
+  btnExcluir.className = 'botao excluir';
+  btnExcluir.style.margin = '0';
+  btnExcluir.onclick = () => {
+    menuRow.remove();
+    mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento);
+  };
 
-        default:
-          esconderSpinner();
-          mostrarAlertaGlobal(
-            "⚠️ Turno inválido: " + turno
-          );
-          return;
-      }
+  const btnCompanheiros = document.createElement('button');
+  btnCompanheiros.textContent = '👥 Companheiros';
+  btnCompanheiros.className = 'botao editar';
+  btnCompanheiros.style.margin = '0';
+  btnCompanheiros.onclick = () => {
 
-      apiJSONP(
-        "deletarDesignacao",
-        {
-          participante,
-          ponto,
-          dia,
-          turno: turnoCodigo
-        },
-        () => {
+    const codigoTurno = obterCodigoTurno(turno);
 
-          esconderSpinner();
+    const designacao =
+      `${codigoTurno}${ponto} ${dia}`;
 
-          mostrarAlertaGlobal(
-            `✅ ${participante} removido com sucesso.`
-          );
+    abrirModalCompanheiros(
+      idParticipante,
+      designacao
+    );
 
-          pesquisarDesignados();
+  };
 
-        },
-        (err) => {
+  td.appendChild(btnEditar);
+  td.appendChild(btnExcluir);
+  td.appendChild(btnCompanheiros);
+  menuRow.appendChild(td);
 
-          esconderSpinner();
+  linhaTR.insertAdjacentElement('afterend', menuRow);
+}*/
 
-          console.error(err);
-          mostrarAlertaGlobal(
-            `❌ Erro ao remover: ${err.message || err}`
-          );
-        }
-      );
+function acionarMenuDesignacao( idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
+  document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
 
+  const menuRow = document.createElement('tr');
+  menuRow.classList.add('menuDesignacao');
+
+  const td = document.createElement('td');
+  td.colSpan = 6;
+  td.style.padding = '10px';
+  td.style.backgroundColor = '#eef2ff';
+  td.style.border = '1px solid #ccc';
+
+  // Container dos botões
+  const barraBotoes = document.createElement('div');
+  barraBotoes.className = 'btn-desig-comp';
+
+  const btnEditar = document.createElement('button');
+  btnEditar.textContent = '✏️ Editar';
+  btnEditar.className = 'botao editar';
+  btnEditar.style.marginRight = '10px';
+  btnEditar.style.margin = '0';
+
+  btnEditar.onclick = () => {
+
+    document
+      .getElementById("resultadoDesignadosContainer")
+      .classList.add("modo-edicao");
+
+    menuRow.remove();
+
+    window.designacaoEmEdicao = {
+
+      idOriginal: participante,
+      ponto,
+      dia,
+      turno,
+      frequencia,
+      equipamento
+
+    };
+
+    abrirSelecaoEditarDesignadoEscalaTurno();
+
+  };
+
+  const btnCompanheiros = document.createElement('button');
+  btnCompanheiros.textContent = '👥 Companheiros';
+  btnCompanheiros.className = 'botao editar';
+  btnCompanheiros.style.margin = '0';
+  btnCompanheiros.onclick = () => {
+
+    const codigoTurno = obterCodigoTurno(turno);
+
+    const designacao =
+      `${codigoTurno}${ponto} ${dia}`;
+
+    abrirModalCompanheiros(
+      idParticipante,
+      designacao
+    );
+
+  };
+
+  const btnExcluir = document.createElement('button');
+  btnExcluir.textContent = '🗑️ Excluir';
+  btnExcluir.className = 'botao excluir';
+  btnExcluir.style.margin = '0';
+  btnExcluir.onclick = () => {
+    menuRow.remove();
+    mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento);
+  };
+
+  barraBotoes.appendChild(btnEditar);
+  barraBotoes.appendChild(btnCompanheiros);
+  barraBotoes.appendChild(btnExcluir);
+  menuRow.appendChild(td);
+
+  td.appendChild(barraBotoes);
+
+  linhaTR.insertAdjacentElement('afterend', menuRow);
+}
+
+
+function mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento) {
+
+mostrarConfirmacaoGlobal(
+  `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
+  () => {
+
+    mostrarSpinner();
+
+    let turnoCodigo = "";
+
+    console.log("Turno recebido:", JSON.stringify(turno));
+
+    switch (turno) {
+      case "Manhã":
+        turnoCodigo = "M";
+        break;
+
+      case "Tarde":
+        turnoCodigo = "T";
+        break;
+
+      case "Noite":
+        turnoCodigo = "N";
+        break;
+
+      case "Matinal":
+        turnoCodigo = "A";
+        break;
+
+      case "Manhã (9–11h)":
+        turnoCodigo = "MA";
+        break;
+
+      case "Manhã (11–13h)":
+        turnoCodigo = "MB";
+        break;
+
+      case "Tarde (13–15h)":
+        turnoCodigo = "TA";
+        break;
+
+      case "Tarde (15–17h)":
+        turnoCodigo = "TB";
+        break;
+
+      default:
+        esconderSpinner();
+        mostrarAlertaGlobal(
+          "⚠️ Turno inválido: " + turno
+        );
+        return;
     }
-  );
+
+    apiJSONP(
+      "deletarDesignacao",
+      {
+        participante,
+        ponto,
+        dia,
+        turno: turnoCodigo
+      },
+      () => {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          `✅ ${participante} removido com sucesso.`
+        );
+
+        pesquisarDesignados();
+
+      },
+      (err) => {
+
+        esconderSpinner();
+
+        console.error(err);
+        mostrarAlertaGlobal(
+          `❌ Erro ao remover: ${err.message || err}`
+        );
+      }
+    );
+
+  }
+);
 
 }
 
@@ -13139,7 +13542,7 @@ function exportarEscalaEv() {
 
 }
 
-function buscarDesignacoesPorPonto() {
+/*function buscarDesignacoesPorPonto() {
   //const ponto = document.getElementById("pontobepp").value;
   const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgDesignacoesPorPontopppp");
@@ -13252,7 +13655,397 @@ function buscarDesignacoesPorPonto() {
       mostrarAlertaGlobal("❌ Erro ao buscar designações: " + (err.message || err));
     }
   );
+}*/
+function buscarDesignacoesPorPonto() {
+  
+  const ponto = window.camposSelecionados.pontobepp
+  const msg = document.getElementById("msgDesignacoesPorPontopppp");
+  const container = document.getElementById("resultadoDesignacoesPorPontopppp");
+
+  container.innerHTML = "";
+  msg.textContent = "";
+  document.getElementById("btnExportarPdfDesignacoes").style.display = "none";
+
+  if (!ponto) {
+    mostrarAlertaGlobal("❌ Por favor, selecione um ponto.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarDesignacoesDoPonto",
+    {
+      ponto
+    },
+    (res) => {
+      esconderSpinner();
+
+      console.table(
+        res.map(r => ({
+          nome: r.nome,
+          grupo: r.grupo,
+          posicao: r.posicao
+        }))
+      );
+
+      if (!res || res.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
+        return;
+      }
+
+      msg.textContent = `✅ ${res.length} designações encontradas.`;
+
+      const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
+
+      let html = `<h5 style="text-align:center; margin-bottom: 20px;">Escalas do Ponto ${numeroDoPonto}</h5>`;
+
+      html += `<table class="tabela-listagem">
+          <thead>
+            <tr>
+              <th style="width: 40%;">Nome</th>
+              <th class="oculta-edicao">Turno</th>
+              <th class="oculta-edicao">Dia</th>
+              <th class="oculta-edicao">Ponto</th>
+              <th style="width: 30%;">Freq.</th>
+              <th style="width: 30%;">Most.</th>
+            </tr>
+          </thead><tbody>`;
+
+      // Ordena por grupo/posição
+      /*res.sort((a, b) => {
+
+          if (!a.grupo && !b.grupo) return 0;
+          if (!a.grupo) return 1;
+          if (!b.grupo) return -1;
+
+          if (a.grupo !== b.grupo)
+              return a.grupo.localeCompare(b.grupo);
+
+          return (a.posicao || 0) - (b.posicao || 0);
+
+      });*/
+      const ordemDias = {
+
+          "SEGUNDA": 1,
+
+          "TERÇA": 2,
+          "TERCA": 2,
+
+          "QUARTA": 3,
+
+          "QUINTA": 4,
+
+          "SEXTA": 5,
+
+          "SÁBADO": 6,
+          "SABADO": 6,
+
+          "DOMINGO 1": 7,
+          "DOMINGO 2": 8,
+          "DOMINGO 3": 9,
+          "DOMINGO 4": 10,
+          "DOMINGO 5": 11
+
+      };
+
+
+      res.sort((a, b) => {
+
+
+          // 1º DIA DA SEMANA
+
+          const diaA =
+              ordemDias[
+                  (a.dia || "").toUpperCase()
+              ] || 99;
+
+
+          const diaB =
+              ordemDias[
+                  (b.dia || "").toUpperCase()
+              ] || 99;
+
+
+          if (diaA !== diaB) {
+
+              return diaA - diaB;
+
+          }
+
+
+          // 2º TURNO
+
+          if (a.turno !== b.turno) {
+
+              return a.turno.localeCompare(b.turno);
+
+          }
+
+
+          // 3º GRUPO
+
+          if (!a.grupo && !b.grupo) return 0;
+
+          if (!a.grupo) return 1;
+
+          if (!b.grupo) return -1;
+
+
+          if (a.grupo !== b.grupo) {
+
+              return a.grupo.localeCompare(b.grupo);
+
+          }
+
+
+          // 4º POSIÇÃO DENTRO DO GRUPO
+
+          return (
+              Number(a.posicao || 0)
+              -
+              Number(b.posicao || 0)
+          );
+
+
+      });
+
+      /*let grupoAtual = null;
+
+      res.forEach(r => {*/
+      let grupoAtual = null;
+      let diaAtual = null;
+
+      res.forEach(r => {
+
+
+          // ==============================
+          // CABEÇALHO DO DIA
+          // ==============================
+
+          if (r.dia !== diaAtual) {
+
+              diaAtual = r.dia;
+
+              grupoAtual = null;
+
+
+              html += `
+
+                  <tr class="linha-dia">
+
+                      <td colspan="6">
+
+                          📅 <strong>${r.dia}</strong>
+
+                      </td>
+
+                  </tr>
+
+              `;
+
+          }
+
+         if (r.grupo && r.grupo !== grupoAtual) {
+
+              grupoAtual = r.grupo;
+
+              const integrantes =
+                  res.filter(x => x.grupo === grupoAtual).length;
+
+              let tituloGrupo = "";
+              let estiloTitulo = "";
+
+              switch (integrantes) {
+
+                  case 1:
+                      tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+                      estiloTitulo = "color:#d32f2f;font-weight:bold;";
+                      break;
+
+                  case 2:
+                      tituloGrupo = "👥 Dupla";
+                      break;
+
+                  case 3:
+                      tituloGrupo = "👥 Trio";
+                      break;
+
+                  case 4:
+                      tituloGrupo = "👥 Grupo";
+                      break;
+
+                  default:
+                      tituloGrupo = `👥 Grupo (${integrantes})`;
+
+              }
+
+              html += `
+                  <tr class="linha-grupo">
+                      <td colspan="6">
+                          <strong>${tituloGrupo}</strong>
+                      </td>
+                  </tr>`;
+          }
+
+          html += `
+              <tr class="linha-designacao-ponto"
+
+                    data-id="${r.idParticipante}"
+                    data-nome="${r.nome}"
+                    data-telefone="${r.telefone}"
+                    data-turno="${r.turno}"
+                    data-dia="${r.dia}"
+                    data-ponto="${numeroDoPonto}"
+                    data-frequencia="${r.frequencia}"
+                    data-equipamento="${r.equipamento}"
+
+                    data-grupo="${r.grupo}"
+                    data-posicao="${r.posicao}"
+
+                    style="cursor:pointer">
+
+                  <td style="width:33%;">
+
+                      <div class="nome-com-whatsapp">
+
+                          <span class="participante-info">
+
+                              <strong>
+
+                                  ${r.posicao ? r.posicao + ". " : ""}${r.nome}
+
+                              </strong><br>
+
+                              <small>${r.congregacao || ""}</small>
+
+                          </span>
+
+                          <img
+                              src="img/whatsapp.svg"
+                              class="icone-whatsapp-ponto"
+
+                              data-id="${r.idParticipante}"
+                              data-nome="${r.nome}"
+                              data-telefone="${r.telefone}"
+                              data-ponto="${numeroDoPonto}"
+                              data-turno="${r.turno}"
+                              data-dia="${r.dia}"
+                              data-frequencia="${r.frequencia}"
+                              data-equipamento="${r.equipamento}"
+
+                              title="Conversar pelo WhatsApp">
+
+                      </div>
+
+                  </td>
+
+                  <td class="oculta-edicao">${r.turno}</td>
+
+                  <td class="oculta-edicao">${r.dia}</td>
+
+                  <td class="oculta-edicao">${numeroDoPonto}</td>
+
+                  <td>${r.frequencia}</td>
+
+                  <td>${r.equipamento}</td>
+
+              </tr>`;
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+
+      container.querySelectorAll(".linha-designacao-ponto")
+      .forEach(linha => {
+
+          linha.addEventListener("click", () => {
+
+              const participante =
+                  linha.dataset.nome;
+
+
+              if (
+                  participante
+                  .trim()
+                  .toUpperCase()
+                  .startsWith("VAGA")
+              ){
+                  mostrarAlertaGlobal(
+                      "❌ Vagas não podem ser editadas."
+                  );
+                  return;
+              }
+
+
+              const idParticipante =
+                  linha.dataset.id;
+
+
+              const ponto =
+                  linha.dataset.ponto;
+
+
+              const turno =
+                  linha.dataset.turno;
+
+
+              const dia =
+                  linha.dataset.dia;
+
+
+              // transforma:
+              // Noite 19 + ponto 19 + TERÇA
+              // em:
+              // N19 TERÇA
+
+              const numeroPonto =
+                  ponto;
+
+
+              const turnoLimpo =
+                  turno
+                  .replace(numeroPonto, "")
+                  .trim();
+
+
+              const codigoTurno =
+                  obterCodigoTurno(turnoLimpo);
+
+
+              const designacao =
+                  `${codigoTurno}${numeroPonto} ${dia}`;
+
+
+              console.log(
+                  "=== ESCALA POR PONTO ==="
+              );
+
+              console.log({
+                  idParticipante,
+                  designacao
+              });
+
+
+              abrirModalCompanheiros(
+                  idParticipante,
+                  designacao
+              );
+
+
+          });
+
+      });
+
+      document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar designações: " + (err.message || err));
+    }
+  );
 }
+
 document.addEventListener("click", function (e) {
 
     const icone = e.target.closest(".icone-whatsapp-ponto");
@@ -13319,7 +14112,7 @@ function baixarDesignacoesPorPonto() {
   );
 }
   
-async function salvarDesignacao() {
+/*async function salvarDesignacao() {
 
   console.log("🟢 salvarDesignacao iniciou");
 
@@ -13343,12 +14136,12 @@ async function salvarDesignacao() {
   mostrarSpinner();
 
   console.log(
-  "➡️ Chamando selecionarSubstituicaoDesignados",
-  {
-    ponto,
-    dia
-  }
-);
+    "➡️ Chamando selecionarSubstituicaoDesignados",
+    {
+      ponto,
+      dia
+    }
+  );
 
   const substituto =
     await selecionarSubstituicaoDesignados(ponto, dia);
@@ -13414,7 +14207,244 @@ async function salvarDesignacao() {
     );
 
   });
+}*/
+async function salvarDesignacao() {
+
+  console.log("🟢 salvarDesignacao iniciou");
+
+  const ponto = window.camposSelecionados.ponto;
+
+  const dia = window.camposSelecionados.dia;
+
+
+  if (!participanteSelecionadoDesignacao) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione um participante."
+    );
+
+    return;
+
+  }
+
+
+  const nomeParticipante =
+    participanteSelecionadoDesignacao.nome;
+
+
+  const idParticipante =
+    participanteSelecionadoDesignacao.id;
+
+
+  mostrarSpinner();
+
+
+
+  console.log(
+    "➡️ Chamando selecionarSubstituicaoDesignados",
+    {
+      ponto,
+      dia
+    }
+  );
+
+
+
+  const substituto =
+    await selecionarSubstituicaoDesignados(
+      ponto,
+      dia
+    );
+
+
+
+  const substituirQuem =
+    substituto
+    ? substituto.id
+    : "";
+
+
+
+  const frequencia =
+    window.camposSelecionados.frequencia;
+
+
+
+  const equipamento =
+    window.camposSelecionados.equipamento;
+
+
+
+  if (
+    !ponto ||
+    !dia ||
+    !idParticipante ||
+    !frequencia ||
+    !equipamento
+  ) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Preencha todos os campos obrigatórios."
+    );
+
+    esconderSpinner();
+
+    return;
+
+  }
+
+
+
+  const mensagem =
+    substituto
+
+    ?
+
+    `Confirma a designação de <b>${nomeParticipante}</b> para o ponto <b>${ponto}</b>, substituindo <b>${substituto.nome}</b>?`
+
+    :
+
+    `Confirma a designação de <b>${nomeParticipante}</b> para o ponto <b>${ponto}</b>?`;
+
+
+
+
+
+  mostrarConfirmacaoGlobal(
+    mensagem,
+
+    () => {
+
+
+      mostrarSpinner();
+
+
+
+      apiJSONP(
+
+        "processarDesignacao",
+
+
+        {
+
+          idParticipante,
+
+          ponto,
+
+          dia,
+
+          frequencia,
+
+          substituirQuem,
+
+          equipamento
+
+        },
+
+
+        (retorno) => {
+
+
+          esconderSpinner();
+
+
+
+          // =================================
+          // NOVO:
+          // Necessita escolher grupo
+          // =================================
+
+          if (
+            retorno &&
+            retorno.escolherGrupo
+          ) {
+
+
+            abrirModalEscolherGrupo(
+              retorno
+            );
+
+
+            return;
+
+          }
+
+
+
+
+
+          // =================================
+          // Erros existentes
+          // =================================
+
+          if (
+            retorno &&
+            retorno.startsWith &&
+            retorno.startsWith("🚫")
+          ) {
+
+
+            mostrarAlertaGlobal(
+              retorno
+            );
+
+
+            return;
+
+          }
+
+
+
+
+
+          // =================================
+          // Sucesso normal
+          // =================================
+
+          mostrarAlertaGlobal(
+
+            `✅ ${nomeParticipante} designado(a) com sucesso`
+
+          );
+
+
+
+          limparCamposDesignar();
+
+
+
+          carregarAbas();
+
+
+
+        },
+
+
+        (err) => {
+
+
+          esconderSpinner();
+
+
+          mostrarAlertaGlobal(
+            "❌ Erro ao salvar designação"
+          );
+
+
+          console.error(err);
+
+
+        }
+
+      );
+
+
+    }
+
+  );
+
 }
+
 function limparCamposDesignar(){
 
     // limpa estado global
@@ -15580,7 +16610,7 @@ function carregarTodasVagasAbertas() {
   );
 }
 
-function mostrarVagasNaTabela(vagas) {
+/*function mostrarVagasNaTabela(vagas) {
 
   atualizarContagemVagas(vagas);
 
@@ -15659,8 +16689,131 @@ function mostrarVagasNaTabela(vagas) {
 
     tbody.appendChild(tr);
   });
-}
+}*/
+function mostrarVagasNaTabela(vagas) {
 
+  atualizarContagemVagas(vagas);
+
+  const tbody = document.querySelector("#tabelaVagasPendentes tbody");
+  tbody.innerHTML = "";
+
+  vagas.forEach(vaga => {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${vaga.ponto}</td>
+      <td>${vaga.dia}</td>
+      <td>${vaga.frequencia}</td>
+    `;
+
+    tr.style.cursor = "pointer";
+
+    /*tr.onclick = () => {
+
+      mostrarConfirmacaoGlobal(
+        `⚠️ Deseja excluir a vaga <strong>${vaga.frequencia}</strong> de <strong>${vaga.dia}</strong> no ponto <strong>${vaga.ponto}</strong>?`,
+        () => {
+
+          mostrarSpinner();
+
+          apiJSONP(
+            "excluirVaga",
+            {
+              ponto: vaga.ponto,
+              dia: vaga.dia,
+              frequencia: vaga.frequencia
+            },
+            function() {
+
+              apiJSONP(
+                "atualizarStatusDeVagaExcluida",
+                {
+                  ponto: vaga.ponto,
+                  dia: vaga.dia,
+                  frequencia: vaga.frequencia
+                },
+                function() {
+
+                  esconderSpinner();
+                  carregarTodasVagasAbertas();
+                  mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
+
+                },
+                function(err) {
+
+                  esconderSpinner();
+                  mostrarAlertaGlobal(
+                    "❌ Erro ao atualizar status da vaga excluída: " +
+                    err.message
+                  );
+
+                }
+              );
+
+            },
+            function(err) {
+
+              esconderSpinner();
+              mostrarAlertaGlobal(
+                "❌ Erro ao excluir vaga: " + err.message
+              );
+
+            }
+          );
+
+        }
+      );
+
+    };*/
+    tr.onclick = () => {
+
+      mostrarConfirmacaoGlobal(
+        `⚠️ Deseja excluir a vaga <strong>${vaga.frequencia}</strong> de <strong>${vaga.dia}</strong> no ponto <strong>${vaga.ponto}</strong>?`,
+        () => {
+
+          mostrarSpinner();
+
+
+          apiJSONP(
+            "excluirVagaN",
+            {
+              idVaga: vaga.idVaga
+            },
+
+            function() {
+
+              esconderSpinner();
+
+              carregarTodasVagasAbertas();
+
+              mostrarAlertaGlobal(
+                "✅ Vaga excluída com sucesso."
+              );
+
+            },
+
+            function(err) {
+
+              esconderSpinner();
+
+              mostrarAlertaGlobal(
+                "❌ Erro ao excluir vaga: " +
+                err.message
+              );
+
+            }
+          );
+
+
+        }
+      );
+
+    };
+
+    tbody.appendChild(tr);
+  });
+}
 let notificacaoEscala = null;
 function tratarNotificacaoAoAbrir() {
 
@@ -15759,7 +16912,7 @@ function tratarNotificacaoAoAbrir() {
 
 }*/
 
-function carregarVagasDisponiveis() {
+/*function carregarVagasDisponiveis() {
 
   console.log("🚨 INICIANDO BUSCA DE VAGAS");
 
@@ -15772,7 +16925,7 @@ function carregarVagasDisponiveis() {
     mostrarSpinner();
 
   apiJSONP(
-    "listarVagasDisponiveis",
+    "listarVagasDisponiveisN",
     {},
     function(res) {
 
@@ -15856,7 +17009,16 @@ function carregarVagasDisponiveis() {
             <div>
               🚗 <strong>Equipamento:</strong>
               ${vaga.equipamento}
-            </div>
+            </div>  
+
+            ${vaga.tipo === "DUPLA" ? `
+
+              <div>
+                👥 <strong>Precisa de companheiro:</strong>
+                ${vaga.nomeParticipante}
+              </div>
+
+              ` : ""}
 
           </div>
 
@@ -15899,6 +17061,167 @@ function carregarVagasDisponiveis() {
     function(err) {
 
       console.error("❌ ERRO BUSCAR VAGAS:", err);
+
+      lista.innerHTML =
+        "❌ Erro: " + err.message;
+
+    }
+  );
+
+}*/
+function carregarVagasDisponiveis() {
+
+  console.log("🚨 INICIANDO BUSCA DE VAGAS");
+
+  const lista =
+    document.getElementById("listaVagasDisponiveis");
+
+  lista.innerHTML =
+    "Carregando vagas...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarVagasDisponiveisN",
+    {},
+    function(res) {
+
+      console.log("📋 RESPOSTA VAGAS:", res);
+
+      esconderSpinner();
+
+      if (!res.sucesso) {
+
+        lista.innerHTML =
+          "❌ Erro ao carregar vagas.";
+
+        return;
+
+      }
+
+      if (!res.vagas.length) {
+
+        lista.innerHTML =
+          "🎉 Nenhuma vaga disponível.";
+
+        return;
+
+      }
+
+      lista.innerHTML = "";
+
+      res.vagas.forEach(vaga => {
+
+        const destaque =
+          vaga.idVaga === idVagaNotificacao;
+
+        const div =
+          document.createElement("div");
+
+        div.className = "card-vaga";
+
+        if (destaque) {
+          div.classList.add("card-vaga-destaque");
+        }
+
+        div.innerHTML = `
+
+          <div class="titulo-vaga">
+            ${
+              destaque
+                ? "🔔 Vaga da sua notificação"
+                : "🚨 Vaga disponível"
+            }
+          </div>
+
+          ${
+            destaque
+              ? `
+              <div class="aviso-vaga-notificacao">
+                🔔 Esta é a vaga da sua notificação
+              </div>
+            `
+              : ""
+          }
+
+          <div class="info-vaga">
+
+            <div>
+              📍 <strong>Ponto:</strong>
+              ${vaga.ponto}
+            </div>
+
+            <div>
+              📅 <strong>Dia:</strong>
+              ${vaga.dia}
+            </div>
+
+            <div>
+              🔄 <strong>Frequência:</strong>
+              ${vaga.frequencia}
+            </div>
+
+            <div>
+              🚗 <strong>Equipamento:</strong>
+              ${vaga.equipamento || "-"}
+            </div>
+
+            <div>
+                    👥 <strong>Companheiro:</strong>
+                    ${vaga.nomeParticipante}
+            </div>
+
+            <!--${
+              vaga.tipo === "INDIVIDUAL"
+              && vaga.nomeParticipante
+                ? `
+                  <div>
+                    👥 <strong>Companheiro:</strong>
+                    ${vaga.nomeParticipante}
+                  </div>
+                `
+                : ""
+            }-->
+
+          </div>
+
+          <button
+            class="${
+              destaque
+                ? "btn-aceitar-vaga btn-aceitar-destaque"
+                : "btn-aceitar-vaga"
+            }"
+            onclick="aceitarVaga('${vaga.idVaga}')">
+
+            Quero assumir esta vaga
+
+          </button>
+
+        `;
+
+        lista.appendChild(div);
+
+        if (destaque) {
+
+          setTimeout(() => {
+
+            div.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+
+          }, 300);
+
+        }
+
+      });
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(err);
 
       lista.innerHTML =
         "❌ Erro: " + err.message;
@@ -18465,6 +19788,294 @@ function fecharModalEditarEscalaTurno() {
 
 }
 
+function abrirModalEscolherGrupo(dados){
+
+    window.contextoEscolhaGrupo = dados;
+
+
+    const modal =
+        document.getElementById(
+            "modalEscolherGrupoDesignacao"
+        );
+
+
+    modal.classList.remove("oculto");
+
+
+    montarListaGruposDisponiveis(
+        dados.grupos
+    );
+
+}
+
+function montarListaGruposDisponiveis(grupos){
+
+
+    const div =
+        document.getElementById(
+            "listaGruposDisponiveis"
+        );
+
+
+    div.innerHTML = "";
+
+
+    grupos.forEach(grupo=>{
+
+
+        const card =
+        document.createElement("div");
+
+
+        card.className =
+            "card-companheiro";
+
+
+        let nomes = "";
+
+
+        grupo.integrantes.forEach(p=>{
+
+            nomes +=
+            `
+            👤 ${p.id}<br>
+            `;
+
+        });
+
+
+        card.innerHTML =
+
+        `
+        <strong>
+        👥 Grupo ${grupo.grupo}
+        </strong>
+
+        <br><br>
+
+        ${nomes}
+
+
+        <button
+        class="botao editar">
+
+        Selecionar este grupo
+
+        </button>
+
+        `;
+
+
+        card.querySelector("button")
+        .onclick = ()=>{
+
+
+            selecionarGrupoParaDesignacao(
+                grupo
+            );
+
+
+        };
+
+
+        div.appendChild(card);
+
+
+    });
+
+
+    const novo =
+    document.createElement("button");
+
+
+    novo.className =
+        "botao editar";
+
+
+    novo.innerHTML =
+        "➕ Criar nova dupla";
+
+
+    novo.onclick = ()=>{
+
+        criarNovoGrupoNaDesignacao();
+
+    };
+
+
+    div.appendChild(novo);
+
+}
+
+function selecionarGrupoParaDesignacao(grupo){
+
+
+    const dados =
+        window.contextoEscolhaGrupo;
+
+
+    mostrarSpinner();
+
+
+    apiJSONP(
+
+        "adicionarParticipanteAoGrupo",
+
+        {
+
+            idParticipante:
+                dados.idParticipante,
+
+            designacao:
+                dados.designacao,
+
+            frequencia:
+                dados.frequencia,
+
+            equipamento:
+                dados.equipamento,
+
+            grupo:
+                grupo.grupo,
+
+            posicao:
+                grupo.integrantes.length + 1
+
+        },
+
+
+        function(res){
+
+
+            esconderSpinner();
+
+
+            fecharModalEscolherGrupo();
+
+
+            mostrarAlertaGlobal(
+                "✅ Participante adicionado ao grupo."
+            );
+
+
+            carregarAbas();
+
+
+        },
+
+
+        function(err){
+
+
+            esconderSpinner();
+
+
+            mostrarAlertaGlobal(
+                "❌ " + err.message
+            );
+
+
+        }
+
+    );
+
+
+}
+
+function criarNovoGrupoNaDesignacao(){
+
+
+    const dados =
+        window.contextoEscolhaGrupo;
+
+
+    mostrarSpinner();
+
+
+    apiJSONP(
+
+        "criarNovoGrupoNaDesignacao",
+
+        {
+
+            idParticipante:
+                dados.idParticipante,
+
+            designacao:
+                dados.designacao,
+
+            frequencia:
+                dados.frequencia,
+
+            equipamento:
+                dados.equipamento
+
+        },
+
+
+        function(res){
+
+
+            esconderSpinner();
+
+
+            fecharModalEscolherGrupo();
+
+
+            mostrarAlertaGlobal(
+                "✅ Novo grupo criado."
+            );
+
+
+            carregarAbas();
+
+
+        },
+
+
+        function(err){
+
+
+            esconderSpinner();
+
+
+            mostrarAlertaGlobal(
+                "❌ " + err.message
+            );
+
+
+        }
+
+    );
+
+
+}
+
+function fecharModalEscolherGrupo(){
+
+
+    document
+    .getElementById(
+        "modalEscolherGrupoDesignacao"
+    )
+    .classList.add("oculto");
+
+
+    document
+    .getElementById(
+        "listaGruposDisponiveis"
+    )
+    .innerHTML = "";
+
+
+    window.contextoEscolhaGrupo = null;
+
+}
+
+
+
+window.contextoEscolhaGrupo = null;
+
 let equipamentoSelecionadoVaga = "";
 let participanteSelecionadoEdicaoEscalaTurno = null;
 
@@ -18486,9 +20097,9 @@ let abrirModalDepoisDaPesquisa = false;
 function renderizarDesignados(lista) {
 
   console.log(
-  "🔵 entrou renderizarDesignados:",
-  lista
-);
+    "🔵 entrou renderizarDesignados:",
+    lista
+  );
 
   const div = document.getElementById("listaDesignados");
   div.innerHTML = "";
@@ -20884,5 +22495,843 @@ function abrirWhatsApp(telefone, mensagem) {
     url,
     "_blank"
   );
+
+}
+
+/** NOVAS FUNÇÕES PARA DEFINIR, BUSCAR E ALTERAR DUPLAS E GRUPOS */
+function obterCodigoTurno(turno) {
+
+  const turnoCodigoMap = {
+    "Manhã": "M",
+    "Tarde": "T",
+    "Noite": "N",
+    "Matinal": "A",
+    "Manhã (9–11h)": "MA",
+    "Manhã (11–13h)": "MB",
+    "Tarde (13–15h)": "TA",
+    "Tarde (15–17h)": "TB"
+  };
+
+  return turnoCodigoMap[turno] || turno;
+
+}
+function criarGrupoCompanheiros(){
+
+  const {
+    idParticipante,
+    designacao
+  } = window.contextoCompanheiros;
+
+
+  console.log(
+    "CRIANDO GRUPO:",
+    idParticipante,
+    designacao
+  );
+
+
+  mostrarSpinner();
+
+
+  apiJSONP(
+
+    "criarGrupoParaDesignacao",
+
+    {
+      idParticipante,
+      designacao
+    },
+
+
+    function(res){
+
+      esconderSpinner();
+
+
+      if(!res.sucesso){
+
+        mostrarAlertaGlobal(
+          "❌ " + res.mensagem
+        );
+
+        return;
+
+      }
+
+
+      mostrarAlertaGlobal(
+        "✅ Grupo criado"
+      );
+
+
+      abrirModalCompanheiros(
+        idParticipante,
+        designacao
+      );
+
+
+    },
+
+    function(err){
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ " + err.message
+      );
+
+    }
+
+  );
+
+}
+
+function abrirModalCompanheiros(
+  idParticipante,
+  designacao){
+
+     mostrarSpinner();
+
+    window.contextoCompanheiros = {
+    idParticipante,
+    designacao
+  };
+
+  document
+    .getElementById("modalCompanheiros")
+    .classList.remove("oculto");
+
+
+  document
+    .getElementById("dadosGrupoCompanheiros")
+    .innerHTML =
+      "🔄 Carregando grupo...";
+
+
+  apiJSONP(
+
+    "obterCompanheirosDesignacao",
+
+    {
+      idParticipante,
+      designacao
+    },
+
+
+    function(res){
+
+      esconderSpinner();
+
+      window.contextoCompanheiros = {
+
+          idParticipante,
+
+          designacao,
+
+          grupo: res.grupo
+
+      };
+
+      montarTelaCompanheiros(res);
+
+
+    },
+
+
+    function(err){
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ " + err.message
+      );
+
+
+    }
+
+  );
+
+}
+function montarTelaCompanheiros(res){
+
+    let situacao = "";
+
+    switch (res.companheiros.length) {
+
+        case 1:
+            situacao = "👤 Grupo incompleto";
+            break;
+
+        case 2:
+            situacao = "👥 Dupla formada";
+            break;
+
+        case 3:
+            situacao = "👥 Trio formado";
+            break;
+
+        default:
+            situacao =
+                `👥 Grupo com ${res.companheiros.length} integrantes`;
+
+    }
+  
+    const listaGrupo =
+        document.getElementById(
+            "listaCompanheirosGrupo"
+        );
+
+    const listaAdicionar =
+        document.getElementById(
+            "listaAdicionarCompanheiro"
+        );
+
+    listaGrupo.style.display = "block";
+    listaAdicionar.style.display = "none";
+
+    if(!res.sucesso){
+
+        listaGrupo.innerHTML =
+            "❌ Erro ao carregar grupo.";
+
+        return;
+
+    }
+
+    let html = "";
+
+    if(!res.grupo){
+
+        html += `
+
+            <p>
+            Esta designação ainda não possui grupo.
+            </p>
+
+            <button
+                onclick="criarGrupoCompanheiros()">
+
+                ➕ Criar grupo
+
+            </button>
+
+        `;
+
+    }
+
+    else{
+
+        html += `
+
+        <p>
+
+            <strong>Grupo:</strong>
+            ${res.grupo}
+
+            <br>
+
+            <small>${situacao}</small>
+
+        </p>
+
+        <hr>
+
+        `;
+
+        /*res.companheiros.forEach(c=>{
+
+            html += `
+
+            <div class="card-companheiro">
+
+                <strong>
+
+                    ${c.posicao} - ${c.nome}
+
+                </strong>
+
+                <br>
+
+                ${c.congregacao}
+
+                ${
+                    c.posicao>1
+                    ?
+                    `
+                    <button
+                    onclick="
+                        removerCompanheiro(
+                            '${res.grupo}',
+                            '${c.id}',
+                            '${c.designacao}'
+                        )
+                    ">
+                    ❌ Remover
+                    </button>
+                    `
+                    :
+                    ""
+                }
+            </div>
+
+            `;
+
+        });*/
+        /*res.companheiros.forEach(c=>{
+
+            html += `
+
+            <div class="card-companheiro">
+
+                <strong>
+
+                    ${c.posicao} - ${c.nome}
+
+                </strong>
+
+                <br>
+
+                ${c.congregacao}
+
+                    <br>
+
+                      <button
+                      onclick="
+                      removerCompanheiro(
+                        '${res.grupo}',
+                        '${c.id}',
+                        '${c.designacao}'
+                      )">
+
+                      ❌ Remover
+
+                      </button>
+
+
+            </div>
+
+            `;
+
+        });*/
+        res.companheiros.forEach(c=>{
+
+            html += `
+            <div class="cabecalho-companheiro">
+                  <strong>
+                      ${c.posicao} - ${c.nome}
+                  </strong>
+                  <span
+                      class="icone-remover-companheiro"
+                      title="Remover companheiro"
+                      onclick="
+                          confirmarRemocaoCompanheiro(
+                              '${res.grupo}',
+                              '${c.id}',
+                              '${c.designacao}',
+                              '${c.nome.replace(/'/g, "\\'")}'
+                          )
+                      ">
+                      🗑️
+                  </span>
+              </div>
+              <div class="congregacao-companheiro">
+                  ${c.congregacao}
+            </div>
+
+            `;
+
+        });
+
+        html += `
+
+            <button class="btn-desig-comp"
+            onclick="adicionarCompanheiroTela()">
+
+            ➕ Adicionar companheiro
+
+            </button>
+
+        `;
+
+    }
+
+    listaGrupo.innerHTML = html;
+
+}
+function confirmarRemocaoCompanheiro(
+    grupo,
+    id,
+    designacao,
+    nome
+) {
+
+    mostrarConfirmacaoGlobal(
+
+        `Remover <b>${nome}</b> deste grupo?`,
+
+        function () {
+
+            removerCompanheiro(
+                grupo,
+                id,
+                designacao
+            );
+
+        }
+
+    );
+
+}
+function adicionarCompanheiroTela(){
+
+    carregarPossiveisCompanheiros();
+
+}
+function removerCompanheiro(
+    grupo,
+    idRemover,
+    designacao
+) {
+
+  mostrarSpinner();
+
+
+  apiJSONP(
+
+    "removerCompanheiro",
+
+    {
+
+      grupo,
+
+      idRemover,
+
+      designacao
+
+    },
+
+
+    function(res) {
+
+
+      esconderSpinner();
+
+
+      if (!res.sucesso) {
+
+        mostrarAlertaGlobal(
+          "❌ " + res.mensagem
+        );
+
+        return;
+
+      }
+
+
+      mostrarAlertaGlobal(
+        "✅ Companheiro removido."
+      );
+
+
+      // Atualiza o modal mantendo o contexto atual
+
+      if (
+        window.contextoCompanheiros
+      ) {
+
+        abrirModalCompanheiros(
+
+          window.contextoCompanheiros.idParticipante,
+
+          window.contextoCompanheiros.designacao
+
+        );
+
+      }
+
+
+    },
+
+
+    function(err) {
+
+
+      esconderSpinner();
+
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao remover companheiro: " +
+        err.message
+      );
+
+
+    }
+
+  );
+
+}
+function fecharModalCompanheiros(){
+
+    document
+        .getElementById("modalCompanheiros")
+        .classList.add("oculto");
+
+    document.getElementById(
+        "listaCompanheirosGrupo"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "listaAdicionarCompanheiro"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "listaCompanheirosGrupo"
+    ).style.display = "block";
+
+    document.getElementById(
+        "listaAdicionarCompanheiro"
+    ).style.display = "none";
+
+    window.contextoCompanheiros = null;
+
+}
+
+function carregarPossiveisCompanheiros(){
+
+    const {
+        idParticipante,
+        designacao
+    } = window.contextoCompanheiros;
+
+    mostrarSpinner();
+
+    apiJSONP(
+
+        "buscarPossiveisCompanheiros",
+
+        {
+
+            idParticipante,
+
+            designacao
+
+        },
+
+        function(res){
+
+            esconderSpinner();
+
+            if(!res.sucesso){
+
+                mostrarAlertaGlobal(res.mensagem);
+
+                return;
+
+            }
+
+            montarListaAdicionarCompanheiro(
+                res.candidatos
+            );
+
+        },
+
+        function(err){
+
+            esconderSpinner();
+
+            mostrarAlertaGlobal(err.message);
+
+        }
+
+    );
+
+}
+
+/*function montarListaAdicionarCompanheiro(lista){
+
+    document.getElementById(
+        "listaCompanheirosGrupo"
+    ).style.display = "none";
+
+    const div =
+        document.getElementById(
+            "listaAdicionarCompanheiro"
+        );
+
+    div.style.display = "block";
+
+    div.innerHTML = "";
+
+    if(lista.length===0){
+
+        div.innerHTML =
+            "<p>Não há companheiros disponíveis.</p>";
+
+        return;
+
+    }
+
+    lista.forEach(p=>{
+
+        const botao =
+            document.createElement("button");
+
+        botao.className =
+            "botao-participante-modal";
+
+        botao.innerHTML =
+
+            `👤 <b>${p.nome}</b><br>
+             <small>${p.frequencia}</small>`;
+
+        botao.onclick = ()=>{
+
+            confirmarAdicionarCompanheiro(p);
+
+        };
+
+        div.appendChild(botao);
+
+    });
+
+}*/
+
+/*function montarListaAdicionarCompanheiro(lista){
+
+    const div =
+        document.getElementById(
+            "dadosGrupoCompanheiros"
+        );
+
+    let html = `
+
+        <h3>
+        Escolha um companheiro
+        </h3>
+
+    `;
+
+    lista.forEach(p=>{
+
+        html += `
+
+        <div class="card-companheiro">
+
+            <strong>
+
+                ${p.nome}
+
+            </strong>
+
+            <br>
+
+            ${p.congregacao}
+
+            <br>
+
+            ${p.frequencia}
+
+            <br><br>
+
+            <button
+            onclick="
+            confirmarAdicionarCompanheiro(
+                '${p.id}'
+            )">
+
+            ➕ Adicionar
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    html += `
+
+    <hr>
+
+    <button
+    onclick="
+    abrirModalCompanheiros(
+        '${window.contextoCompanheiros.idParticipante}',
+        '${window.contextoCompanheiros.designacao}'
+    )">
+
+    ⬅ Voltar
+
+    </button>
+
+    `;
+
+    div.innerHTML = html;
+
+}*/
+function montarListaAdicionarCompanheiro(lista){
+
+    document.getElementById(
+        "listaCompanheirosGrupo"
+    ).style.display = "none";
+
+    const div =
+        document.getElementById(
+            "listaAdicionarCompanheiro"
+        );
+
+    div.style.display = "block";
+
+    div.innerHTML = "";
+
+    if(lista.length===0){
+
+        div.innerHTML = `
+
+            <p>
+
+                Não há companheiros disponíveis.
+
+            </p>
+
+            <button class="btn-desig-comp"
+            onclick="
+                abrirModalCompanheiros(
+                    window.contextoCompanheiros.idParticipante,
+                    window.contextoCompanheiros.designacao
+                )
+            ">
+
+            ⬅ Voltar
+
+            </button>
+
+        `;
+
+        return;
+
+    }
+
+    lista.forEach(p=>{
+
+        const botao =
+            document.createElement("button");
+
+        botao.className =
+            "botao-participante-modal";
+
+        botao.innerHTML =
+
+            `👤 <b>${p.nome}</b><br>
+             <small>${p.frequencia}</small>`;
+
+        botao.onclick = ()=>{
+
+            confirmarAdicionarCompanheiro(p);
+
+        };
+
+        div.appendChild(botao);
+
+    });
+
+    const voltar =
+        document.createElement("button");
+
+    voltar.className = "btn-desig-comp";
+
+    voltar.textContent =
+        "⬅ Voltar";
+
+    voltar.onclick = ()=>{
+
+        abrirModalCompanheiros(
+
+            window.contextoCompanheiros.idParticipante,
+
+            window.contextoCompanheiros.designacao
+
+        );
+
+    };
+
+    div.appendChild(voltar);
+
+}
+
+function confirmarAdicionarCompanheiro(participante){
+
+    const grupo =
+        window.contextoCompanheiros.grupo;
+
+    const designacao =
+        window.contextoCompanheiros.designacao;
+
+    mostrarConfirmacaoGlobal(
+
+        `Adicionar <b>${participante.nome}</b> ao grupo?`,
+
+        ()=>{
+
+            mostrarSpinner();
+
+            apiJSONP(
+
+                "adicionarCompanheiroAoGrupo",
+
+                {
+
+                    grupo,
+
+                    designacao,
+
+                    idParticipante:
+                        participante.id
+
+                },
+
+                function(res){
+
+                    esconderSpinner();
+
+                    if(!res.sucesso){
+
+                        mostrarAlertaGlobal(
+                            res.mensagem
+                        );
+
+                        return;
+
+                    }
+
+                    mostrarAlertaGlobal(
+                        "✅ Companheiro adicionado."
+                    );
+
+                    abrirModalCompanheiros(
+
+                        window.contextoCompanheiros.idParticipante,
+
+                        designacao
+
+                    );
+
+                },
+
+                function(err){
+
+                    esconderSpinner();
+
+                    mostrarAlertaGlobal(
+                        err.message
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
 
 }

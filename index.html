@@ -17,6 +17,79 @@
 
 <body>
 
+  <!-- =========================================
+     NOVO MODAL PARA A TELA DE DESIGNAR QUE A PARTIR DE AGORA VAI BUSCAR CALCULAR E ALTERAR AS DUPLAS E GRUPOS EXISTENTES
+  ========================================= -->
+
+  <div id="modalEscolherGrupoDesignacao" class="modal-padrao oculto">
+
+  <div class="modal-conteudo">
+
+    <h3>
+      👥 Escolher grupo
+    </h3>
+
+
+    <div id="listaGruposDisponiveis">
+
+      Carregando...
+
+    </div>
+
+
+    <button
+      onclick="fecharModalEscolherGrupo()">
+
+      Fechar
+
+    </button>
+
+
+  </div>
+
+</div>
+
+<!-- =========================================
+     NOVO MODAL PARA A TELA DE DESIGNAR QUE A PARTIR DE AGORA VAI BUSCAR CALCULAR E ALTERAR AS DUPLAS E GRUPOS EXISTENTES
+  ========================================= -->
+
+<!-- =========================================
+     NOVO MODAL PARA A TELA DE ESCALAS POR TURNO PARA PESQUISAR COMPANHEIROS E GRUPOS
+========================================= -->
+
+  <div id="modalCompanheiros" class="modal-padrao oculto">
+
+  <div class="modal-conteudo">
+
+    <h3>
+      👥 Companheiros da escala
+    </h3>
+
+
+    <div id="dadosGrupoCompanheiros">
+
+      Carregando...
+
+    </div>
+
+    
+    <div id="listaCompanheirosGrupo"></div>
+
+    <div id="listaAdicionarCompanheiro"
+        style="display:none;">
+    </div>
+
+
+    <button
+      onclick="fecharModalCompanheiros()">
+      Fechar
+    </button>
+
+
+  </div>
+
+</div>
+
 <!-- =========================================
      NOVO MODAL PARA A TELA DE ESCALAS POR TURNO
 
@@ -3341,7 +3414,7 @@
             onclick="abrirSelecaoDiaDesignar()"
         >
 
-        <label>frequência</label>
+        <label>Frequência</label>
 
         <input
             id="frequenciaVisual"

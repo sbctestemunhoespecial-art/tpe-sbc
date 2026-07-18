@@ -104,6 +104,7 @@ button:hover {
 button.confirm, button.cancel, button.excluir, 
 button.editar, button.salvar {
   width: 10em;
+  font-size: 0.8em;
 }
 
 .botoes-lado-a-lado {
@@ -1141,7 +1142,7 @@ button.btn-voltar-menu:hover {
    MODAL PADRÃO
 ========================= */
 
-.modal-padrao {
+/*.modal-padrao {
 
     position: fixed;
 
@@ -1159,16 +1160,11 @@ button.btn-voltar-menu:hover {
     z-index:9999;
 
 }
-
-
 .modal-padrao.oculto {
 
     display:none;
 
 }
-
-
-
 .modal-conteudo {
 
     width:100%;
@@ -1187,9 +1183,6 @@ button.btn-voltar-menu:hover {
     0 15px 40px rgba(0,0,0,.25);
 
 }
-
-
-
 .modal-conteudo h3 {
 
     margin:0;
@@ -1204,8 +1197,201 @@ button.btn-voltar-menu:hover {
 
     font-size:22px;
 
+}*/
+.modal-padrao {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.45);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 9999;
+
 }
 
+.modal-padrao.oculto {
+
+    display: none;
+
+}
+
+.modal-conteudo {
+
+    width: 95%;
+
+    max-width: 450px;
+
+    max-height: 80vh;
+
+    background: white;
+
+    border-radius: var(--raio-borda);
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.25);
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding-bottom: 16px;
+
+}
+
+.modal-conteudo h3 {
+
+    margin: 0;
+
+    padding: 18px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 22px;
+
+}
+
+/* Todo conteúdo abaixo do título */
+
+.modal-conteudo > div {
+
+    padding: 12px 16px;
+
+}
+
+/* Todos os botões do modal */
+
+.modal-conteudo button {
+
+    /*margin-top: 10px;*/
+    width: 95%;
+
+    margin: 10px auto 0;
+
+}
+
+/* Quando houver mais de um botão consecutivo */
+
+.modal-conteudo button + button {
+
+    margin-left: 8px;
+
+}
+
+/* Cartões dos companheiros */
+
+/* Lista de participantes disponíveis */
+
+.card-companheiro{
+
+    padding:10px;
+
+    margin-bottom:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:var(--raio-borda);
+
+    background:#fafafa;
+
+}
+
+.botao-participante-modal {
+
+    display: block;
+
+    width: 100%;
+
+    text-align: left;
+
+    margin-bottom: 10px;
+
+}
+.card-companheiro{
+
+    padding:10px;
+    margin-bottom:12px;
+
+}
+
+.cabecalho-companheiro{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.congregacao-companheiro{
+
+    margin-top:2px;
+
+    margin-bottom: 8px;
+
+    color:#666;
+
+    font-size:.9rem;
+
+}
+
+.icone-remover-companheiro{
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.15s;
+
+}
+
+.icone-remover-companheiro:hover{
+
+    transform:scale(1.2);
+
+}
+
+.btn-desig-comp{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+.btn-desig-comp .botao{
+
+    margin:0 !important;
+
+}
+
+.btn-desig-comp .botao{
+
+    flex:1;
+
+    min-width:110px;
+
+}
 
 
 #filtroModalSelecao {
@@ -2981,4 +3167,33 @@ td {
   width: 4rem;
   border: none;
 
+}
+
+/* CSS PARA EXIBIÇÃO DAS DUPLAS, TRIOS E GRUPOS NA ESCALA POR TURNO*/
+/*.linha-grupo td{
+
+    background:#ececec;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    padding:8px;
+
+    border-top:2px solid #999;
+
+}*/
+
+.linha-dia td {
+    background:#004080;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+    padding:8px;
+}
+
+.linha-grupo td {
+    background:#E8F0FE;
+    font-weight:bold;
+    text-align:center;
 }

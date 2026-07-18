@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/fireba
 import {
   getMessaging,
   getToken,
+  deleteToken,
   onMessage
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging.js";
 
@@ -181,3 +182,4 @@ async function registrarPush(idUsuarioLogado) {
 window.registrarPush = registrarPush;
 
 window.messaging = messaging;
+window.deleteToken = deleteToken;

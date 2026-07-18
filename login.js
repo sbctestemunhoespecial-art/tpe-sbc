@@ -1111,8 +1111,6 @@ function fazerLogin() {
 
             abrirTela("telaVagasDisponiveis");
 
-            //carregarVagasDisponiveis();
-
           }
 
         },
@@ -1266,6 +1264,180 @@ window.addEventListener("DOMContentLoaded", () => {
   tratarNotificacaoAoAbrir();
 
 });
+
+async function repararAplicativo() {
+
+  mostrarSpinner();
+
+  try {
+
+    console.log("♻️ Reparando aplicativo...");
+
+    //--------------------------------------------------
+    // Remover token FCM
+    //--------------------------------------------------
+
+    try {
+
+      if (
+        window.messaging &&
+        "serviceWorker" in navigator
+      ) {
+
+        const registration =
+          await navigator.serviceWorker.ready;
+
+        await deleteToken(
+          window.messaging
+        );
+
+        console.log(
+          "✅ Token FCM removido."
+        );
+
+      }
+
+    } catch (e) {
+
+      console.log(
+        "ℹ️ Token FCM inexistente ou já removido."
+      );
+
+    }
+
+    //--------------------------------------------------
+    // Limpar sessão
+    //--------------------------------------------------
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    console.log(
+      "✅ LocalStorage e SessionStorage limpos."
+    );
+
+    //--------------------------------------------------
+    // Limpar CacheStorage
+    //--------------------------------------------------
+
+    if ("caches" in window) {
+
+      const nomes =
+        await caches.keys();
+
+      for (const nome of nomes) {
+
+        await caches.delete(nome);
+
+      }
+
+      console.log(
+        "✅ CacheStorage limpo."
+      );
+
+    }
+
+    //--------------------------------------------------
+    // Remover Service Workers
+    //--------------------------------------------------
+
+    if ("serviceWorker" in navigator) {
+
+      const registros =
+        await navigator.serviceWorker.getRegistrations();
+
+      for (const registro of registros) {
+
+        await registro.unregister();
+
+      }
+
+      console.log(
+        "✅ Service Workers removidos."
+      );
+
+    }
+
+    //--------------------------------------------------
+    // Apagar IndexedDB
+    //--------------------------------------------------
+
+    if (
+      window.indexedDB &&
+      indexedDB.databases
+    ) {
+
+      const bancos =
+        await indexedDB.databases();
+
+      for (const banco of bancos) {
+
+        if (banco.name) {
+
+          indexedDB.deleteDatabase(
+            banco.name
+          );
+
+        }
+
+      }
+
+      console.log(
+        "✅ IndexedDB limpo."
+      );
+
+    }
+
+    //--------------------------------------------------
+    // Pequena pausa para concluir exclusões
+    //--------------------------------------------------
+
+    await new Promise(r => setTimeout(r, 500));
+
+    console.log(
+      "🏁 Reparo concluído."
+    );
+
+  } catch (e) {
+
+    console.error(
+      "Erro durante o reparo:",
+      e
+    );
+
+  }
+
+  esconderSpinner();
+
+  location.reload(true);
+
+}
+
+function confirmarReparoAplicativo() {
+
+  mostrarConfirmacaoGlobal(
+
+    `🔧 Reparar aplicativo?<br><br>
+
+Serão apagados:<br>
+• Sessão<br>
+• Cache<br>
+• Dados locais<br>
+• Token de notificações<br><br>
+
+Seus dados no servidor NÃO serão perdidos.`,
+
+    () => {
+
+      repararAplicativo();
+
+    }
+
+  );
+
+}
+
+
 
 let participantesSemDisponibilidade = [];
  

@@ -214,15 +214,16 @@ async function verificarVersaoApp() {
     console.log("Versão servidor:", versaoServidor);
     console.log("Versão local:", versaoLocal);
 
-    if (!versaoLocal) {
-
+    /*if (!versaoLocal) {
       localStorage.setItem(
         "appVersion",
         versaoServidor
       );
-
       return;
-
+    }*/
+    if (!versaoLocal) {
+      mostrarTelaAtualizacao();
+      return;
     }
 
     if (versaoServidor !== versaoLocal) {
@@ -255,177 +256,6 @@ function atualizarStatusAtualizacao(texto) {
 
 }
 
-/*async function atualizarAplicativo() {
-
-  mostrarSpinner();
-
-  try {
-
-    // Atualiza a versão local
-    localStorage.setItem(
-      "appVersion",
-      versaoServidor
-    );
-
-    // Remove apenas os caches do aplicativo
-    const nomes =
-      await caches.keys();
-
-    for (const nome of nomes) {
-
-      if (nome.startsWith("tpe")) {
-
-        await caches.delete(nome);
-
-        console.log(
-          "🗑 Cache removido:",
-          nome
-        );
-
-      }
-
-    }
-
-    // Atualiza o Service Worker
-    const registro =
-      await navigator.serviceWorker.getRegistration();
-
-    if (registro) {
-
-      await registro.update();
-
-      console.log(
-        "✅ Service Worker atualizado"
-      );
-
-    }
-
-    // Pequena pausa
-    await new Promise(r => setTimeout(r, 800));
-
-    location.reload();
-
-  }
-  catch(e) {
-
-    esconderSpinner();
-
-    console.error(e);
-
-    mostrarAlertaGlobal(
-
-      "❌ Não foi possível atualizar o aplicativo."
-
-    );
-
-  }
-
-}*/
-/*async function atualizarAplicativo() {
-
-  try {
-
-    atualizarStatusAtualizacao(
-      "🚀 Preparando atualização..."
-    );
-
-    //localStorage.setItem(
-      //"appVersion",
-      //versaoServidor
-    //);
-
-    await new Promise(r =>
-      setTimeout(r, 700)
-    );
-
-    atualizarStatusAtualizacao(
-      "🔍 Verificando nova versão..."
-    );
-
-    if ("serviceWorker" in navigator) {
-
-      const registro =
-        await navigator.serviceWorker.getRegistration();
-
-      if (registro) {
-
-        //await registro.update();
-        await registro.update();
-
-        //if (registro.waiting) {
-
-          //registro.waiting.postMessage({
-
-           //type: "SKIP_WAITING"
-
-          //});
-
-       //}
-
-        if (registro.waiting) {
-
-          aguardarNovoServiceWorker();
-
-          registro.waiting.postMessage({
-            
-            type: "SKIP_WAITING"
-
-          });
-
-        }
-        else {
-
-          console.log(
-            "✅ Nenhuma atualização do Service Worker."
-          );
-
-          localStorage.setItem(
-            "appVersion",
-            versaoServidor
-          );
-
-          location.reload();
-
-        }
-
-      }
-
-    }
-
-    await new Promise(r =>
-      setTimeout(r, 700)
-    );
-
-    atualizarStatusAtualizacao(
-      "🧹 Limpando arquivos antigos..."
-    );
-
-    await new Promise(r =>
-      setTimeout(r, 700)
-    );
-
-    atualizarStatusAtualizacao(
-      "✅ Reiniciando aplicativo..."
-    );
-
-    //setTimeout(() => {
-
-      //location.reload();
-
-    //}, 800);
-
-  }
-  catch(e) {
-
-    console.error(e);
-
-    mostrarAlertaGlobal(
-      "❌ Erro ao atualizar o aplicativo."
-    );
-
-  }
-
-}*/
 async function atualizarAplicativo() {
 
   try {
@@ -999,6 +829,22 @@ let perfilUsuario = null;
 let idUsuarioLogado = null;
 let emailUsuario = null;
 
+function inicializarUsuario() {
+
+  registrarPush(idUsuarioLogado);
+
+  mostrarSecoesPorPerfil(perfilUsuario);
+
+  limparCamposUsuario();
+
+  restaurarCamposPerfil();
+
+  verificarTreinamentoPendente();
+
+  tratarNotificacaoAoAbrir();
+
+}
+
 function fazerLogin() {
 
   const email = document.getElementById('emailLogin').value.trim();
@@ -1098,8 +944,10 @@ function fazerLogin() {
           }
 
           esconderSpinner();
+
+          inicializarUsuario();
           
-          verificarTreinamentoPendente();
+          //verificarTreinamentoPendente();
           
           if (idVagaNotificacao) {
 
@@ -1201,15 +1049,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
-    registrarPush(idUsuarioLogado);
+    //registrarPush(idUsuarioLogado);
 
     document.getElementById("menuBtn").style.display = "inline-block";
     document.getElementById('telaLogin').style.display = 'none';
     document.getElementById('conteudoProtegido').style.display = 'block';
 
-    mostrarSecoesPorPerfil(dados.perfil);
-
-    //tratarNotificacaoAoAbrir();
+    //mostrarSecoesPorPerfil(dados.perfil);
+    inicializarUsuario();
 
     apiJSONP(
       "buscarNomeDoUsuario",
@@ -1265,7 +1112,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 });
 
-async function repararAplicativo() {
+/*async function repararAplicativo() {
 
   mostrarSpinner();
 
@@ -1410,6 +1257,158 @@ async function repararAplicativo() {
   esconderSpinner();
 
   location.reload(true);
+
+}*/
+async function repararAplicativo() {
+
+  mostrarConfirmacaoGlobal(
+
+    "⚠️ Isso irá apagar todos os dados locais do aplicativo neste aparelho.<br><br>Você precisará fazer login novamente.<br><br>Deseja continuar?",
+
+    async () => {
+
+      try {
+
+        mostrarSpinner();
+
+        //------------------------------------------------
+        // localStorage
+        //------------------------------------------------
+
+        localStorage.clear();
+
+        //------------------------------------------------
+        // sessionStorage
+        //------------------------------------------------
+
+        sessionStorage.clear();
+
+        //------------------------------------------------
+        // IndexedDB
+        //------------------------------------------------
+
+        if (window.indexedDB && indexedDB.databases) {
+
+          const bancos =
+            await indexedDB.databases();
+
+          for (const banco of bancos) {
+
+            if (banco.name) {
+
+              indexedDB.deleteDatabase(
+                banco.name
+              );
+
+            }
+
+          }
+
+        }
+
+        //------------------------------------------------
+        // Cache Storage
+        //------------------------------------------------
+
+        if ("caches" in window) {
+
+          const nomes =
+            await caches.keys();
+
+          await Promise.all(
+
+            nomes.map(nome =>
+              caches.delete(nome)
+            )
+
+          );
+
+        }
+
+        //------------------------------------------------
+        // Service Workers
+        //------------------------------------------------
+
+        if ("serviceWorker" in navigator) {
+
+          const registros =
+            await navigator.serviceWorker.getRegistrations();
+
+          await Promise.all(
+
+            registros.map(reg =>
+              reg.unregister()
+            )
+
+          );
+
+        }
+
+        //------------------------------------------------
+        // Push Subscription
+        //------------------------------------------------
+
+        if ("serviceWorker" in navigator) {
+
+          try {
+
+            const reg =
+              await navigator.serviceWorker.getRegistration();
+
+            if (reg) {
+
+              const sub =
+                await reg.pushManager.getSubscription();
+
+              if (sub) {
+
+                await sub.unsubscribe();
+
+              }
+
+            }
+
+          } catch(e) {}
+
+        }
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+
+          "✅ Aplicativo reparado.<br><br>A página será recarregada."
+
+        );
+
+        setTimeout(() => {
+
+          location.href =
+            location.origin +
+            location.pathname +
+            "?repair=" +
+            Date.now();
+
+        },1000);
+
+      }
+      catch(e){
+
+        esconderSpinner();
+
+        console.error(e);
+
+        mostrarAlertaGlobal(
+
+          "❌ Erro ao reparar o aplicativo.<br><br>" +
+          e.message
+
+        );
+
+      }
+
+    }
+
+  );
 
 }
 

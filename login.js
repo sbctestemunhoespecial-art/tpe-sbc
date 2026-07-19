@@ -829,22 +829,6 @@ let perfilUsuario = null;
 let idUsuarioLogado = null;
 let emailUsuario = null;
 
-function inicializarUsuario() {
-
-  registrarPush(idUsuarioLogado);
-
-  mostrarSecoesPorPerfil(perfilUsuario);
-
-  limparCamposUsuario();
-
-  restaurarCamposPerfil();
-
-  verificarTreinamentoPendente();
-
-  tratarNotificacaoAoAbrir();
-
-}
-
 function fazerLogin() {
 
   const email = document.getElementById('emailLogin').value.trim();
@@ -875,7 +859,7 @@ function fazerLogin() {
 
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
-      registrarPush(idUsuarioLogado);
+      //registrarPush(idUsuarioLogado);
 
       const saudacaoEl = document.getElementById("saudacaoUsuario");
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
@@ -919,6 +903,7 @@ function fazerLogin() {
       limparCamposUsuario();
       restaurarCamposPerfil();
 
+
       apiJSONP(
         "buscarNomeDoUsuario",
         {
@@ -945,9 +930,9 @@ function fazerLogin() {
 
           esconderSpinner();
 
-          inicializarUsuario();
+          registrarPush(idUsuarioLogado);
           
-          //verificarTreinamentoPendente();
+          verificarTreinamentoPendente();
           
           if (idVagaNotificacao) {
 
@@ -1056,7 +1041,6 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById('conteudoProtegido').style.display = 'block';
 
     //mostrarSecoesPorPerfil(dados.perfil);
-    inicializarUsuario();
 
     apiJSONP(
       "buscarNomeDoUsuario",
@@ -1112,153 +1096,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/*async function repararAplicativo() {
-
-  mostrarSpinner();
-
-  try {
-
-    console.log("♻️ Reparando aplicativo...");
-
-    //--------------------------------------------------
-    // Remover token FCM
-    //--------------------------------------------------
-
-    try {
-
-      if (
-        window.messaging &&
-        "serviceWorker" in navigator
-      ) {
-
-        const registration =
-          await navigator.serviceWorker.ready;
-
-        await deleteToken(
-          window.messaging
-        );
-
-        console.log(
-          "✅ Token FCM removido."
-        );
-
-      }
-
-    } catch (e) {
-
-      console.log(
-        "ℹ️ Token FCM inexistente ou já removido."
-      );
-
-    }
-
-    //--------------------------------------------------
-    // Limpar sessão
-    //--------------------------------------------------
-
-    localStorage.clear();
-    sessionStorage.clear();
-
-    console.log(
-      "✅ LocalStorage e SessionStorage limpos."
-    );
-
-    //--------------------------------------------------
-    // Limpar CacheStorage
-    //--------------------------------------------------
-
-    if ("caches" in window) {
-
-      const nomes =
-        await caches.keys();
-
-      for (const nome of nomes) {
-
-        await caches.delete(nome);
-
-      }
-
-      console.log(
-        "✅ CacheStorage limpo."
-      );
-
-    }
-
-    //--------------------------------------------------
-    // Remover Service Workers
-    //--------------------------------------------------
-
-    if ("serviceWorker" in navigator) {
-
-      const registros =
-        await navigator.serviceWorker.getRegistrations();
-
-      for (const registro of registros) {
-
-        await registro.unregister();
-
-      }
-
-      console.log(
-        "✅ Service Workers removidos."
-      );
-
-    }
-
-    //--------------------------------------------------
-    // Apagar IndexedDB
-    //--------------------------------------------------
-
-    if (
-      window.indexedDB &&
-      indexedDB.databases
-    ) {
-
-      const bancos =
-        await indexedDB.databases();
-
-      for (const banco of bancos) {
-
-        if (banco.name) {
-
-          indexedDB.deleteDatabase(
-            banco.name
-          );
-
-        }
-
-      }
-
-      console.log(
-        "✅ IndexedDB limpo."
-      );
-
-    }
-
-    //--------------------------------------------------
-    // Pequena pausa para concluir exclusões
-    //--------------------------------------------------
-
-    await new Promise(r => setTimeout(r, 500));
-
-    console.log(
-      "🏁 Reparo concluído."
-    );
-
-  } catch (e) {
-
-    console.error(
-      "Erro durante o reparo:",
-      e
-    );
-
-  }
-
-  esconderSpinner();
-
-  location.reload(true);
-
-}*/
 async function repararAplicativo() {
 
   mostrarConfirmacaoGlobal(

@@ -634,6 +634,141 @@ function sair() {
 
 }
 
+function sairPorExpiracao() {
+
+  // remove a sessão
+  localStorage.removeItem("usuarioLogado");
+
+  // limpa variáveis globais
+  perfilUsuario = null;
+  idUsuarioLogado = null;
+
+  historico.length = 0;
+  telaAtual = "menuCards";
+
+  idVagaNotificacao = null;
+  notificacaoEscala = null;
+
+  // limpa interface
+  document.querySelectorAll(".tela").forEach(el => {
+    el.classList.remove("aberta");
+  });
+
+  document.getElementById("menuCards")
+    ?.classList.add("aberta");
+
+  atualizarBotaoVoltar();
+
+  document.getElementById("menuBtn").style.display = "none";
+  document.getElementById("conteudoProtegido").style.display = "none";
+  document.getElementById("telaLogin").style.display = "block";
+
+  // limpa campos do login
+  document.getElementById("emailLogin").value = "";
+  document.getElementById("senhaLogin").value = "";
+  document.getElementById("msgLogin").textContent = "";
+
+  mostrarAlertaGlobal(
+    "⏰ Sua sessão expirou. Faça login novamente."
+  );
+
+}
+
+function confirmarEncerrarSessao() {
+
+  mostrarConfirmacaoGlobal(
+
+    `🚪 Encerrar a sessão?<br><br>
+  Você retornará para a tela de login, mas nenhum dado do aplicativo será apagado.`,
+
+    () => {
+
+      encerrarSessao();
+
+    }
+
+  );
+
+}
+
+function encerrarSessao() {
+
+  //------------------------------------------------
+  // Remove sessão salva
+  //------------------------------------------------
+
+  localStorage.removeItem("usuarioLogado");
+
+  //------------------------------------------------
+  // Limpa variáveis globais
+  //------------------------------------------------
+
+  perfilUsuario = null;
+  idUsuarioLogado = null;
+
+  historico.length = 0;
+  telaAtual = "menuCards";
+
+  idVagaNotificacao = null;
+  notificacaoEscala = null;
+
+  //------------------------------------------------
+  // Limpa interface
+  //------------------------------------------------
+
+  document.querySelectorAll(".tela").forEach(el => {
+    el.classList.remove("aberta");
+  });
+
+  document.getElementById("menuCards")
+    ?.classList.add("aberta");
+
+  atualizarBotaoVoltar();
+
+  document.getElementById("menuBtn").style.display = "none";
+  document.getElementById("conteudoProtegido").style.display = "none";
+  document.getElementById("telaLogin").style.display = "block";
+
+  //------------------------------------------------
+  // Limpa campos da tela de login
+  //------------------------------------------------
+
+  const email =
+    document.getElementById("emailLogin");
+
+  const senha =
+    document.getElementById("senhaLogin");
+
+  const msg =
+    document.getElementById("msgLogin");
+
+  if (email) email.value = "";
+  if (senha) senha.value = "";
+  if (msg) msg.textContent = "";
+
+  //------------------------------------------------
+  // Limpa saudação
+  //------------------------------------------------
+
+  const saudacao =
+    document.getElementById("saudacaoUsuario");
+
+  const perfil =
+    document.getElementById("tipoAcessoUsuario");
+
+  if (saudacao) saudacao.textContent = "";
+  if (perfil) perfil.textContent = "";
+
+  //------------------------------------------------
+  // Mensagem
+  //------------------------------------------------
+
+  mostrarAlertaGlobal(
+    "✅ Sessão encerrada.<br><br>Faça login novamente."
+  );
+
+}
+
 function abrirModalParticipantes() {
   document.getElementById("modalParticipantes").style.display = "flex";
 }
@@ -1020,7 +1155,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (expirou) {
 
-      localStorage.removeItem("usuarioLogado");
+      /*localStorage.removeItem("usuarioLogado");
 
       mostrarAlertaGlobal(
         "⏰ Sua sessão expirou. Faça login novamente."
@@ -1029,6 +1164,9 @@ window.addEventListener("DOMContentLoaded", () => {
       document.getElementById('telaLogin').style.display = 'block';
       document.getElementById('conteudoProtegido').style.display = 'none';
 
+      return;*/
+
+      sairPorExpiracao();
       return;
     }
 

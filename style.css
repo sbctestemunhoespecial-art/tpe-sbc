@@ -3197,3 +3197,118 @@ td {
     font-weight:bold;
     text-align:center;
 }
+
+/* estilo para o card de perfil*/
+.card-perfil{
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+    padding:20px;
+    max-width:700px;
+    margin:20px auto;
+}
+
+.card-perfil .linha-perfil{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:12px 0;
+    border-bottom:1px solid #e9e9e9;
+}
+
+.card-perfil .linha-perfil:last-of-type{
+    border-bottom:none;
+}
+
+.card-perfil .rotulo{
+    font-weight:600;
+    color:#555;
+    min-width:160px;
+}
+
+.card-perfil .linha-perfil span:last-child{
+    flex:1;
+    text-align:right;
+    color:#222;
+    font-weight:500;
+    word-break:break-word;
+}
+
+.card-perfil .acoes-perfil{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:25px;
+    flex-wrap:wrap;
+}
+
+.card-perfil input,
+.card-perfil select{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:14px;
+    box-sizing:border-box;
+}
+
+.card-perfil h5{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+/* Destaque do tempo de existencia das vagas */
+.vaga-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+
+.vaga-detalhes > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+
+.vaga-detalhes .titulo {
+  font-weight: 600;
+  color: #555;
+}
+
+
+.tempo {
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+
+.tempo-verde {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+
+.tempo-amarelo {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+.tempo-laranja {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+
+.tempo-vermelho {
+  background: #fee2e2;
+  color: #991b1b;
+}
+

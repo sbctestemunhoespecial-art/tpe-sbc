@@ -774,7 +774,7 @@
           <div id="menuCards" class="tela aberta">
       <div class="cards-menu">
         <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
-            onclick="abrirTela('minhaInfo', this); pesquisarMinhaInfo();">
+            onclick="abrirTela('cardPerfilMinhaInfo', this); pesquisarMinhaInfo();">
             <div class="icone">👤</div>
             <div class="titulo">Meu Perfil</div>
         </div>
@@ -935,7 +935,7 @@
 
 </div>
 
-<div id="minhaInfo" class="painel tela"> 
+  <!--<div id="minhaInfo" class="painel tela"> 
 
     <h5>👤 Meu Perfil</h5>
     <div id="painelMinhaInfo">
@@ -996,70 +996,71 @@
 
     <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
 
-    <h4 class="titulo-secao">Designações</h4>
+      <h4 class="titulo-secao">Designações</h4>
 
-    <div class="card-info">
-        <span id="campoDesignacao1Mi"></span>
+      <div class="card-info">
+          <span id="campoDesignacao1Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao2Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao3Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao4Mi"></span>
+      </div>
+
+      <div class="card-info">
+          <span id="campoDesignacao5Mi"></span>
+      </div>
+
+      <span id="campoIdentificacaoMi" style="display:none;"></span>
+
     </div>
 
-    <div class="card-info">
-        <span id="campoDesignacao2Mi"></span>
-    </div>
+    <div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
 
-    <div class="card-info">
-        <span id="campoDesignacao3Mi"></span>
-    </div>
+        <h4 class="titulo-secao">Privilégios</h4>
 
-    <div class="card-info">
-        <span id="campoDesignacao4Mi"></span>
-    </div>
+        <div class="lista-privilegios">
 
-    <div class="card-info">
-        <span id="campoDesignacao5Mi"></span>
-    </div>
+            <div class="item-privilegio">
+                <span class="rotulo-privilegio">Coordenação</span>
+                <span id="campoPrivOrganizacaoMi"></span>
+            </div>
 
-    <span id="campoIdentificacaoMi" style="display:none;"></span>
+            <div class="item-privilegio">
+                <span class="rotulo-privilegio">AAC</span>
+                <span id="campoPrivAACMi"></span>
+            </div>
 
-</div>
+            <div class="item-privilegio">
+                <span class="rotulo-privilegio">Escalas</span>
+                <span id="campoPrivEscalasMi"></span>
+            </div>
 
-<div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
+            <div class="item-privilegio">
+                <span class="rotulo-privilegio">Equipe</span>
+                <span id="campoPrivEquipesMi"></span>
+            </div>
 
-    <h4 class="titulo-secao">Privilégios</h4>
+            <div class="item-privilegio">
+                <span class="rotulo-privilegio">Treinador</span>
+                <span id="campoPrivTreinadorMi"></span>
+            </div>
 
-    <div class="lista-privilegios">
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Coordenação</span>
-            <span id="campoPrivOrganizacaoMi"></span>
         </div>
 
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">AAC</span>
-            <span id="campoPrivAACMi"></span>
-        </div>
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Escalas</span>
-            <span id="campoPrivEscalasMi"></span>
-        </div>
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Equipe</span>
-            <span id="campoPrivEquipesMi"></span>
-        </div>
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Treinador</span>
-            <span id="campoPrivTreinadorMi"></span>
-        </div>
-
     </div>
-
-</div>
 
   </div>
-</div>
+</div>-->
 
+  
 
   <div id="telaUsuarioLogado" class="painel tela">
   
@@ -1775,7 +1776,7 @@
 
   </div>
 
-    <div id="minhaInfo" class="painel tela"> 
+    <!--<div id="minhaInfo" class="painel tela"> 
 
       <h5>👤 Meu Perfil</h5>
       <div id="painelMinhaInfo">
@@ -1898,7 +1899,148 @@
   </div>
 
     </div>
+  </div>-->
+
+
+  <div id="cardPerfilMinhaInfo" class="card-perfil painel tela">
+
+    <h5>👤 Meu Perfil</h5>
+      <div id="painelMinhaInfo">
+
+        <div class="linha-perfil">
+            <span class="rotulo">Nome</span>
+            <span id="perfilNomeMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Congregação</span>
+            <span id="perfilCongregacaoMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Telefone</span>
+            <span id="perfilTelefoneMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Email</span>
+            <span id="perfilEmailMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Grupo</span>
+            <span id="perfilGrupoMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Sexo</span>
+            <span id="perfilSexoMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">Situação</span>
+            <span id="perfilSituacaoMi"></span>
+        </div>
+
+        <div class="linha-perfil">
+            <span class="rotulo">TCS</span>
+            <span id="perfilTCSMi"></span>
+        </div>
+
+        <div class="acoes-perfil">
+
+            <button
+                id="btnEditarMinhaInfo"
+                class="botao editar"
+                onclick="tornarEditavelMinhaInfo();">
+                ✏️ Editar
+            </button>
+
+            <button
+                id="btnSalvarMinhaInfo"
+                class="botao salvar"
+                style="display:none"
+                onclick="salvarAlteracoesMinhaInfo();">
+                💾 Salvar
+            </button>
+
+            <button
+                id="btnCancelarMinhaInfo"
+                class="botao cancelar"
+                style="display:none"
+                onclick="cancelarEdicaoMinhaInfo();">
+                ❌ Cancelar
+            </button>
+
+        </div>
+
+        
+        <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
+
+          <h4 class="titulo-secao">Designações</h4>
+
+          <div class="card-info">
+              <span id="campoDesignacao1Mi"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao2Mi"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao3Mi"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao4Mi"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao5Mi"></span>
+          </div>
+
+          <span id="campoIdentificacaoMi" style="display:none;"></span>
+
+        </div>
+
+        <div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
+
+            <h4 class="titulo-secao">Privilégios</h4>
+
+            <div class="lista-privilegios">
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">Coordenação</span>
+                    <span id="campoPrivOrganizacaoMi"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">AAC</span>
+                    <span id="campoPrivAACMi"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">Escalas</span>
+                    <span id="campoPrivEscalasMi"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">Equipe</span>
+                    <span id="campoPrivEquipesMi"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">Treinador</span>
+                    <span id="campoPrivTreinadorMi"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
   </div>
+
 
     <div id="telamapas" class="painel tela">
 
@@ -2069,165 +2211,357 @@
 
   </div>
 
-    <div id="painelPesquisar" class="painel-exportar tela">
-  <h5>✏️👤 Editar Participante</h5>
+    <!--<div id="painelPesquisar" class="painel-exportar tela">
+    <h5>✏️👤 Editar Participante</h5>
 
-        <div style="display:flex">
-          <button
-            type="button"
-            onclick="abrirSelecaoParticipante()">
-            👤 Selecionar Nome
-          </button>
-        </div>
-        <div id="pesqPart" class="nome-pesquisado"></div>
-
-    <div style="display: flex; align-items: center; gap: 10px;"></div>
-    
-    <table id="tabelaInfoPessoal" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Congregação</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBody"></tbody>
-    </table>
-
-    <table id="tabelaInfoPessoal1" style="display:none;"class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>E-mail</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBody1"></tbody>
-    </table>
-
-    <table id="tabelaInfoPessoal2" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Telefone</th>
-            <th>Petição</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBody2"></tbody>
-    </table>
-
-    <table id="tabelaInfoPessoal3" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>D. nasc.</th>
-            <th>Idade</th>
-            <th>D. bat.</th>
-            <th>Anos bat.</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBody3"></tbody>
-    </table>
-
-    <table id="tabelaClassificacao" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Grupo</th>
-            <th>Sexo</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-      <tbody id="classificacaoBody"></tbody>
-    </table>
-
-    <table id="tabelaDetalhes" style="display:none;" class="tabela-sistema">
-        <colgroup>
-          <col style="width: 20%;">   
-          <col>                       
-        </colgroup>
-          <thead>
-            <tr>
-              <th>TCS</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-        <tbody id="detalhesBody">
-      </tbody>
-    </table>
+          <div style="display:flex">
+            <button
+              type="button"
+              onclick="abrirSelecaoParticipante()">
+              👤 Selecionar Nome
+            </button>
+          </div>
+          <div id="pesqPart" class="nome-pesquisado"></div>
 
       <div style="display: flex; align-items: center; gap: 10px;"></div>
+      
+      <table id="tabelaInfoPessoal" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Congregação</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBody"></tbody>
+      </table>
 
-<div id="detalhesDesignacoes" class="cards-info" style="display:none; margin-top:15px;">
+      <table id="tabelaInfoPessoal1" style="display:none;"class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>E-mail</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBody1"></tbody>
+      </table>
 
-    <h4 class="titulo-secao">Designações</h4>
+      <table id="tabelaInfoPessoal2" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Telefone</th>
+              <th>Petição</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBody2"></tbody>
+      </table>
 
-    <div class="card-info">
-        <span id="campoDesignacao1"></span>
-    </div>
+      <table id="tabelaInfoPessoal3" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>D. nasc.</th>
+              <th>Idade</th>
+              <th>D. bat.</th>
+              <th>Anos bat.</th>
+            </tr>
+          </thead>
+        <tbody id="infoPessoalBody3"></tbody>
+      </table>
 
-    <div class="card-info">
-        <span id="campoDesignacao2"></span>
-    </div>
+      <table id="tabelaClassificacao" style="display:none;" class="tabela-sistema">
+          <thead>
+            <tr>
+              <th>Grupo</th>
+              <th>Sexo</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+        <tbody id="classificacaoBody"></tbody>
+      </table>
 
-    <div class="card-info">
-        <span id="campoDesignacao3"></span>
-    </div>
+      <table id="tabelaDetalhes" style="display:none;" class="tabela-sistema">
+          <colgroup>
+            <col style="width: 20%;">   
+            <col>                       
+          </colgroup>
+            <thead>
+              <tr>
+                <th>TCS</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+          <tbody id="detalhesBody">
+        </tbody>
+      </table>
 
-    <div class="card-info">
-        <span id="campoDesignacao4"></span>
-    </div>
+        <div style="display: flex; align-items: center; gap: 10px;"></div>
 
-    <div class="card-info">
-        <span id="campoDesignacao5"></span>
-    </div>
+    <div id="detalhesDesignacoes" class="cards-info" style="display:none; margin-top:15px;">
 
-    <!-- Mantido oculto caso seja usado em outra parte do sistema -->
-    <span id="campoIdentificacao" style="display:none;"></span>
+      <h4 class="titulo-secao">Designações</h4>
 
-</div>
-
-      <div style="display: flex; align-items: center; gap: 10px;">
-      <!-- <p id="msgExcluir" class="mensagem-verde"></p> -->
+      <div class="card-info">
+          <span id="campoDesignacao1"></span>
       </div>
 
-  <!--<div id="detalhesPrivilegios" style="display:none; margin-top: 15px;">
-    <label>Privilégios</label>
-    <p>Coordenação <span id="campoPrivOrganizacao"></span></p>
-    <p>AAC <span id="campoPrivAAC"></span></p>
-    <p>Escalas <span id="campoPrivEscalas"></span></p>
-    <p>Equipe <span id="campoPrivEquipes"></span></p>
-    <p>Treinador <span id="campoPrivTreinador"></span></p>
-  </div>-->
+      <div class="card-info">
+          <span id="campoDesignacao2"></span>
+      </div>
 
-<div id="detalhesPrivilegios" style="display:none; margin-top:15px;">
+      <div class="card-info">
+          <span id="campoDesignacao3"></span>
+      </div>
 
-    <h4 class="titulo-secao">Privilégios</h4>
+      <div class="card-info">
+          <span id="campoDesignacao4"></span>
+      </div>
 
-    <div class="lista-privilegios">
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Coordenação</span>
-            <span id="campoPrivOrganizacao"></span>
-        </div>
+      <div class="card-info">
+          <span id="campoDesignacao5"></span>
+      </div>
 
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">AAC</span>
-            <span id="campoPrivAAC"></span>
-        </div>
+      <span id="campoIdentificacao" style="display:none;"></span>
 
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Escalas</span>
-            <span id="campoPrivEscalas"></span>
-        </div>
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Equipe</span>
-            <span id="campoPrivEquipes"></span>
-        </div>
-
-        <div class="item-privilegio">
-            <span class="rotulo-privilegio">Treinador</span>
-            <span id="campoPrivTreinador"></span>
-        </div>
     </div>
 
-</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+        </div>
+
+
+    <div id="detalhesPrivilegios" style="display:none; margin-top:15px;">
+
+      <h4 class="titulo-secao">Privilégios</h4>
+
+      <div class="lista-privilegios">
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Coordenação</span>
+              <span id="campoPrivOrganizacao"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">AAC</span>
+              <span id="campoPrivAAC"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Escalas</span>
+              <span id="campoPrivEscalas"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Equipe</span>
+              <span id="campoPrivEquipes"></span>
+          </div>
+
+          <div class="item-privilegio">
+              <span class="rotulo-privilegio">Treinador</span>
+              <span id="campoPrivTreinador"></span>
+          </div>
+      </div>
 
   </div>
+
+</div>-->
+
+    <div id="painelPesquisar" class="card-perfil painel tela">
+
+        <h5>✏️👤 Editar Participante</h5>
+
+        <div style="display:flex">
+            <button
+                type="button"
+                onclick="abrirSelecaoParticipante()">
+                👤 Selecionar Nome
+            </button>
+        </div>
+
+        <div id="pesqPart" class="nome-pesquisado"></div>
+
+        <div id="cardPerfilParticipante" class="painel tela" style="display:none;">
+
+            <div class="linha-perfil">
+                <span class="rotulo">Nome</span>
+                <span id="perfilNome"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Congregação</span>
+                <span id="perfilCongregacao"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">E-mail</span>
+                <span id="perfilEmail"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Telefone</span>
+                <span id="perfilTelefone"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Petição</span>
+                <span id="perfilPeticao"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Nascimento</span>
+                <span id="perfilDataNascimento"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Idade</span>
+                <span id="perfilIdade"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Batismo</span>
+                <span id="perfilDataBatismo"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Anos de Batismo</span>
+                <span id="perfilAnosBatismo"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Grupo</span>
+                <span id="perfilGrupo"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Sexo</span>
+                <span id="perfilSexo"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">Situação</span>
+                <span id="perfilSituacao"></span>
+            </div>
+
+            <div class="linha-perfil">
+                <span class="rotulo">TCS</span>
+                <span id="perfilTCS"></span>
+            </div>
+
+            <div class="acoes-perfil">
+
+                <button
+                    id="btnEditarParticipante"
+                    class="botao editar"
+                    onclick="tornarEditavel();">
+                    ✏️ Editar
+                </button>
+
+                <button
+                    id="btnSalvarParticipante"
+                    class="botao salvar"
+                    style="display:none"
+                     onclick="salvarAlteracoes();">
+                    💾 Salvar
+                </button>
+
+                <button
+                    id="btnCancelarParticipante"
+                    class="botao cancelar"
+                    style="display:none"
+                    onclick="cancelarEdicao();">
+                    ❌ Cancelar
+                </button>
+
+                <button
+                    id="btnExcluirParticipante"
+                    class="botao excluir"
+                    onclick="excluirParticipante();">
+                    🗑️ Excluir
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="detalhesDesignacoes"
+            class="cards-info"
+            style="display:none; margin-top:15px;">
+
+            <h4 class="titulo-secao">
+                Designações
+            </h4>
+
+            <div class="card-info">
+                <span id="campoDesignacao1"></span>
+            </div>
+
+            <div class="card-info">
+                <span id="campoDesignacao2"></span>
+            </div>
+
+            <div class="card-info">
+                <span id="campoDesignacao3"></span>
+            </div>
+
+            <div class="card-info">
+                <span id="campoDesignacao4"></span>
+            </div>
+
+            <div class="card-info">
+                <span id="campoDesignacao5"></span>
+            </div>
+
+            <span
+                id="campoIdentificacao"
+                style="display:none;">
+            </span>
+
+        </div>
+
+        <div id="detalhesPrivilegios"
+            style="display:none; margin-top:15px;">
+
+            <h4 class="titulo-secao">
+                Privilégios
+            </h4>
+
+            <div class="lista-privilegios">
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">
+                        Coordenação
+                    </span>
+                    <span id="campoPrivOrganizacao"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">
+                        AAC
+                    </span>
+                    <span id="campoPrivAAC"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">
+                        Escalas
+                    </span>
+                    <span id="campoPrivEscalas"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">
+                        Equipe
+                    </span>
+                    <span id="campoPrivEquipes"></span>
+                </div>
+
+                <div class="item-privilegio">
+                    <span class="rotulo-privilegio">
+                        Treinador
+                    </span>
+                    <span id="campoPrivTreinador"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <div id="painelCadastro" class="painel-exportar tela">
   <h5>➕👤 Cadastrar Participante</h5>
@@ -3854,7 +4188,7 @@
     </table>
 
       
-      <table id="tabelaVagasPendentes" class="tabela-sistema">
+      <!--<table id="tabelaVagasPendentes" class="tabela-sistema">
         <thead>
           <tr>
             <th>Ponto</th>
@@ -3863,7 +4197,9 @@
           </tr>
         </thead>
         <tbody></tbody>
-      </table>
+      </table>-->
+
+      <div id="listaVagasPendentes"></div>
 
       <div>
 

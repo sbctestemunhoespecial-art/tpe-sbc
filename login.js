@@ -304,7 +304,7 @@ function inicializarTela(idTela) {
 
     fn();
 
-    /*console.log("✅ Tela inicializada:", idTela);*/
+    console.log("✅ Tela inicializada:", idTela);
 
   } catch (e) {
 
@@ -5384,417 +5384,734 @@ function pesquisarMinhaInfo() {
 
 }
 
-function mostrarResultadosMinhaInfo(dados) {
-    const tInfo = document.getElementById('tabelaInfoPessoalMinhaInfo'),
-          bInfo = document.getElementById('infoPessoalBodyMinhaInfo'),
+/*function mostrarResultadosMinhaInfo(dados) {
+  const tInfo = document.getElementById('tabelaInfoPessoalMinhaInfo'),
+        bInfo = document.getElementById('infoPessoalBodyMinhaInfo'),
 
-          tInfo2 = document.getElementById('tabelaInfoPessoal2MinhaInfo'),
-          bInfo2 = document.getElementById('infoPessoalBody2MinhaInfo'),
+        tInfo2 = document.getElementById('tabelaInfoPessoal2MinhaInfo'),
+        bInfo2 = document.getElementById('infoPessoalBody2MinhaInfo'),
 
-          tClas = document.getElementById('tabelaClassificacaoMinhaInfo'),
-          bClas = document.getElementById('classificacaoBodyMinhaInfo'),
+        tClas = document.getElementById('tabelaClassificacaoMinhaInfo'),
+        bClas = document.getElementById('classificacaoBodyMinhaInfo'),
 
-          tDet = document.getElementById('tabelaDetalhesMinhaInfo'),
-          bDet = document.getElementById('detalhesBodyMinhaInfo');
+        tDet = document.getElementById('tabelaDetalhesMinhaInfo'),
+        bDet = document.getElementById('detalhesBodyMinhaInfo');
 
-    bInfo.innerHTML = '';
-    bInfo2.innerHTML = '';
-    bClas.innerHTML = '';
-    bDet.innerHTML = '';
+  bInfo.innerHTML = '';
+  bInfo2.innerHTML = '';
+  bClas.innerHTML = '';
+  bDet.innerHTML = '';
 
-    if (!dados || (dados.length === 0 && (!dados.participantes || dados.participantes.length === 0))) {
-      tInfo.style.display = 'none';
-      tInfo2.style.display = 'none';
-      tClas.style.display = 'none';
-      tDet.style.display = 'none';
+  if (!dados || (dados.length === 0 && (!dados.participantes || dados.participantes.length === 0))) {
+    tInfo.style.display = 'none';
+    tInfo2.style.display = 'none';
+    tClas.style.display = 'none';
+    tDet.style.display = 'none';
+    document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
+    document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'none';
+    return;
+  }
+
+  let part = dados.participantes || dados,
+      privs = dados.privilegios || [];
+
+  if (Array.isArray(privs) && privs.length === 1 && Array.isArray(privs[0])) privs = privs[0];
+  if (privs.length === 1 && typeof privs[0] === 'string' && privs[0].includes(',')) privs = privs[0].split(',').map(p => p.trim());
+
+  part.forEach((linha, idx) => {
+
+    const trInfo = document.createElement('tr'),
+          trInfo2 = document.createElement('tr'),
+          trClas = document.createElement('tr'),
+          trDet = document.createElement('tr');
+
+    trDet.dataset.identificadorOriginal = (linha[14] || '').toString().trim();
+
+    //console.log("🧩 trDet:", trDet);
+    //console.log("🧩 dataset completo:", trDet.dataset);
+    //console.log("🧩 identificadorOriginal:");
+    //console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
+
+    linha.slice(0, 2).forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v || '';
+      trInfo.appendChild(td);
+    });
+
+    linha.slice(2, 4).forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v || '';
+      trInfo2.appendChild(td);
+    });
+
+    linha.slice(4, 7).forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v || '';
+      trClas.appendChild(td);
+    });
+
+    linha.slice(7, 8).forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v || '';
+      trDet.appendChild(td);
+    });
+
+    const tdA = document.createElement('td');
+    tdA.style.display = 'flex';
+    tdA.style.justifyContent = 'flex-end';
+    tdA.style.gap = '10px';
+
+    const btnE = document.createElement('button');
+    btnE.textContent = '✏️ Editar';
+    btnE.className = 'botao editar';
+    btnE.style.margin = '0';
+    btnE.onclick = () => {
+    tornarEditavelMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+    };
+
+    const btnS = document.createElement('button');
+    btnS.textContent = '💾 Salvar';
+    btnS.className = 'botao salvar';
+    btnS.style.display = 'none';
+    btnS.style.margin = '0';
+    btnS.onclick = () => salvarAlteracoesMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+
+    const btnC = document.createElement('button');
+    btnC.textContent = '❌ Cancelar';
+    btnC.className = 'botao cancel';
+    btnC.style.display = 'none';
+    btnC.style.margin = '0';
+    btnC.onclick = () => cancelarEdicaoMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
+
+    const btnX = document.createElement('button');
+    btnX.textContent = '🗑️ Excluir';
+    btnX.className = 'botao excluir'; 
+    btnX.style.margin = '0';
+    btnX.onclick = () => {
+    const msg = document.getElementById("msgExcluirMinhaInfo");
+    mostrarAlertaGlobal("❌ Você não tem permissão para excluir participantes.\nPor favor, contate a administração.");
+    };
+
+    tdA.appendChild(btnE);
+    tdA.appendChild(btnS);
+    tdA.appendChild(btnC);
+    tdA.appendChild(btnX);
+    trDet.appendChild(tdA);
+
+    bInfo.appendChild(trInfo);
+    bInfo2.appendChild(trInfo2);
+    bClas.appendChild(trClas);
+    bDet.appendChild(trDet);
+  });
+
+  tInfo.style.display = 'table';
+  tInfo2.style.display = 'table';
+  tClas.style.display = 'table';
+  tDet.style.display = 'table';
+
+  const p0 = part[0];
+
+  if (p0) {
+
+      document.getElementById('campoIdentificacaoMi').textContent = p0[8] || '';
+
+      const designacoes = [
+          { id: 'campoDesignacao1Mi', valor: p0[9]  || '' },
+          { id: 'campoDesignacao2Mi', valor: p0[10] || '' },
+          { id: 'campoDesignacao3Mi', valor: p0[11] || '' },
+          { id: 'campoDesignacao4Mi', valor: p0[12] || '' },
+          { id: 'campoDesignacao5Mi', valor: p0[13] || '' }
+      ];
+
+      designacoes.forEach(({ id, valor }) => {
+
+          const span = document.getElementById(id);
+          span.textContent = valor;
+
+          span.closest('.card-info').style.display = valor ? '' : 'none';
+      });
+
+      document.getElementById('detalhesDesignacoesMinhaInfo').style.display =
+          designacoes.some(d => d.valor) ? 'block' : 'none';
+
+  } else {
+
       document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
-      document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'none';
-      return;
-    }
-
-    let part = dados.participantes || dados,
-        privs = dados.privilegios || [];
-
-    if (Array.isArray(privs) && privs.length === 1 && Array.isArray(privs[0])) privs = privs[0];
-    if (privs.length === 1 && typeof privs[0] === 'string' && privs[0].includes(',')) privs = privs[0].split(',').map(p => p.trim());
-
-    part.forEach((linha, idx) => {
-
-      const trInfo = document.createElement('tr'),
-            trInfo2 = document.createElement('tr'),
-            trClas = document.createElement('tr'),
-            trDet = document.createElement('tr');
-
-      trDet.dataset.identificadorOriginal = (linha[14] || '').toString().trim();
-
-      /*console.log("🧩 trDet:", trDet);
-      console.log("🧩 dataset completo:", trDet.dataset);
-      console.log("🧩 identificadorOriginal:");
-      console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));*/
-
-      linha.slice(0, 2).forEach(v => {
-        const td = document.createElement('td');
-        td.textContent = v || '';
-        trInfo.appendChild(td);
-      });
-
-      linha.slice(2, 4).forEach(v => {
-        const td = document.createElement('td');
-        td.textContent = v || '';
-        trInfo2.appendChild(td);
-      });
-
-      linha.slice(4, 7).forEach(v => {
-        const td = document.createElement('td');
-        td.textContent = v || '';
-        trClas.appendChild(td);
-      });
-
-      linha.slice(7, 8).forEach(v => {
-        const td = document.createElement('td');
-        td.textContent = v || '';
-        trDet.appendChild(td);
-      });
-
-      const tdA = document.createElement('td');
-      tdA.style.display = 'flex';
-      tdA.style.justifyContent = 'flex-end';
-      tdA.style.gap = '10px';
-
-      const btnE = document.createElement('button');
-      btnE.textContent = '✏️ Editar';
-      btnE.className = 'botao editar';
-      btnE.style.margin = '0';
-      btnE.onclick = () => {
-      tornarEditavelMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
-      };
-
-      const btnS = document.createElement('button');
-      btnS.textContent = '💾 Salvar';
-      btnS.className = 'botao salvar';
-      btnS.style.display = 'none';
-      btnS.style.margin = '0';
-      btnS.onclick = () => salvarAlteracoesMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
-
-      const btnC = document.createElement('button');
-      btnC.textContent = '❌ Cancelar';
-      btnC.className = 'botao cancel';
-      btnC.style.display = 'none';
-      btnC.style.margin = '0';
-      btnC.onclick = () => cancelarEdicaoMinhaInfo([trInfo, trInfo2, trClas, trDet], idx);
-
-      const btnX = document.createElement('button');
-      btnX.textContent = '🗑️ Excluir';
-      btnX.className = 'botao excluir'; 
-      btnX.style.margin = '0';
-      btnX.onclick = () => {
-      const msg = document.getElementById("msgExcluirMinhaInfo");
-      mostrarAlertaGlobal("❌ Você não tem permissão para excluir participantes.\nPor favor, contate a administração.");
-      };
-
-      tdA.appendChild(btnE);
-      tdA.appendChild(btnS);
-      tdA.appendChild(btnC);
-      tdA.appendChild(btnX);
-      trDet.appendChild(tdA);
-
-      bInfo.appendChild(trInfo);
-      bInfo2.appendChild(trInfo2);
-      bClas.appendChild(trClas);
-      bDet.appendChild(trDet);
-    });
-
-    tInfo.style.display = 'table';
-    tInfo2.style.display = 'table';
-    tClas.style.display = 'table';
-    tDet.style.display = 'table';
-
-    const p0 = part[0];
-
-    if (p0) {
-
-        document.getElementById('campoIdentificacaoMi').textContent = p0[8] || '';
-
-        const designacoes = [
-            { id: 'campoDesignacao1Mi', valor: p0[9]  || '' },
-            { id: 'campoDesignacao2Mi', valor: p0[10] || '' },
-            { id: 'campoDesignacao3Mi', valor: p0[11] || '' },
-            { id: 'campoDesignacao4Mi', valor: p0[12] || '' },
-            { id: 'campoDesignacao5Mi', valor: p0[13] || '' }
-        ];
-
-        designacoes.forEach(({ id, valor }) => {
-
-            const span = document.getElementById(id);
-            span.textContent = valor;
-
-            span.closest('.card-info').style.display = valor ? '' : 'none';
-        });
-
-        document.getElementById('detalhesDesignacoesMinhaInfo').style.display =
-            designacoes.some(d => d.valor) ? 'block' : 'none';
-
-    } else {
-
-        document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
-
-    }
-
-    document.getElementById('campoPrivOrganizacaoMi').textContent = formatarPrivilegio(privs[0]);
-    document.getElementById('campoPrivAACMi').textContent         = formatarPrivilegio(privs[1]);
-    document.getElementById('campoPrivEscalasMi').textContent     = formatarPrivilegio(privs[2]);
-    document.getElementById('campoPrivEquipesMi').textContent     = formatarPrivilegio(privs[3]);
-    document.getElementById('campoPrivTreinadorMi').textContent   = formatarPrivilegio(privs[4]);
-
-    document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'block';
-
-    setTimeout(() => {
-        marcarUltimaLinhaTabelaMinhaInfo('detalhesBodyMinhaInfo');
-    }, 0);
 
   }
 
-  function formatarPrivilegio(valor) {
+  document.getElementById('campoPrivOrganizacaoMi').textContent = formatarPrivilegio(privs[0]);
+  document.getElementById('campoPrivAACMi').textContent         = formatarPrivilegio(privs[1]);
+  document.getElementById('campoPrivEscalasMi').textContent     = formatarPrivilegio(privs[2]);
+  document.getElementById('campoPrivEquipesMi').textContent     = formatarPrivilegio(privs[3]);
+  document.getElementById('campoPrivTreinadorMi').textContent   = formatarPrivilegio(privs[4]);
 
-      const texto = String(valor || '').trim();
+  document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'block';
 
-      switch (texto.toLowerCase()) {
+  setTimeout(() => {
+      marcarUltimaLinhaTabelaMinhaInfo('detalhesBodyMinhaInfo');
+  }, 0);
 
-          case 'sim':
-              return '✅ Sim';
+}*/
 
-          case 'não':
-          case 'nao':
-              return '❌ Não';
+function mostrarResultadosMinhaInfo(dados) {
 
-          default:
-              return texto;
-      }
+  const card =
+    document.getElementById("cardPerfilMinhaInfo");
+
+  if (
+    !dados ||
+    (dados.length === 0 &&
+    (!dados.participantes ||
+     dados.participantes.length === 0))
+  ) {
+
+    card.style.display = "none";
+
+    document.getElementById("detalhesDesignacoesMinhaInfo").style.display = "none";
+    document.getElementById("detalhesPrivilegiosMinhaInfo").style.display = "none";
+
+    return;
+
   }
 
-  function marcarUltimaLinhaTabelaMinhaInfo(tbodyId) {
-    const tbody = document.getElementById(tbodyId);
-    if (!tbody) return;
+  let part = dados.participantes || dados;
 
-    const linhas = [...tbody.querySelectorAll('tr')];
-    if (linhas.length === 0) return;
+  let privs = dados.privilegios || [];
 
-    // Remove classes antigas
-    linhas.forEach(tr => {
-      const tds = tr.querySelectorAll('td');
-      tds.forEach(td => td.classList.remove('pequena', 'grande'));
-    });
-
-    const ultimaLinha = linhas[linhas.length - 1];
-    const tds = ultimaLinha.querySelectorAll('td');
-
-    if (tds.length >= 2) {
-      tds[0].classList.add('pequena'); // primeira célula
-      tds[tds.length - 1].classList.add('grande'); // última célula
-    }
-  }
-  // ✅ Função utilitária para criar <select> com valor original preservado
-  function criarSelectComValorAtualMinhaInfo(opcoes = [], valorOriginal = '') {
-    const select = document.createElement('select');
-    const valor = valorOriginal.trim();
-    const valorLower = valor.toLowerCase();
-
-    // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
-    const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
-
-    // Se não existir, adiciona o valor original como uma opção temporária
-    if (!existe && valor !== '') {
-      opcoes = [valor, ...opcoes];
-    }
-
-    opcoes.forEach(opcao => {
-      const opt = document.createElement('option');
-      opt.value = opcao;
-      opt.textContent = opcao;
-
-      if (opcao.trim().toLowerCase() === valorLower) {
-        opt.selected = true;
-      }
-
-      select.appendChild(opt);
-    });
-
-    select.defaultValue = valor;
-
-    return select;
+  if (
+    Array.isArray(privs) &&
+    privs.length === 1 &&
+    Array.isArray(privs[0])
+  ) {
+    privs = privs[0];
   }
 
-  // ✅ Função principal
-  function tornarEditavelMinhaInfo(trs, idx) {
-    if (!window.opcoesPrivilegios || Object.keys(window.opcoesPrivilegios).length === 0) {
-      mostrarAlertaGlobal('⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos.');
-      return;
+  if (
+    privs.length === 1 &&
+    typeof privs[0] === "string" &&
+    privs[0].includes(",")
+  ) {
+
+    privs =
+      privs[0]
+        .split(",")
+        .map(p => p.trim());
+
+  }
+
+  const p0 = part[0];
+
+  if (!p0) return;
+
+
+  document.getElementById("perfilNomeMi").textContent         = p0[0] || "";
+  document.getElementById("perfilCongregacaoMi").textContent  = p0[1] || "";
+  document.getElementById("perfilTelefoneMi").textContent     = p0[2] || "";
+  document.getElementById("perfilEmailMi").textContent        = p0[3] || "";
+  document.getElementById("perfilGrupoMi").textContent        = p0[4] || "";
+  document.getElementById("perfilSexoMi").textContent         = p0[5] || "";
+  document.getElementById("perfilSituacaoMi").textContent     = p0[6] || "";
+  document.getElementById("perfilTCSMi").textContent          = p0[7] || "";
+
+  //card.style.display = "block"; //Só depois de comentar que ao clicar no botão voltar a tela é escondida como as demais
+
+  if (p0) {
+p0.forEach((v,i)=>console.log(i,v));
+
+    document.getElementById('campoIdentificacaoMi').textContent = p0[14] || '';
+    
+console.log(
+  "Identificador salvo:",
+  document.getElementById("campoIdentificacaoMi").textContent
+);
+
+    /*const card = document.getElementById("cardPerfilMinhaInfo");
+        card.dataset.identificadorOriginal = p0[8] || "";*/
+
+      const designacoes = [
+          { id: 'campoDesignacao1Mi', valor: p0[9]  || '' },
+          { id: 'campoDesignacao2Mi', valor: p0[10] || '' },
+          { id: 'campoDesignacao3Mi', valor: p0[11] || '' },
+          { id: 'campoDesignacao4Mi', valor: p0[12] || '' },
+          { id: 'campoDesignacao5Mi', valor: p0[13] || '' }
+      ];
+
+      designacoes.forEach(({ id, valor }) => {
+
+          const span = document.getElementById(id);
+          span.textContent = valor;
+
+          span.closest('.card-info').style.display = valor ? '' : 'none';
+      });
+
+      document.getElementById('detalhesDesignacoesMinhaInfo').style.display =
+          designacoes.some(d => d.valor) ? 'block' : 'none';
+
+  } else {
+
+      document.getElementById('detalhesDesignacoesMinhaInfo').style.display = 'none';
+
+  }
+
+  document.getElementById('campoPrivOrganizacaoMi').textContent = formatarPrivilegio(privs[0]);
+  document.getElementById('campoPrivAACMi').textContent         = formatarPrivilegio(privs[1]);
+  document.getElementById('campoPrivEscalasMi').textContent     = formatarPrivilegio(privs[2]);
+  document.getElementById('campoPrivEquipesMi').textContent     = formatarPrivilegio(privs[3]);
+  document.getElementById('campoPrivTreinadorMi').textContent   = formatarPrivilegio(privs[4]);
+
+  document.getElementById('detalhesPrivilegiosMinhaInfo').style.display = 'block';
+
+}
+
+function formatarPrivilegio(valor) {
+
+    const texto = String(valor || '').trim();
+
+    switch (texto.toLowerCase()) {
+
+        case 'sim':
+            return '✅ Sim';
+
+        case 'não':
+        case 'nao':
+            return '❌ Não';
+
+        default:
+            return texto;
+    }
+}
+
+function marcarUltimaLinhaTabelaMinhaInfo(tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+
+  const linhas = [...tbody.querySelectorAll('tr')];
+  if (linhas.length === 0) return;
+
+  // Remove classes antigas
+  linhas.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    tds.forEach(td => td.classList.remove('pequena', 'grande'));
+  });
+
+  const ultimaLinha = linhas[linhas.length - 1];
+  const tds = ultimaLinha.querySelectorAll('td');
+
+  if (tds.length >= 2) {
+    tds[0].classList.add('pequena'); // primeira célula
+    tds[tds.length - 1].classList.add('grande'); // última célula
+  }
+}
+
+// ✅ Função utilitária para criar <select> com valor original preservado
+function criarSelectComValorAtualMinhaInfo(opcoes = [], valorOriginal = '') {
+  const select = document.createElement('select');
+  const valor = valorOriginal.trim();
+  const valorLower = valor.toLowerCase();
+
+  // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
+  const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
+
+  // Se não existir, adiciona o valor original como uma opção temporária
+  if (!existe && valor !== '') {
+    opcoes = [valor, ...opcoes];
+  }
+
+  opcoes.forEach(opcao => {
+    const opt = document.createElement('option');
+    opt.value = opcao;
+    opt.textContent = opcao;
+
+    if (opcao.trim().toLowerCase() === valorLower) {
+      opt.selected = true;
     }
 
-    const [trInfo, trInfo2, trClas, trDet] = trs;
+    select.appendChild(opt);
+  });
 
-    // 🔷 Linha trInfo
-    const tds0 = trInfo.querySelectorAll('td');
-    tds0.forEach((td, index) => {
-      const valorOriginal = td.textContent.trim();
-      td.textContent = '';
+  select.defaultValue = valor;
 
-      if (index === 0) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = valorOriginal;
-        input.defaultValue = valorOriginal;
-        td.appendChild(input);
-      } else if (index === 1) {
-        const select = criarSelectComValorAtualMinhaInfo(window.opcoesCongregacoes || [], valorOriginal);
-        td.appendChild(select);
-      }
-    });
+  return select;
+}
 
-    // 🔷 Linha trInfo2
-    const tds = trInfo2.querySelectorAll('td');
+// ✅ Função principal
+/*function tornarEditavelMinhaInfo(trs, idx) {
+  if (!window.opcoesPrivilegios || Object.keys(window.opcoesPrivilegios).length === 0) {
+    mostrarAlertaGlobal('⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos.');
+    return;
+  }
 
-    tds.forEach((td, index) => {
-      const valorOriginal = td.textContent.trim();
-      td.textContent = '';
+  const [trInfo, trInfo2, trClas, trDet] = trs;
 
+  // 🔷 Linha trInfo
+  const tds0 = trInfo.querySelectorAll('td');
+  tds0.forEach((td, index) => {
+    const valorOriginal = td.textContent.trim();
+    td.textContent = '';
+
+    if (index === 0) {
       const input = document.createElement('input');
       input.type = 'text';
       input.value = valorOriginal;
       input.defaultValue = valorOriginal;
-
-      // ✅ Validação para telefone (1º campo)
-      if (index === 0) {
-        input.placeholder = '(11) 99217-3945';
-        //input.title = 'Digite o telefone no formato: (11) 992173945. Parênteses inseridos automaticamente. Sem hífens.';
-
-        input.addEventListener('input', () => {
-          let numeros = input.value.replace(/\D/g, '');
-
-          if (numeros.length > 11) numeros = numeros.slice(0, 11);
-
-          let formatado = '';
-
-          if (numeros.length >= 2) {
-            formatado = `(${numeros.slice(0, 2)}) `;
-
-            if (numeros.length >= 7) {
-              formatado += `${numeros.slice(2, 7)}-${numeros.slice(7)}`;
-            } else if (numeros.length > 2) {
-              formatado += numeros.slice(2);
-            }
-          } else {
-            formatado = numeros;
-          }
-
-          input.value = formatado;
-        });
-      }
-
-      // ✅ Validação para e-mail (2º campo)
-      if (index === 1) {
-        input.type = 'email';
-        input.placeholder = 'exemplo@email.com';
-        input.title = 'Digite um e-mail válido.';
-      }
-
       td.appendChild(input);
-    });
-
-    // 🔷 Linha trClas (3 colunas: confirmacao, sexo, situacao)
-    const tdsClas = trClas.querySelectorAll('td');
-    tdsClas.forEach((td, index) => {
-      const valorAtual = td.textContent.trim();
-      td.textContent = '';
-
-      const opcoes = (index === 0)
-        ? (window.opcoesPrivilegios.confirmacao || [])
-        : (index === 1)
-          ? (window.opcoesPrivilegios.sexo || [])
-          : (index === 2)
-            ? (window.opcoesPrivilegios.situacao || [])
-            : [];
-
-      const select = criarSelectComValorAtualMinhaInfo(opcoes, valorAtual);
-      // Se for a terceira coluna, desabilita o select
-      if (index === 2) {
-        select.disabled = true;
-      }
+    } else if (index === 1) {
+      const select = criarSelectComValorAtualMinhaInfo(window.opcoesCongregacoes || [], valorOriginal);
       td.appendChild(select);
-    });
+    }
+  });
 
-    // 🔷 Linha trDet (campo situação extra)
-    const situacaoTd = trDet.querySelector('td');
-    const valorSituacao = situacaoTd.textContent.trim();
-    const selectSituacao = criarSelectComValorAtualMinhaInfo(window.opcoesPrivilegios.confirmacao || [], valorSituacao);
-    selectSituacao.disabled = true; // 🔹 torna o select não editável
-    situacaoTd.textContent = '';
-    situacaoTd.appendChild(selectSituacao);
+  // 🔷 Linha trInfo2
+  const tds = trInfo2.querySelectorAll('td');
 
-    // 🔷 Substituição de spans com ids específicos por selects
-    const mapaIdsParaChaves = {
-      campoPrivOrganizacaoMi: 'organizacao',
-      campoPrivAACMi: 'aac',
-      campoPrivEscalasMi: 'escalas',
-      campoPrivEquipesMi: 'equipes',
-      campoPrivTreinadorMi: 'treinador'
-    };
+  tds.forEach((td, index) => {
+    const valorOriginal = td.textContent.trim();
+    td.textContent = '';
 
-    // 🔷 Botões
-    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
-    btnE.style.display = 'none';
-    btnS.style.display = 'inline-block';
-    btnC.style.display = 'inline-block';
-  }
-  //nova função para voltar os selects para o texto da tabela
-  function cancelarEdicaoMinhaInfo(trs, idx) {
-    const [trInfo, trInfo2, trClas, trDet] = trs;
-    const infoTds = trInfo.querySelectorAll('td'),
-          info2Tds = trInfo2.querySelectorAll('td'),
-          clasTds = trClas.querySelectorAll('td'),
-          detTds = trDet.querySelectorAll('td');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = valorOriginal;
+    input.defaultValue = valorOriginal;
 
-    // c trInfo (apenas inputs)
-    infoTds.forEach(td => {
-      const input = td.querySelector('input');
-      const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      else if (select) td.textContent = select.defaultValue || '';
-    });
+    // ✅ Validação para telefone (1º campo)
+    if (index === 0) {
+      input.placeholder = '(11) 99217-3945';
+      //input.title = 'Digite o telefone no formato: (11) 992173945. Parênteses inseridos automaticamente. Sem hífens.';
 
-    // 🔁 trInfo2 (agora apenas inputs)
-    info2Tds.forEach(td => {
-      const input = td.querySelector('input');
-      td.textContent = input ? input.defaultValue || '' : '';
-    });
+      input.addEventListener('input', () => {
+        let numeros = input.value.replace(/\D/g, '');
+
+        if (numeros.length > 11) numeros = numeros.slice(0, 11);
+
+        let formatado = '';
+
+        if (numeros.length >= 2) {
+          formatado = `(${numeros.slice(0, 2)}) `;
+
+          if (numeros.length >= 7) {
+            formatado += `${numeros.slice(2, 7)}-${numeros.slice(7)}`;
+          } else if (numeros.length > 2) {
+            formatado += numeros.slice(2);
+          }
+        } else {
+          formatado = numeros;
+        }
+
+        input.value = formatado;
+      });
+    }
+
+    // ✅ Validação para e-mail (2º campo)
+    if (index === 1) {
+      input.type = 'email';
+      input.placeholder = 'exemplo@email.com';
+      input.title = 'Digite um e-mail válido.';
+    }
+
+    td.appendChild(input);
+  });
+
+  // 🔷 Linha trClas (3 colunas: confirmacao, sexo, situacao)
+  const tdsClas = trClas.querySelectorAll('td');
+  tdsClas.forEach((td, index) => {
+    const valorAtual = td.textContent.trim();
+    td.textContent = '';
+
+    const opcoes = (index === 0)
+      ? (window.opcoesPrivilegios.confirmacao || [])
+      : (index === 1)
+        ? (window.opcoesPrivilegios.sexo || [])
+        : (index === 2)
+          ? (window.opcoesPrivilegios.situacao || [])
+          : [];
+
+    const select = criarSelectComValorAtualMinhaInfo(opcoes, valorAtual);
+    // Se for a terceira coluna, desabilita o select
+    if (index === 2) {
+      select.disabled = true;
+    }
+    td.appendChild(select);
+  });
+
+  // 🔷 Linha trDet (campo situação extra)
+  const situacaoTd = trDet.querySelector('td');
+  const valorSituacao = situacaoTd.textContent.trim();
+  const selectSituacao = criarSelectComValorAtualMinhaInfo(window.opcoesPrivilegios.confirmacao || [], valorSituacao);
+  selectSituacao.disabled = true; // 🔹 torna o select não editável
+  situacaoTd.textContent = '';
+  situacaoTd.appendChild(selectSituacao);
+
+  // 🔷 Substituição de spans com ids específicos por selects
+  const mapaIdsParaChaves = {
+    campoPrivOrganizacaoMi: 'organizacao',
+    campoPrivAACMi: 'aac',
+    campoPrivEscalasMi: 'escalas',
+    campoPrivEquipesMi: 'equipes',
+    campoPrivTreinadorMi: 'treinador'
+  };
+
+  // 🔷 Botões
+  const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+  btnE.style.display = 'none';
+  btnS.style.display = 'inline-block';
+  btnC.style.display = 'inline-block';
+}*/
+  
+function tornarEditavelMinhaInfo() {
+
+if (!window.opcoesPrivilegios ||
+    Object.keys(window.opcoesPrivilegios).length === 0) {
+
+  mostrarAlertaGlobal(
+    "⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos."
+  );
+
+  return;
+}
+
+substituirSpanPorInput("perfilNomeMi");
+
+substituirSpanPorSelect(
+  "perfilCongregacaoMi",
+  window.opcoesCongregacoes || []
+);
+
+substituirTelefone("perfilTelefoneMi");
+
+substituirEmail("perfilEmailMi");
+
+substituirSpanPorSelect(
+  "perfilGrupoMi",
+  window.opcoesPrivilegios.confirmacao || []
+);
+
+substituirSpanPorSelect(
+  "perfilSexoMi",
+  window.opcoesPrivilegios.sexo || []
+);
+
+substituirSpanPorSelect(
+  "perfilSituacaoMi",
+  window.opcoesPrivilegios.situacao || [],
+  true
+);
+
+substituirSpanPorInput(
+  "perfilTCSMi",
+  true
+);
+
+document.getElementById("btnEditarMinhaInfo").style.display = "none";
+document.getElementById("btnSalvarMinhaInfo").style.display = "";
+document.getElementById("btnCancelarMinhaInfo").style.display = "";
+
+}
+function substituirSpanPorInput(id, desabilitado = false) {
+
+  const span = document.getElementById(id);
+
+  if (!span) return;
+
+  const input = document.createElement("input");
+
+  input.type = "text";
+  input.value = span.textContent.trim();
+  input.defaultValue = input.value;
+
+  if (desabilitado)
+    input.disabled = true;
+
+  input.id = id;
+
+  span.replaceWith(input);
+
+}
+function substituirSpanPorSelect(id, opcoes, desabilitado = false) {
+
+  const span = document.getElementById(id);
+
+  if (!span) return;
+
+  const select =
+    criarSelectComValorAtualMinhaInfo(
+      opcoes,
+      span.textContent.trim()
+    );
+
+  select.id = id;
+
+  if (desabilitado)
+    select.disabled = true;
+
+  span.replaceWith(select);
+
+}
+function substituirTelefone(id) {
+
+  substituirSpanPorInput(id);
+
+  const input = document.getElementById(id);
+
+  input.placeholder = "(11) 99217-3945";
+
+  input.addEventListener("input", () => {
+
+    let numeros =
+      input.value.replace(/\D/g, "");
+
+    if (numeros.length > 11)
+      numeros = numeros.slice(0,11);
+
+    let formatado = "";
+
+    if (numeros.length >= 2) {
+
+      formatado =
+        `(${numeros.slice(0,2)}) `;
+
+      if (numeros.length >= 7) {
+
+        formatado +=
+          numeros.slice(2,7) +
+          "-" +
+          numeros.slice(7);
+
+      } else if (numeros.length > 2) {
+
+        formatado +=
+          numeros.slice(2);
+
+      }
+
+    } else {
+
+      formatado = numeros;
+
+    }
+
+    input.value = formatado;
+
+  });
+
+}
+function substituirEmail(id) {
+
+  substituirSpanPorInput(id);
+
+  const input =
+    document.getElementById(id);
+
+  input.type = "email";
+  input.placeholder = "exemplo@email.com";
+
+}
+
+  
+//nova função para voltar os selects para o texto da tabela
+/*function cancelarEdicaoMinhaInfo(trs, idx) {
+const [trInfo, trInfo2, trClas, trDet] = trs;
+const infoTds = trInfo.querySelectorAll('td'),
+      info2Tds = trInfo2.querySelectorAll('td'),
+      clasTds = trClas.querySelectorAll('td'),
+      detTds = trDet.querySelectorAll('td');
+
+// c trInfo (apenas inputs)
+infoTds.forEach(td => {
+  const input = td.querySelector('input');
+  const select = td.querySelector('select');
+  if (input) td.textContent = input.defaultValue || '';
+  else if (select) td.textContent = select.defaultValue || '';
+});
+
+// 🔁 trInfo2 (agora apenas inputs)
+info2Tds.forEach(td => {
+  const input = td.querySelector('input');
+  td.textContent = input ? input.defaultValue || '' : '';
+});
 
 
-    // 🔁 trClas (dois selects)
-    clasTds.forEach(td => {
-      const select = td.querySelector('select');
-      if (select) td.textContent = select.defaultValue || '';
-    });
+// 🔁 trClas (dois selects)
+clasTds.forEach(td => {
+  const select = td.querySelector('select');
+  if (select) td.textContent = select.defaultValue || '';
+});
 
-    /*// 🔁 trDet (input de situação)
-    const input = detTds[0].querySelector('input');
-    if (input) detTds[0].textContent = input.defaultValue || '';*/
+// 🔁 trDet (input de situação)
+//const input = detTds[0].querySelector('input');
+//if (input) detTds[0].textContent = input.defaultValue || '';
 
-    detTds.forEach(td => {
-    if (td.querySelector('button')) return; // pula o <td> com botões
-      const input = td.querySelector('input');
-      const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      else if (select) td.textContent = select.defaultValue || '';
-    });
+detTds.forEach(td => {
+if (td.querySelector('button')) return; // pula o <td> com botões
+  const input = td.querySelector('input');
+  const select = td.querySelector('select');
+  if (input) td.textContent = input.defaultValue || '';
+  else if (select) td.textContent = select.defaultValue || '';
+});
 
-    // 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
-    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
-    btnE.style.display = 'inline-block';
-    btnS.style.display = 'none';
-    btnC.style.display = 'none';
-  }
+// 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
+const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+btnE.style.display = 'inline-block';
+btnS.style.display = 'none';
+btnC.style.display = 'none';
+}*/
 
-function salvarAlteracoesMinhaInfo(trs, idx) {
+function cancelarEdicaoMinhaInfo() {
+
+  restaurarInputParaSpan("perfilNomeMi");
+
+  restaurarSelectParaSpan("perfilCongregacaoMi");
+
+  restaurarInputParaSpan("perfilTelefoneMi");
+
+  restaurarInputParaSpan("perfilEmailMi");
+
+  restaurarSelectParaSpan("perfilGrupoMi");
+
+  restaurarSelectParaSpan("perfilSexoMi");
+
+  restaurarSelectParaSpan("perfilSituacaoMi");
+
+  restaurarInputParaSpan("perfilTCSMi");
+
+  document.getElementById("btnEditarMinhaInfo").style.display = "";
+  document.getElementById("btnSalvarMinhaInfo").style.display = "none";
+  document.getElementById("btnCancelarMinhaInfo").style.display = "none";
+
+}
+function restaurarInputParaSpan(id) {
+
+  const input = document.getElementById(id);
+
+  if (!input || input.tagName.toLowerCase() !== "input")
+    return;
+
+  const span = document.createElement("span");
+
+  span.id = id;
+  span.textContent = input.defaultValue || "";
+
+  input.replaceWith(span);
+
+}
+function restaurarSelectParaSpan(id) {
+
+  const select = document.getElementById(id);
+
+  if (!select || select.tagName.toLowerCase() !== "select")
+    return;
+
+  const span = document.createElement("span");
+
+  span.id = id;
+  span.textContent = select.defaultValue || "";
+
+  select.replaceWith(span);
+
+}
+
+
+/*function salvarAlteracoesMinhaInfo(trs, idx) {
 
 const [trInfo, trInfo2, trClas, trDet] = trs;
 
@@ -5953,10 +6270,10 @@ campos.forEach(id => {
 
 const idOrig = trDet.dataset.identificadorOriginal;
 
-/*console.log("🧩 trDet:", trDet);
-console.log("🧩 dataset completo:", trDet.dataset);
-console.log("🧩 identificadorOriginal:", idOrig);
-console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));*/
+//console.log("🧩 trDet:", trDet);
+//console.log("🧩 dataset completo:", trDet.dataset);
+//console.log("🧩 identificadorOriginal:", idOrig);
+//console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
 
 mostrarSpinner();
 
@@ -6006,45 +6323,290 @@ btnE.style.display = 'inline-block';
 btnS.style.display = 'none';
 btnC.style.display = 'none';
 
+}*/
+
+function restaurarCardMinhaInfo() {
+
+  [
+    "perfilNomeMi",
+    "perfilCongregacaoMi",
+    "perfilTelefoneMi",
+    "perfilEmailMi",
+    "perfilGrupoMi",
+    "perfilSexoMi",
+    "perfilSituacaoMi",
+    "perfilTCSMi"
+  ].forEach(id => {
+
+    const el = document.getElementById(id);
+
+    if (!el) return;
+
+    if (el.tagName === "INPUT" || el.tagName === "SELECT") {
+
+      const span = document.createElement("span");
+
+      span.id = id;
+
+      el.replaceWith(span);
+
+    }
+
+  });
+
+  document.getElementById("btnEditarMinhaInfo").style.display = "";
+  document.getElementById("btnSalvarMinhaInfo").style.display = "none";
+  document.getElementById("btnCancelarMinhaInfo").style.display = "none";
+
 }
+function salvarAlteracoesMinhaInfo() {
 
-  function editarPrivilegiosMinhaInfo() {
-    const campos = [
-      { id: 'campoPrivOrganizacaoMi', chave: 'organizacao' },
-      { id: 'campoPrivAACMi', chave: 'aac' },
-      { id: 'campoPrivEscalasMi', chave: 'escalas' },
-      { id: 'campoPrivEquipesMi', chave: 'equipes' },
-      { id: 'campoPrivTreinadorMi', chave: 'treinador' }
-    ];
+  const nd = [];
 
-    campos.forEach(({ id, chave }) => {
-      const span = document.getElementById(id);
-      if (!span) {
-        console.warn(`Elemento com ID ${id} não encontrado`);
+  //=========================
+  // CAMPOS DO CARD
+  //=========================
+
+  const ids = [
+    "perfilNomeMi",
+    "perfilCongregacaoMi",
+    "perfilTelefoneMi",
+    "perfilEmailMi",
+    "perfilGrupoMi",
+    "perfilSexoMi",
+    "perfilSituacaoMi",
+    "perfilTCSMi"
+  ];
+
+  for (let i = 0; i < ids.length; i++) {
+
+    const el = document.getElementById(ids[i]);
+
+    let valor = "";
+
+    if (el.tagName.toLowerCase() === "input") {
+
+      valor = el.value.trim();
+
+    } else if (el.tagName.toLowerCase() === "select") {
+
+      valor = el.value.trim();
+
+    } else {
+
+      valor = el.textContent.trim();
+
+    }
+
+    //=========================
+    // VALIDAÇÕES
+    //=========================
+
+    if (ids[i] === "perfilTelefoneMi") {
+
+      const telefoneRegex =
+        /^\(\d{2}\)\s9\d{4}-\d{4}$/;
+
+      if (!telefoneRegex.test(valor)) {
+
+        mostrarAlertaGlobal(
+          "⚠️ Telefone inválido. Use o formato: (11) 99217-3945"
+        );
+
+        el.classList.add("erro-campo");
+        el.focus();
+
         return;
+
       }
 
-      const valorAtual = span.textContent.trim();
-      const select = document.createElement('select');
-      select.id = id;
+    }
 
-      const optVazio = document.createElement('option');
-      optVazio.value = '';
-      optVazio.textContent = '- Selecione -';
-      select.appendChild(optVazio);
+    if (ids[i] === "perfilEmailMi") {
 
-      const opcoes = (window.opcoesPrivilegios?.[chave] || []);
-      opcoes.forEach(opcao => {
-        const option = document.createElement('option');
-        option.value = opcao;
-        option.textContent = opcao;
-        if (opcao === valorAtual) option.selected = true;
-        select.appendChild(option);
-      });
+      const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      span.replaceWith(select);
-    });
+      if (!emailRegex.test(valor)) {
+
+        mostrarAlertaGlobal(
+          "⚠️ E-mail inválido."
+        );
+
+        el.classList.add("erro-campo");
+        el.focus();
+
+        return;
+
+      }
+
+    }
+
+    nd.push(valor);
+
   }
+
+  //=========================
+  // PRIVILÉGIOS
+  //=========================
+
+  const camposPriv = [
+    "campoPrivOrganizacaoMi",
+    "campoPrivAACMi",
+    "campoPrivEscalasMi",
+    "campoPrivEquipesMi",
+    "campoPrivTreinadorMi"
+  ];
+
+  const priv = [];
+
+  camposPriv.forEach(id => {
+
+    const el = document.getElementById(id);
+
+    if (!el) {
+
+      priv.push("");
+
+      return;
+
+    }
+
+    if (el.tagName.toLowerCase() === "select") {
+
+      priv.push(el.value);
+
+      const span =
+        document.createElement("span");
+
+      span.id = id;
+      span.textContent = el.value;
+
+      el.replaceWith(span);
+
+    } else {
+
+      priv.push(el.textContent.trim());
+
+    }
+
+  });
+
+  //=========================
+  // IDENTIFICADOR
+  //=========================
+
+  const idOrig =
+        document
+          .getElementById("campoIdentificacaoMi")
+          .textContent
+          .trim();
+
+  console.log("Identificador lido:", idOrig);
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "atualizarMinhaInfo",
+
+    {
+
+      dados: JSON.stringify({
+
+        primeiros8: nd,
+
+        privilegios: priv,
+
+        identificadorOriginal: idOrig
+
+      })
+
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        res.mensagem ||
+
+        "✅ Alterado com sucesso!"
+
+      );
+
+      carregarOpcoes();
+
+      document
+        .querySelectorAll(".erro-campo")
+        .forEach(el => el.classList.remove("erro-campo"));
+
+      restaurarCardMinhaInfo();
+      pesquisarMinhaInfo();
+
+    },
+
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro ao salvar: " +
+
+        (err.message || err.mensagem)
+
+      );
+
+      document
+        .querySelectorAll(".erro-campo")
+        .forEach(el => el.classList.remove("erro-campo"));
+
+    }
+
+  );
+
+}
+
+
+function editarPrivilegiosMinhaInfo() {
+  const campos = [
+    { id: 'campoPrivOrganizacaoMi', chave: 'organizacao' },
+    { id: 'campoPrivAACMi', chave: 'aac' },
+    { id: 'campoPrivEscalasMi', chave: 'escalas' },
+    { id: 'campoPrivEquipesMi', chave: 'equipes' },
+    { id: 'campoPrivTreinadorMi', chave: 'treinador' }
+  ];
+
+  campos.forEach(({ id, chave }) => {
+    const span = document.getElementById(id);
+    if (!span) {
+      console.warn(`Elemento com ID ${id} não encontrado`);
+      return;
+    }
+
+    const valorAtual = span.textContent.trim();
+    const select = document.createElement('select');
+    select.id = id;
+
+    const optVazio = document.createElement('option');
+    optVazio.value = '';
+    optVazio.textContent = '- Selecione -';
+    select.appendChild(optVazio);
+
+    const opcoes = (window.opcoesPrivilegios?.[chave] || []);
+    opcoes.forEach(opcao => {
+      const option = document.createElement('option');
+      option.value = opcao;
+      option.textContent = opcao;
+      if (opcao === valorAtual) option.selected = true;
+      select.appendChild(option);
+    });
+
+    span.replaceWith(select);
+  });
+}
 
 let modoEdicaoAtivoNovoPonto20 = false;
 
@@ -6955,7 +7517,7 @@ function calcularAnosBatismo(dataString) {
   return anos;
 }
 
-function mostrarResultados(dados) {
+/*function mostrarResultados(dados) {
 
   // 🔥 JSONP SAFETY: caso venha string
   if (typeof dados === "string") {
@@ -7199,94 +7761,229 @@ function mostrarResultados(dados) {
   document.getElementById('detalhesPrivilegios').style.display = 'block';
 
   setTimeout(() => marcarUltimaLinhaTabela('detalhesBody'), 0);
+}*/
+function mostrarResultados(dados) {
+
+  if (typeof dados === "string") {
+    try {
+      dados = JSON.parse(dados);
+    } catch (e) {
+      console.error("Erro ao parsear JSONP:", e);
+      return;
+    }
+  }
+
+  const card = document.getElementById("cardPerfilParticipante");
+
+  if (
+    !dados ||
+    (dados.length === 0 &&
+      (!dados.participantes || dados.participantes.length === 0))
+  ) {
+
+    card.style.display = "none";
+    document.getElementById("detalhesDesignacoes").style.display = "none";
+    document.getElementById("detalhesPrivilegios").style.display = "none";
+    return;
+  }
+
+  let part = dados.participantes || dados;
+  let privs = dados.privilegios || [];
+
+  if (!Array.isArray(part))
+    part = [];
+
+  if (
+    Array.isArray(privs) &&
+    privs.length === 1 &&
+    Array.isArray(privs[0])
+  ) {
+    privs = privs[0];
+  }
+
+  if (
+    privs.length === 1 &&
+    typeof privs[0] === "string" &&
+    privs[0].includes(",")
+  ) {
+
+    privs =
+      privs[0]
+        .split(",")
+        .map(p => p.trim());
+
+  }
+
+  const p0 = part[0];
+
+  if (!p0) {
+    card.style.display = "none";
+    return;
+  }
+
+  p0.forEach((v,i)=>console.log(i,v));
+
+  card.dataset.identificadorOriginal = p0[17] || "";
+
+  document.getElementById("perfilNome").textContent             = p0[0] || "";
+  document.getElementById("perfilCongregacao").textContent      = p0[1] || "";
+  document.getElementById("perfilEmail").textContent            = p0[2] || "";
+  document.getElementById("perfilTelefone").textContent         = p0[3] || "";
+  document.getElementById("perfilPeticao").textContent          = p0[4] || "";
+
+  document.getElementById("perfilGrupo").textContent            = p0[5] || "";
+  document.getElementById("perfilSexo").textContent             = p0[6] || "";
+  document.getElementById("perfilSituacao").textContent         = p0[7] || "";
+
+  document.getElementById("perfilDataNascimento").textContent   = p0[8] || "";
+  document.getElementById("perfilIdade").textContent =
+      p0[8] ? calcularIdade(p0[8]) + " anos" : "";
+
+  document.getElementById("perfilDataBatismo").textContent      = p0[9] || "";
+  document.getElementById("perfilAnosBatismo").textContent =
+      p0[9] ? calcularAnosBatismo(p0[9]) + " anos" : "";
+
+  document.getElementById("perfilTCS").textContent              = p0[10] || "";
+
+  document.getElementById("campoIdentificacao").textContent     = p0[11] || "";
+
+ console.log(
+  "Identificador salvo:",
+  document.getElementById("campoIdentificacaoMi").textContent
+);
+
+  const designacoes = [
+    { id: "campoDesignacao1", valor: p0[12] || "" },
+    { id: "campoDesignacao2", valor: p0[13] || "" },
+    { id: "campoDesignacao3", valor: p0[14] || "" },
+    { id: "campoDesignacao4", valor: p0[15] || "" },
+    { id: "campoDesignacao5", valor: p0[16] || "" }
+  ];
+
+  designacoes.forEach(({ id, valor }) => {
+
+    const span = document.getElementById(id);
+
+    span.textContent = valor;
+
+    span.closest(".card-info").style.display =
+      valor ? "" : "none";
+
+  });
+
+  document.getElementById("detalhesDesignacoes").style.display =
+      designacoes.some(d => d.valor)
+      ? "block"
+      : "none";
+
+  document.getElementById("campoPrivOrganizacao").textContent =
+      formatarPrivilegio(privs[0]);
+
+  document.getElementById("campoPrivAAC").textContent =
+      formatarPrivilegio(privs[1]);
+
+  document.getElementById("campoPrivEscalas").textContent =
+      formatarPrivilegio(privs[2]);
+
+  document.getElementById("campoPrivEquipes").textContent =
+      formatarPrivilegio(privs[3]);
+
+  document.getElementById("campoPrivTreinador").textContent =
+      formatarPrivilegio(privs[4]);
+
+  document.getElementById("detalhesPrivilegios").style.display =
+      "block";
+
+  card.style.display = "block";
+
 }
 
 function marcarUltimaLinhaTabela(tbodyId) {
-    const tbody = document.getElementById(tbodyId);
-    if (!tbody) return;
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
 
-    const linhas = [...tbody.querySelectorAll('tr')];
-    if (linhas.length === 0) return;
+  const linhas = [...tbody.querySelectorAll('tr')];
+  if (linhas.length === 0) return;
 
-    // Remove classes antigas
-    linhas.forEach(tr => {
-      const tds = tr.querySelectorAll('td');
-      tds.forEach(td => td.classList.remove('pequena', 'grande'));
-    });
+  // Remove classes antigas
+  linhas.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    tds.forEach(td => td.classList.remove('pequena', 'grande'));
+  });
 
-    const ultimaLinha = linhas[linhas.length - 1];
-    const tds = ultimaLinha.querySelectorAll('td');
+  const ultimaLinha = linhas[linhas.length - 1];
+  const tds = ultimaLinha.querySelectorAll('td');
 
-    if (tds.length >= 2) {
-      tds[0].classList.add('pequena'); // primeira célula
-      tds[tds.length - 1].classList.add('grande'); // última célula
-    }
+  if (tds.length >= 2) {
+    tds[0].classList.add('pequena'); // primeira célula
+    tds[tds.length - 1].classList.add('grande'); // última célula
   }
+}
 
 function criarSelectComValorAtual(opcoes = [], valorOriginal = '') {
-    const select = document.createElement('select');
-    const valor = valorOriginal.trim();
-    const valorLower = valor.toLowerCase();
+  const select = document.createElement('select');
+  const valor = valorOriginal.trim();
+  const valorLower = valor.toLowerCase();
 
-    // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
-    const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
+  // Verifica se o valor já está entre as opções (ignorando maiúsculas/minúsculas e espaços)
+  const existe = opcoes.some(op => op.trim().toLowerCase() === valorLower);
 
-    // Se não existir, adiciona o valor original como uma opção temporária
-    if (!existe && valor !== '') {
-      opcoes = [valor, ...opcoes];
-    }
-
-    opcoes.forEach(opcao => {
-      const opt = document.createElement('option');
-      opt.value = opcao;
-      opt.textContent = opcao;
-
-      if (opcao.trim().toLowerCase() === valorLower) {
-        opt.selected = true;
-      }
-
-      select.appendChild(opt);
-    });
-
-    select.defaultValue = valor;
-
-    return select;
+  // Se não existir, adiciona o valor original como uma opção temporária
+  if (!existe && valor !== '') {
+    opcoes = [valor, ...opcoes];
   }
 
-  function aplicarMascaraData(input) {
+  opcoes.forEach(opcao => {
+    const opt = document.createElement('option');
+    opt.value = opcao;
+    opt.textContent = opcao;
 
-    input.addEventListener('input', () => {
+    if (opcao.trim().toLowerCase() === valorLower) {
+      opt.selected = true;
+    }
 
-      // Remove tudo exceto números
-      let valor = input.value.replace(/\D/g, '');
+    select.appendChild(opt);
+  });
 
-      // Limita a 8 dígitos
-      if (valor.length > 8) valor = valor.slice(0, 8);
+  select.defaultValue = valor;
 
-      // Monta a máscara
-      if (valor.length > 4) {
-        valor = valor.slice(0, 2) + "/" + valor.slice(2, 4) + "/" + valor.slice(4);
-      } 
-      else if (valor.length > 2) {
-        valor = valor.slice(0, 2) + "/" + valor.slice(2);
-      }
+  return select;
+}
 
-      input.value = valor;
+function aplicarMascaraData(input) {
 
-      // Se já tem data completa (10 chars), validar
-      if (valor.length === 10) {
-        if (!dataValida(valor)) {
-          input.style.borderColor = "red";
-        } else {
-          input.style.borderColor = "";
-        }
+  input.addEventListener('input', () => {
+
+    // Remove tudo exceto números
+    let valor = input.value.replace(/\D/g, '');
+
+    // Limita a 8 dígitos
+    if (valor.length > 8) valor = valor.slice(0, 8);
+
+    // Monta a máscara
+    if (valor.length > 4) {
+      valor = valor.slice(0, 2) + "/" + valor.slice(2, 4) + "/" + valor.slice(4);
+    } 
+    else if (valor.length > 2) {
+      valor = valor.slice(0, 2) + "/" + valor.slice(2);
+    }
+
+    input.value = valor;
+
+    // Se já tem data completa (10 chars), validar
+    if (valor.length === 10) {
+      if (!dataValida(valor)) {
+        input.style.borderColor = "red";
       } else {
         input.style.borderColor = "";
       }
-    });
-  }
+    } else {
+      input.style.borderColor = "";
+    }
+  });
+}
 
-  function tornarEditavel(trs, idx) {
+/*function tornarEditavel(trs, idx) {
     if (!window.opcoesPrivilegios || Object.keys(window.opcoesPrivilegios).length === 0) {
       mostrarAlertaGlobal('⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos.');
       return;
@@ -7481,107 +8178,318 @@ function criarSelectComValorAtual(opcoes = [], valorOriginal = '') {
     btnE.style.display = 'none';
     btnS.style.display = 'inline-block';
     btnC.style.display = 'inline-block';
+  }*/
+function tornarEditavel() {
+
+  if (
+    !window.opcoesPrivilegios ||
+    Object.keys(window.opcoesPrivilegios).length === 0
+  ) {
+
+    mostrarAlertaGlobal(
+      "⚠️ As opções ainda estão sendo carregadas. Tente novamente em alguns segundos."
+    );
+
+    return;
   }
 
-  function cancelarEdicao(trs, idx) {
-    const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
-    const infoTds = trInfo.querySelectorAll('td'),
-          info1Tds = trInfo1.querySelectorAll('td'),
-          info2Tds = trInfo2.querySelectorAll('td'),
-          info3Tds = trInfo3.querySelectorAll('td'),
-          clasTds = trClas.querySelectorAll('td'),
-          detTds = trDet.querySelectorAll('td');
+  substituirSpanPorInput("perfilNome");
 
-    // 🔁 trInfo (apenas inputs)
-    infoTds.forEach(td => {
-      const input = td.querySelector('input');
-      const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      else if (select) td.textContent = select.defaultValue || '';
-    });
+  substituirSpanPorSelect(
+    "perfilCongregacao",
+    window.opcoesCongregacoes || []
+  );
 
-    // 🔁 trInfo1 (apenas inputs)
-    info1Tds.forEach(td => {
-      const input = td.querySelector('input');
-      //const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      //else if (select) td.textContent = select.defaultValue || '';
-    });
+  substituirEmail("perfilEmail");
 
-    // 🔁 trInfo2 (mistura de input e select)
-    info2Tds.forEach(td => {
-      const input = td.querySelector('input');
-      const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      else if (select) td.textContent = select.defaultValue || '';
-    });
+  substituirTelefone("perfilTelefone");
 
-    // 🔁 trInfo3 (apenas inputs)
-    info3Tds.forEach(td => {
-      const input = td.querySelector('input');
+  substituirSpanPorSelect(
+    "perfilPeticao",
+    window.opcoesPrivilegios.confirmacao || []
+  );
 
-      // se tem input → volta ao valor original do input
-      if (input) {
-        td.textContent = input.defaultValue || '';
-        return;
-      }
+  substituirDataComCalculo(
+    "perfilDataNascimento",
+    "perfilIdade",
+    calcularIdade
+  );
 
-      // se NÃO tem input → apenas mantém o texto que já estava salvo no td
-      td.textContent = td.textContent;
-    });
+  substituirDataComCalculo(
+    "perfilDataBatismo",
+    "perfilAnosBatismo",
+    calcularAnosBatismo
+  );
 
-    // 🔁 trClas (dois selects)
-    clasTds.forEach(td => {
-      const select = td.querySelector('select');
-      if (select) td.textContent = select.defaultValue || '';
-    });
+  substituirSpanPorSelect(
+    "perfilGrupo",
+    window.opcoesPrivilegios.confirmacao || []
+  );
 
-    /*// 🔁 trDet (input de situação)
-    const input = detTds[0].querySelector('input');
-    if (input) detTds[0].textContent = input.defaultValue || '';*/
+  substituirSpanPorSelect(
+    "perfilSexo",
+    window.opcoesPrivilegios.sexo || []
+  );
 
-    detTds.forEach(td => {
-    if (td.querySelector('button')) return; // pula o <td> com botões
-      const input = td.querySelector('input');
-      const select = td.querySelector('select');
-      if (input) td.textContent = input.defaultValue || '';
-      else if (select) td.textContent = select.defaultValue || '';
-    });
+  substituirSpanPorSelect(
+    "perfilSituacao",
+    window.opcoesPrivilegios.situacao || []
+  );
 
-    // 🔁 Campos de privilégios (organizacao, aac, etc.) convertidos de <select> de volta para <span>
-    const campos = [
-      'campoPrivOrganizacao',
-      'campoPrivAAC',
-      'campoPrivEscalas',
-      'campoPrivEquipes',
-      'campoPrivTreinador'
-    ];
+  substituirSpanPorInput(
+    "perfilTCS",
+    true
+  );
 
-    campos.forEach(id => {
-      const el = document.getElementById(id);
+  const mapaIds = {
+    campoPrivOrganizacao: "organizacao",
+    campoPrivAAC: "aac",
+    campoPrivEscalas: "escalas",
+    campoPrivEquipes: "equipes",
+    campoPrivTreinador: "treinador"
+  };
 
-      if (el && el.tagName.toLowerCase() === 'select') {
-        const span = document.createElement('span');
-        span.id = el.id;
-        span.textContent = el.defaultValue || '';
-        el.replaceWith(span);
-      }
-    });
+  Object.entries(mapaIds).forEach(([id, chave]) => {
 
-    // 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
-    const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
-    btnE.style.display = 'inline-block';
-    btnS.style.display = 'none';
-    btnC.style.display = 'none';
+    substituirSpanPorSelect(
+      id,
+      window.opcoesPrivilegios[chave] || []
+    );
 
-    pesquisarParticipante();
+  });
+
+  document.getElementById("btnEditarParticipante").style.display = "none";
+  document.getElementById("btnSalvarParticipante").style.display = "";
+  document.getElementById("btnCancelarParticipante").style.display = "";
+
+}
+function substituirDataComCalculo(
+  idData,
+  idResultado,
+  funcaoCalculo) {
+
+  const spanData =
+    document.getElementById(idData);
+
+  if (!spanData) return;
+
+  const valorOriginal =
+    spanData.textContent.trim();
+
+  const input =
+    document.createElement("input");
+
+  input.type = "text";
+  input.value = valorOriginal;
+  input.defaultValue = valorOriginal;
+  input.placeholder = "dd/mm/aaaa";
+  input.id = idData;
+
+  aplicarMascaraData(input);
+
+  input.addEventListener("input", () => {
+
+    const spanResultado =
+      document.getElementById(idResultado);
+
+    if (!spanResultado) return;
+
+    const resultado =
+      funcaoCalculo(input.value);
+
+    spanResultado.textContent =
+      resultado
+        ? resultado + " anos"
+        : "";
+
+  });
+
+  spanData.replaceWith(input);
+
+}
+
+/*function cancelarEdicao(trs, idx) {
+  const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
+  const infoTds = trInfo.querySelectorAll('td'),
+        info1Tds = trInfo1.querySelectorAll('td'),
+        info2Tds = trInfo2.querySelectorAll('td'),
+        info3Tds = trInfo3.querySelectorAll('td'),
+        clasTds = trClas.querySelectorAll('td'),
+        detTds = trDet.querySelectorAll('td');
+
+  // 🔁 trInfo (apenas inputs)
+  infoTds.forEach(td => {
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+    if (input) td.textContent = input.defaultValue || '';
+    else if (select) td.textContent = select.defaultValue || '';
+  });
+
+  // 🔁 trInfo1 (apenas inputs)
+  info1Tds.forEach(td => {
+    const input = td.querySelector('input');
+    //const select = td.querySelector('select');
+    if (input) td.textContent = input.defaultValue || '';
+    //else if (select) td.textContent = select.defaultValue || '';
+  });
+
+  // 🔁 trInfo2 (mistura de input e select)
+  info2Tds.forEach(td => {
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+    if (input) td.textContent = input.defaultValue || '';
+    else if (select) td.textContent = select.defaultValue || '';
+  });
+
+  // 🔁 trInfo3 (apenas inputs)
+  info3Tds.forEach(td => {
+    const input = td.querySelector('input');
+
+    // se tem input → volta ao valor original do input
+    if (input) {
+      td.textContent = input.defaultValue || '';
+      return;
+    }
+
+    // se NÃO tem input → apenas mantém o texto que já estava salvo no td
+    td.textContent = td.textContent;
+  });
+
+  // 🔁 trClas (dois selects)
+  clasTds.forEach(td => {
+    const select = td.querySelector('select');
+    if (select) td.textContent = select.defaultValue || '';
+  });
+
+  // 🔁 trDet (input de situação)
+  //const input = detTds[0].querySelector('input');
+  //if (input) detTds[0].textContent = input.defaultValue || '';
+
+  detTds.forEach(td => {
+  if (td.querySelector('button')) return; // pula o <td> com botões
+    const input = td.querySelector('input');
+    const select = td.querySelector('select');
+    if (input) td.textContent = input.defaultValue || '';
+    else if (select) td.textContent = select.defaultValue || '';
+  });
+
+  // 🔁 Campos de privilégios (organizacao, aac, etc.) convertidos de <select> de volta para <span>
+  const campos = [
+    'campoPrivOrganizacao',
+    'campoPrivAAC',
+    'campoPrivEscalas',
+    'campoPrivEquipes',
+    'campoPrivTreinador'
+  ];
+
+  campos.forEach(id => {
+    const el = document.getElementById(id);
+
+    if (el && el.tagName.toLowerCase() === 'select') {
+      const span = document.createElement('span');
+      span.id = el.id;
+      span.textContent = el.defaultValue || '';
+      el.replaceWith(span);
+    }
+  });
+
+  // 🔁 Botões: volta ao estado original (Editar visível, Salvar e Cancelar ocultos)
+  const [btnE, btnS, btnC] = trDet.querySelectorAll('button');
+  btnE.style.display = 'inline-block';
+  btnS.style.display = 'none';
+  btnC.style.display = 'none';
+
+  pesquisarParticipante();
+}*/
+function cancelarEdicao() {
+
+  restaurarInputParaSpan("perfilNome");
+
+  restaurarSelectParaSpan("perfilCongregacao");
+
+  restaurarInputParaSpan("perfilEmail");
+
+  restaurarInputParaSpan("perfilTelefone");
+
+  restaurarSelectParaSpan("perfilPeticao");
+
+  restaurarDataComCalculo(
+    "perfilDataNascimento",
+    "perfilIdade",
+    calcularIdade
+  );
+
+  restaurarDataComCalculo(
+    "perfilDataBatismo",
+    "perfilAnosBatismo",
+    calcularAnosBatismo
+  );
+
+  restaurarSelectParaSpan("perfilGrupo");
+
+  restaurarSelectParaSpan("perfilSexo");
+
+  restaurarSelectParaSpan("perfilSituacao");
+
+  restaurarInputParaSpan("perfilTCS");
+
+  [
+    "campoPrivOrganizacao",
+    "campoPrivAAC",
+    "campoPrivEscalas",
+    "campoPrivEquipes",
+    "campoPrivTreinador"
+  ].forEach(restaurarSelectParaSpan);
+
+  document.getElementById("btnEditarParticipante").style.display = "";
+  document.getElementById("btnSalvarParticipante").style.display = "none";
+  document.getElementById("btnCancelarParticipante").style.display = "none";
+
+}
+function restaurarDataComCalculo(
+  idData,
+  idResultado,
+  funcaoCalculo) {
+
+  const input =
+    document.getElementById(idData);
+
+  if (!input || input.tagName.toLowerCase() !== "input")
+    return;
+
+  const valor =
+    input.defaultValue || "";
+
+  const span =
+    document.createElement("span");
+
+  span.id = idData;
+  span.textContent = valor;
+
+  input.replaceWith(span);
+
+  const spanResultado =
+    document.getElementById(idResultado);
+
+  if (spanResultado) {
+
+    const resultado =
+      funcaoCalculo(valor);
+
+    spanResultado.textContent =
+      resultado
+        ? resultado + " anos"
+        : "";
+
   }
 
-  function cancelarEdicao2() {
-    pesquisarParticipante();
-  }
+}
 
-function salvarAlteracoes(trs, idx) {
+function cancelarEdicao2() {
+  pesquisarParticipante();
+}
+
+/*function salvarAlteracoes(trs, idx) {
 
   const [trInfo, trInfo1, trInfo2, trInfo3, trClas, trDet] = trs;
 
@@ -7797,45 +8705,284 @@ function salvarAlteracoes(trs, idx) {
   btnE.style.display = "inline-block";
   btnS.style.display = "none";
   btnC.style.display = "none";
+}*/
+function salvarAlteracoes() {
+
+  const getValor = (id) => {
+
+    const el = document.getElementById(id);
+
+    if (!el) return "";
+
+    const tag = el.tagName.toLowerCase();
+
+    if (tag === "input" || tag === "select")
+      return el.value.trim();
+
+    return el.textContent.trim();
+
+  };
+
+  const substituirPorSpan = (id, texto) => {
+
+    const el = document.getElementById(id);
+
+    if (!el) return;
+
+    if (el.tagName.toLowerCase() === "span") {
+      el.textContent = texto;
+      return;
+    }
+
+    const span = document.createElement("span");
+    span.id = id;
+    span.textContent = texto;
+
+    el.replaceWith(span);
+
+  };
+
+  // =========================
+  // VALIDAÇÕES
+  // =========================
+
+  const email = getValor("perfilEmail");
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+
+    mostrarAlertaGlobal("⚠️ E-mail inválido.");
+    document.getElementById("perfilEmail")?.focus();
+
+    return;
+
+  }
+
+  const telefone = getValor("perfilTelefone");
+
+  const telefoneRegex = /^\(\d{2}\)\s9\d{4}-\d{4}$/;
+
+  if (!telefoneRegex.test(telefone)) {
+
+    mostrarAlertaGlobal("⚠️ Telefone inválido.");
+    document.getElementById("perfilTelefone")?.focus();
+
+    return;
+
+  }
+
+  const dataNasc = getValor("perfilDataNascimento");
+
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dataNasc)) {
+
+    mostrarAlertaGlobal("⚠️ Data de nascimento inválida.");
+    return;
+
+  }
+
+  const idade = calcularIdade(dataNasc);
+
+  const dataBat = getValor("perfilDataBatismo");
+
+  if (dataBat && !/^\d{2}\/\d{2}\/\d{4}$/.test(dataBat)) {
+
+    mostrarAlertaGlobal("⚠️ Data de batismo inválida.");
+    return;
+
+  }
+
+  const anosBat = dataBat
+    ? calcularAnosBatismo(dataBat)
+    : "";
+
+  // =========================
+  // DADOS
+  // =========================
+
+  const nd = [
+
+    getValor("perfilNome"),
+    getValor("perfilCongregacao"),
+    email,
+    telefone,
+    getValor("perfilPeticao"),
+
+    getValor("perfilGrupo"),
+    getValor("perfilSexo"),
+    getValor("perfilSituacao"),
+
+    dataNasc,
+    dataBat,
+
+    getValor("perfilTCS")
+
+  ];
+
+  const priv = [
+
+    getValor("campoPrivOrganizacao"),
+    getValor("campoPrivAAC"),
+    getValor("campoPrivEscalas"),
+    getValor("campoPrivEquipes"),
+    getValor("campoPrivTreinador")
+
+  ];
+
+  const idOrig =
+    document.getElementById("cardPerfilParticipante")
+            .dataset.identificadorOriginal;
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "atualizarParticipanteAdmin",
+    {
+      primeiros9: JSON.stringify(nd),
+      privilegios: JSON.stringify(priv),
+      identificadorOriginal: idOrig
+    },
+    () => {
+
+      esconderSpinner();
+
+      substituirPorSpan("perfilNome", nd[0]);
+      substituirPorSpan("perfilCongregacao", nd[1]);
+      substituirPorSpan("perfilEmail", nd[2]);
+      substituirPorSpan("perfilTelefone", nd[3]);
+      substituirPorSpan("perfilPeticao", nd[4]);
+
+      substituirPorSpan("perfilGrupo", nd[5]);
+      substituirPorSpan("perfilSexo", nd[6]);
+      substituirPorSpan("perfilSituacao", nd[7]);
+
+      substituirPorSpan("perfilDataNascimento", dataNasc);
+      substituirPorSpan("perfilIdade", idade + " anos");
+
+      substituirPorSpan("perfilDataBatismo", dataBat);
+      substituirPorSpan(
+        "perfilAnosBatismo",
+        anosBat ? anosBat + " anos" : ""
+      );
+
+      substituirPorSpan("perfilTCS", nd[10]);
+
+      substituirPorSpan("campoPrivOrganizacao", priv[0]);
+      substituirPorSpan("campoPrivAAC", priv[1]);
+      substituirPorSpan("campoPrivEscalas", priv[2]);
+      substituirPorSpan("campoPrivEquipes", priv[3]);
+      substituirPorSpan("campoPrivTreinador", priv[4]);
+
+      document.getElementById("btnEditarParticipante").style.display = "";
+      document.getElementById("btnSalvarParticipante").style.display = "none";
+      document.getElementById("btnCancelarParticipante").style.display = "none";
+
+      mostrarAlertaGlobal("✅ Alterado com sucesso");
+
+      carregarOpcoes();
+
+    },
+    (erro) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao salvar: " + (erro?.mensagem || "erro")
+      );
+
+    }
+
+  );
+
 }
 
 function editarPrivilegios() {
-    const campos = [
-      { id: 'campoPrivOrganizacao', chave: 'organizacao' },
-      { id: 'campoPrivAAC', chave: 'aac' },
-      { id: 'campoPrivEscalas', chave: 'escalas' },
-      { id: 'campoPrivEquipes', chave: 'equipes' },
-      { id: 'campoPrivTreinador', chave: 'treinador' }
-    ];
+  const campos = [
+    { id: 'campoPrivOrganizacao', chave: 'organizacao' },
+    { id: 'campoPrivAAC', chave: 'aac' },
+    { id: 'campoPrivEscalas', chave: 'escalas' },
+    { id: 'campoPrivEquipes', chave: 'equipes' },
+    { id: 'campoPrivTreinador', chave: 'treinador' }
+  ];
 
-    campos.forEach(({ id, chave }) => {
-      const span = document.getElementById(id);
-      if (!span) {
-        console.warn(`Elemento com ID ${id} não encontrado`);
-        return;
-      }
+  campos.forEach(({ id, chave }) => {
+    const span = document.getElementById(id);
+    if (!span) {
+      console.warn(`Elemento com ID ${id} não encontrado`);
+      return;
+    }
 
-      const valorAtual = span.textContent.trim();
-      const select = document.createElement('select');
-      select.id = id;
+    const valorAtual = span.textContent.trim();
+    const select = document.createElement('select');
+    select.id = id;
 
-      const optVazio = document.createElement('option');
-      optVazio.value = '';
-      optVazio.textContent = '- Selecione -';
-      select.appendChild(optVazio);
+    const optVazio = document.createElement('option');
+    optVazio.value = '';
+    optVazio.textContent = '- Selecione -';
+    select.appendChild(optVazio);
 
-      const opcoes = (window.opcoesPrivilegios?.[chave] || []);
-      opcoes.forEach(opcao => {
-        const option = document.createElement('option');
-        option.value = opcao;
-        option.textContent = opcao;
-        if (opcao === valorAtual) option.selected = true;
-        select.appendChild(option);
-      });
-
-      span.replaceWith(select);
+    const opcoes = (window.opcoesPrivilegios?.[chave] || []);
+    opcoes.forEach(opcao => {
+      const option = document.createElement('option');
+      option.value = opcao;
+      option.textContent = opcao;
+      if (opcao === valorAtual) option.selected = true;
+      select.appendChild(option);
     });
+
+    span.replaceWith(select);
+  });
+}
+
+function excluirParticipante() {
+
+  const idParticipante = document
+    .getElementById("cardPerfilParticipante")
+    .dataset.identificadorOriginal;
+
+  const nome = document
+    .getElementById("perfilNome")
+    .textContent
+    .trim();
+
+  if (!idParticipante) {
+    mostrarAlertaGlobal("❌ ID do participante não encontrado.");
+    return;
   }
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Tem certeza que deseja excluir <strong>${nome}</strong> (${idParticipante})?`,
+    () => {
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "excluirParticipantePorId",
+        { idParticipante },
+        () => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal("✅ Participante excluído com sucesso.");
+
+          // opcional: limpar a tela
+          document.getElementById("cardPerfilParticipante").style.display = "none";
+
+        },
+        (err) => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal("❌ " + err.mensagem);
+
+        }
+      );
+
+    }
+  );
+}
+
+
 
 
 function cadastrarParticipante() {
@@ -16477,7 +17624,8 @@ function carregarTodasVagasAbertas() {
         function(dados) {
 
           esconderSpinner();
-          mostrarVagasNaTabela(dados);
+          //mostrarVagasNaTabela(dados);
+          mostrarVagas(dados);
 
         },
         function(err) {
@@ -16578,7 +17726,8 @@ function carregarTodasVagasAbertas() {
     tbody.appendChild(tr);
   });
 }*/
-function mostrarVagasNaTabela(vagas) {
+
+/*function mostrarVagasNaTabela(vagas) {
 
   atualizarContagemVagas(vagas);
 
@@ -16597,63 +17746,6 @@ function mostrarVagasNaTabela(vagas) {
 
     tr.style.cursor = "pointer";
 
-    /*tr.onclick = () => {
-
-      mostrarConfirmacaoGlobal(
-        `⚠️ Deseja excluir a vaga <strong>${vaga.frequencia}</strong> de <strong>${vaga.dia}</strong> no ponto <strong>${vaga.ponto}</strong>?`,
-        () => {
-
-          mostrarSpinner();
-
-          apiJSONP(
-            "excluirVaga",
-            {
-              ponto: vaga.ponto,
-              dia: vaga.dia,
-              frequencia: vaga.frequencia
-            },
-            function() {
-
-              apiJSONP(
-                "atualizarStatusDeVagaExcluida",
-                {
-                  ponto: vaga.ponto,
-                  dia: vaga.dia,
-                  frequencia: vaga.frequencia
-                },
-                function() {
-
-                  esconderSpinner();
-                  carregarTodasVagasAbertas();
-                  mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
-
-                },
-                function(err) {
-
-                  esconderSpinner();
-                  mostrarAlertaGlobal(
-                    "❌ Erro ao atualizar status da vaga excluída: " +
-                    err.message
-                  );
-
-                }
-              );
-
-            },
-            function(err) {
-
-              esconderSpinner();
-              mostrarAlertaGlobal(
-                "❌ Erro ao excluir vaga: " + err.message
-              );
-
-            }
-          );
-
-        }
-      );
-
-    };*/
     tr.onclick = () => {
 
       mostrarConfirmacaoGlobal(
@@ -16701,8 +17793,288 @@ function mostrarVagasNaTabela(vagas) {
 
     tbody.appendChild(tr);
   });
+}*/
+/*function mostrarVagas(vagas) {
+
+  atualizarContagemVagas(vagas);
+
+  const container = document.getElementById("listaVagasPendentes");
+
+  container.innerHTML = "";
+
+  vagas.forEach(vaga => {
+
+    const card = document.createElement("div");
+    card.className = "card-vaga";
+
+    card.innerHTML = `
+        <div class="card-vaga-header">
+            <div>
+                <h3>📍 ${vaga.ponto}</h3>
+                <small>${vaga.status}</small>
+            </div>
+        </div>
+
+        <div class="vaga-detalhes">
+
+            <div>
+                <span class="titulo">📅 Dia</span>
+                <span>${vaga.dia}</span>
+            </div>
+
+            <div>
+                <span class="titulo">🕒 Frequência</span>
+                <span>${vaga.frequencia}</span>
+            </div>
+
+            <div>
+                <span class="titulo">👤 Origem</span>
+                <span>${vaga.quemSai}</span>
+            </div>
+
+            <div>
+                <span class="titulo">⏳ Aberta</span>
+                <span>${vaga.tempoAberta}</span>
+            </div>
+
+        </div>
+
+        <button class="btn btn-danger">
+            🗑️ Excluir vaga
+        </button>
+    `;
+
+
+    card.querySelector("button").onclick = () => {
+      excluirVaga(vaga);
+    };
+
+    container.appendChild(card);
+
+  });
+
+}*/
+function mostrarVagas(vagas) {
+
+  atualizarContagemVagas(vagas);
+
+  const container = document.getElementById("listaVagasPendentes");
+
+  container.innerHTML = "";
+
+  vagas.forEach(vaga => {
+
+    const card = document.createElement("div");
+    card.className = "card-vaga";
+
+
+    // ==========================================
+    // Cor conforme tempo em aberto
+    // ==========================================
+
+    let classeTempo = "tempo-verde";
+
+    if (vaga.diasAberta >= 15) {
+
+      classeTempo = "tempo-vermelho";
+
+    } else if (vaga.diasAberta >= 7) {
+
+      classeTempo = "tempo-laranja";
+
+    } else if (vaga.diasAberta >= 3) {
+
+      classeTempo = "tempo-amarelo";
+
+    }
+
+
+    /*card.innerHTML = `
+
+      <div class="card-vaga-header">
+
+        <div>
+          <h3>📍 ${vaga.ponto}</h3>
+          <small>${vaga.status}</small>
+        </div>
+
+        <span class="badge">
+          ABERTA
+        </span>
+
+      </div>
+
+
+      <div class="vaga-detalhes">
+
+
+        <div class="card-info">
+          <label>📅 Dia</label>
+          <span>${vaga.dia}</span>
+        </div>
+
+
+        <div class="card-info">
+          <label>🕒 Frequência</label>
+          <span>${vaga.frequencia}</span>
+        </div>
+
+
+        <div class="card-info">
+          <label>👤 Origem</label>
+          <span>${vaga.quemSai}</span>
+        </div>
+
+
+        <div class="card-info">
+          <label>⏳ Aberta</label>
+
+          <span class="tempo ${classeTempo}">
+            ${vaga.tempoAberta}
+          </span>
+
+        </div>
+
+
+        <div class="card-info">
+          <label>🆔 ID</label>
+          <span>${vaga.idVaga}</span>
+        </div>
+
+
+      </div>
+
+
+      <button class="btn btn-danger btn-block">
+        🗑️ Excluir vaga
+      </button>
+
+    `;*/
+    card.innerHTML = `
+
+        <div class="card-vaga-header">
+
+            <div>
+              <span class="titulo">📍 Ponto</span>
+              <span>${vaga.ponto}</span>
+            </div>
+
+            <div>
+              <span class="titulo">🌅 Período</span>
+              <span>${vaga.periodo}</span>
+            </div>
+
+        </div>
+
+
+        <div class="vaga-detalhes">
+
+
+            <div>
+                <span class="titulo">
+                    📅 Dia
+                </span>
+
+                <span>
+                    ${vaga.dia}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="titulo">
+                    🕒 Frequência
+                </span>
+
+                <span>
+                    ${vaga.frequencia}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="titulo">
+                    👤 Origem
+                </span>
+
+                <span>
+                    ${vaga.quemSai}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="titulo">
+                    ⏳ Aberta
+                </span>
+
+                <span class="tempo ${classeTempo}">
+                    ${vaga.tempoAberta}
+                </span>
+            </div>
+
+        </div>
+
+
+        <button class="btn btn-danger btn-block">
+            🗑️ Excluir vaga
+        </button>
+
+    `;
+
+
+    card.querySelector("button").onclick = () => {
+
+      excluirVaga(vaga);
+
+    };
+
+
+    container.appendChild(card);
+
+  });
+
 }
+
+
+function excluirVaga(vaga) {
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Deseja excluir a vaga <strong>${vaga.frequencia}</strong> de <strong>${vaga.dia}</strong> no ponto <strong>${vaga.ponto}</strong>?`,
+    () => {
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "excluirVagaN",
+        { idVaga: vaga.idVaga },
+        () => {
+
+          esconderSpinner();
+
+          carregarTodasVagasAbertas();
+
+          mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
+
+        },
+        err => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal("❌ " + err.message);
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+
 let notificacaoEscala = null;
+
 function tratarNotificacaoAoAbrir() {
 
   const params =

@@ -92,10 +92,10 @@ const DESCRICOES_TURNOS = {
 
 };
 
-console.log(
+/*console.log(
   "DESCRICOES_TURNOS carregado:",
   DESCRICOES_TURNOS
-);
+);*/
 
 // =====================================
 // Estado Global dos Campos da Interface

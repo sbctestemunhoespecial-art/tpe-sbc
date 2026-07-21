@@ -849,7 +849,7 @@
             <div class="titulo">Designar</div>
         </div>
         <div class="card-menu btn-relatoriosSubMenu so-admin"
-            onclick="abrirTela('admin', this)">
+            onclick="abrirTela('admin', this); carregarManutencao();">
             <div class="icone">👨‍💼</div>
             <div class="titulo">Administração</div>
         </div>
@@ -3606,6 +3606,18 @@
                   <div class="icone">➕📌</div>
                   <div class="titulo">Criar Novo Ponto</div>
               </div>
+
+              <label>
+              🔧 Manutenção
+
+              <input 
+              type="checkbox"
+              id="switchManutencao"
+              onchange="alterarModoManutencao(this.checked)"
+              >
+
+              </label>
+
             </div>
   </div>
 

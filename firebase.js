@@ -25,7 +25,7 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 
-console.log("Firebase inicializado.");
+//console.log("Firebase inicializado.");
 
 
 // ===============================
@@ -34,7 +34,7 @@ console.log("Firebase inicializado.");
 
 onMessage(messaging, async (payload) => {
 
-  console.log(
+  /*console.log(
     "DADOS PUSH RECEBIDOS:",
     payload.data
   );
@@ -43,7 +43,7 @@ onMessage(messaging, async (payload) => {
   console.log(
     "📩 FOREGROUND MESSAGE:",
     JSON.stringify(payload)
-  );
+  );*/
 
 
   const title =
@@ -103,17 +103,17 @@ onMessage(messaging, async (payload) => {
 async function registrarPush(idUsuarioLogado) {
 
 
-  console.log(
+  /*console.log(
     "🔥 REGISTRAR PUSH INICIADO:",
     idUsuarioLogado
-  );
+  );*/
 
 
   if (!idUsuarioLogado) {
 
-    console.log(
+    /*console.log(
       "Usuário não informado."
-    );
+    );*/
 
     return;
 
@@ -124,10 +124,10 @@ async function registrarPush(idUsuarioLogado) {
     await Notification.requestPermission();
 
 
-  console.log(
+  /*console.log(
     "Permissão:",
     permissao
-  );
+  );*/
 
 
   if (permissao !== "granted") {
@@ -142,10 +142,10 @@ async function registrarPush(idUsuarioLogado) {
     await navigator.serviceWorker.ready;
 
 
-  console.log(
+  /*console.log(
     "🔥 SW:",
     registration.scope
-  );
+  );*/
 
 
 
@@ -163,10 +163,10 @@ async function registrarPush(idUsuarioLogado) {
 
 
 
-  console.log(
+  /*console.log(
     "TOKEN:",
     token
-  );
+  );*/
 
 
   salvarTokenFCM(

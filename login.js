@@ -1,5 +1,137 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
+function mostrarTelaManutencao(){
+
+  document.body.innerHTML = `
+
+  <div style="
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    font-family:Arial;
+    padding:20px;
+  ">
+
+    <div style="font-size:60px;">
+      🔧
+    </div>
+
+    <h1>
+      Sistema em manutenção
+    </h1>
+
+    <p>
+      Estamos realizando atualizações.
+    </p>
+
+    <p>
+      Tente novamente mais tarde.
+    </p>
+
+    <button
+      onclick="voltarTelaLoginManutencao()"
+      style="
+        margin-top:25px;
+        padding:12px 30px;
+        font-size:16px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+      "
+    >
+      OK
+    </button>
+
+  </div>
+
+  `;
+
+}
+function voltarTelaLoginManutencao(){
+
+  localStorage.removeItem("usuarioLogado");
+
+  location.reload();
+  
+}
+
+function carregarManutencao(){
+
+  apiJSONP(
+
+    "verificarManutencao",
+
+    {},
+
+    (res)=>{
+
+      const switchManutencao =
+        document.getElementById(
+          "switchManutencao"
+        );
+
+
+      if(switchManutencao){
+
+        switchManutencao.checked =
+          res.manutencao;
+
+      }
+
+    },
+
+    (err)=>{
+
+      console.error(
+        "Erro ao carregar manutenção:",
+        err
+      );
+
+    }
+
+  );
+
+}
+function alterarModoManutencao(ativo){
+
+ apiJSONP(
+
+  "alterarManutencao",
+
+  {
+    ativo
+  },
+
+  ()=>{
+
+    mostrarAlertaGlobal(
+      ativo
+      ?
+      "🔧 Sistema em manutenção."
+      :
+      "✅ Sistema liberado."
+    );
+
+  },
+
+  (err)=>{
+
+    console.error(err);
+
+    mostrarAlertaGlobal(
+      "❌ Erro ao alterar manutenção."
+    );
+
+  }
+
+ );
+
+}
+
+
 let versaoServidor = "";
 let versaoLocal = "";
 
@@ -172,7 +304,7 @@ function inicializarTela(idTela) {
 
     fn();
 
-    console.log("✅ Tela inicializada:", idTela);
+    /*console.log("✅ Tela inicializada:", idTela);*/
 
   } catch (e) {
 
@@ -292,9 +424,9 @@ async function atualizarAplicativo() {
 
         if (registroAtualizado?.waiting) {
 
-          console.log(
+          /*console.log(
             "🆕 Novo Service Worker encontrado."
-          );
+          );*/
 
 
           // prepara a escuta antes de mandar assumir
@@ -311,9 +443,9 @@ async function atualizarAplicativo() {
         }
         else {
 
-          console.log(
+          /*console.log(
             "ℹ Nenhuma atualização do Service Worker."
-          );
+          );*/
 
           // Caso não exista novo SW,
           // considera a atualização concluída
@@ -381,85 +513,6 @@ function fecharTelaAtualizacao() {
 
 }
 
-/*function monitorarAtualizacaoServiceWorker() {
-
-  if (!("serviceWorker" in navigator)) {
-
-    return;
-
-  }
-
-  navigator.serviceWorker.getRegistration()
-
-    .then(registro => {
-
-      if (!registro) {
-
-        return;
-
-      }
-
-      registro.addEventListener(
-
-        "updatefound",
-
-        () => {
-
-          console.log(
-            "🆕 Novo Service Worker encontrado."
-          );
-
-        }
-
-      );
-
-    });
-
-}*/
-/*function monitorarAtualizacaoServiceWorker() {
-
-  if (!("serviceWorker" in navigator)) {
-    return;
-  }
-
-  navigator.serviceWorker.getRegistration()
-
-    .then(registro => {
-
-      if (!registro) {
-        return;
-      }
-
-      registro.addEventListener("updatefound", () => {
-
-        console.log("🆕 Nova versão do Service Worker encontrada.");
-
-        const novoWorker = registro.installing;
-
-        if (!novoWorker) {
-          return;
-        }
-
-        novoWorker.addEventListener("statechange", () => {
-
-          if (
-            novoWorker.state === "installed" &&
-            navigator.serviceWorker.controller
-          ) {
-
-            console.log("✅ Novo Service Worker pronto.");
-
-            mostrarTelaAtualizacao();
-
-          }
-
-        });
-
-      });
-
-    });
-
-}*/
 function aguardarNovoServiceWorker() {
 
   if (!("serviceWorker" in navigator)) {
@@ -472,7 +525,7 @@ function aguardarNovoServiceWorker() {
 
     () => {
 
-      console.log("🚀 Novo Service Worker assumiu.");
+      /*console.log("🚀 Novo Service Worker assumiu.");*/
 
       localStorage.setItem(
         "appVersion",
@@ -541,7 +594,7 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   script.src = API_URL + "?" + query.toString();
 
-  console.log("🌐 URL chamada:", script.src);
+  //console.log("🌐 URL chamada:", script.src);
 
   document.body.appendChild(script);
 
@@ -562,7 +615,7 @@ function salvarTokenFCM(idUsuarioLogado, token) {
     },
     function(res) {
 
-      console.log("✅ Token FCM salvo:", res);
+      /*console.log("✅ Token FCM salvo:", res);*/
 
       mostrarAlertaGlobal("✅ Notificações ativadas com sucesso!");
 
@@ -964,7 +1017,7 @@ let perfilUsuario = null;
 let idUsuarioLogado = null;
 let emailUsuario = null;
 
-function fazerLogin() {
+/*function fazerLogin() {
 
   const email = document.getElementById('emailLogin').value.trim();
   const senha = document.getElementById('senhaLogin').value.trim();
@@ -1071,10 +1124,7 @@ function fazerLogin() {
           
           if (idVagaNotificacao) {
 
-            console.log(
-              "📌 Abrindo vaga da notificação após login:",
-              idVagaNotificacao
-            );
+            //console.log("📌 Abrindo vaga da notificação após login:", idVagaNotificacao);
 
 
             abrirTela("telaVagasDisponiveis");
@@ -1109,6 +1159,175 @@ function fazerLogin() {
     }
   );
 
+}*/
+function fazerLogin() {
+
+  const email = document.getElementById('emailLogin').value.trim();
+  const senha = document.getElementById('senhaLogin').value.trim();
+  const msgErro = document.getElementById('msgLogin');
+
+  msgErro.textContent = '';
+  mostrarSpinner();
+
+  apiJSONP(
+    "login",
+    {
+      email,
+      senha
+    },
+    function(res) {
+
+      if (!res.sucesso) {
+
+        esconderSpinner();
+
+        msgErro.textContent =
+          res.mensagem || "❌ Erro ao fazer login.";
+
+        return;
+
+      }
+
+      perfilUsuario = res.perfil;
+      idUsuarioLogado = res.id;
+      //registrarPush(idUsuarioLogado);
+
+      apiJSONP(
+        "verificarManutencao",
+        {},
+        function(resManutencao) {
+
+          if (
+            resManutencao.manutencao &&
+            perfilUsuario.trim().toUpperCase() !== "ADMIN"
+          ) {
+
+            esconderSpinner();
+
+            mostrarTelaManutencao();
+
+            return;
+
+          }
+
+    // CONTINUA O FLUXO ORIGINAL AQUI
+
+      const saudacaoEl = document.getElementById("saudacaoUsuario");
+      const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+      if (saudacaoEl) {
+        saudacaoEl.textContent = "";
+
+      }
+
+      if (tipoAcessoEl) {
+        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
+      }
+
+      document.getElementById('emailLogin').value = '';
+      document.getElementById('senhaLogin').value = '';
+      document.getElementById('msgLogin').textContent = '';
+
+      localStorage.setItem("usuarioLogado", JSON.stringify({
+        id: res.id,
+        perfil: res.perfil,
+        timestamp: Date.now()
+      }));
+
+      document.getElementById("menuBtn").style.display = "inline-block";
+      document.getElementById('telaLogin').style.display = 'none';
+      document.getElementById('conteudoProtegido').style.display = 'block';
+
+      historico.length = 0;
+
+      document.querySelectorAll('.tela').forEach(el => {
+        el.classList.remove('aberta');
+      });
+
+      document.getElementById('menuCards')?.classList.add('aberta');
+
+      telaAtual = 'menuCards';
+
+      atualizarBotaoVoltar();
+      mostrarSecoesPorPerfil(res.perfil);
+      limparCamposUsuario();
+      restaurarCamposPerfil();
+
+
+      apiJSONP(
+        "buscarNomeDoUsuario",
+        {
+          id: idUsuarioLogado
+        },
+        function(resNome) {
+
+          const saudacaoEl = document.getElementById("saudacaoUsuario");
+          const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+          if (!saudacaoEl) return;
+
+          if (resNome.sucesso && resNome.nome) {
+            saudacaoEl.textContent = `${resNome.nome}`;
+
+          } else {
+            saudacaoEl.textContent = "";
+          }
+
+          if (tipoAcessoEl) {
+            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
+          }
+
+          esconderSpinner();
+
+          registrarPush(idUsuarioLogado);
+          
+          verificarTreinamentoPendente();
+          
+          if (idVagaNotificacao) {
+
+            //console.log("📌 Abrindo vaga da notificação após login:", idVagaNotificacao);
+
+
+            abrirTela("telaVagasDisponiveis");
+
+          }
+
+        },
+        function(err) {
+
+           esconderSpinner();
+
+          if (tipoAcessoEl) {
+            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
+
+          }
+
+          msgErro.textContent =
+            err.message || "❌ Erro ao buscar nome do usuário.";
+
+        }
+      ); // fecha buscarNomeDoUsuario
+
+
+    }
+  ); // fecha verificarManutencao
+
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      msgErro.textContent =
+        err?.mensagem ||
+        err?.message ||
+        "❌ Não foi possível comunicar com o servidor.";
+
+    }
+  ); // fecha login
+
 }
 
 function mostrarSecoesPorPerfil(perfil) {
@@ -1140,7 +1359,7 @@ function mostrarSecoesPorPerfil(perfil) {
   });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+/*window.addEventListener("DOMContentLoaded", () => {
 
   verificarVersaoApp();
 
@@ -1155,16 +1374,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (expirou) {
 
-      /*localStorage.removeItem("usuarioLogado");
-
-      mostrarAlertaGlobal(
-        "⏰ Sua sessão expirou. Faça login novamente."
-      );
-
-      document.getElementById('telaLogin').style.display = 'block';
-      document.getElementById('conteudoProtegido').style.display = 'none';
-
-      return;*/
+      //localStorage.removeItem("usuarioLogado");
+      //mostrarAlertaGlobal("⏰ Sua sessão expirou. Faça login novamente.");
+      //document.getElementById('telaLogin').style.display = 'block';
+      //document.getElementById('conteudoProtegido').style.display = 'none';
+      //return;
 
       sairPorExpiracao();
       return;
@@ -1231,6 +1445,180 @@ window.addEventListener("DOMContentLoaded", () => {
 
   }
   tratarNotificacaoAoAbrir();
+
+});*/
+
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  verificarVersaoApp();
+
+  const usuarioSalvo = localStorage.getItem("usuarioLogado");
+
+  if (usuarioSalvo) {
+
+    const dados = JSON.parse(usuarioSalvo);
+
+    const expirou =
+      Date.now() - dados.timestamp > 60 * 60 * 1000;
+
+    if (expirou) {
+
+      sairPorExpiracao();
+      return;
+    }
+
+    perfilUsuario = dados.perfil;
+    idUsuarioLogado = dados.id;
+    //registrarPush(idUsuarioLogado);
+
+
+    apiJSONP(
+      "verificarManutencao",
+      {},
+      (resManutencao) => {
+
+
+        if (resManutencao.manutencao) {
+
+          mostrarTelaManutencao();
+          return;
+
+        }
+
+
+        document.getElementById("menuBtn").style.display = "inline-block";
+        document.getElementById('telaLogin').style.display = 'none';
+        document.getElementById('conteudoProtegido').style.display = 'block';
+
+
+        apiJSONP(
+          "buscarNomeDoUsuario",
+          {
+            id: dados.id
+          },
+          (resNome) => {
+
+
+            const saudacaoEl =
+              document.getElementById("saudacaoUsuario");
+
+
+            const tipoAcessoEl =
+              document.getElementById("tipoAcessoUsuario");
+
+
+            if (saudacaoEl) {
+
+              if (resNome.sucesso && resNome.nome) {
+
+                saudacaoEl.textContent = resNome.nome;
+
+              } else {
+
+                saudacaoEl.textContent = "";
+
+              }
+            }
+
+
+            if (tipoAcessoEl) {
+
+              tipoAcessoEl.textContent =
+                `Perfil ${dados.perfil}`;
+
+            }
+
+
+          },
+          (err) => {
+
+            console.error(
+              "Erro ao buscar nome do usuário:",
+              err.mensagem || err.error || err.message
+            );
+
+          }
+        );
+
+
+      },
+      (err) => {
+
+
+        // Se não conseguir consultar manutenção,
+        // mantém comportamento anterior
+
+        console.error(
+          "Erro ao verificar manutenção:",
+          err
+        );
+
+
+        document.getElementById("menuBtn").style.display = "inline-block";
+        document.getElementById('telaLogin').style.display = 'none';
+        document.getElementById('conteudoProtegido').style.display = 'block';
+
+
+        apiJSONP(
+          "buscarNomeDoUsuario",
+          {
+            id: dados.id
+          },
+          (resNome) => {
+
+
+            const saudacaoEl =
+              document.getElementById("saudacaoUsuario");
+
+
+            const tipoAcessoEl =
+              document.getElementById("tipoAcessoUsuario");
+
+
+            if (saudacaoEl) {
+
+              if (resNome.sucesso && resNome.nome) {
+
+                saudacaoEl.textContent = resNome.nome;
+
+              } else {
+
+                saudacaoEl.textContent = "";
+
+              }
+
+            }
+
+
+            if (tipoAcessoEl) {
+
+              tipoAcessoEl.textContent =
+                `Perfil ${dados.perfil}`;
+
+            }
+
+
+          }
+        );
+
+
+      }
+    );
+
+
+  } else {
+
+
+    document.getElementById('telaLogin').style.display = 'block';
+    document.getElementById('conteudoProtegido').style.display = 'none';
+
+
+  }
+
+
+  tratarNotificacaoAoAbrir();
+
 
 });
 
@@ -1510,14 +1898,14 @@ function pesquisarLembretesParticipantes() {
     "";
 
 
-  console.log(
+  /*console.log(
     "🔎 Filtros lembretes:",
     {
       ponto,
       turno,
       dia
     }
-  );
+  );*/
 
 
   if (!turno || !dia || !ponto) {
@@ -1881,7 +2269,7 @@ Grande abraço!
 
 Equipe TPE SBC`;
 
-console.log("DADOS DO PUSH:", dados);
+/*console.log("DADOS DO PUSH:", dados);*/
 
   apiJSONP(
 
@@ -1927,7 +2315,7 @@ document.addEventListener("click", function(e){
 
   if (!icone) return;
 
-  console.log(icone.dataset);
+  /*console.log(icone.dataset);*/
 
   e.stopPropagation();
 
@@ -1963,7 +2351,7 @@ document.addEventListener("click", function(e){
 
   };
 
-  console.log("DADOS DO PUSH:", dados);
+  /*console.log("DADOS DO PUSH:", dados);*/
 
   const mensagem =
     montarMensagemLembreteDesignacao(dados);
@@ -2062,14 +2450,14 @@ function pesquisarDesignados() {
     window.camposSelecionados.pontoDesignado ||
     "";
 
-  console.log(
+  /*console.log(
     "🔎 Filtros pesquisa:",
     {
       ponto,
       turno,
       dia
     }
-  );
+  );*/
 
   if (!turno || !dia || !ponto) {
 
@@ -2103,7 +2491,10 @@ function pesquisarDesignados() {
   );
 }
 
-/*function exibirResultados(res) {
+function exibirResultados(res) {
+
+  //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao })));
+
   const c = document.getElementById('resultadoDesignadosContainer');
   const msg = document.getElementById("msgPesqDesignados");
   esconderSpinner();
@@ -2114,203 +2505,72 @@ function pesquisarDesignados() {
     return;
   }
 
-  let html = `<table class="tabela-listagem">;
+  let html = `<table class="tabela-listagem">
         <thead>
           <tr>
-            <th style="width: 33%;">Nome</th>
+            <th style="width: 40%;">Nome</th>
             <th class="oculta-edicao">Turno</th>
             <th class="oculta-edicao">Dia</th>
             <th class="oculta-edicao">Ponto</th>
-            <th style="width: 33%;">Freq.</th>
-            <th style="width: 33%;">Most.</th>
+            <th style="width: 25%;">Freq.</th>
+            <!--<th style="width: 33%;">Most.</th>-->
+            <th style="width: 20%;">Editar</th>
+            <th style="width: 15%;">Zap</th>
           </tr>
         </thead>
         <tbody>`;
 
-  res.forEach(r => {
+  res.sort((a, b) => {
+
+      // dia
+      const d = a.dia.localeCompare(b.dia);
+      if (d !== 0) return d;
+
+      // grupo
+      const g = (a.grupo || "").localeCompare(b.grupo || "");
+      if (g !== 0) return g;
+
+      // posição
+      return (a.posicao || 0) - (b.posicao || 0);
+
+  });
+
+  if (res.length > 0) {
+
+      html += `
+          <tr class="linha-dia">
+              <td colspan="7">
+                  📅 <strong>${res[0].dia}</strong>
+              </td>
+          </tr>
+      `;
+
+  }
+
+  let grupoAnterior = "";
+  
+  let cabecalhoAnterior = "";
+
+  res.forEach(r => {  
+
     const partes = (r.turno || "").split(" ");
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
-        html += `
-          <tr class="linha-designacao"
-              data-id="${r.idParticipante}"
-              data-nome="${r.nome}"
-              data-telefone="${r.telefone}"
-              data-turno="${turnoPalavra}"
-              data-dia="${r.dia}"
-              data-ponto="${pontoNumero}"
-              data-frequencia="${r.frequencia}"
-              data-equipamento="${r.equipamento}"
-              style="cursor:pointer">
-
-              <td style="width:33%;">
-
-                  <div class="nome-com-whatsapp">
-
-                      <span>
-
-                          <strong>${r.nome}</strong><br>
-
-                          <small>${r.congregacao}</small>
-
-                      </span>
-
-                      <img
-                          src="img/whatsapp.svg"
-                          class="icone-whatsapp-designacao"
-
-                          data-id="${r.idParticipante}"
-                          data-nome="${r.nome}"
-                          data-telefone="${r.telefone}"
-                          data-turno="${turnoPalavra}"
-                          data-dia="${r.dia}"
-                          data-ponto="${pontoNumero}"
-                          data-frequencia="${r.frequencia}"
-                          data-equipamento="${r.equipamento}"
-
-                          title="Conversar pelo WhatsApp">
-
-                  </div>
-
-              </td>
-
-              <td class="oculta-edicao">
-                  ${turnoPalavra}
-              </td>
-
-              <td class="oculta-edicao">
-                  ${r.dia}
-              </td>
-
-              <td class="oculta-edicao">
-                  ${pontoNumero}
-              </td>
-
-              <td>
-                  ${r.frequencia}
-              </td>
-
-              <td>
-                  ${r.equipamento}
-              </td>
-
-          </tr>`;
-  });
-
-  html += '</tbody></table>';
-  c.innerHTML = html;
-
-  if (notificacaoEscala?.idParticipante) {
-
-    const linha = c.querySelector(
-      `[data-id="${notificacaoEscala.idParticipante}"]`
-    );
-
-    if (linha) {
-
-      linha.classList.add("linha-designacao-destaque");
-
-      setTimeout(() => {
-
-        linha.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-
-      }, 300);
-
-    }
-
-  }
-
-  msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
-
-  c.querySelectorAll('.linha-designacao').forEach(linha => {
-
-    linha.addEventListener('click', () => {
-      const selectNome = linha.querySelector('td:first-child select');
-      if (selectNome) {
-        return;
-      }
-
-      const participante = linha.dataset.nome;
-      const idParticipante = linha.dataset.id;
-
-      console.log(
-        "ID:",
-        idParticipante,
-        "Nome:",
-        participante
-      );
-
-      if (participante.trim().toUpperCase().startsWith("VAGA")) {
-        mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
-        return;
-      }
-
-      const turno = linha.dataset.turno;
-      const ponto = linha.dataset.ponto;
-      const dia = linha.dataset.dia;
-      const frequencia = linha.dataset.frequencia;
-      const equipamento = linha.dataset.equipamento;
-
-      console.log(
-        "DADOS COMPANHEIROS:",
-        {
-          turno,
-          ponto,
-          dia
-        }
-      );
-
-      acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
-    });
-  });
-}*/
-
-function exibirResultados(res) {
-
-  console.table(
-      res.map(r => ({
-          nome: r.nome,
-          grupo: r.grupo,
-          posicao: r.posicao
-      }))
-  );
-
-  const c = document.getElementById('resultadoDesignadosContainer');
-  const msg = document.getElementById("msgPesqDesignados");
-  esconderSpinner();
-
-  if (!res || res.length === 0) {
-    c.innerHTML = '<p>Nenhum designado encontrado.</p>';
-    mostrarAlertaGlobal("❌ Nenhum designado encontrado");
-    return;
-  }
-
-  let html = `<table class="tabela-listagem">;
-        <thead>
-          <tr>
-            <th style="width: 33%;">Nome</th>
-            <th class="oculta-edicao">Turno</th>
-            <th class="oculta-edicao">Dia</th>
-            <th class="oculta-edicao">Ponto</th>
-            <th style="width: 33%;">Freq.</th>
-            <th style="width: 33%;">Most.</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-  let grupoAnterior = "";
-
-  res.forEach(r => {
+    const chaveCabecalho = `${r.equipamento}|${r.grupo}`;
 
   // Quando muda o grupo, cria um cabeçalho
- if (r.grupo && r.grupo !== grupoAnterior) {
+  //if (r.grupo && r.grupo !== grupoAnterior) {
+  // Agora, quando muda grupo ou equipamento, cria um cabeçalho  
+  if (chaveCabecalho !== cabecalhoAnterior) {
 
+    /*const qtd =
+        res.filter(x => x.grupo === r.grupo).length;*/
     const qtd =
-        res.filter(x => x.grupo === r.grupo).length;
+        res.filter(x =>
+            x.grupo === r.grupo &&
+            x.equipamento === r.equipamento
+        ).length;
 
     let tituloGrupo = "";
     let estiloTitulo = "";
@@ -2343,21 +2603,23 @@ function exibirResultados(res) {
     html += `
         <tr class="linha-grupo">
             <td colspan="6">
-                <strong>${tituloGrupo}</strong>
+                <!--<strong>${tituloGrupo}</strong>-->
+                <strong>${r.equipamento} - Turno ${turnoPalavra} - ${tituloGrupo} </strong>
             </td>
         </tr>
     `;
 
-    grupoAnterior = r.grupo;
+    //grupoAnterior = r.grupo;
+    cabecalhoAnterior = chaveCabecalho;
 
 }
 
-    const partes = (r.turno || "").split(" ");
+    /*const partes = (r.turno || "").split(" ");
     const pontoNumero = partes[partes.length - 1] || "";
-    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");*/
 
         html += `
-          <tr class="linha-designacao"
+          <tr> <!--class="linha-designacao"
               data-id="${r.idParticipante}"
               data-nome="${r.nome}"
               data-telefone="${r.telefone}"
@@ -2366,27 +2628,33 @@ function exibirResultados(res) {
               data-ponto="${pontoNumero}"
               data-frequencia="${r.frequencia}"
               data-equipamento="${r.equipamento}"
-              style="cursor:pointer">
+              style="cursor:pointer">-->
 
-              <td style="width:33%;">
+              <td style="width:40%;">
 
                   <div class="nome-com-whatsapp">
 
                       <span>
 
-                          <strong>${r.nome}</strong><br>
+                          <!--<strong>${r.nome}</strong><br>-->
+                          <strong>
+
+                                  ${r.posicao ? r.posicao + ". " : ""}${r.nome}
+
+                          </strong><br>
+
 
                           <small>
 
                             ${r.congregacao}
 
-                            ${r.grupo ? `<br>👤 ${r.posicao}` : ""}
+                            <!--${r.grupo ? `<br>👤 ${r.posicao}` : ""}-->
 
                           </small>
 
                       </span>
 
-                      <img
+                      <!--<img
                           src="img/whatsapp.svg"
                           class="icone-whatsapp-designacao"
 
@@ -2399,7 +2667,7 @@ function exibirResultados(res) {
                           data-frequencia="${r.frequencia}"
                           data-equipamento="${r.equipamento}"
 
-                          title="Conversar pelo WhatsApp">
+                          title="Conversar pelo WhatsApp">-->
 
                   </div>
 
@@ -2422,7 +2690,42 @@ function exibirResultados(res) {
               </td>
 
               <td>
-                  ${r.equipamento}
+
+                    <span
+                        class="linha-designacao"
+                          data-id="${r.idParticipante}"
+                          data-nome="${r.nome}"
+                          data-telefone="${r.telefone}"
+                          data-turno="${turnoPalavra}"
+                          data-dia="${r.dia}"
+                          data-ponto="${pontoNumero}"
+                          data-frequencia="${r.frequencia}"
+                          data-equipamento="${r.equipamento}"
+                          title="Editar"
+                          style="cursor:pointer">                       
+
+                        ✏️
+
+                    </span>
+
+              </td>
+
+              <td>
+                  <img
+                          src="img/whatsapp.svg"
+                          class="icone-whatsapp-designacao"
+
+                          data-id="${r.idParticipante}"
+                          data-nome="${r.nome}"
+                          data-telefone="${r.telefone}"
+                          data-turno="${turnoPalavra}"
+                          data-dia="${r.dia}"
+                          data-ponto="${pontoNumero}"
+                          data-frequencia="${r.frequencia}"
+                          data-equipamento="${r.equipamento}"
+
+                          title="Conversar pelo WhatsApp">
+
               </td>
 
           </tr>`;
@@ -2468,12 +2771,7 @@ function exibirResultados(res) {
       const participante = linha.dataset.nome;
       const idParticipante = linha.dataset.id;
 
-      console.log(
-        "ID:",
-        idParticipante,
-        "Nome:",
-        participante
-      );
+      //console.log("ID:", idParticipante, "Nome:", participante);
 
       if (participante.trim().toUpperCase().startsWith("VAGA")) {
         mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
@@ -2486,14 +2784,7 @@ function exibirResultados(res) {
       const frequencia = linha.dataset.frequencia;
       const equipamento = linha.dataset.equipamento;
 
-      console.log(
-        "DADOS COMPANHEIROS:",
-        {
-          turno,
-          ponto,
-          dia
-        }
-      );
+      //console.log("DADOS COMPANHEIROS:", {turno, ponto, dia});
 
       acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
     });
@@ -2533,140 +2824,6 @@ document.addEventListener("click", function(e){
     );
 
 });
-
-/*function acionarMenuDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
-    document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
-
-    const menuRow = document.createElement('tr');
-    menuRow.classList.add('menuDesignacao');
-
-    const td = document.createElement('td');
-    td.colSpan = 6;
-    td.style.padding = '10px';
-    td.style.backgroundColor = '#eef2ff';
-    td.style.border = '1px solid #ccc';
-
-    const btnEditar = document.createElement('button');
-    btnEditar.textContent = '✏️ Editar';
-    btnEditar.className = 'botao editar';
-    btnEditar.style.marginRight = '10px';
-    btnEditar.style.margin = '0';
-
-    btnEditar.onclick = () => {
-
-      document
-        .getElementById("resultadoDesignadosContainer")
-        .classList.add("modo-edicao");
-
-      menuRow.remove();
-
-      window.designacaoEmEdicao = {
-
-        idOriginal: participante,
-        ponto,
-        dia,
-        turno,
-        frequencia,
-        equipamento
-
-      };
-
-      abrirSelecaoEditarDesignadoEscalaTurno();
-
-    };
-
-    const btnExcluir = document.createElement('button');
-    btnExcluir.textContent = '🗑️ Excluir';
-    btnExcluir.className = 'botao excluir';
-    btnExcluir.style.margin = '0';
-    btnExcluir.onclick = () => {
-      menuRow.remove();
-      mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento);
-    };
-
-    td.appendChild(btnEditar);
-    td.appendChild(btnExcluir);
-    menuRow.appendChild(td);
-
-    linhaTR.insertAdjacentElement('afterend', menuRow);
-  }*/
-
-
-/*function acionarMenuDesignacao( idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
-  document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
-
-  const menuRow = document.createElement('tr');
-  menuRow.classList.add('menuDesignacao');
-
-  const td = document.createElement('td');
-  td.colSpan = 6;
-  td.style.padding = '10px';
-  td.style.backgroundColor = '#eef2ff';
-  td.style.border = '1px solid #ccc';
-
-  const btnEditar = document.createElement('button');
-  btnEditar.textContent = '✏️ Editar';
-  btnEditar.className = 'botao editar';
-  btnEditar.style.marginRight = '10px';
-  btnEditar.style.margin = '0';
-
-  btnEditar.onclick = () => {
-
-    document
-      .getElementById("resultadoDesignadosContainer")
-      .classList.add("modo-edicao");
-
-    menuRow.remove();
-
-    window.designacaoEmEdicao = {
-
-      idOriginal: participante,
-      ponto,
-      dia,
-      turno,
-      frequencia,
-      equipamento
-
-    };
-
-    abrirSelecaoEditarDesignadoEscalaTurno();
-
-  };
-
-  const btnExcluir = document.createElement('button');
-  btnExcluir.textContent = '🗑️ Excluir';
-  btnExcluir.className = 'botao excluir';
-  btnExcluir.style.margin = '0';
-  btnExcluir.onclick = () => {
-    menuRow.remove();
-    mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento);
-  };
-
-  const btnCompanheiros = document.createElement('button');
-  btnCompanheiros.textContent = '👥 Companheiros';
-  btnCompanheiros.className = 'botao editar';
-  btnCompanheiros.style.margin = '0';
-  btnCompanheiros.onclick = () => {
-
-    const codigoTurno = obterCodigoTurno(turno);
-
-    const designacao =
-      `${codigoTurno}${ponto} ${dia}`;
-
-    abrirModalCompanheiros(
-      idParticipante,
-      designacao
-    );
-
-  };
-
-  td.appendChild(btnEditar);
-  td.appendChild(btnExcluir);
-  td.appendChild(btnCompanheiros);
-  menuRow.appendChild(td);
-
-  linhaTR.insertAdjacentElement('afterend', menuRow);
-}*/
 
 function acionarMenuDesignacao( idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
   document.querySelectorAll('.menuDesignacao, #confirmBox').forEach(el => el.remove());
@@ -2750,92 +2907,91 @@ function acionarMenuDesignacao( idParticipante, participante, ponto, dia, turno,
   linhaTR.insertAdjacentElement('afterend', menuRow);
 }
 
-
 function mostrarConfirmacaoExclusao(participante, ponto, dia, turno, frequencia, equipamento) {
 
-mostrarConfirmacaoGlobal(
-  `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
-  () => {
+  mostrarConfirmacaoGlobal(
+    `⚠️ Deseja excluir a designação de <strong>${participante}</strong> do ponto <strong>${ponto}</strong> (${dia} - turno ${turno} - ${frequencia} - ${equipamento})?`,
+    () => {
 
-    mostrarSpinner();
+      mostrarSpinner();
 
-    let turnoCodigo = "";
+      let turnoCodigo = "";
 
-    console.log("Turno recebido:", JSON.stringify(turno));
+      //console.log("Turno recebido:", JSON.stringify(turno));
 
-    switch (turno) {
-      case "Manhã":
-        turnoCodigo = "M";
-        break;
+      switch (turno) {
+        case "Manhã":
+          turnoCodigo = "M";
+          break;
 
-      case "Tarde":
-        turnoCodigo = "T";
-        break;
+        case "Tarde":
+          turnoCodigo = "T";
+          break;
 
-      case "Noite":
-        turnoCodigo = "N";
-        break;
+        case "Noite":
+          turnoCodigo = "N";
+          break;
 
-      case "Matinal":
-        turnoCodigo = "A";
-        break;
+        case "Matinal":
+          turnoCodigo = "A";
+          break;
 
-      case "Manhã (9–11h)":
-        turnoCodigo = "MA";
-        break;
+        case "Manhã (9–11h)":
+          turnoCodigo = "MA";
+          break;
 
-      case "Manhã (11–13h)":
-        turnoCodigo = "MB";
-        break;
+        case "Manhã (11–13h)":
+          turnoCodigo = "MB";
+          break;
 
-      case "Tarde (13–15h)":
-        turnoCodigo = "TA";
-        break;
+        case "Tarde (13–15h)":
+          turnoCodigo = "TA";
+          break;
 
-      case "Tarde (15–17h)":
-        turnoCodigo = "TB";
-        break;
+        case "Tarde (15–17h)":
+          turnoCodigo = "TB";
+          break;
 
-      default:
-        esconderSpinner();
-        mostrarAlertaGlobal(
-          "⚠️ Turno inválido: " + turno
-        );
-        return;
-    }
-
-    apiJSONP(
-      "deletarDesignacao",
-      {
-        participante,
-        ponto,
-        dia,
-        turno: turnoCodigo
-      },
-      () => {
-
-        esconderSpinner();
-
-        mostrarAlertaGlobal(
-          `✅ ${participante} removido com sucesso.`
-        );
-
-        pesquisarDesignados();
-
-      },
-      (err) => {
-
-        esconderSpinner();
-
-        console.error(err);
-        mostrarAlertaGlobal(
-          `❌ Erro ao remover: ${err.message || err}`
-        );
+        default:
+          esconderSpinner();
+          mostrarAlertaGlobal(
+            "⚠️ Turno inválido: " + turno
+          );
+          return;
       }
-    );
 
-  }
-);
+      apiJSONP(
+        "deletarDesignacao",
+        {
+          participante,
+          ponto,
+          dia,
+          turno: turnoCodigo
+        },
+        () => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            `✅ ${participante} removido com sucesso.`
+          );
+
+          pesquisarDesignados();
+
+        },
+        (err) => {
+
+          esconderSpinner();
+
+          console.error(err);
+          mostrarAlertaGlobal(
+            `❌ Erro ao remover: ${err.message || err}`
+          );
+        }
+      );
+
+    }
+  );
 
 }
 
@@ -3083,10 +3239,6 @@ mostrarConfirmacaoGlobal(
 
   inputFiltro.dispatchEvent(new Event('input'));
 }*/
-
-
-
-
 
 /*function editarDesignacaoInline(linhaTR) {
 
@@ -3743,16 +3895,16 @@ function salvarEdicaoEscalaTurno() {
     turnoCodigoMap[window.designacaoEmEdicao.turno] +
     window.designacaoEmEdicao.ponto;
 
-console.log("designacaoEmEdicao =", window.designacaoEmEdicao);
+  /*console.log("designacaoEmEdicao =", window.designacaoEmEdicao);
 
-console.log({
-  novoNome: participanteSelecionadoEdicaoEscalaTurno.id,
-  ponto: window.designacaoEmEdicao.turno + window.designacaoEmEdicao.ponto,
-  dia: window.designacaoEmEdicao.dia,
-  frequencia: document.getElementById("edtFrequencia").value,
-  equipamento: document.getElementById("edtEquipamento").value,
-  nomeOriginal: window.designacaoEmEdicao.idOriginal
-});
+  console.log({
+    novoNome: participanteSelecionadoEdicaoEscalaTurno.id,
+    ponto: window.designacaoEmEdicao.turno + window.designacaoEmEdicao.ponto,
+    dia: window.designacaoEmEdicao.dia,
+    frequencia: document.getElementById("edtFrequencia").value,
+    equipamento: document.getElementById("edtEquipamento").value,
+    nomeOriginal: window.designacaoEmEdicao.idOriginal
+  });*/
 
   apiJSONP(
 
@@ -3807,11 +3959,7 @@ console.log({
 
 }
 
-/* ==== NOVAS FUNÇÕES PARA EDITAR E SALVAR ALTERAÇÃO PELA ESCCALA POR TURNO ==== */
-
-
-
-
+/* ==== NOVAS FUNÇÕES PARA EDITAR E SALVAR ALTERAÇÃO PELA ESCALA POR TURNO ==== */
 
 function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipamento, linhaTR) {
 
@@ -3855,19 +4003,6 @@ function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipame
   );
 
 }
-
-/*function carregarDadosDesignacao() {
-  apiJSONP(
-    "obterDadosFormulario",
-    {},
-    (res) => {
-      popularSelects(res);
-    },
-    (err) => {
-      console.error(err);
-    }
-  );
-}*/
 
 function preencherTabelaSemDisponibilidade() {
 
@@ -4064,15 +4199,12 @@ function pesquisarDisponibilidadeUsuarioLogado2h() {
 
 }
 
-
 function abrirCalendario2h() {
   abrirModalDepoisDaPesquisa = true;
   pesquisarDisponibilidadeUsuarioLogado2h();
 }
 
 function preencherDispUsuarioLogado2h(dados) {
-
-  console.log(dados);
 
   renderizarDisponibilidade(dados, {
     chkSubstituicao: "somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade",
@@ -4427,7 +4559,7 @@ function norm(str) {
 
 function preencherDispUsuarioLogado4h(dados) {
 
-  console.log(dados);
+  /*console.log(dados);*/
 
   renderizarDisponibilidade(dados, {
     chkSubstituicao: "somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade",
@@ -5295,10 +5427,10 @@ function mostrarResultadosMinhaInfo(dados) {
 
       trDet.dataset.identificadorOriginal = (linha[14] || '').toString().trim();
 
-      console.log("🧩 trDet:", trDet);
+      /*console.log("🧩 trDet:", trDet);
       console.log("🧩 dataset completo:", trDet.dataset);
       console.log("🧩 identificadorOriginal:");
-      console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
+      console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));*/
 
       linha.slice(0, 2).forEach(v => {
         const td = document.createElement('td');
@@ -5821,10 +5953,10 @@ campos.forEach(id => {
 
 const idOrig = trDet.dataset.identificadorOriginal;
 
-console.log("🧩 trDet:", trDet);
+/*console.log("🧩 trDet:", trDet);
 console.log("🧩 dataset completo:", trDet.dataset);
 console.log("🧩 identificadorOriginal:", idOrig);
-console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));
+console.log("🧩 atributo HTML:", trDet.getAttribute("data-identificador-original"));*/
 
 mostrarSpinner();
 
@@ -8464,209 +8596,8 @@ function buscarParticipantes() {
   );
 
 }
+
 // clique em participante
-/*document.addEventListener('click', function (event) {
-
-  const alvo = event.target.closest('.clicavel-nome');
-  if (!alvo) return;
-
-  mostrarSpinner();
-
-  const nome = alvo.innerText.trim();
-  const id = alvo.dataset.id;
-
-
-  const valores = {
-
-    ponto:
-      window.camposSelecionados.pontosParaOferecerSelect,
-
-    dia:
-      window.camposSelecionados.diasSelect,
-
-    turno:
-      window.camposSelecionados.turnosSelect,
-
-    frequencia:
-      window.camposSelecionados.frequenciasSelect,
-
-    equipamento:
-      window.camposSelecionados.equipamentosParaOferecerSelect,
-
-    necessidade:
-      window.camposSelecionados.necessidade
-
-  };
-
-
-  const camposVisuais = {
-
-    ponto:
-      document.getElementById('pontosParaOferecerSelectVisual'),
-
-    dia:
-      document.getElementById('diasSelectVisual'),
-
-    turno:
-      document.getElementById('turnosSelectVisual'),
-
-    frequencia:
-      document.getElementById('frequenciasSelectVisual'),
-
-    equipamento:
-      document.getElementById('equipamentosParaOferecerSelectVisual'),
-
-    necessidade:
-      document.getElementById('necessidadeVisual')
-
-  };
-
-
-  // remove erros anteriores
-
-  Object.values(camposVisuais).forEach(el => {
-
-    if (!el) return;
-
-    el.classList.remove('erro-campo');
-
-  });
-
-
-  const camposVazios =
-    Object.entries(valores)
-      .filter(([_, valor]) => !valor)
-      .map(([chave]) => chave);
-
-
-  if (camposVazios.length > 0) {
-
-    esconderSpinner();
-
-    mostrarAlertaGlobal(
-      "⚠️ Por favor, preencha todos os campos antes de enviar a mensagem."
-    );
-
-
-    camposVazios.forEach(campo => {
-
-      if (camposVisuais[campo]) {
-
-        camposVisuais[campo]
-          .classList.add('erro-campo');
-
-      }
-
-    });
-
-    return;
-
-  }
-
-
-  const mensagem =
-
-    "*DESIGNAÇÃO NO TPE*\n\n" +
-
-    "Olá querido(a) irmão(ã). Temos uma designação para você no TPE que está de acordo com sua disponibilidade atual.\n\n" +
-
-    "Informações da designação:\n\n" +
-
-    `🛠️ *Necessidade:* ${valores.necessidade}\n` +
-
-    `📍 *${valores.ponto}*\n` +
-
-    `📆 *Dia:* ${valores.dia}\n` +
-
-    `🕒 *Turno:* ${valores.turno}\n` +
-
-    `📈 *Frequência:* ${valores.frequencia}\n` +
-
-    `📚 *Mostruário:* ${valores.equipamento}\n\n` +
-
-    "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
-
-
-  const mensagemCodificada =
-      encodeURIComponent(mensagem);
-
-
-  console.log("🧩 nome:", nome);
-  console.log("🧩 mensagem:", mensagem);
-
-
-  alvo.classList.remove('clicavel-nome');
-
-
-  apiJSONP(
-
-    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
-
-    {
-      id,
-      mensagem: mensagemCodificada
-    },
-
-
-    (url) => {
-
-      esconderSpinner();
-
-
-      Object.values(camposVisuais).forEach(el => {
-
-        if (el) {
-
-          el.classList.remove('erro-campo');
-
-        }
-
-      });
-
-
-      window.open(url, '_blank');
-
-
-      alvo.style.color = 'gray';
-      alvo.style.fontStyle = 'italic';
-
-      alvo.innerHTML +=
-        ' <span title="Mensagem enviada">📤</span>';
-
-    },
-
-
-    (err) => {
-
-      esconderSpinner();
-
-
-      Object.values(camposVisuais).forEach(el => {
-
-        if (el) {
-
-          el.classList.remove('erro-campo');
-
-        }
-
-      });
-
-
-      mostrarAlertaGlobal(
-        "❌ Erro: " +
-        (err?.mensagem ||
-         err?.error ||
-         "Erro desconhecido")
-      );
-
-
-      alvo.classList.add('clicavel-nome');
-
-    }
-
-  );
-
-});*/
 document.addEventListener('click', function (event) {
 
   const alvo = event.target.closest('.icone-whatsapp-participante');
@@ -9908,85 +9839,6 @@ document.addEventListener('click', function (event) {
 
     "Aguardamos sua confirmação para esta designação. Se puder aceitar, ficaremos muito gratos e felizes.";
 
-
-  /*const mensagemCodificada =
-      encodeURIComponent(mensagem);
-
-
-  console.log("🧩 nome:", nome);
-  console.log("🧩 mensagem:", mensagem);
-
-
-  alvo.classList.remove('clicavel-nome');
-
-
-  apiJSONP(
-
-    "buscarNumeroWhatsAppPorIdComMensagemDesignar",
-
-    {
-      id,
-      mensagem: mensagemCodificada
-    },
-
-
-    (url) => {
-
-      esconderSpinner();
-
-
-      Object.values(camposVisuais).forEach(el => {
-
-        if (el) {
-
-          el.classList.remove('erro-campo');
-
-        }
-
-      });
-
-
-      window.open(url, '_blank');
-
-
-      alvo.style.color = 'gray';
-      alvo.style.fontStyle = 'italic';
-
-      alvo.innerHTML +=
-        ' <span title="Mensagem enviada">📤</span>';
-
-    },
-
-
-    (err) => {
-
-      esconderSpinner();
-
-
-      Object.values(camposVisuais).forEach(el => {
-
-        if (el) {
-
-          el.classList.remove('erro-campo');
-
-        }
-
-      });
-
-
-      mostrarAlertaGlobal(
-        "❌ Erro: " +
-        (err?.mensagem ||
-         err?.error ||
-         "Erro desconhecido")
-      );
-
-
-      alvo.classList.add('clicavel-nome');
-
-    }
-
-  );*/
   try {
 
       abrirWhatsApp(
@@ -13827,13 +13679,7 @@ function buscarDesignacoesPorPonto() {
     (res) => {
       esconderSpinner();
 
-      console.table(
-        res.map(r => ({
-          nome: r.nome,
-          grupo: r.grupo,
-          posicao: r.posicao
-        }))
-      );
+      //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao})));
 
       if (!res || res.length === 0) {
         mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
@@ -13853,24 +13699,13 @@ function buscarDesignacoesPorPonto() {
               <th class="oculta-edicao">Turno</th>
               <th class="oculta-edicao">Dia</th>
               <th class="oculta-edicao">Ponto</th>
-              <th style="width: 30%;">Freq.</th>
-              <th style="width: 30%;">Most.</th>
+              <th style="width: 25%;">Freq.</th>
+              <!--<th style="width: 30%;">Most.</th>-->
+              <th style="width: 20%;">Editar</th>
+              <th style="width: 15%;">Zap</th>
             </tr>
           </thead><tbody>`;
 
-      // Ordena por grupo/posição
-      /*res.sort((a, b) => {
-
-          if (!a.grupo && !b.grupo) return 0;
-          if (!a.grupo) return 1;
-          if (!b.grupo) return -1;
-
-          if (a.grupo !== b.grupo)
-              return a.grupo.localeCompare(b.grupo);
-
-          return (a.posicao || 0) - (b.posicao || 0);
-
-      });*/
       const ordemDias = {
 
           "SEGUNDA": 1,
@@ -13929,7 +13764,15 @@ function buscarDesignacoesPorPonto() {
           }
 
 
-          // 3º GRUPO
+          // 3º EQUIPAMENTO
+          const eqA = (a.equipamento || "");
+          const eqB = (b.equipamento || "");
+
+          if (eqA !== eqB) {
+              return eqA.localeCompare(eqB);
+          }
+
+          // 4º GRUPO
 
           if (!a.grupo && !b.grupo) return 0;
 
@@ -13945,7 +13788,7 @@ function buscarDesignacoesPorPonto() {
           }
 
 
-          // 4º POSIÇÃO DENTRO DO GRUPO
+          // 5º POSIÇÃO DENTRO DO GRUPO
 
           return (
               Number(a.posicao || 0)
@@ -13956,10 +13799,8 @@ function buscarDesignacoesPorPonto() {
 
       });
 
-      /*let grupoAtual = null;
-
-      res.forEach(r => {*/
       let grupoAtual = null;
+      let cabecalhoAtual = "";
       let diaAtual = null;
 
       res.forEach(r => {
@@ -13973,8 +13814,8 @@ function buscarDesignacoesPorPonto() {
 
               diaAtual = r.dia;
 
-              grupoAtual = null;
-
+              //grupoAtual = null;
+              cabecalhoAtual = "";
 
               html += `
 
@@ -13992,12 +13833,22 @@ function buscarDesignacoesPorPonto() {
 
           }
 
-         if (r.grupo && r.grupo !== grupoAtual) {
+         //if (r.grupo && r.grupo !== grupoAtual) {
+         const chaveCabecalho =
+            `${r.equipamento}|${r.grupo}`;
 
-              grupoAtual = r.grupo;
+        if (chaveCabecalho !== cabecalhoAtual) {
 
+              //grupoAtual = r.grupo;
+              cabecalhoAtual = chaveCabecalho;
+
+              /*const integrantes =
+                  res.filter(x => x.grupo === grupoAtual).length;*/
               const integrantes =
-                  res.filter(x => x.grupo === grupoAtual).length;
+                res.filter(x =>
+                    x.grupo === r.grupo &&
+                    x.equipamento === r.equipamento
+                ).length;
 
               let tituloGrupo = "";
               let estiloTitulo = "";
@@ -14026,16 +13877,20 @@ function buscarDesignacoesPorPonto() {
 
               }
 
+              const partes = (r.turno || "").split(" ");
+              const pontoNumero = partes[partes.length - 1] || "";
+              const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
               html += `
                   <tr class="linha-grupo">
                       <td colspan="6">
-                          <strong>${tituloGrupo}</strong>
+                          <strong>${r.equipamento} - Turno ${turnoPalavra} - ${tituloGrupo} </strong>
                       </td>
                   </tr>`;
           }
 
           html += `
-              <tr class="linha-designacao-ponto"
+              <tr> <!--class="linha-designacao-ponto"
 
                     data-id="${r.idParticipante}"
                     data-nome="${r.nome}"
@@ -14049,7 +13904,7 @@ function buscarDesignacoesPorPonto() {
                     data-grupo="${r.grupo}"
                     data-posicao="${r.posicao}"
 
-                    style="cursor:pointer">
+                    style="cursor:pointer">-->
 
                   <td style="width:33%;">
 
@@ -14067,7 +13922,7 @@ function buscarDesignacoesPorPonto() {
 
                           </span>
 
-                          <img
+                          <!--<img
                               src="img/whatsapp.svg"
                               class="icone-whatsapp-ponto"
 
@@ -14080,7 +13935,7 @@ function buscarDesignacoesPorPonto() {
                               data-frequencia="${r.frequencia}"
                               data-equipamento="${r.equipamento}"
 
-                              title="Conversar pelo WhatsApp">
+                              title="Conversar pelo WhatsApp">-->
 
                       </div>
 
@@ -14094,7 +13949,49 @@ function buscarDesignacoesPorPonto() {
 
                   <td>${r.frequencia}</td>
 
-                  <td>${r.equipamento}</td>
+                  <td>
+
+                    <span
+                        class="linha-designacao-ponto"
+                        style="cursor:pointer"
+
+                        data-id="${r.idParticipante}"
+                        data-nome="${r.nome}"
+                        data-telefone="${r.telefone}"
+                        data-turno="${r.turno}"
+                        data-dia="${r.dia}"
+                        data-ponto="${numeroDoPonto}"
+                        data-frequencia="${r.frequencia}"
+                        data-equipamento="${r.equipamento}"
+                        data-grupo="${r.grupo}"
+                        data-posicao="${r.posicao}"
+
+                        title="Editar">
+
+                        ✏️
+
+                    </span>
+
+                  </td>
+
+                  <td>
+                  
+                    <img
+                                src="img/whatsapp.svg"
+                                class="icone-whatsapp-ponto"
+
+                                data-id="${r.idParticipante}"
+                                data-nome="${r.nome}"
+                                data-telefone="${r.telefone}"
+                                data-ponto="${numeroDoPonto}"
+                                data-turno="${r.turno}"
+                                data-dia="${r.dia}"
+                                data-frequencia="${r.frequencia}"
+                                data-equipamento="${r.equipamento}"
+
+                                title="Conversar pelo WhatsApp">
+                  
+                  </td>
 
               </tr>`;
       });
@@ -14140,11 +14037,6 @@ function buscarDesignacoesPorPonto() {
                   linha.dataset.dia;
 
 
-              // transforma:
-              // Noite 19 + ponto 19 + TERÇA
-              // em:
-              // N19 TERÇA
-
               const numeroPonto =
                   ponto;
 
@@ -14163,14 +14055,14 @@ function buscarDesignacoesPorPonto() {
                   `${codigoTurno}${numeroPonto} ${dia}`;
 
 
-              console.log(
+              /*console.log(
                   "=== ESCALA POR PONTO ==="
               );
 
               console.log({
                   idParticipante,
                   designacao
-              });
+              });*/
 
 
               abrirModalCompanheiros(
@@ -14257,106 +14149,10 @@ function baixarDesignacoesPorPonto() {
     }
   );
 }
-  
-/*async function salvarDesignacao() {
 
-  console.log("🟢 salvarDesignacao iniciou");
-
-  //const ponto = document.getElementById("ponto").value;
-  const ponto = window.camposSelecionados.ponto;
-
-  //const dia = document.getElementById("dia").value;
-  const dia = window.camposSelecionados.dia
-
-  if (!participanteSelecionadoDesignacao) {
-    mostrarAlertaGlobal("⚠️ Selecione um participante.");
-    return;
-  }
-
-  const nomeParticipante =
-    participanteSelecionadoDesignacao.nome;
-
-  const idParticipante =
-    participanteSelecionadoDesignacao.id;
-
-  mostrarSpinner();
-
-  console.log(
-    "➡️ Chamando selecionarSubstituicaoDesignados",
-    {
-      ponto,
-      dia
-    }
-  );
-
-  const substituto =
-    await selecionarSubstituicaoDesignados(ponto, dia);
-
-  const substituirQuem =
-    substituto ? substituto.id : "";
-
-  //const frequencia = document.getElementById("frequencia").value;
-  const frequencia = window.camposSelecionados.frequencia
-  
-  //const equipamento = document.getElementById("equipamento").value;
-  const equipamento = window.camposSelecionados.equipamento
-
-  if (!ponto || !dia || !idParticipante || !frequencia || !equipamento) {
-    mostrarAlertaGlobal("⚠️ Preencha todos os campos obrigatórios.");
-    esconderSpinner();
-    return;
-  }
-
-  const mensagem = substituto
-    ? `Confirma a designação de <b>${nomeParticipante}</b> para o ponto <b>${ponto}</b>, substituindo <b>${substituto.nome}</b>?`
-    : `Confirma a designação de <b>${nomeParticipante}</b> para o ponto <b>${ponto}</b>?`;
-
-  mostrarConfirmacaoGlobal(mensagem, () => {
-
-    mostrarSpinner();
-
-    apiJSONP(
-      "processarDesignacao",
-      {
-        idParticipante,
-        ponto,
-        dia,
-        frequencia,
-        substituirQuem,
-        equipamento
-      },
-      (retorno) => {
-
-        esconderSpinner();
-
-        if (retorno && retorno.startsWith && retorno.startsWith("🚫")) {
-          mostrarAlertaGlobal(retorno);
-          return;
-        }
-
-        mostrarAlertaGlobal(
-          `✅ ${nomeParticipante} designado(a) com sucesso`
-        );
-
-        limparCamposDesignar();
-
-        //carregarTodasVagasAbertas();
-        carregarAbas();
-
-      },
-      (err) => {
-
-        esconderSpinner();
-        mostrarAlertaGlobal("❌ Erro ao salvar designação");
-        console.error(err);
-      }
-    );
-
-  });
-}*/
 async function salvarDesignacao() {
 
-  console.log("🟢 salvarDesignacao iniciou");
+  /*console.log("🟢 salvarDesignacao iniciou");*/
 
   const ponto = window.camposSelecionados.ponto;
 
@@ -14386,13 +14182,13 @@ async function salvarDesignacao() {
 
 
 
-  console.log(
+  /*console.log(
     "➡️ Chamando selecionarSubstituicaoDesignados",
     {
       ponto,
       dia
     }
-  );
+  );*/
 
 
 
@@ -14463,8 +14259,6 @@ async function salvarDesignacao() {
 
 
       mostrarSpinner();
-
-
 
       apiJSONP(
 
@@ -15477,7 +15271,7 @@ function buscarTreinamentosEmAndamento() {
 
       lista.forEach(item => {
 
-        console.log("ITEM:", item);
+        /*console.log("ITEM:", item);*/
 
         const tr = tbody.insertRow();
 
@@ -15502,7 +15296,7 @@ function buscarTreinamentosEmAndamento() {
         btnAcoes.dataset.telefoneTreinador = item.telefoneTreinador;
         btnAcoes.dataset.congregacaoTreinador = item.congregacaoTreinador;
 
-        console.log("DATASET:", btnAcoes.dataset);
+        /*console.log("DATASET:", btnAcoes.dataset);*/
 
         tdAcao.appendChild(btnAcoes);
       });
@@ -15649,7 +15443,7 @@ document
 
   const modal = document.getElementById('modalAcoesTreinamento');
 
-  console.log(modal.dataset);
+  /*console.log(modal.dataset);*/
 
   fecharModalAcoesTreinamento();
 
@@ -15868,11 +15662,11 @@ function comunicarNovoTreinador() {
               *Equipe do TPE SBC*`;
 
 
-  console.log("Novo treinador:");
+  /*console.log("Novo treinador:");
   console.log(modal.dataset.nomeNovoTreinador);
 
   console.log("Telefone treinador:");
-  console.log(modal.dataset.telefoneNovoTreinador);
+  console.log(modal.dataset.telefoneNovoTreinador);*/
 
 
   abrirWhatsApp(
@@ -15887,55 +15681,6 @@ function comunicarNovoTreinador() {
 
 }
 
-/*function comunicarLembreteTreinador(idTreinador, nomeTreinando, congregacao, telefone) {
-  console.log("ENTROU comunicarLembreteTreinador");
-
-  mostrarSpinner();
-
-  const mensagem =
-    "*LEMBRETE DE TREINAMENTO DO TPE*\n\n" +
-    "Olá! Este é um lembrete sobre um treinamento que está em andamento.\n\n" +
-    `👤 *Participante:* ${nomeTreinando}\n` +
-    `✍️ *Congregação:* ${congregacao}\n` +
-    `📲 *Telefone:* ${telefone}\n\n` +
-    "Caso o treinamento já tenha sido realizado, por favor acesse o aplicativo e conclua o treinamento na seção *Meus Treinamentos*.\n\n" +
-    "Agradecemos por sua ajuda!";
-
-  const mensagemCodificada =
-    encodeURIComponent(mensagem);
-
-    console.log("mensagem criada");
-
-  apiJSONP(
-    "buscarNumeroWhatsAppPorIdComMensagem",
-    {
-      idTreinador,
-      mensagem: mensagemCodificada
-    },
-    (url) => {
-
-      console.log("SUCESSO");
-      console.log(url);
-
-      esconderSpinner();
-
-      window.open(url, '_blank');
-
-      buscarTreinamentosEmAndamento();
-
-    },
-    (err) => {
-      console.log("ERRO");
-      console.log(err);
-
-      esconderSpinner();
-
-      mostrarAlertaGlobal('❌ ' + (err.message || err));
-
-    }
-  );
-  console.log("apiJSONP chamada");
-}*/
 function comunicarLembreteTreinador(modal) {
 
     const mensagem =
@@ -15954,9 +15699,6 @@ Caso o treinamento já tenha sido realizado, por favor acesse o aplicativo e con
 Agradecemos por sua ajuda!
 
 *Equipe do TPE SBC*`;
-
-console.log(modal.dataset);
-console.log("Telefone treinador:", modal.dataset.telefoneTreinador);
 
     abrirWhatsApp(
         modal.dataset.telefoneTreinador,
@@ -16991,10 +16733,10 @@ function tratarNotificacaoAoAbrir() {
 
     };
 
-    console.log(
+    /*console.log(
       "🔔 Tratando notificação de escala:",
       notificacaoEscala
-    );
+    );*/
 
     history.replaceState(
       {},
@@ -17024,10 +16766,10 @@ function tratarNotificacaoAoAbrir() {
     return;
   }
 
-  console.log(
+  /*console.log(
     "🔔 Tratando notificação de vaga:",
     idVaga
-  );
+  );*/
 
   idVagaNotificacao =
     idVaga;
@@ -17050,174 +16792,7 @@ function tratarNotificacaoAoAbrir() {
 
 }
 
-/*function abrirVagasDisponiveis() {
-
-  abrirTela("telaVagasDisponiveis");
-
-  carregarVagasDisponiveis();
-
-}*/
-
-/*function carregarVagasDisponiveis() {
-
-  console.log("🚨 INICIANDO BUSCA DE VAGAS");
-
-  const lista =
-    document.getElementById("listaVagasDisponiveis");
-
-  lista.innerHTML =
-    "Carregando vagas...";
-
-    mostrarSpinner();
-
-  apiJSONP(
-    "listarVagasDisponiveisN",
-    {},
-    function(res) {
-
-      console.log("📋 RESPOSTA VAGAS:", res);
-
-      esconderSpinner();
-
-      if (!res.sucesso) {
-
-        lista.innerHTML =
-          "❌ Erro ao carregar vagas.";
-
-        return;
-      }
-
-      if (!res.vagas.length) {
-
-        lista.innerHTML =
-          "🎉 Nenhuma vaga disponível.";
-
-        return;
-      }
-
-      lista.innerHTML = "";
-
-      res.vagas.forEach(vaga => {
-
-        const destaque =
-          vaga.idVaga === idVagaNotificacao;
-
-        console.log(
-          vaga.idVaga,
-          idVagaNotificacao,
-          destaque
-        );
-
-        const div =
-          document.createElement("div");
-
-        div.className = "card-vaga";
-
-        if (destaque) {
-          div.classList.add("card-vaga-destaque");
-        }
-
-        div.innerHTML = `
-
-          <!--<div class="titulo-vaga">
-            🚨 Vaga disponível
-          </div>-->
-
-          <div class="titulo-vaga">
-            ${destaque
-              ? "🔔 Vaga da sua notificação"
-              : "🚨 Vaga disponível"}
-          </div>
-
-          ${destaque ? `
-            <div class="aviso-vaga-notificacao">
-              🔔 Esta é a vaga da sua notificação
-            </div>
-          ` : ""}
-
-          <div class="info-vaga">
-
-            <div>
-              📍 <strong>Ponto:</strong>
-              ${vaga.ponto}
-            </div>
-
-            <div>
-              📅 <strong>Dia:</strong>
-              ${vaga.dia}
-            </div>
-
-            <div>
-              🔄 <strong>Frequência:</strong>
-              ${vaga.frequencia}
-            </div>
-
-            <div>
-              🚗 <strong>Equipamento:</strong>
-              ${vaga.equipamento}
-            </div>  
-
-            ${vaga.tipo === "DUPLA" ? `
-
-              <div>
-                👥 <strong>Precisa de companheiro:</strong>
-                ${vaga.nomeParticipante}
-              </div>
-
-              ` : ""}
-
-          </div>
-
-          <!--<button
-              class="btn-aceitar-vaga"
-              onclick="aceitarVaga('${vaga.idVaga}')">
-              Quero assumir esta vaga
-          </button>-->
-
-          <button
-              class="${
-                destaque
-                  ? "btn-aceitar-vaga btn-aceitar-destaque"
-                  : "btn-aceitar-vaga"
-              }"
-              onclick="aceitarVaga('${vaga.idVaga}')">
-              Quero assumir esta vaga
-          </button>
-
-        `;
-
-        lista.appendChild(div);
-
-         if (destaque) {
-
-            setTimeout(() => {
-
-              div.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-              });
-
-            }, 300);
-
-          }
-
-      });
-
-    },
-    function(err) {
-
-      console.error("❌ ERRO BUSCAR VAGAS:", err);
-
-      lista.innerHTML =
-        "❌ Erro: " + err.message;
-
-    }
-  );
-
-}*/
 function carregarVagasDisponiveis() {
-
-  console.log("🚨 INICIANDO BUSCA DE VAGAS");
 
   const lista =
     document.getElementById("listaVagasDisponiveis");
@@ -17472,10 +17047,7 @@ function aplicarNotificacaoEscala() {
     return;
   }
 
-  console.log(
-    "📌 Aplicando filtros da notificação:",
-    notificacaoEscala
-  );
+  //console.log("📌 Aplicando filtros da notificação:", notificacaoEscala);
 
 
   const turno =
@@ -17508,10 +17080,7 @@ function aplicarNotificacaoEscala() {
 
   }
 
-  console.log(
-    "Turno recebido:",
-    notificacaoEscala.turno
-  );
+  //console.log("Turno recebido:", notificacaoEscala.turno);
 
 
   turno.value =
@@ -17902,364 +17471,10 @@ function norm(s) {
   window.todosNomesSimples = [];
   window.todosNomes = [];
 
-/*function carregarOpcoes() {
-
-  console.log("carregarOpcoes iniciou");
-
-  apiJSONP("buscarOpcoesParaForm", {}, function(opcoes) {
-
-    console.log({
-      turnos: opcoes.turnos,
-      dias: opcoes.dias
-    });
-
-    window.mapaParticipantesPorNome = {};
-
-    (opcoes.participantes || []).forEach(p => {
-      window.mapaParticipantesPorNome[p.nome] = p.id;
-    });
-
-    const mapa = new Map();
-    for (const n of (opcoes.pesquisar || [])) {
-      const k = norm(n);
-      if (k) mapa.set(k, n);
-    }
-
-    window.todosNomesSimples =
-      Array.from(mapa.values()).sort((a, b) =>
-        a.localeCompare(b, 'pt-BR')
-      );
-
-    ligarFiltroAoSelect('filtroModalParticipantes', 'selectModalParticipantes', window.todosNomesSimples);
-    ligarFiltroAoSelect('filtroBuscaTrei', 'listaNomesTrei', window.todosNomesSimples);
-
-    window.opcoesCongregacoes = opcoes.congregacao || [];
-
-    const sel = document.getElementById('congregacao');
-    sel.innerHTML = '<option value="">- Selecione -</option>';
-
-    (opcoes.congregacao || []).forEach(item => {
-      const o = document.createElement('option');
-      o.value = item;
-      o.textContent = item;
-      sel.appendChild(o);
-    });
-
-    window.opcoesTurnos =
-    (opcoes.turnos || []).filter(item => item !== "");
-
-    window.opcoesDias =
-    (opcoes.dias || []).filter(item => item !== "");
-
-    window.opcoesPrivilegios = 
-    opcoes.privilegios || {};
-
-    
-    if (notificacaoEscala) {
-
-      aplicarNotificacaoEscala();
-
-    }
-
-  });
-
-  carregarDadosDesignacao();
-  const ponto = window.camposSelecionados.pontoVaga;
-  const dia = window.camposSelecionados.diaVaga;
-
-  const nomeInputUser = document.getElementById("nomeInputUsuario");
-  const nomeSelectUser = document.getElementById("nomeSelectUsuario");
-
-  if (nomeInputUser && nomeSelectUser) {
-    nomeInputUser.addEventListener("input", () => {
-      renderizarListaUser(nomeInputUser.value);
-    });
-
-    renderizarListaUser(nomeInputUser.value);
-  }
-
-  const nomeInputUserSb = document.getElementById("nomeInputUsuarioSb");
-  const nomeSelectUserSb = document.getElementById("nomeSelectUsuarioSb");
-
-  if (nomeInputUserSb && nomeSelectUserSb) {
-    nomeInputUserSb.addEventListener("input", () => {
-      renderizarListaUserSb(nomeInputUserSb.value);
-    });
-
-    renderizarListaUserSb(nomeInputUserSb.value);
-  }
-
-  const nomeInputUserIr = document.getElementById("nomeInputUsuarioIr");
-  const nomeSelectUserIr = document.getElementById("nomeSelectUsuarioIr");
-
-  if (nomeInputUserIr && nomeSelectUserIr) {
-    nomeInputUserIr.addEventListener("input", () => {
-      renderizarListaUserIr(nomeInputUserIr.value);
-    });
-
-    renderizarListaUserIr(nomeInputUserIr.value);
-  }
-
-  const nomeInputUser2h = document.getElementById("nomeInputUsuario2h");
-  const nomeSelectUser2h = document.getElementById("nomeSelectUsuario2h");
-
-  if (nomeInputUser2h && nomeSelectUser2h) {
-    nomeInputUser2h.addEventListener("input", () => {
-      renderizarListaUser2h(nomeInputUser2h.value);
-    });
-
-    renderizarListaUser2h(nomeInputUser2h.value);
-  }
-
-}*/
-
-/*function carregarOpcoes() {
-
-  console.log("carregarOpcoes iniciou");
-
-  return new Promise((resolve, reject) => {
-
-    apiJSONP(
-      "buscarOpcoesParaForm",
-      {},
-      function(opcoes) {
-
-        try {
-
-          console.log({
-            turnos: opcoes.turnos,
-            dias: opcoes.dias
-          });
-
-
-          window.mapaParticipantesPorNome = {};
-
-          (opcoes.participantes || []).forEach(p => {
-
-            window.mapaParticipantesPorNome[p.nome] = p.id;
-
-          });
-
-
-          const mapa = new Map();
-
-          for (const n of (opcoes.pesquisar || [])) {
-
-            const k = norm(n);
-
-            if (k) {
-              mapa.set(k, n);
-            }
-
-          }
-
-
-          window.todosNomesSimples =
-            Array.from(mapa.values()).sort((a, b) =>
-              a.localeCompare(b, 'pt-BR')
-            );
-
-
-          ligarFiltroAoSelect(
-            'filtroModalParticipantes',
-            'selectModalParticipantes',
-            window.todosNomesSimples
-          );
-
-
-          ligarFiltroAoSelect(
-            'filtroBuscaTrei',
-            'listaNomesTrei',
-            window.todosNomesSimples
-          );
-
-
-          window.opcoesCongregacoes =
-            opcoes.congregacao || [];
-
-
-          const sel =
-            document.getElementById('congregacao');
-
-
-          if (sel) {
-
-            sel.innerHTML =
-              '<option value="">- Selecione -</option>';
-
-
-            (opcoes.congregacao || []).forEach(item => {
-
-              const o =
-                document.createElement('option');
-
-              o.value = item;
-              o.textContent = item;
-
-              sel.appendChild(o);
-
-            });
-
-          }
-
-
-          window.opcoesTurnos =
-            (opcoes.turnos || [])
-              .filter(item => item !== "");
-
-
-          window.opcoesDias =
-            (opcoes.dias || [])
-              .filter(item => item !== "");
-
-
-          window.opcoesPrivilegios =
-            opcoes.privilegios || {};
-
-
-
-          if (notificacaoEscala) {
-
-            aplicarNotificacaoEscala();
-
-          }
-
-
-
-          // Inicializações dependentes dos dados carregados
-
-          carregarDadosDesignacao();
-
-
-
-          const nomeInputUser =
-            document.getElementById("nomeInputUsuario");
-
-          const nomeSelectUser =
-            document.getElementById("nomeSelectUsuario");
-
-
-          if (nomeInputUser && nomeSelectUser) {
-
-            nomeInputUser.addEventListener(
-              "input",
-              () => {
-                renderizarListaUser(nomeInputUser.value);
-              }
-            );
-
-            renderizarListaUser(nomeInputUser.value);
-
-          }
-
-
-
-          const nomeInputUserSb =
-            document.getElementById("nomeInputUsuarioSb");
-
-          const nomeSelectUserSb =
-            document.getElementById("nomeSelectUsuarioSb");
-
-
-          if (nomeInputUserSb && nomeSelectUserSb) {
-
-            nomeInputUserSb.addEventListener(
-              "input",
-              () => {
-                renderizarListaUserSb(nomeInputUserSb.value);
-              }
-            );
-
-            renderizarListaUserSb(nomeInputUserSb.value);
-
-          }
-
-
-
-          const nomeInputUserIr =
-            document.getElementById("nomeInputUsuarioIr");
-
-          const nomeSelectUserIr =
-            document.getElementById("nomeSelectUsuarioIr");
-
-
-          if (nomeInputUserIr && nomeSelectUserIr) {
-
-            nomeInputUserIr.addEventListener(
-              "input",
-              () => {
-                renderizarListaUserIr(nomeInputUserIr.value);
-              }
-            );
-
-            renderizarListaUserIr(nomeInputUserIr.value);
-
-          }
-
-
-
-          const nomeInputUser2h =
-            document.getElementById("nomeInputUsuario2h");
-
-          const nomeSelectUser2h =
-            document.getElementById("nomeSelectUsuario2h");
-
-
-          if (nomeInputUser2h && nomeSelectUser2h) {
-
-            nomeInputUser2h.addEventListener(
-              "input",
-              () => {
-                renderizarListaUser2h(nomeInputUser2h.value);
-              }
-            );
-
-            renderizarListaUser2h(nomeInputUser2h.value);
-
-          }
-
-
-
-          console.log("✅ carregarOpcoes finalizou");
-
-          resolve();
-
-
-        } catch (e) {
-
-          console.error(
-            "❌ Erro dentro de carregarOpcoes:",
-            e
-          );
-
-          reject(e);
-
-        }
-
-      },
-      function(err) {
-
-        console.error(
-          "❌ Erro buscarOpcoesParaForm:",
-          err
-        );
-
-        reject(err);
-
-      }
-    );
-
-  });
-
-}*/
 
 function carregarOpcoes() {
 
-  console.log("carregarOpcoes iniciou");
-
-  //TESTE TEMPORÁRIO
-  //throw new Error("TESTE DE FALHA NO CARREGAMENTO");
-
+  //console.log("carregarOpcoes iniciou");
 
   apiJSONP(
     "buscarOpcoesParaForm",
@@ -18267,10 +17482,7 @@ function carregarOpcoes() {
     function(opcoes) {
 
 
-      console.log({
-        turnos: opcoes.turnos,
-        dias: opcoes.dias
-      });
+      //console.log({turnos: opcoes.turnos, dias: opcoes.dias});
 
 
 
@@ -18393,7 +17605,7 @@ function carregarOpcoes() {
 
 
 
-      console.log("✅ Opções carregadas");
+      //console.log("✅ Opções carregadas");
 
 
 
@@ -18660,10 +17872,7 @@ function popularSelects(dados) {
 
                                                               });
 
-                                                              console.log(
-                                                                "📍 Catálogo dos Pontos",
-                                                                window.pontosSistema
-                                                              );
+                                                              //console.log("📍 Catálogo dos Pontos", window.pontosSistema);
                                                               // TESTE PARA MUDAR SELECT DE PONTOS
 
   // ✅ Popula selects de "Ponto X"
@@ -19027,12 +18236,6 @@ function carregarResumo() {
 
 function selecionarSubstituicaoDesignados(ponto, dia) {
 
-  console.log(
-    "🔵 entrou selecionarSubstituicaoDesignados",
-    ponto,
-    dia
-  );
-
   return new Promise((resolve) => {
 
     participanteSubstituido = null;
@@ -19153,22 +18356,7 @@ function atualizarCondicaoDisponibilidadeUsuario(idParticipante) {
 
 }
 
-/*function carregarDadosIniciais() {
-
-    console.log("🚀 Carregando dados iniciais...");
-
-
-    carregarOpcoes();
-
-
-    carregarCatalogoPontos();
-
-
-}*/
 function carregarDadosIniciais() {
-
-    console.log("🚀 Carregando dados iniciais...");
-
 
     try {
 
@@ -19479,21 +18667,10 @@ function abrirTela(idTela, card = null) {
 //por enquanto só teste
 function inicializarPainelPontos(){
 
-    console.log(
-        "Inicializando painel pontos..."
-    );
-
     const ponto =
         document.getElementById(
             "pontoDesignado"
         );
-
-
-    console.log(
-        "Elemento ponto encontrado:",
-        ponto
-    );
-
 
 }
 
@@ -19519,8 +18696,6 @@ function voltar() {
         }
 
     });
-
-    //console.log("Tela recuperada:", telaAtual);
 
     document.getElementById(telaAtual)
         ?.classList.add('aberta');
@@ -20080,6 +19255,18 @@ function selecionarGrupoParaDesignacao(grupo){
 
             equipamento:
                 dados.equipamento,
+              
+            ponto:
+                dados.ponto,
+
+            dia:
+                dados.dia,
+
+            idVaga:
+                dados.idVaga,
+
+            substituirQuem:
+                dados.substituirQuem,
 
             grupo:
                 grupo.grupo,
@@ -20154,9 +19341,21 @@ function criarNovoGrupoNaDesignacao(){
                 dados.frequencia,
 
             equipamento:
-                dados.equipamento
+                dados.equipamento,
 
-        },
+            ponto:
+                dados.ponto,
+
+            dia:
+                dados.dia,
+
+            substituirQuem:
+                dados.substituirQuem || "",
+
+            idVaga:
+                dados.idVaga || ""
+
+            },
 
 
         function(res){
@@ -20197,7 +19396,7 @@ function criarNovoGrupoNaDesignacao(){
 
 }
 
-function fecharModalEscolherGrupo(){
+/*function fecharModalEscolherGrupo(){
 
 
     document
@@ -20213,6 +19412,66 @@ function fecharModalEscolherGrupo(){
     )
     .innerHTML = "";
 
+
+    window.contextoEscolhaGrupo = null;
+
+}*/
+function fecharModalEscolherGrupo(){
+
+    const dados =
+        window.contextoEscolhaGrupo;
+
+    document
+    .getElementById(
+        "modalEscolherGrupoDesignacao"
+    )
+    .classList.add("oculto");
+
+    document
+    .getElementById(
+        "listaGruposDisponiveis"
+    )
+    .innerHTML = "";
+
+    if(dados && dados.ponto){
+
+        mostrarSpinner();
+
+        apiJSONP(
+
+            "finalizarDesignacao",
+
+            {
+
+                ponto:
+                    dados.ponto,
+
+                idVaga:
+                    dados.idVaga || ""
+
+            },
+
+            function(){
+
+                esconderSpinner();
+
+                carregarAbas();
+
+            },
+
+            function(err){
+
+                esconderSpinner();
+
+                mostrarAlertaGlobal(
+                    "❌ " + err.message
+                );
+
+            }
+
+        );
+
+    }
 
     window.contextoEscolhaGrupo = null;
 
@@ -20241,11 +19500,6 @@ let acaoModalEditarDisponibilidade = null;
 let abrirModalDepoisDaPesquisa = false;
 
 function renderizarDesignados(lista) {
-
-  console.log(
-    "🔵 entrou renderizarDesignados:",
-    lista
-  );
 
   const div = document.getElementById("listaDesignados");
   div.innerHTML = "";
@@ -20452,9 +19706,6 @@ function renderizarDisponibilidade(dados, cfg) {
 
     dados.diasTurnos.forEach(item => {
 
-      console.log("--------------------------------");
-      console.log("Item recebido:", item);
-
       const partes = item.split(" - ");
       if (partes.length !== 2) {
         console.warn("Formato inválido:", item);
@@ -20463,12 +19714,6 @@ function renderizarDisponibilidade(dados, cfg) {
 
       const dia = partes[0];
       const turno = partes[1];
-
-      console.log("Procurando checkbox:");
-      console.log("Dia:", dia);
-      console.log("Turno:", turno);
-
-      console.log("Checkboxes encontrados:");
 
       checkboxes.forEach(cb => {
         console.log({
@@ -20485,11 +19730,8 @@ function renderizarDisponibilidade(dados, cfg) {
         norm(cb.dataset.turnoU ?? cb.dataset.turnoId) === norm(turno)
       );
 
-      console.log("Checkbox encontrado:", checkbox);
-
       if (checkbox) {
         checkbox.checked = true;
-        console.log("✅ Marcado:", checkbox.id);
       } else {
         console.warn(
           `❌ Nenhum checkbox encontrado para Dia="${dia}" Turno="${turno}"`
@@ -21376,9 +20618,7 @@ function inicializarComponentesUI() {
 
       abrir(){
 
-        console.log(
-          "Abrir modal de pontos"
-        );
+        //console.log("Abrir modal de pontos");
 
       }
 
@@ -21700,19 +20940,9 @@ function carregarCatalogoPontos() {
       });
 
 
-      console.log(
-        "📍 Catálogo de pontos carregado:",
-        window.pontosSistema
-      );
-
-
     },
     (err)=>{
 
-      /*console.error(
-        "❌ Erro carregando catálogo de pontos:",
-        err
-      );*/
        mostrarErroCarregamento(
             "Não foi possível carregar os pontos.",
             carregarDadosIniciais
@@ -21797,24 +21027,8 @@ function abrirSelecaoLembretePonto(){
 
         aoSelecionar(valor){
 
-
-            console.log(
-                "Ponto escolhido:",
-                valor
-            );
-
-
-            // mantém estado global
-
             window.camposSelecionados.pontoDesignado =
                 valor;
-
-
-            // sincroniza temporariamente
-            // com o select antigo
-
-            //sincronizarPontoDesignadoAntigo(valor);
-
 
         }
 
@@ -21837,13 +21051,6 @@ function abrirSelecaoLembreteDia(){
 
 
         aoSelecionar(valor){
-
-
-            console.log(
-                "Dia escolhido:",
-                valor
-            );
-
 
             window.camposSelecionados.diaDesignado =
                 valor;
@@ -21873,13 +21080,6 @@ function abrirSelecaoLembreteTurno(){
 
         aoSelecionar(valor){
 
-
-            console.log(
-                "Turno escolhido:",
-                valor
-            );
-
-
             window.camposSelecionados.turnoDesignado =
                 valor;
 
@@ -21907,24 +21107,8 @@ function abrirSelecaoPontoDesignado(){
 
         aoSelecionar(valor){
 
-
-            console.log(
-                "Ponto escolhido:",
-                valor
-            );
-
-
-            // mantém estado global
-
             window.camposSelecionados.pontoDesignado =
                 valor;
-
-
-            // sincroniza temporariamente
-            // com o select antigo
-
-            //sincronizarPontoDesignadoAntigo(valor);
-
 
         }
 
@@ -21947,13 +21131,6 @@ function abrirSelecaoTurnoDesignado(){
 
 
         aoSelecionar(valor){
-
-
-            console.log(
-                "Turno escolhido:",
-                valor
-            );
-
 
             window.camposSelecionados.turnoDesignado =
                 valor;
@@ -21986,12 +21163,6 @@ function abrirSelecaoDiaDesignado(){
         aoSelecionar(valor){
 
 
-            console.log(
-                "Dia escolhido:",
-                valor
-            );
-
-
             window.camposSelecionados.diaDesignado =
                 valor;
 
@@ -22017,13 +21188,6 @@ function abrirSelecaoPontoDesignar(){
 
         selecionar(ponto){
 
-
-            console.log(
-                "Ponto selecionado:",
-                ponto
-            );
-
-
             abrirModalSelecaoUniversal({
 
                 titulo:ponto,
@@ -22042,13 +21206,6 @@ function abrirSelecaoPontoDesignar(){
                             ponto,
                             turno.valor
                         );
-
-
-                    console.log(
-                        "Ponto escolhido:",
-                        aba
-                    );
-
 
 
                     window.camposSelecionados.ponto =
@@ -22096,12 +21253,6 @@ function abrirSelecaoDiaDesignar(){
         aoSelecionar(valor){
 
 
-            console.log(
-                "Dia escolhido Designar:",
-                valor
-            );
-
-
             window.camposSelecionados.dia =
                 valor;
 
@@ -22130,10 +21281,6 @@ function abrirSelecaoFrequenciaDesignar(){
 
         aoSelecionar(valor){
 
-            console.log(
-                "Frequência escolhida Designar:",
-                valor
-            );
 
             window.camposSelecionados.frequencia =
                 valor;
@@ -22163,15 +21310,8 @@ function abrirSelecaoEquipamentoDesignar(){
 
         aoSelecionar(valor){
 
-            console.log(
-                "Equipamento escolhido Designar:",
-                valor
-            );
-
-
             window.camposSelecionados.equipamento =
                 valor;
-
 
         }
 
@@ -22212,31 +21352,12 @@ function abrirSelecaoPontoVaga(){
 
         selecionar(ponto){
 
-          console.log("Ponto selecionado:", ponto);
-
             abrirModalSelecaoUniversal({
 
                 titulo:ponto,
 
                 valores:listarTurnosDoPonto(ponto),
 
-                /*selecionar(turno){
-
-                    const aba =
-                        obterAbaPonto(
-                            ponto,
-                            turno.valor
-                        );
-
-                    console.log(
-                        "Ponto escolhido:",
-                        aba
-                    );
-
-                    window.camposSelecionados.pontoVaga =
-                        aba;
-
-                }*/
                selecionar(turno){
 
                     const aba =
@@ -22244,13 +21365,6 @@ function abrirSelecaoPontoVaga(){
                             ponto,
                             turno.valor
                         );
-
-
-                    console.log(
-                        "Ponto escolhido:",
-                        aba
-                    );
-
 
                     window.camposSelecionados.pontoVaga =
                         aba;
@@ -22292,12 +21406,6 @@ function abrirSelecaoDiaVaga(){
 
         aoSelecionar(valor){
 
-            console.log(
-                "Dia escolhido:",
-                valor
-            );
-
-
             window.camposSelecionados.diaVaga =
                 valor;
 
@@ -22326,11 +21434,6 @@ function abrirSelecaoFrequenciaVaga(){
 
         aoSelecionar(valor){
 
-            console.log(
-                "Frequência escolhida:",
-                valor
-            );
-
 
             window.camposSelecionados.frequenciaVaga =
                 valor;
@@ -22357,11 +21460,6 @@ function abrirSelecaoEquipamentoVaga() {
 
         aoSelecionar(valor) {
 
-            console.log(
-                "Equipamento escolhido:",
-                valor
-            );
-
             window.camposSelecionados.equipamentoVaga =
                 valor;
 
@@ -22382,12 +21480,6 @@ function abrirSelecaoPontoBepp(){
         valores:listarPontosSistema(),
 
         aoSelecionar(valor){
-
-            console.log(
-                "Ponto BEPP escolhido:",
-                valor
-            );
-
 
             window.camposSelecionados.pontobepp =
                 valor;
@@ -22412,10 +21504,6 @@ function abrirSelecaoPontoSimples(
 
         aoSelecionar(valor){
 
-            console.log(
-                `${campo}:`,
-                valor
-            );
 
             window.camposSelecionados[campo] =
                 valor;
@@ -22451,8 +21539,6 @@ function abrirSelecaoLista(
         valores,
 
         aoSelecionar(valor){
-
-            console.log(`${campo}:`, valor);
 
             if (!window.camposSelecionados) {
                 window.camposSelecionados = {};
@@ -22669,13 +21755,6 @@ function criarGrupoCompanheiros(){
   } = window.contextoCompanheiros;
 
 
-  console.log(
-    "CRIANDO GRUPO:",
-    idParticipante,
-    designacao
-  );
-
-
   mostrarSpinner();
 
 
@@ -22798,6 +21877,7 @@ function abrirModalCompanheiros(
   );
 
 }
+
 function montarTelaCompanheiros(res){
 
     let situacao = "";
@@ -22884,81 +21964,6 @@ function montarTelaCompanheiros(res){
 
         `;
 
-        /*res.companheiros.forEach(c=>{
-
-            html += `
-
-            <div class="card-companheiro">
-
-                <strong>
-
-                    ${c.posicao} - ${c.nome}
-
-                </strong>
-
-                <br>
-
-                ${c.congregacao}
-
-                ${
-                    c.posicao>1
-                    ?
-                    `
-                    <button
-                    onclick="
-                        removerCompanheiro(
-                            '${res.grupo}',
-                            '${c.id}',
-                            '${c.designacao}'
-                        )
-                    ">
-                    ❌ Remover
-                    </button>
-                    `
-                    :
-                    ""
-                }
-            </div>
-
-            `;
-
-        });*/
-        /*res.companheiros.forEach(c=>{
-
-            html += `
-
-            <div class="card-companheiro">
-
-                <strong>
-
-                    ${c.posicao} - ${c.nome}
-
-                </strong>
-
-                <br>
-
-                ${c.congregacao}
-
-                    <br>
-
-                      <button
-                      onclick="
-                      removerCompanheiro(
-                        '${res.grupo}',
-                        '${c.id}',
-                        '${c.designacao}'
-                      )">
-
-                      ❌ Remover
-
-                      </button>
-
-
-            </div>
-
-            `;
-
-        });*/
         res.companheiros.forEach(c=>{
 
             html += `
@@ -23315,6 +22320,7 @@ function carregarPossiveisCompanheiros(){
     div.innerHTML = html;
 
 }*/
+
 function montarListaAdicionarCompanheiro(lista){
 
     document.getElementById(

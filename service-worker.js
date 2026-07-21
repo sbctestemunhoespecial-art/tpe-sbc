@@ -6,18 +6,14 @@ importScripts(
 importScripts(
   "https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js"
 );
-console.log("VERSÃO TESTE 2");
-self.addEventListener("install", event => {
 
-  console.log("📦 Instalando novo Service Worker");
+self.addEventListener("install", event => {
 
   self.skipWaiting();
 
 });
 
 self.addEventListener("activate", event => {
-
-  console.log("🚀 Service Worker ativado");
 
   event.waitUntil(
 
@@ -26,18 +22,6 @@ self.addEventListener("activate", event => {
   );
 
 });
-
-/*self.addEventListener("message", event => {
-
-  if (event.data && event.data.type === "SKIP_WAITING") {
-
-    console.log("⚡ Ativando novo Service Worker");
-
-    self.skipWaiting();
-
-  }
-
-});*/
 
 self.addEventListener("message", event => {
 
@@ -66,20 +50,14 @@ const messaging = firebase.messaging();
 
 
 
-console.log(
-  "🔥 SERVICE WORKER + FIREBASE ATIVO"
-);
+//console.log("🔥 SERVICE WORKER + FIREBASE ATIVO");
 
 
 
 messaging.onBackgroundMessage((payload) => {
 
 
-  console.log(
-    "📩 BACKGROUND MESSAGE:",
-    JSON.stringify(payload)
-  );
-
+  //console.log("📩 BACKGROUND MESSAGE:",JSON.stringify(payload));
 
 
   const title =
@@ -115,70 +93,22 @@ messaging.onBackgroundMessage((payload) => {
   })
   .then(() => {
 
-    console.log(
-      "✅ NOTIFICAÇÃO EXIBIDA"
-    );
+    //console.log("✅ NOTIFICAÇÃO EXIBIDA");
 
   });
 
 
 });
 
-/*self.addEventListener("notificationclick", event => {
-
-  console.log("👆 Clique na notificação");
-
-  event.notification.close();
-
-  const idVaga = event.notification.data?.idVaga || "";
-
-  const url =
-    self.location.hostname === "127.0.0.1" ||
-    self.location.hostname === "localhost"
-      ? `/?idVaga=${encodeURIComponent(idVaga)}`
-      : `/tpe-sbc/?idVaga=${encodeURIComponent(idVaga)}`;
-
-  event.waitUntil(
-
-    clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    }).then(clientList => {
-
-      // Se o app já estiver aberto, reutiliza a janela
-      for (const client of clientList) {
-
-        client.focus();
-
-        client.navigate(url);
-
-        return;
-
-      }
-
-      // Caso contrário, abre uma nova janela
-      return clients.openWindow(url);
-
-    })
-
-  );
-
-});*/
 // DAQUI PRA CIMA FUNCIONAVA ANTES DAS NOTIFICAÇÕES AOS AACS. DQQUI PRA BAIXO NOVO - DELETAR E DESCOEMNTAR ACIMA SE DER ERRO
 self.addEventListener("notificationclick", event => {
-
-  console.log("👆 Clique na notificação");
-
 
   event.notification.close();
 
   const dados =
     event.notification.data || {};
 
-    console.log(
-      "DADOS PUSH RECEBIDOS:",
-      dados
-    );
+    //console.log("DADOS PUSH RECEBIDOS:", dados);
 
   let url;
 

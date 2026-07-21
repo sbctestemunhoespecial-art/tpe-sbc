@@ -15,10 +15,10 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
 
-  console.log(
+  /*console.log(
     "📩 BACKGROUND MESSAGE:",
     JSON.stringify(payload)
-  );
+  );*/
 
   const title =
     payload.data?.titulo ||

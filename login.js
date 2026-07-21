@@ -7823,7 +7823,8 @@ function mostrarResultados(dados) {
 
   p0.forEach((v,i)=>console.log(i,v));
 
-  card.dataset.identificadorOriginal = p0[17] || "";
+  //card.dataset.identificadorOriginal = p0[17] || "";
+  card.dataset.identificadorOriginal = (p0[17] || "").toString().trim();
 
   document.getElementById("perfilNome").textContent             = p0[0] || "";
   document.getElementById("perfilCongregacao").textContent      = p0[1] || "";
@@ -8706,7 +8707,7 @@ function cancelarEdicao2() {
   btnS.style.display = "none";
   btnC.style.display = "none";
 }*/
-function salvarAlteracoes() {
+/*function salvarAlteracoes() {
 
   const getValor = (id) => {
 
@@ -8894,6 +8895,212 @@ function salvarAlteracoes() {
 
   );
 
+}*/
+function obterValorCampo(id) {
+
+  const el = document.getElementById(id);
+
+  if (!el) return "";
+
+  const tag = el.tagName.toLowerCase();
+
+  if (tag === "input") {
+    return el.value.trim();
+  }
+
+  if (tag === "select") {
+    return el.value.trim();
+  }
+
+  return el.textContent.trim();
+
+}
+function salvarAlteracoes() {
+
+  const nd = [
+
+    obterValorCampo("perfilNome"),               //0
+    obterValorCampo("perfilCongregacao"),        //1
+    obterValorCampo("perfilEmail"),              //2
+    obterValorCampo("perfilTelefone"),           //3
+    obterValorCampo("perfilPeticao"),            //4
+
+    obterValorCampo("perfilDataNascimento"),     //5
+    calcularIdade(obterValorCampo("perfilDataNascimento")), //6
+    obterValorCampo("perfilDataBatismo"),        //7
+    calcularAnosBatismo(obterValorCampo("perfilDataBatismo")), //8
+
+    obterValorCampo("perfilGrupo"),              //9
+    obterValorCampo("perfilSexo"),               //10
+    obterValorCampo("perfilSituacao"),           //11
+    obterValorCampo("perfilTCS")                 //12
+
+  ];
+
+  // ---------- valida telefone ----------
+
+  const telefone = nd[3];
+
+  const telefoneRegex =
+    /^\(\d{2}\)\s9\d{4}-\d{4}$/;
+
+  if (!telefoneRegex.test(telefone)) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Telefone inválido. Use o formato (11) 99217-3945."
+    );
+
+    document.getElementById("perfilTelefone")
+      .classList.add("erro-campo");
+
+    return;
+
+  }
+
+  // ---------- valida email ----------
+
+  const email = nd[2];
+
+  const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+
+    mostrarAlertaGlobal(
+      "⚠️ E-mail inválido."
+    );
+
+    document.getElementById("perfilEmail")
+      .classList.add("erro-campo");
+
+    return;
+
+  }
+
+  // ---------- privilégios ----------
+
+  const priv = [
+
+    obterValorCampo("campoPrivOrganizacao"),
+    obterValorCampo("campoPrivAAC"),
+    obterValorCampo("campoPrivEscalas"),
+    obterValorCampo("campoPrivEquipes"),
+    obterValorCampo("campoPrivTreinador")
+
+  ];
+
+  const idOrig = document
+    .getElementById("cardPerfilParticipante")
+    .dataset.identificadorOriginal;
+
+    console.log("Identificador salvo:", idOrig);
+  /*const idOrig =
+    document
+      .getElementById("painelPesquisar")
+      .dataset
+      .identificadorOriginal
+      .trim();*/
+
+  console.log("Identificador salvo:", idOrig);
+
+  mostrarSpinner();
+
+    apiJSONP(
+        "atualizarParticipanteAdmin",
+        {
+          primeiros9: JSON.stringify(nd),
+          privilegios: JSON.stringify(priv),
+          identificadorOriginal: idOrig
+        },
+
+    function(res) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        res.mensagem ||
+
+        "✅ Alterado com sucesso!"
+
+      );
+
+      carregarOpcoes();
+
+       document
+      .querySelectorAll(".erro-campo")
+      .forEach(el => el.classList.remove("erro-campo"));
+
+      restaurarCardParticipante();   // <-- volta inputs/selects para spans
+
+      pesquisarParticipante();       // <-- recarrega os dados gravados
+
+    },
+
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro ao salvar: " +
+
+        (err.message || err.mensagem)
+
+      );
+
+    }
+
+  );
+
+}
+function restaurarCardParticipante() {
+
+  restaurarCampo("perfilNome");
+  restaurarCampo("perfilCongregacao");
+  restaurarCampo("perfilEmail");
+  restaurarCampo("perfilTelefone");
+  restaurarCampo("perfilPeticao");
+
+  restaurarCampo("perfilGrupo");
+  restaurarCampo("perfilSexo");
+  restaurarCampo("perfilSituacao");
+
+  restaurarCampo("perfilDataNascimento");
+  restaurarCampo("perfilIdade");
+  restaurarCampo("perfilDataBatismo");
+  restaurarCampo("perfilAnosBatismo");
+
+  restaurarCampo("perfilTCS");
+
+  restaurarCampo("campoPrivOrganizacao");
+  restaurarCampo("campoPrivAAC");
+  restaurarCampo("campoPrivEscalas");
+  restaurarCampo("campoPrivEquipes");
+  restaurarCampo("campoPrivTreinador");
+
+  document.getElementById("btnEditarParticipante").style.display = "";
+  document.getElementById("btnSalvarParticipante").style.display = "none";
+  document.getElementById("btnCancelarParticipante").style.display = "none";
+}
+function restaurarCampo(id) {
+
+  const el = document.getElementById(id);
+
+  if (!el) return;
+
+  if (el.tagName.toLowerCase() === "span") return;
+
+  const span = document.createElement("span");
+  span.id = id;
+
+  if (el.tagName.toLowerCase() === "input")
+    span.textContent = el.value;
+
+  else if (el.tagName.toLowerCase() === "select")
+    span.textContent = el.value;
+
+  el.replaceWith(span);
 }
 
 function editarPrivilegios() {

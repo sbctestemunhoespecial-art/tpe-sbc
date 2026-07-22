@@ -18309,7 +18309,7 @@ function tratarNotificacaoAoAbrir() {
 
 }
 
-function carregarVagasDisponiveis() {
+/*function carregarVagasDisponiveis() {
 
   const lista =
     document.getElementById("listaVagasDisponiveis");
@@ -18402,56 +18402,184 @@ function carregarVagasDisponiveis() {
             <div>
                     👥 <strong>Companheiro:</strong>
                     ${vaga.nomeParticipante}
-            </div>-->
-            <!--${
-              vaga.tipo === "INDIVIDUAL"
-              && vaga.nomeParticipante
-                ? `
-                  <div>
-                    👥 <strong>Companheiro:</strong>
-                    ${vaga.nomeParticipante}
-                  </div>
-                `
-                : ""
-            }-->
-          <!--</div>-->
+            </div>
+          </div>-->
 
           <div class="card-vaga-header">
-
                 <div>
                     <span class="titulo">📍 Ponto</span>
                     <span>${vaga.ponto}</span>
                 </div>
-
                 <div>
                     <span class="titulo">🌅 Período</span>
                     <span>${vaga.periodo}</span>
                 </div>
-
             </div>
-
             <div class="vaga-detalhes">
-
                 <div>
                     <span class="titulo">📅 Dia</span>
                     <span>${vaga.dia}</span>
                 </div>
-
                 <div>
                     <span class="titulo">🔄 Frequência</span>
                     <span>${vaga.frequencia}</span>
                 </div>
-
                 <div>
                     <span class="titulo">🚗 Equipamento</span>
                     <span>${vaga.equipamento || "-"}</span>
                 </div>
-
                 <div>
                     <span class="titulo">👥 Companheiro</span>
                     <span>${vaga.nomeParticipante || "-"}</span>
                 </div>
+          </div>
 
+          <button
+            class="${
+              destaque
+                ? "btn-aceitar-vaga btn-aceitar-destaque"
+                : "btn-aceitar-vaga"
+            }"
+            onclick="aceitarVaga('${vaga.idVaga}')">
+
+            Quero assumir esta vaga
+
+          </button>
+
+        `;
+
+        lista.appendChild(div);
+
+        if (destaque) {
+
+          setTimeout(() => {
+
+            div.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+
+          }, 300);
+
+        }
+
+      });
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(err);
+
+      lista.innerHTML =
+        "❌ Erro: " + err.message;
+
+    }
+  );
+
+}*/
+
+function carregarVagasDisponiveis() {
+
+  const lista =
+    document.getElementById("listaVagasDisponiveis");
+
+  lista.innerHTML =
+    "Carregando vagas...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarVagasDisponiveisN",
+    {},
+    function(res) {
+
+      console.log("📋 RESPOSTA VAGAS:", res);
+
+      esconderSpinner();
+
+      if (!res.sucesso) {
+
+        lista.innerHTML =
+          "❌ Erro ao carregar vagas.";
+
+        return;
+
+      }
+
+      if (!res.vagas.length) {
+
+        lista.innerHTML =
+          "🎉 Nenhuma vaga disponível.";
+
+        return;
+
+      }
+
+      lista.innerHTML = "";
+
+      res.vagas.forEach(vaga => {
+
+        const destaque =
+          vaga.idVaga === idVagaNotificacao;
+
+        const div =
+          document.createElement("div");
+
+        div.className = "card-vaga";
+
+        if (destaque) {
+          div.classList.add("card-vaga-destaque");
+        }
+
+        div.innerHTML = `
+
+          <div class="titulo-vaga">
+            ${
+              destaque
+                ? "🔔 Vaga da sua notificação"
+                : "🚨 Vaga disponível"
+            }
+          </div>
+
+          ${
+            destaque
+              ? `
+              <div class="aviso-vaga-notificacao">
+                🔔 Esta é a vaga da sua notificação
+              </div>
+            `
+              : ""
+          }
+
+          <div class="card-vaga-header">
+                <div>
+                    <span class="titulo">📍 Ponto</span>
+                    <span>${vaga.ponto}</span>
+                </div>
+                <div>
+                    <span class="titulo">🌅 Período</span>
+                    <span>${vaga.periodo}</span>
+                </div>
+            </div>
+            <div class="vaga-detalhes">
+                <div>
+                    <span class="titulo">📅 Dia</span>
+                    <span>${vaga.dia}</span>
+                </div>
+                <div>
+                    <span class="titulo">🔄 Frequência</span>
+                    <span>${vaga.frequencia}</span>
+                </div>
+                <div>
+                    <span class="titulo">🚗 Equipamento</span>
+                    <span>${vaga.equipamento || "-"}</span>
+                </div>
+                <div>
+                    <span class="titulo">👥 Companheiro</span>
+                    <span>${vaga.nomeParticipante || "-"}</span>
+                </div>
           </div>
 
           <button

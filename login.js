@@ -18095,68 +18095,6 @@ function mostrarVagas(vagas) {
 
     }
 
-
-    /*card.innerHTML = `
-
-      <div class="card-vaga-header">
-
-        <div>
-          <h3>📍 ${vaga.ponto}</h3>
-          <small>${vaga.status}</small>
-        </div>
-
-        <span class="badge">
-          ABERTA
-        </span>
-
-      </div>
-
-
-      <div class="vaga-detalhes">
-
-
-        <div class="card-info">
-          <label>📅 Dia</label>
-          <span>${vaga.dia}</span>
-        </div>
-
-
-        <div class="card-info">
-          <label>🕒 Frequência</label>
-          <span>${vaga.frequencia}</span>
-        </div>
-
-
-        <div class="card-info">
-          <label>👤 Origem</label>
-          <span>${vaga.quemSai}</span>
-        </div>
-
-
-        <div class="card-info">
-          <label>⏳ Aberta</label>
-
-          <span class="tempo ${classeTempo}">
-            ${vaga.tempoAberta}
-          </span>
-
-        </div>
-
-
-        <div class="card-info">
-          <label>🆔 ID</label>
-          <span>${vaga.idVaga}</span>
-        </div>
-
-
-      </div>
-
-
-      <button class="btn btn-danger btn-block">
-        🗑️ Excluir vaga
-      </button>
-
-    `;*/
     card.innerHTML = `
 
         <div class="card-vaga-header">
@@ -18201,7 +18139,7 @@ function mostrarVagas(vagas) {
 
             <div>
                 <span class="titulo">
-                    👤 Origem
+                    👤 Quem saiu
                 </span>
 
                 <span>
@@ -18444,33 +18382,27 @@ function carregarVagasDisponiveis() {
               : ""
           }
 
-          <div class="info-vaga">
-
+          <!--<div class="info-vaga">
             <div>
               📍 <strong>Ponto:</strong>
               ${vaga.ponto}
             </div>
-
             <div>
               📅 <strong>Dia:</strong>
               ${vaga.dia}
             </div>
-
             <div>
               🔄 <strong>Frequência:</strong>
               ${vaga.frequencia}
             </div>
-
             <div>
               🚗 <strong>Equipamento:</strong>
               ${vaga.equipamento || "-"}
             </div>
-
             <div>
                     👥 <strong>Companheiro:</strong>
                     ${vaga.nomeParticipante}
-            </div>
-
+            </div>-->
             <!--${
               vaga.tipo === "INDIVIDUAL"
               && vaga.nomeParticipante
@@ -18482,6 +18414,43 @@ function carregarVagasDisponiveis() {
                 `
                 : ""
             }-->
+          <!--</div>-->
+
+          <div class="card-vaga-header">
+
+                <div>
+                    <span class="titulo">📍 Ponto</span>
+                    <span>${vaga.ponto}</span>
+                </div>
+
+                <div>
+                    <span class="titulo">🌅 Período</span>
+                    <span>${vaga.periodo}</span>
+                </div>
+
+            </div>
+
+            <div class="vaga-detalhes">
+
+                <div>
+                    <span class="titulo">📅 Dia</span>
+                    <span>${vaga.dia}</span>
+                </div>
+
+                <div>
+                    <span class="titulo">🔄 Frequência</span>
+                    <span>${vaga.frequencia}</span>
+                </div>
+
+                <div>
+                    <span class="titulo">🚗 Equipamento</span>
+                    <span>${vaga.equipamento || "-"}</span>
+                </div>
+
+                <div>
+                    <span class="titulo">👥 Companheiro</span>
+                    <span>${vaga.nomeParticipante || "-"}</span>
+                </div>
 
           </div>
 

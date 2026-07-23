@@ -2507,7 +2507,7 @@ function pesquisarDesignados() {
   );
 }
 
-function exibirResultados(res) {
+/*function exibirResultados(res) {
 
   //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao })));
 
@@ -2580,8 +2580,8 @@ function exibirResultados(res) {
   // Agora, quando muda grupo ou equipamento, cria um cabeçalho  
   if (chaveCabecalho !== cabecalhoAnterior) {
 
-    /*const qtd =
-        res.filter(x => x.grupo === r.grupo).length;*/
+    //const qtd =
+        //res.filter(x => x.grupo === r.grupo).length;
     const qtd =
         res.filter(x =>
             x.grupo === r.grupo &&
@@ -2630,9 +2630,9 @@ function exibirResultados(res) {
 
 }
 
-    /*const partes = (r.turno || "").split(" ");
-    const pontoNumero = partes[partes.length - 1] || "";
-    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");*/
+    //const partes = (r.turno || "").split(" ");
+    //const pontoNumero = partes[partes.length - 1] || "";
+    //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
         html += `
           <tr> <!--class="linha-designacao"
@@ -2805,7 +2805,278 @@ function exibirResultados(res) {
       acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
     });
   });
+}*/
+function exibirResultados(res) {
+
+  //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao })));
+
+  const c = document.getElementById('resultadoDesignadosContainer');
+  const msg = document.getElementById("msgPesqDesignados");
+  esconderSpinner();
+
+  if (!res || res.length === 0) {
+    c.innerHTML = '<p>Nenhum designado encontrado.</p>';
+    mostrarAlertaGlobal("❌ Nenhum designado encontrado");
+    return;
+  }
+
+    let html = "";
+
+  res.sort((a, b) => {
+
+      // dia
+      const d = a.dia.localeCompare(b.dia);
+      if (d !== 0) return d;
+
+      // grupo
+      const g = (a.grupo || "").localeCompare(b.grupo || "");
+      if (g !== 0) return g;
+
+      // posição
+      return (a.posicao || 0) - (b.posicao || 0);
+
+  });
+
+  if (res.length > 0) {
+
+      html += `
+      <div class="titulo-dia-designacao">
+          📅 ${res[0].dia}
+      </div>
+      `;
+
+  }
+
+  let grupoAnterior = "";
+  
+  let cabecalhoAnterior = "";
+
+  res.forEach(r => {  
+
+    const partes = (r.turno || "").split(" ");
+    const pontoNumero = partes[partes.length - 1] || "";
+    const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+    const chaveCabecalho = `${r.equipamento}|${r.grupo}`;
+
+  // Quando muda o grupo, cria um cabeçalho
+  //if (r.grupo && r.grupo !== grupoAnterior) {
+  // Agora, quando muda grupo ou equipamento, cria um cabeçalho  
+  if (chaveCabecalho !== cabecalhoAnterior) {
+
+    //const qtd =
+        //res.filter(x => x.grupo === r.grupo).length;
+    const qtd =
+        res.filter(x =>
+            x.grupo === r.grupo &&
+            x.equipamento === r.equipamento
+        ).length;
+
+    let tituloGrupo = "";
+    let estiloTitulo = "";
+
+    switch (qtd) {
+
+        case 1:
+            tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+            estiloTitulo = "color:#d32f2f;font-weight:bold;";
+            break;
+
+        case 2:
+            tituloGrupo = "👥 DUPLA";
+            break;
+
+        case 3:
+            tituloGrupo = "👥 TRIO";
+            break;
+
+        case 4:
+            tituloGrupo = "👥 GRUPO";
+            break;
+
+        default:
+            tituloGrupo = `👥 GRUPO (${qtd})`;
+            break;
+
+    }
+
+    html += `
+    <div class="titulo-grupo-designacao">
+        ${r.equipamento} • Turno ${turnoPalavra}
+        <span>${tituloGrupo}</span>
+    </div>
+    `;
+
+    //grupoAnterior = r.grupo;
+    cabecalhoAnterior = chaveCabecalho;
+
 }
+
+    //const partes = (r.turno || "").split(" ");
+    //const pontoNumero = partes[partes.length - 1] || "";
+    //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+        html += `
+
+        <div class="card-designacao">
+
+            <div class="card-designacao-topo">
+
+                <div>
+
+                    <div class="nome-designacao">
+
+                        ${r.posicao ? r.posicao + ". " : ""}
+                        ${r.nome}
+
+                    </div>
+
+                    <div class="congregacao-designacao">
+
+                        ${r.congregacao}
+
+                    </div>
+
+                </div>
+
+                <div class="freq-designacao">
+
+                    ${r.frequencia}
+
+                </div>
+
+            </div>
+
+            <div class="card-designacao-infos">
+
+                <div>
+
+                    <span>📅</span>
+
+                    ${r.dia}
+
+                </div>
+
+                <div>
+
+                    <span>🕒</span>
+
+                    ${turnoPalavra}
+
+                </div>
+
+                <div>
+
+                    <span>📍</span>
+
+                    Ponto ${pontoNumero}
+
+                </div>
+
+            </div>
+
+            <div class="card-designacao-acoes">
+
+                <span
+                    class="linha-designacao"
+
+                    data-id="${r.idParticipante}"
+                    data-nome="${r.nome}"
+                    data-telefone="${r.telefone}"
+                    data-turno="${turnoPalavra}"
+                    data-dia="${r.dia}"
+                    data-ponto="${pontoNumero}"
+                    data-frequencia="${r.frequencia}"
+                    data-equipamento="${r.equipamento}"
+
+                    title="Editar">
+
+                    ✏️
+
+                </span>
+
+                <img
+                    src="img/whatsapp.svg"
+
+                    class="icone-whatsapp-designacao"
+
+                    data-id="${r.idParticipante}"
+                    data-nome="${r.nome}"
+                    data-telefone="${r.telefone}"
+                    data-turno="${turnoPalavra}"
+                    data-dia="${r.dia}"
+                    data-ponto="${pontoNumero}"
+                    data-frequencia="${r.frequencia}"
+                    data-equipamento="${r.equipamento}"
+
+                    title="WhatsApp">
+
+            </div>
+
+        </div>
+
+        `;
+  });
+
+  c.innerHTML = html;
+
+  // Destacar designação vinda da notificação
+  if (notificacaoEscala?.idParticipante) {
+
+    const linha = c.querySelector(
+      `[data-id="${notificacaoEscala.idParticipante}"]`
+    );
+
+    if (linha) {
+
+      linha.classList.add("linha-designacao-destaque");
+
+      setTimeout(() => {
+
+        linha.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      }, 300);
+
+    }
+
+  }
+
+  msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
+
+  c.querySelectorAll('.linha-designacao').forEach(linha => {
+
+    linha.addEventListener('click', () => {
+      const selectNome = linha.querySelector('td:first-child select');
+      if (selectNome) {
+        return;
+      }
+
+      const participante = linha.dataset.nome;
+      const idParticipante = linha.dataset.id;
+
+      //console.log("ID:", idParticipante, "Nome:", participante);
+
+      if (participante.trim().toUpperCase().startsWith("VAGA")) {
+        mostrarAlertaGlobal(`❌ Vagas não podem ser editadas aqui.`);
+        return;
+      }
+
+      const turno = linha.dataset.turno;
+      const ponto = linha.dataset.ponto;
+      const dia = linha.dataset.dia;
+      const frequencia = linha.dataset.frequencia;
+      const equipamento = linha.dataset.equipamento;
+
+      //console.log("DADOS COMPANHEIROS:", {turno, ponto, dia});
+
+      acionarMenuDesignacao(idParticipante, participante, ponto, dia, turno, frequencia, equipamento, linha);
+    });
+  });
+}
+
 //LISTENER PARA O ÍCONE DA ESCALA POR TURNO
 document.addEventListener("click", function(e){
 
@@ -15961,7 +16232,7 @@ function exportarEscalaEv() {
     }
   );
 }*/
-function buscarDesignacoesPorPonto() {
+/*function buscarDesignacoesPorPonto() {
   
   const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgDesignacoesPorPontopppp");
@@ -16149,8 +16420,8 @@ function buscarDesignacoesPorPonto() {
               //grupoAtual = r.grupo;
               cabecalhoAtual = chaveCabecalho;
 
-              /*const integrantes =
-                  res.filter(x => x.grupo === grupoAtual).length;*/
+              //const integrantes =
+                  //res.filter(x => x.grupo === grupoAtual).length;
               const integrantes =
                 res.filter(x =>
                     x.grupo === r.grupo &&
@@ -16304,6 +16575,431 @@ function buscarDesignacoesPorPonto() {
       });
 
       html += "</tbody></table>";
+      container.innerHTML = html;
+
+      container.querySelectorAll(".linha-designacao-ponto")
+      .forEach(linha => {
+
+          linha.addEventListener("click", () => {
+
+              const participante =
+                  linha.dataset.nome;
+
+
+              if (
+                  participante
+                  .trim()
+                  .toUpperCase()
+                  .startsWith("VAGA")
+              ){
+                  mostrarAlertaGlobal(
+                      "❌ Vagas não podem ser editadas."
+                  );
+                  return;
+              }
+
+
+              const idParticipante =
+                  linha.dataset.id;
+
+
+              const ponto =
+                  linha.dataset.ponto;
+
+
+              const turno =
+                  linha.dataset.turno;
+
+
+              const dia =
+                  linha.dataset.dia;
+
+
+              const numeroPonto =
+                  ponto;
+
+
+              const turnoLimpo =
+                  turno
+                  .replace(numeroPonto, "")
+                  .trim();
+
+
+              const codigoTurno =
+                  obterCodigoTurno(turnoLimpo);
+
+
+              const designacao =
+                  `${codigoTurno}${numeroPonto} ${dia}`;
+
+
+              //console.log(
+                  //"=== ESCALA POR PONTO ==="
+              //);
+
+              //console.log({
+                  //idParticipante,
+                  //designacao
+              //});
+
+
+              abrirModalCompanheiros(
+                  idParticipante,
+                  designacao
+              );
+
+
+          });
+
+      });
+
+      document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar designações: " + (err.message || err));
+    }
+  );
+}*/
+function buscarDesignacoesPorPonto() {
+  
+  const ponto = window.camposSelecionados.pontobepp
+  const msg = document.getElementById("msgDesignacoesPorPontopppp");
+  const container = document.getElementById("resultadoDesignacoesPorPontopppp");
+
+  container.innerHTML = "";
+  msg.textContent = "";
+  document.getElementById("btnExportarPdfDesignacoes").style.display = "none";
+
+  if (!ponto) {
+    mostrarAlertaGlobal("❌ Por favor, selecione um ponto.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarDesignacoesDoPonto",
+    {
+      ponto
+    },
+    (res) => {
+      esconderSpinner();
+
+      //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao})));
+
+      if (!res || res.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
+        return;
+      }
+
+      msg.textContent = `✅ ${res.length} designações encontradas.`;
+
+      const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
+
+      let html = `
+
+      <div class="titulo-painel-designacao">
+
+          📍 Escalas do Ponto ${numeroDoPonto}
+
+      </div>
+
+      `;
+
+      //let html = "";
+
+      const ordemDias = {
+
+          "SEGUNDA": 1,
+
+          "TERÇA": 2,
+          "TERCA": 2,
+
+          "QUARTA": 3,
+
+          "QUINTA": 4,
+
+          "SEXTA": 5,
+
+          "SÁBADO": 6,
+          "SABADO": 6,
+
+          "DOMINGO 1": 7,
+          "DOMINGO 2": 8,
+          "DOMINGO 3": 9,
+          "DOMINGO 4": 10,
+          "DOMINGO 5": 11
+
+      };
+
+
+      res.sort((a, b) => {
+
+
+          // 1º DIA DA SEMANA
+
+          const diaA =
+              ordemDias[
+                  (a.dia || "").toUpperCase()
+              ] || 99;
+
+
+          const diaB =
+              ordemDias[
+                  (b.dia || "").toUpperCase()
+              ] || 99;
+
+
+          if (diaA !== diaB) {
+
+              return diaA - diaB;
+
+          }
+
+
+          // 2º TURNO
+
+          if (a.turno !== b.turno) {
+
+              return a.turno.localeCompare(b.turno);
+
+          }
+
+
+          // 3º EQUIPAMENTO
+          const eqA = (a.equipamento || "");
+          const eqB = (b.equipamento || "");
+
+          if (eqA !== eqB) {
+              return eqA.localeCompare(eqB);
+          }
+
+          // 4º GRUPO
+
+          if (!a.grupo && !b.grupo) return 0;
+
+          if (!a.grupo) return 1;
+
+          if (!b.grupo) return -1;
+
+
+          if (a.grupo !== b.grupo) {
+
+              return a.grupo.localeCompare(b.grupo);
+
+          }
+
+
+          // 5º POSIÇÃO DENTRO DO GRUPO
+
+          return (
+              Number(a.posicao || 0)
+              -
+              Number(b.posicao || 0)
+          );
+
+
+      });
+
+      let grupoAtual = null;
+      let cabecalhoAtual = "";
+      let diaAtual = null;
+
+      res.forEach(r => {
+
+
+          // ==============================
+          // CABEÇALHO DO DIA
+          // ==============================
+
+          if (r.dia !== diaAtual) {
+
+              diaAtual = r.dia;
+
+              //grupoAtual = null;
+              cabecalhoAtual = "";
+
+              html += `
+
+              <div class="titulo-dia-designacao">
+
+                  📅 ${r.dia}
+
+              </div>
+
+              `;
+
+          }
+
+         //if (r.grupo && r.grupo !== grupoAtual) {
+         const chaveCabecalho =
+            `${r.equipamento}|${r.grupo}`;
+
+        if (chaveCabecalho !== cabecalhoAtual) {
+
+              //grupoAtual = r.grupo;
+              cabecalhoAtual = chaveCabecalho;
+
+              /*const integrantes =
+                  res.filter(x => x.grupo === grupoAtual).length;*/
+              const integrantes =
+                res.filter(x =>
+                    x.grupo === r.grupo &&
+                    x.equipamento === r.equipamento
+                ).length;
+
+              let tituloGrupo = "";
+              let estiloTitulo = "";
+
+              switch (integrantes) {
+
+                  case 1:
+                      tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+                      estiloTitulo = "color:#d32f2f;font-weight:bold;";
+                      break;
+
+                  case 2:
+                      tituloGrupo = "👥 Dupla";
+                      break;
+
+                  case 3:
+                      tituloGrupo = "👥 Trio";
+                      break;
+
+                  case 4:
+                      tituloGrupo = "👥 Grupo";
+                      break;
+
+                  default:
+                      tituloGrupo = `👥 Grupo (${integrantes})`;
+
+              }
+
+              const partes = (r.turno || "").split(" ");
+              const pontoNumero = partes[partes.length - 1] || "";
+              const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+              html += `
+
+              <div class="titulo-grupo-designacao">
+
+                  ${r.equipamento} • Turno ${turnoPalavra}
+
+                  <span>${tituloGrupo}</span>
+
+              </div>
+
+              `;
+          }
+
+          html += `
+
+          <div class="card-designacao">
+
+              <div class="card-designacao-topo">
+
+                  <div>
+
+                      <div class="nome-designacao">
+
+                          ${r.posicao ? r.posicao + ". " : ""}${r.nome}
+
+                      </div>
+
+                      <div class="congregacao-designacao">
+
+                          ${r.congregacao || ""}
+
+                      </div>
+
+                  </div>
+
+                  <div class="freq-designacao">
+
+                      ${r.frequencia}
+
+                  </div>
+
+              </div>
+
+              <div class="card-designacao-infos">
+
+                  <div>
+
+                      <span>📅</span>
+
+                      ${r.dia}
+
+                  </div>
+
+                  <div>
+
+                      <span>🕒</span>
+
+                      ${r.turno}
+
+                  </div>
+
+                  <div>
+
+                      <span>📍</span>
+
+                      Ponto ${numeroDoPonto}
+
+                  </div>
+
+              </div>
+
+              <div class="card-designacao-acoes">
+
+                  <span
+
+                      class="linha-designacao-ponto"
+
+                      data-id="${r.idParticipante}"
+                      data-nome="${r.nome}"
+                      data-telefone="${r.telefone}"
+                      data-turno="${r.turno}"
+                      data-dia="${r.dia}"
+                      data-ponto="${numeroDoPonto}"
+                      data-frequencia="${r.frequencia}"
+                      data-equipamento="${r.equipamento}"
+                      data-grupo="${r.grupo}"
+                      data-posicao="${r.posicao}"
+
+                      title="Editar"
+
+                      style="cursor:pointer">
+
+                      ✏️
+
+                  </span>
+
+                  <img
+
+                      src="img/whatsapp.svg"
+
+                      class="icone-whatsapp-ponto"
+
+                      data-id="${r.idParticipante}"
+                      data-nome="${r.nome}"
+                      data-telefone="${r.telefone}"
+                      data-ponto="${numeroDoPonto}"
+                      data-turno="${r.turno}"
+                      data-dia="${r.dia}"
+                      data-frequencia="${r.frequencia}"
+                      data-equipamento="${r.equipamento}"
+
+                      title="Conversar pelo WhatsApp">
+
+              </div>
+
+          </div>
+
+          `;
+      });
+
       container.innerHTML = html;
 
       container.querySelectorAll(".linha-designacao-ponto")

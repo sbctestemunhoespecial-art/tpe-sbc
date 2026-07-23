@@ -80,8 +80,8 @@ label {
 }
 
 input[type="checkbox"] {
-  width: 0.5em;
-  height: 0.5em;
+  width: 1em;
+  height: 1em;
   transform: scale(1.4);
   margin: 0.5em;
 }
@@ -3312,3 +3312,174 @@ td {
   color: #991b1b;
 }
 
+/* Novo estilo para o novo card de eventos */
+.card-evento{
+    background:#fff;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.acoes-evento{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:15px;
+    padding-top:15px;
+    border-top:1px solid #eee;
+}
+
+.acoes-evento button{
+    min-width:140px;
+}
+
+/* Estilo para os cards de participantes sem disponibilidade cadastrada*/
+.evento-detalhes{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:15px;
+}
+
+.evento-detalhes > div{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+.evento-detalhes .titulo{
+    font-weight:600;
+    color:#555;
+}
+/*
+.rodape-evento{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:18px;
+}
+*/
+.rodape-evento{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    margin-top:15px;
+    padding-top:12px;
+    border-top:1px solid #eee;
+}
+
+.rodape-evento a{
+    text-decoration:none;
+}
+
+.rodape-evento img{
+    width:30px;
+    height:30px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.rodape-evento img:hover{
+    transform:scale(1.12);
+}
+
+/* Novo estilo para os cards de disponibilidade */
+.cards-disponibilidade{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:15px;
+}
+
+.card-disponibilidade{
+    background:#fff;
+    border:1px solid #dcdcdc;
+    border-radius:12px;
+    padding:12px 15px;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.card-disponibilidade h4{
+    margin:0 0 12px 0;
+    font-size:16px;
+    color:#1f2937;
+    border-bottom:1px solid #ececec;
+    padding-bottom:8px;
+}
+
+.turnos-card{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.turno-item{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:8px 4px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:500;
+    white-space:nowrap;
+}
+
+.turno-item input{
+    margin:0;
+}
+
+@media (max-width:700px){
+
+    .turnos-card{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+
+/* Card em modo de edição */
+.card-dia.edicao {
+  background: #FACC15;
+  border-radius: var(--raio-borda);
+  box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.12);
+}
+
+.card-dia.edicao .turno-card {
+  background: transparent;
+}
+
+.card-dia.edicao .turno-card label {
+  background: #FACC15;
+  border-radius: var(--raio-borda);
+}
+
+.card-dia.edicao input[type="checkbox"] {
+  accent-color: #2563eb;
+}
+
+.selectEdicao {
+  background: #FACC15;
+}
+
+.card-disponibilidade-edicao .turno-item {
+  background: #FACC15;
+  border-radius: var(--raio-borda);
+}
+
+.card-disponibilidade-edicao .turno-item:hover {
+  background: #f6c600;
+}
+
+.card-disponibilidade-edicao input[type="checkbox"] {
+  accent-color: #2563eb;
+}
+
+.card-disponibilidade-edicao select,
+.card-disponibilidade-edicao .selectEdicao {
+  background: #FACC15;
+}

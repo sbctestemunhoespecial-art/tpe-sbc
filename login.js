@@ -140,7 +140,9 @@ const telasInicializadas = {};
 const telasSempreAtualizar = new Set([
   // telas que devem sempre atualizar quando abertas, ou seja, a cada abertura nova, atualiza
   "painelVagas",
-  "telaVagasDisponiveis"
+  "telaVagasDisponiveis",
+  "disponibilidadeContainerUsuarioLogado2h",
+  "disponibilidadeContainerUsuarioLogado4h"
 ]);
 
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
@@ -228,17 +230,15 @@ const inicializadores = {
 
     telaVagasDisponiveis: carregarVagasDisponiveis,
 
-    //vagas: carregarTodasVagasAbertas,
+    disponibilidadeContainer2h: gerarCardsDisponibilidade2h,
+
+    disponibilidadeContainer: gerarCardsDisponibilidade,
 
     relatorios: carregarAbas,
 
     estatisticas: carregarResumo,
 
     congregacoes: carregarOpcoesCongregacoes,
-
-    disponibilidadeContainerUsuarioLogado2h: abrirCalendario2h,
-
-    disponibilidadeContainerUsuarioLogado4h: abrirCalendario4h,
 
     disponibilidadeBuscada: inicializarBuscaUsuario,
 
@@ -247,6 +247,22 @@ const inicializadores = {
     painelIrregulares: inicializarBuscaUsuarioIr,
 
     disponibilidadeBuscada2h: inicializarBuscaUsuario2h,
+
+    disponibilidadeContainerUsuarioLogado2h() {
+
+      gerarCardsDisponibilidadeUsuarioLogado2h();
+
+      abrirCalendario2h();
+
+    },
+
+    disponibilidadeContainerUsuarioLogado4h() {
+
+      gerarCardsDisponibilidadeUsuarioLogado4h();
+
+      abrirCalendario4h();
+
+    },
 
     vagas() {
 
@@ -4004,7 +4020,7 @@ function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipame
 
 }
 
-function preencherTabelaSemDisponibilidade() {
+/*function preencherTabelaSemDisponibilidade() {
 
   const tbody = document.getElementById("tbodySemDisponibilidade");
 
@@ -4018,17 +4034,6 @@ function preencherTabelaSemDisponibilidade() {
 
     const tr = document.createElement("tr");
 
-    /*tr.innerHTML = `
-      <!--<td>${p.id}</td>-->
-      <td>${p.nome}</td>
-      <!--<td>${p.email}</td>-->
-      <td>
-        <a href="${p.whatsapp}" target="_blank"
-           style="color:#25D366;font-weight:bold;text-decoration:none;">
-          📱 ${p.telefone}
-        </a>
-      </td>
-    `;*/
     tr.innerHTML = `
       <td>${p.nome}</td>
 
@@ -4050,8 +4055,149 @@ function preencherTabelaSemDisponibilidade() {
 
   });
 
-}
+}*/
+/*function preencherTabelaSemDisponibilidade() {
 
+  const lista =
+    document.getElementById("listaSemDisponibilidade");
+
+  lista.innerHTML = "";
+
+  document.getElementById("totalSemDisponibilidade").textContent =
+    "Participantes sem disponibilidade: " +
+    participantesSemDisponibilidade.length;
+
+  if (!participantesSemDisponibilidade.length) {
+
+    lista.innerHTML =
+      "<div class='card-evento'>🎉 Todos os participantes possuem disponibilidade cadastrada.</div>";
+
+    return;
+
+  }
+
+  participantesSemDisponibilidade.forEach(p => {
+
+    const card = document.createElement("div");
+
+    card.className = "card-evento";
+
+    card.innerHTML = `
+
+      <div class="titulo-evento">
+        👤 Participante sem disponibilidade
+      </div>
+
+      <div class="evento-detalhes">
+
+        <div>
+          <span class="titulo">👤 Nome</span>
+          <span>${p.nome}</span>
+        </div>
+
+      </div>
+
+      <div class="rodape-evento">
+
+        <button
+          class="botao whatsapp"
+          onclick="window.open('${p.whatsapp}','_blank')">
+
+          <img
+            src="img/whatsapp.svg"
+            class="icone-whatsapp-semdesignacao"
+            alt="WhatsApp">
+
+          WhatsApp
+
+        </button>
+
+      </div>
+
+    `;
+
+    lista.appendChild(card);
+
+  });
+
+}*/
+function preencherTabelaSemDisponibilidade() {
+
+  const lista =
+    document.getElementById("listaSemDisponibilidade");
+
+  lista.innerHTML = "";
+
+  document.getElementById("totalSemDisponibilidade").textContent =
+    "Participantes sem disponibilidade: " +
+    participantesSemDisponibilidade.length;
+
+  if (!participantesSemDisponibilidade.length) {
+
+    lista.innerHTML =
+      "<div class='card-evento'>🎉 Todos os participantes possuem disponibilidade cadastrada.</div>";
+
+    return;
+
+  }
+
+  participantesSemDisponibilidade.forEach(p => {
+
+    const card = document.createElement("div");
+    card.className = "card-evento";
+
+    card.innerHTML = `
+
+      <div class="titulo-evento">
+        👤 Participante sem disponibilidade
+      </div>
+
+      <div class="evento-detalhes">
+
+        <div>
+          <span class="titulo">👤 Nome</span>
+          <span>${p.nome || "-"}</span>
+        </div>
+
+        <div>
+          <span class="titulo">🏛 Congregação</span>
+          <span>${p.congregacao || "-"}</span>
+        </div>
+
+        <div>
+          <span class="titulo">📱 Telefone</span>
+          <span>${p.telefone || "-"}</span>
+        </div>
+
+        <div>
+          <span class="titulo">✉️ E-mail</span>
+          <span>${p.email || "-"}</span>
+        </div>
+
+      </div>
+
+      <div class="rodape-evento">
+
+        <a href="${p.whatsapp}"
+           target="_blank"
+           title="Conversar pelo WhatsApp">
+
+          <img
+            src="img/whatsapp.svg"
+            class="icone-whatsapp-semdesignacao"
+            alt="WhatsApp">
+
+        </a>
+
+      </div>
+
+    `;
+
+    lista.appendChild(card);
+
+  });
+
+}
 function salvarDisponibilidadeIdUsuarioLogado2h() {
 
   const jaTenhoDesignacao =
@@ -4198,6 +4344,97 @@ function pesquisarDisponibilidadeUsuarioLogado2h() {
   );
 
 }
+function gerarCardsDisponibilidadeUsuarioLogado2h() {
+
+  const container =
+    document.getElementById("cardsDisponibilidadeUsuarioLogado2h");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
+
+  const turnos = [
+
+    {
+      texto: "09-11h",
+      valor: "Manhã (9-11h)"
+    },
+
+    {
+      texto: "11-13h",
+      valor: "Manhã (11-13h)"
+    },
+
+    {
+      texto: "13-15h",
+      valor: "Tarde (13-15h)"
+    },
+
+    {
+      texto: "15-17h",
+      valor: "Tarde (15-17h)"
+    }
+
+  ];
+
+  dias.forEach(dia => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-disponibilidade";
+
+    let html = `
+
+      <h4>📅 ${dia}</h4>
+
+      <div class="turnos-card">
+
+    `;
+
+    turnos.forEach(turno => {
+
+      html += `
+
+        <label class="turno-item">
+
+          <input
+            type="checkbox"
+            class="dia-turno-usuario"
+            data-dia-u="${dia}"
+            data-turno-u="${turno.valor}"
+            disabled>
+
+          <span>${turno.texto}</span>
+
+        </label>
+
+      `;
+
+    });
+
+    html += `
+      </div>
+    `;
+
+    card.innerHTML = html;
+
+    container.appendChild(card);
+
+  });
+
+}
 
 function abrirCalendario2h() {
   abrirModalDepoisDaPesquisa = true;
@@ -4225,7 +4462,7 @@ function alternarModoEdicaoUsuarioLogado2h() {
   }
 }
 
-function entrarModoEdicaoUsuarioLogado2h() {
+/*function entrarModoEdicaoUsuarioLogado2h() {
 
   modoEdicaoAtivoUsuarioLogado2h = true;
 
@@ -4263,9 +4500,47 @@ function entrarModoEdicaoUsuarioLogado2h() {
 
   document.getElementById("btnEditarDisponibilidadeUsuarioLogado2h")
     .textContent = "❌ Cancelar";
+}*/
+function entrarModoEdicaoUsuarioLogado2h() {
+
+  modoEdicaoAtivoUsuarioLogado2h = true;
+
+  const jtd =
+    document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
+
+  const ss =
+    document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
+
+  if (jtd) jtd.checked = false;
+  if (ss) ss.checked = false;
+
+  document
+  .querySelectorAll("#cardsDisponibilidadeUsuarioLogado2h .card-disponibilidade")
+  .forEach(card => card.classList.add("card-disponibilidade-edicao"));
+
+  const botaoSalvar =
+    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado2h");
+
+  botaoSalvar.classList.add("btn-edicao");
+
+  const container =
+    document.getElementById("disponibilidadeContainerUsuarioLogado2h");
+
+  container
+    .querySelectorAll(".dia-turno-usuario")
+    .forEach(cb => cb.disabled = false);
+
+  const frequencia =
+    document.getElementById("frequenciaDisponibilidadeUsuarioLogado2h");
+
+  frequencia.disabled = false;
+  frequencia.classList.add("selectEdicao");
+
+  document.getElementById("btnEditarDisponibilidadeUsuarioLogado2h")
+    .textContent = "❌ Cancelar";
 }
 
-function cancelarModoEdicaoUsuarioLogado2h() {
+/*function cancelarModoEdicaoUsuarioLogado2h() {
 
   modoEdicaoAtivoUsuarioLogado2h = false;
 
@@ -4273,6 +4548,37 @@ function cancelarModoEdicaoUsuarioLogado2h() {
     document.getElementById("tabelaDisponibilidadeUsuarioLogado2h");
 
   tabela.classList.remove("tabela-sistemaEdicao");
+
+  const botaoSalvar =
+    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado2h");
+
+  botaoSalvar.classList.remove("btn-edicao");
+
+  const container =
+    document.getElementById("disponibilidadeContainerUsuarioLogado2h");
+
+  container
+    .querySelectorAll(".dia-turno-usuario")
+    .forEach(cb => cb.disabled = true);
+
+  const frequencia =
+    document.getElementById("frequenciaDisponibilidadeUsuarioLogado2h");
+
+  frequencia.disabled = true;
+  frequencia.classList.remove("selectEdicao");
+
+  document.getElementById("btnEditarDisponibilidadeUsuarioLogado2h")
+    .textContent = "✏️ Editar Disponibilidade";
+
+  pesquisarDisponibilidadeUsuarioLogado2h();
+}*/
+function cancelarModoEdicaoUsuarioLogado2h() {
+
+  modoEdicaoAtivoUsuarioLogado2h = false;
+
+  document
+  .querySelectorAll("#cardsDisponibilidadeUsuarioLogado2h .card-disponibilidade")
+  .forEach(card => card.classList.remove("card-disponibilidade-edicao"));
 
   const botaoSalvar =
     document.getElementById("btnSalvaDisponibilidadeUsuarioLogado2h");
@@ -4547,6 +4853,212 @@ function pesquisarDisponibilidadeUsuarioLogado4h() {
   );
 
 }
+/*function gerarCardsDisponibilidadeUsuarioLogado4h() {
+
+  const container =
+    document.getElementById("cardsDisponibilidadeUsuarioLogado4h");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
+
+  const turnos = [
+    { nome: "Matinal", horario: "06-09h" },
+    { nome: "Manhã",   horario: "09-13h" },
+    { nome: "Tarde",   horario: "13-17h" },
+    { nome: "Noite",   horario: "17-20h" }
+  ];
+
+  dias.forEach(dia => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-disponibilidade";
+
+    card.innerHTML = `
+
+      <div class="titulo-disponibilidade">
+        📅 ${dia}
+      </div>
+
+      <div class="turnos-card">
+
+        ${turnos.map(turno => `
+
+          <label class="turno-item">
+
+            <input
+              type="checkbox"
+              class="dia-turno-id"
+              data-dia-id="${dia}"
+              data-turno-id="${turno.nome}"
+              disabled>
+
+            <span>${turno.nome}</span>
+
+            <small>${turno.horario}</small>
+
+          </label>
+
+        `).join("")}
+
+      </div>
+
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}*/
+/*function gerarCardsDisponibilidadeUsuarioLogado4h() {
+
+  const container =
+    document.getElementById("cardsDisponibilidadeUsuarioLogado4h");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
+
+  // valor = exatamente o que existia na tabela
+  // texto = somente o que será mostrado ao usuário
+  const turnos = [
+    { valor: "Matinal", texto: "06-09h" },
+    { valor: "Manhã",   texto: "09-13h" },
+    { valor: "Tarde",   texto: "13-17h" },
+    { valor: "Noite",   texto: "17-20h" }
+  ];
+
+  dias.forEach(dia => {
+
+    const card = document.createElement("div");
+
+    card.className = "card-disponibilidade";
+
+    card.innerHTML = `
+
+      <div class="titulo-disponibilidade">
+        📅 ${dia}
+      </div>
+
+      <div class="turnos-card">
+
+        ${turnos.map(turno => `
+
+          <label class="turno-item">
+
+            <input
+              type="checkbox"
+              class="dia-turno-id"
+              data-dia-id="${dia}"
+              data-turno-id="${turno.valor}"
+              disabled>
+
+            <small>${turno.texto}</small>
+
+          </label>
+
+        `).join("")}
+
+      </div>
+
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}*/
+function gerarCardsDisponibilidadeUsuarioLogado4h() {
+
+  const container =
+    document.getElementById("cardsDisponibilidadeUsuarioLogado4h");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const diasID = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
+
+  const turnosID = [
+    "Matinal",
+    "Manhã",
+    "Tarde",
+    "Noite"
+  ];
+
+  const horarios = {
+    "Matinal": "06-09h",
+    "Manhã": "09-13h",
+    "Tarde": "13-17h",
+    "Noite": "17-20h"
+  };
+
+  diasID.forEach(dia => {
+
+    const card = document.createElement("div");
+    card.className = "card-disponibilidade";
+
+    card.innerHTML = `
+      <div class="titulo-disponibilidade">
+        📅 ${dia}
+      </div>
+
+      <div class="turnos-card">
+
+        ${turnosID.map(turno => `
+          <label class="turno-item">
+
+            <input
+              type="checkbox"
+              class="dia-turno-id"
+              data-dia-id="${dia}"
+              data-turno-id="${turno}"
+              disabled>
+
+            <span>${horarios[turno]}</span>
+
+          </label>
+        `).join("")}
+
+      </div>
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}
 
 function abrirCalendario4h() {
   abrirModalDepoisDaPesquisa = true;
@@ -4580,7 +5092,7 @@ function alternarModoEdicaoUsuarioLogado4h() {
   }
 }
 
-function entrarModoEdicaoUsuarioLogado4h() {
+/*function entrarModoEdicaoUsuarioLogado4h() {
 
   console.trace("ENTROU EM entrarModoEdicaoUsuarioLogado4h");
 
@@ -4620,9 +5132,49 @@ function entrarModoEdicaoUsuarioLogado4h() {
 
   document.getElementById("btnEditarDisponibilidadeUsuarioLogado4h")
     .textContent = "❌ Cancelar";
+}*/
+function entrarModoEdicaoUsuarioLogado4h() {
+
+  console.trace("ENTROU EM entrarModoEdicaoUsuarioLogado4h");
+
+  modoEdicaoAtivoUsuarioLogado4h = true;
+
+  const jtd =
+    document.getElementById("jaTenhoDesignacaoIDnaTelaInicialMinhaDisponibilidade");
+
+  const ss =
+    document.getElementById("somenteSubstituicaoIDnaTelaInicialMinhaDisponibilidade");
+
+  if (jtd) jtd.checked = false;
+  if (ss) ss.checked = false;
+
+  document
+  .querySelectorAll("#cardsDisponibilidadeUsuarioLogado4h .card-disponibilidade")
+  .forEach(card => card.classList.add("card-disponibilidade-edicao"));
+
+  const botaoSalvar = 
+    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado4h");
+
+  botaoSalvar.classList.add("btn-edicao");
+
+  const container =
+    document.getElementById("disponibilidadeContainerUsuarioLogado4h");
+
+  container
+    .querySelectorAll(".dia-turno-id")
+    .forEach(cb => cb.disabled = false); //document.querySelectorAll(".dia-turno-id").forEach(cb => cb.disabled = false);
+
+  const frequencia =
+    document.getElementById("frequenciaDisponibilidadeUsuarioLogado4h");
+
+  frequencia.disabled = false;
+  frequencia.classList.add("selectEdicao");
+
+  document.getElementById("btnEditarDisponibilidadeUsuarioLogado4h")
+    .textContent = "❌ Cancelar";
 }
 
-function cancelarModoEdicaoUsuarioLogado4h() {
+/*function cancelarModoEdicaoUsuarioLogado4h() {
 
   modoEdicaoAtivoUsuarioLogado4h = false;
 
@@ -4630,6 +5182,32 @@ function cancelarModoEdicaoUsuarioLogado4h() {
     document.getElementById("tabelaDisponibilidadeUsuarioLogado4h");
 
   tabela.classList.remove("tabela-sistemaEdicao");
+
+  const botaoSalvar = 
+    document.getElementById("btnSalvaDisponibilidadeUsuarioLogado4h");
+
+  botaoSalvar.classList.remove("btn-edicao");
+
+  document.querySelectorAll(".dia-turno-id").forEach(cb => cb.disabled = true);
+
+  const frequencia =
+    document.getElementById("frequenciaDisponibilidadeUsuarioLogado4h");
+
+  frequencia.disabled = true;
+  frequencia.classList.remove("selectEdicao");
+
+  document.getElementById("btnEditarDisponibilidadeUsuarioLogado4h")
+    .textContent = "✏️ Editar Disponibilidade";
+
+  pesquisarDisponibilidadeUsuarioLogado4h();
+}*/
+function cancelarModoEdicaoUsuarioLogado4h() {
+
+  modoEdicaoAtivoUsuarioLogado4h = false;
+
+  document
+  .querySelectorAll("#cardsDisponibilidadeUsuarioLogado4h .card-disponibilidade")
+  .forEach(card => card.classList.remove("card-disponibilidade-edicao"));
 
   const botaoSalvar = 
     document.getElementById("btnSalvaDisponibilidadeUsuarioLogado4h");
@@ -4901,12 +5479,105 @@ function pesquisarDisponibilidade() {
   );
 
 }
+function gerarCardsDisponibilidade() {
+
+  const container =
+    document.getElementById("cardsDisponibilidade");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
+
+  const turnos = [
+
+    {
+      texto: "06-09h",
+      valor: "Matinal"
+    },
+
+    {
+      texto: "09-13h",
+      valor: "Manhã"
+    },
+
+    {
+      texto: "13-17h",
+      valor: "Tarde"
+    },
+
+    {
+      texto: "17-20h",
+      valor: "Noite"
+    }
+
+  ];
+
+  dias.forEach(dia => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-disponibilidade";
+
+    let html = `
+
+      <h4>📅 ${dia}</h4>
+
+      <div class="turnos-card">
+
+    `;
+
+    turnos.forEach(turno => {
+
+      html += `
+
+        <label class="turno-item">
+
+          <input
+            type="checkbox"
+            class="dia-turno"
+            data-dia="${dia}"
+            data-turno="${turno.valor}"
+            disabled>
+
+          <span>${turno.texto}</span>
+
+        </label>
+
+      `;
+
+    });
+
+    html += `
+      </div>
+    `;
+
+    card.innerHTML = html;
+
+    container.appendChild(card);
+
+  });
+
+}
 
 function norm(str) {
   return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
 
 function preencherDisp(dados) {
+
+  //gerarCardsDisponibilidade();
 
   renderizarDisponibilidadeBase(dados, {
     chkSubstituicao: "somenteSubstituicao",
@@ -6879,46 +7550,194 @@ function pesquisarDisponibilidade2h() {
   );
 
 }
+/*function criarCardsDisponibilidade2h() {
 
-function alternarModoEdicaoNovoPonto20() {
+  const container =
+    document.getElementById("cardsDisponibilidade2h");
 
-  modoEdicaoAtivoNovoPonto20 = !modoEdicaoAtivoNovoPonto20;
+  container.innerHTML = "";
 
-  const container = document.getElementById("disponibilidadeContainer2h");
-
-  const checkboxes = container.querySelectorAll('.dia-turno-novoPonto20');
-  checkboxes.forEach(cb => cb.disabled = !modoEdicaoAtivoNovoPonto20);
-
-  const selects = [
-    document.getElementById('frequenciaDisponibilidade2h')
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
   ];
 
-  selects.forEach(select => {
-    if (select) select.disabled = !modoEdicaoAtivoNovoPonto20;
+  const turnos = [
+    "Manhã (9-11h)",
+    "Manhã (11-13h)",
+    "Tarde (13-15h)",
+    "Tarde (15-17h)"
+  ];
+
+  dias.forEach(dia => {
+
+    const card = document.createElement("div");
+    card.className = "card-disponibilidade-dia";
+
+    card.innerHTML = `<h4>📅 ${dia}</h4>`;
+
+    turnos.forEach(turno => {
+
+      const linha = document.createElement("label");
+      linha.className = "linha-turno";
+
+      linha.innerHTML = `
+        <input
+          type="checkbox"
+          class="dia-turno-novoPonto20"
+          data-dia-n="${dia}"
+          data-turno-n="${turno}"
+          disabled>
+
+        <span>${turno}</span>
+      `;
+
+      card.appendChild(linha);
+
+    });
+
+    container.appendChild(card);
+
   });
 
-  const botao = document.getElementById('btnEditarDisponibilidadeNovoPonto20');
+}*/
+function gerarCardsDisponibilidade2h() {
 
-  botao.textContent = modoEdicaoAtivoNovoPonto20
-    ? '❌ Cancelar'
-    : '✏️ Editar Disponibilidade';
+  const container =
+    document.getElementById("cardsDisponibilidade2h");
 
-  if (!modoEdicaoAtivoNovoPonto20) {
+  if (!container) return;
 
-    pesquisarDisponibilidade2h();
+  container.innerHTML = "";
 
-  }
-  }
+  const dias = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ];
 
-  function preencherDispNovoPonto20(dados) {
+  const turnos = [
 
-  renderizarDisponibilidadeBase(dados, {
-    chkSubstituicao: "somenteSubstituicao2h",
-    chkDesignado: "jaTenhoDesignacao2h",
-    frequencia: "frequenciaDisponibilidade2h",
-    checkboxes: ".dia-turno-novoPonto20"
+    {
+      texto: "9-11h",
+      valor: "Manhã (9-11h)"
+    },
+
+    {
+      texto: "11-13h",
+      valor: "Manhã (11-13h)"
+    },
+
+    {
+      texto: "13-15h",
+      valor: "Tarde (13-15h)"
+    },
+
+    {
+      texto: "15-17h",
+      valor: "Tarde (15-17h)"
+    }
+
+  ];
+
+  dias.forEach(dia => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-disponibilidade";
+
+    let html = `
+
+      <h4>📅 ${dia}</h4>
+
+      <div class="turnos-card">
+
+    `;
+
+    turnos.forEach(turno => {
+
+      html += `
+
+        <label class="turno-item">
+
+          <input
+            type="checkbox"
+            class="dia-turno-novoPonto20"
+            data-dia-n="${dia}"
+            data-turno-n="${turno.valor}"
+            disabled>
+
+          <span>${turno.texto}</span>
+
+        </label>
+
+      `;
+
+    });
+
+    html += `
+      </div>
+    `;
+
+    card.innerHTML = html;
+
+    container.appendChild(card);
+
   });
-  }
+
+}
+function alternarModoEdicaoNovoPonto20() {
+
+modoEdicaoAtivoNovoPonto20 = !modoEdicaoAtivoNovoPonto20;
+
+const container = document.getElementById("disponibilidadeContainer2h");
+
+const checkboxes = container.querySelectorAll('.dia-turno-novoPonto20');
+checkboxes.forEach(cb => cb.disabled = !modoEdicaoAtivoNovoPonto20);
+
+const selects = [
+  document.getElementById('frequenciaDisponibilidade2h')
+];
+
+selects.forEach(select => {
+  if (select) select.disabled = !modoEdicaoAtivoNovoPonto20;
+});
+
+const botao = document.getElementById('btnEditarDisponibilidadeNovoPonto20');
+
+botao.textContent = modoEdicaoAtivoNovoPonto20
+  ? '❌ Cancelar'
+  : '✏️ Editar Disponibilidade';
+
+if (!modoEdicaoAtivoNovoPonto20) {
+
+  pesquisarDisponibilidade2h();
+
+}
+}
+
+function preencherDispNovoPonto20(dados) {
+
+//gerarCardsDisponibilidade2h();
+
+renderizarDisponibilidadeBase(dados, {
+  chkSubstituicao: "somenteSubstituicao2h",
+  chkDesignado: "jaTenhoDesignacao2h",
+  frequencia: "frequenciaDisponibilidade2h",
+  checkboxes: ".dia-turno-novoPonto20"
+});
+}
 
 
 let map;
@@ -12233,121 +13052,255 @@ function pegarContatosDoUsuarioSb(nome) {
     adicionarTurno();
   });
 
-  // LISTAR EVENTOS
-  document.getElementById('btnListarEventos').addEventListener('click', () => {
+/*// LISTAR EVENTOS
+document.getElementById('btnListarEventos').addEventListener('click', () => {
 
-  mostrarSpinner();
+mostrarSpinner();
 
-  const dataHistorico =
-    document.getElementById('dataHistoricoDeEventos').value;
+const dataHistorico =
+  document.getElementById('dataHistoricoDeEventos').value;
 
-  apiJSONP(
-    "listarEventosAdm",
-    { dataHistorico },
-    (eventos) => {
+apiJSONP(
+  "listarEventosAdm",
+  { dataHistorico },
+  (eventos) => {
 
-      const lista = document.getElementById("listaEventos");
-      lista.innerHTML = "";
+    const lista = document.getElementById("listaEventos");
+    lista.innerHTML = "";
 
-      eventos.forEach(ev => {
+    eventos.forEach(ev => {
 
-        const partes = ev.data.split("/");
-        const dataCurta =
-          `${partes[0]}/${partes[1]}/${partes[2].slice(-2)}`;
+      const partes = ev.data.split("/");
+      const dataCurta =
+        `${partes[0]}/${partes[1]}/${partes[2].slice(-2)}`;
 
-        const card = document.createElement("div");
-        card.className = "cardEvento";
-        card.dataset.eventoId = ev.id;
+      const card = document.createElement("div");
+      card.className = "cardEvento";
+      card.dataset.eventoId = ev.id;
 
-        card.innerHTML = `
-          <div class="cabecalhoEvento">
-            <div>Nome do evento</div>
-            <div>Data de início</div>
-            <div>Editar evento</div>
+      card.innerHTML = `
+        <div class="cabecalhoEvento">
+          <div>Nome do evento</div>
+          <div>Data de início</div>
+          <div>Editar evento</div>
+        </div>
+
+        <div class="dadosEvento">
+          <div><b>${ev.nome}</b></div>
+          <div>${dataCurta}</div>
+          <div>
+            <button class="btnMini editarBtn">✏️</button>
           </div>
+        </div>
 
-          <div class="dadosEvento">
-            <div><b>${ev.nome}</b></div>
-            <div>${dataCurta}</div>
-            <div>
-              <button class="btnMini editarBtn">✏️</button>
+        <div class="cabecalhoMetricas">
+          <div>Vagas preenchidas</div>
+          <div>Vagas em aberto</div>
+          <div>Mostruários por turno</div>
+          <div>Participantes</div>
+          <div>Enviar vagas</div>
+        </div>
+
+        <div class="dadosMetricas">
+          <div class="designacoes">⏳</div>
+          <div class="vagas">⏳</div>
+          <div class="carrinhos">⏳</div>
+          <div class="pessoas">⏳</div>
+          <div>
+            <button class="btnMini copiarBtn">➤</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector(".editarBtn").onclick = () => {
+        mostrarSpinner();
+        abrirCadastroEvento();
+        editarEvento(ev.id);
+      };
+
+      card.querySelector(".copiarBtn").onclick =
+        () => copiarMensagemEvento(ev.id);
+
+      lista.appendChild(card);
+    });
+
+    const idsEventos = eventos.map(ev => ev.id);
+
+    apiJSONP(
+      "obterMetricasEventosAdm",
+      { idsEventos: JSON.stringify(idsEventos) },
+      (metricas) => {
+
+        Object.keys(metricas).forEach(id => {
+
+          const card = document.querySelector(
+            `[data-evento-id="${id}"]`
+          );
+
+          if (!card) return;
+
+          card.querySelector(".designacoes").textContent =
+            metricas[id].designacoesRealizadas;
+
+          card.querySelector(".vagas").textContent =
+            metricas[id].vagasEmAberto;
+
+          card.querySelector(".carrinhos").textContent =
+            metricas[id].carrinhosUnicos;
+
+          card.querySelector(".pessoas").textContent =
+            metricas[id].pessoasUnicas;
+
+        });
+
+        esconderSpinner();
+      },
+      (err) => {
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ Erro ao carregar métricas: " + (err?.mensagem || err.message));
+      }
+    );
+
+  },
+  (err) => {
+    esconderSpinner();
+    mostrarAlertaGlobal("❌ Erro ao listar eventos: " + (err?.mensagem || err.message));
+  }
+);
+});*/
+
+// LISTAR EVENTOS
+document.getElementById('btnListarEventos').addEventListener('click', () => {
+
+mostrarSpinner();
+
+const dataHistorico =
+  document.getElementById('dataHistoricoDeEventos').value;
+
+apiJSONP(
+  "listarEventosAdm",
+  { dataHistorico },
+  (eventos) => {
+
+    const lista = document.getElementById("listaEventos");
+    lista.innerHTML = "";
+
+    eventos.forEach(ev => {
+
+      const partes = ev.data.split("/");
+      const dataCurta =
+        `${partes[0]}/${partes[1]}/${partes[2].slice(-2)}`;
+
+      const card = document.createElement("div");
+      card.className = "cardEvento";
+      card.dataset.eventoId = ev.id;
+
+      card.innerHTML = `
+        <div class="card-evento">
+
+            <div class="titulo-vaga">
+                📅 ${ev.nome}
             </div>
-          </div>
 
-          <div class="cabecalhoMetricas">
-            <div>Vagas preenchidas</div>
-            <div>Vagas em aberto</div>
-            <div>Mostruários por turno</div>
-            <div>Participantes</div>
-            <div>Enviar vagas</div>
-          </div>
+            <div class="vaga-detalhes">
 
-          <div class="dadosMetricas">
-            <div class="designacoes">⏳</div>
-            <div class="vagas">⏳</div>
-            <div class="carrinhos">⏳</div>
-            <div class="pessoas">⏳</div>
-            <div>
-              <button class="btnMini copiarBtn">➤</button>
+                <div>
+                    <span class="titulo">📅 Data</span>
+                    <span>${dataCurta}</span>
+                </div>
+
+                <div>
+                    <span class="titulo">👥 Participantes</span>
+                    <span class="pessoas">⏳</span>
+                </div>
+
+                <div>
+                    <span class="titulo">✅ Vagas preenchidas</span>
+                    <span class="designacoes">⏳</span>
+                </div>
+
+                <div>
+                    <span class="titulo">🚨 Vagas em aberto</span>
+                    <span class="vagas">⏳</span>
+                </div>
+
+                <div>
+                    <span class="titulo">🛒 Mostruários por turno</span>
+                    <span class="carrinhos">⏳</span>
+                </div>
+
             </div>
-          </div>
-        `;
 
-        card.querySelector(".editarBtn").onclick = () => {
-          mostrarSpinner();
-          abrirCadastroEvento();
-          editarEvento(ev.id);
-        };
+            <div class="acoes-evento">
 
-        card.querySelector(".copiarBtn").onclick =
-          () => copiarMensagemEvento(ev.id);
+                <button class="btnMini editarBtn">
+                    ✏️ Editar
+                </button>
 
-        lista.appendChild(card);
-      });
+                <button class="btnMini copiarBtn">
+                    ➤ Enviar vagas
+                </button>
 
-      const idsEventos = eventos.map(ev => ev.id);
+            </div>
 
-      apiJSONP(
-        "obterMetricasEventosAdm",
-        { idsEventos: JSON.stringify(idsEventos) },
-        (metricas) => {
+        </div>
+      `;
 
-          Object.keys(metricas).forEach(id => {
+      card.querySelector(".editarBtn").onclick = () => {
+        mostrarSpinner();
+        abrirCadastroEvento();
+        editarEvento(ev.id);
+      };
 
-            const card = document.querySelector(
-              `[data-evento-id="${id}"]`
-            );
+      card.querySelector(".copiarBtn").onclick =
+        () => copiarMensagemEvento(ev.id);
 
-            if (!card) return;
+      lista.appendChild(card);
+    });
 
-            card.querySelector(".designacoes").textContent =
-              metricas[id].designacoesRealizadas;
+    const idsEventos = eventos.map(ev => ev.id);
 
-            card.querySelector(".vagas").textContent =
-              metricas[id].vagasEmAberto;
+    apiJSONP(
+      "obterMetricasEventosAdm",
+      { idsEventos: JSON.stringify(idsEventos) },
+      (metricas) => {
 
-            card.querySelector(".carrinhos").textContent =
-              metricas[id].carrinhosUnicos;
+        Object.keys(metricas).forEach(id => {
 
-            card.querySelector(".pessoas").textContent =
-              metricas[id].pessoasUnicas;
+          const card = document.querySelector(
+            `[data-evento-id="${id}"]`
+          );
 
-          });
+          if (!card) return;
 
-          esconderSpinner();
-        },
-        (err) => {
-          esconderSpinner();
-          mostrarAlertaGlobal("❌ Erro ao carregar métricas: " + (err?.mensagem || err.message));
-        }
-      );
+          card.querySelector(".designacoes").textContent =
+            metricas[id].designacoesRealizadas;
 
-    },
-    (err) => {
-      esconderSpinner();
-      mostrarAlertaGlobal("❌ Erro ao listar eventos: " + (err?.mensagem || err.message));
-    }
-  );
+          card.querySelector(".vagas").textContent =
+            metricas[id].vagasEmAberto;
+
+          card.querySelector(".carrinhos").textContent =
+            metricas[id].carrinhosUnicos;
+
+          card.querySelector(".pessoas").textContent =
+            metricas[id].pessoasUnicas;
+
+        });
+
+        esconderSpinner();
+      },
+      (err) => {
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ Erro ao carregar métricas: " + (err?.mensagem || err.message));
+      }
+    );
+
+  },
+  (err) => {
+    esconderSpinner();
+    mostrarAlertaGlobal("❌ Erro ao listar eventos: " + (err?.mensagem || err.message));
+  }
+);
 });
 
 function copiarMensagemEvento(eventoId) {
@@ -13632,7 +14585,7 @@ function mostrarConfirmacaoRegistrarInscritos() {
 function carregarEventosInscritos() {
 
   apiJSONP(
-    "listarEventosAdm",
+    "listarTodosOsEventosAdm",
     {},
     function(eventos) {
 
@@ -20314,26 +21267,6 @@ function abrirTela(idTela, card = null) {
     document.querySelectorAll('.card-menu')
         .forEach(c => c.classList.remove('ativo'));
 
-        /*switch (telaAtual) {
-
-          case "telaUsuarioLogado":
-            atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado)
-            break;
-
-          case "disponibilidadeContainerUsuarioLogado2h":
-            abrirCalendario2h();
-            break;
-
-          case "disponibilidadeContainerUsuarioLogado4h":
-            abrirCalendario4h();
-            break;
-
-          // NOVO
-          case "painelPontos":
-            inicializarPainelPontos();
-            break;
-
-        }*/
        inicializarTela(idTela);
 
     atualizarBotaoVoltar();
@@ -21328,10 +22261,6 @@ function sincronizarCardsComSwitch() {
 
 function renderizarDisponibilidade(dados, cfg) {
 
-  /*console.log("condição:", dados.condicao);
-  console.log("frequência:", dados.frequencia);
-  console.log("dias:", dados.diasTurnos);*/
-
   const chkSubstituicao =
     document.getElementById(cfg.chkSubstituicao);
 
@@ -21391,15 +22320,15 @@ function renderizarDisponibilidade(dados, cfg) {
       const dia = partes[0];
       const turno = partes[1];
 
-      checkboxes.forEach(cb => {
+      /*checkboxes.forEach(cb => {
         console.log({
           id: cb.id,
           value: cb.value,
-          dataDia: cb.dataset.diaU,
-          dataTurno: cb.dataset.turnoU,
+          dataDia: cb.dataset.diaU ?? cb.dataset.diaId,
+          dataTurno: cb.dataset.turnoU ?? cb.dataset.turnoId,
           classe: cb.className
         });
-      });
+      });*/
 
       const checkbox = Array.from(checkboxes).find(cb =>
         norm(cb.dataset.diaU ?? cb.dataset.diaId) === norm(dia) &&
@@ -21482,6 +22411,16 @@ function renderizarDisponibilidadeBase(dados, cfg) {
 
       const dia = partes[0];
       const turno = partes[1];
+
+      /*checkboxes.forEach(cb => {
+        console.log({
+          id: cb.id,
+          value: cb.value,
+          dataDia: cb.dataset.dia ?? cb.dataset.diaN,
+          dataTurno: cb.dataset.turno ?? cb.dataset.turnoN,
+          classe: cb.className
+        });
+      });*/
 
       const checkbox = Array.from(checkboxes).find(cb =>
         norm(cb.dataset.dia ?? cb.dataset.diaN) === norm(dia) &&

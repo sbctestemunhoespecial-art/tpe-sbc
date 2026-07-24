@@ -248,6 +248,10 @@ const inicializadores = {
 
     disponibilidadeBuscada2h: inicializarBuscaUsuario2h,
 
+    telameutreinamentopraticoId: gerarCardsTPId,
+
+    telameutreinamentopratico: gerarCardsTP,
+
     disponibilidadeContainerUsuarioLogado2h() {
 
       gerarCardsDisponibilidadeUsuarioLogado2h();
@@ -633,7 +637,7 @@ function salvarTokenFCM(idUsuarioLogado, token) {
 
       /*console.log("✅ Token FCM salvo:", res);*/
 
-      mostrarAlertaGlobal("✅ Notificações ativadas com sucesso!");
+      //mostrarAlertaGlobal("✅ Notificações ativadas com sucesso!");
 
     },
     function(err) {
@@ -1981,7 +1985,7 @@ function pesquisarLembretesParticipantes() {
 
 }
 
-function exibirResultadosLembretes(res) {
+/*function exibirResultadosLembretes(res) {
 
   const c =
     document.getElementById("resultadoLembretesParticipantes");
@@ -2014,27 +2018,6 @@ function exibirResultadosLembretes(res) {
 
   });
 
-
-  /*let html = `
-  <table class="tabela-listagem">
-    <thead>
-      <tr>
-        <th style="width:40%;">
-          Nome
-        </th>
-        <th style="width:25%;">
-          Frequência
-        </th>
-        <th style="width:25%;">
-          Most.
-        </th>
-        <th style="width:10%;">
-          Ação
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-  `;*/
   html = `
           <table class="tabela-listagem">
           <thead>
@@ -2233,6 +2216,217 @@ function exibirResultadosLembretes(res) {
 
   msg.textContent =
     `✅ ${res.length} lembrete(s) encontrado(s).`;
+
+}*/
+function exibirResultadosLembretes(res) {
+
+  const c =
+    document.getElementById("resultadoLembretesParticipantes");
+
+  const msg =
+    document.getElementById("msgPesqLembretesParticipantes");
+
+
+  if (!res || res.length === 0) {
+
+    c.innerHTML =
+      '<p>📅 Não há designações nos próximos 7 dias para este filtro.</p>';
+
+    mostrarAlertaGlobal(
+      "📅 Não há designações nos próximos 7 dias."
+    );
+
+    return;
+
+  }
+
+  const partes = (res[0]?.turno || "").split(" ");
+  const numeroDoPonto = partes[partes.length - 1] || "";
+
+  //msg.textContent = `✅ ${res.length} lembrete(s) encontrado(s).`;
+
+  // Ordena pelos dias restantes
+  res.sort((a, b) => {
+
+      const da = Number.isFinite(a.diasFaltam) ? a.diasFaltam : 999;
+
+      const db = Number.isFinite(b.diasFaltam) ? b.diasFaltam : 999;
+
+      return da - db;
+
+  });
+
+  let html = `
+
+  <div class="titulo-painel-designacao">
+
+      🚩 Ponto ${numeroDoPonto} - ${res.length} lembrete(s)
+
+  </div>
+
+  <div class="lista-cards-lembretes">
+  `;
+
+  res.forEach(r => {
+
+    //incluido para calcular os dias que faltam para a designação
+    let corDias = "#2e7d32";
+    let textoDias = `${r.diasFaltam} dias`;
+
+    if (r.diasFaltam === 0) {
+
+        corDias = "#d32f2f";
+        textoDias = "HOJE";
+
+    }
+    else if (r.diasFaltam === 1) {
+
+        corDias = "#ef6c00";
+        textoDias = "AMANHÃ";
+
+    }
+    else if (r.diasFaltam === 2) {
+
+        corDias = "#f9a825";
+
+    }
+
+
+    const partes =
+      (r.turno || "").split(" ");
+
+
+    const pontoNumero =
+      partes[partes.length - 1] || "";
+
+
+    const turnoPalavra =
+      partes
+      .slice(0, partes.length - 1)
+      .join(" ");
+
+    const ehVaga =
+      r.ehVaga === true;
+
+    const nomeExibicao =
+        r.ehVaga
+        ? "🚧 VAGA"
+        : r.nome;
+
+    const frequenciaExibicao =
+        r.ehVaga
+        ? r.frequenciaVaga
+        : r.frequencia;
+
+    const equipamentoExibicao =
+        r.ehVaga
+        ? r.equipamentoVaga
+        : r.equipamento;
+
+      html += `
+
+      <div class="card-designacao">
+
+          <div class="card-designacao-topo">
+
+              <div>
+
+                  <div class="nome-designacao">
+
+                      ${nomeExibicao}
+
+                  </div>
+
+                  <div class="congregacao-designacao">
+
+                      ${r.congregacao || ""}
+
+                  </div>
+
+              </div>
+
+              <div class="freq-designacao">
+
+                   ${frequenciaExibicao}
+
+              </div>
+
+          </div>
+
+          <div class="card-designacao-infos">
+
+                <div>
+
+                  <span>🕒</span>
+
+                  ${turnoPalavra}
+
+              </div>
+
+              <div>
+                  <span>🚗</span>
+                  ${equipamentoExibicao} <!--${r.equipamento || ""}-->
+              </div>
+
+              <div
+                  class="badge-lembrete"
+                  style="color:${corDias};">
+
+                  <span>📅 Faltam</span>
+
+                  ${textoDias}
+
+              </div>
+
+          </div>
+
+          <div class="card-designacao-acoes">
+
+              ${!ehVaga ? `
+
+                  <img
+
+                      src="img/whatsapp.svg"
+
+                      class="icone-whatsapp-lembrete"
+
+                      data-id="${r.idParticipante}"
+
+                      data-nome="${r.nome}"
+
+                      data-telefone="${r.telefone}"
+
+                      data-ponto="${pontoNumero}"
+
+                      data-dia="${r.dia}"
+
+                      data-turno="${turnoPalavra}"
+
+                      data-frequencia="${r.frequencia}"
+
+                      data-equipamento="${r.equipamento}"
+
+                      data-dias="${r.diasFaltam}"
+
+                      title="Enviar lembrete pelo WhatsApp">
+
+              ` : ""}
+
+          </div>
+
+      </div>
+
+      `;
+
+
+  });
+
+
+  html += `
+  </div>
+  `;
+
+  c.innerHTML = html;
 
 }
 function montarFraseLembrete(diasFaltam) {
@@ -2811,7 +3005,9 @@ function exibirResultados(res) {
   //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao })));
 
   const c = document.getElementById('resultadoDesignadosContainer');
-  const msg = document.getElementById("msgPesqDesignados");
+  //const msg = document.getElementById("msgPesqDesignados");
+  //msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
+  
   esconderSpinner();
 
   if (!res || res.length === 0) {
@@ -2820,7 +3016,16 @@ function exibirResultados(res) {
     return;
   }
 
-    let html = "";
+  const partes = (res[0]?.turno || "").split(" ");
+  const numeroDoPonto = partes[partes.length - 1] || "";
+
+    //let html = "";
+
+    let html = `
+      <div class="titulo-painel-designacao">
+          🚩 Ponto ${numeroDoPonto} - ${res.length} designações
+      </div>
+      `;
 
   res.sort((a, b) => {
 
@@ -2848,7 +3053,6 @@ function exibirResultados(res) {
   }
 
   let grupoAnterior = "";
-  
   let cabecalhoAnterior = "";
 
   res.forEach(r => {  
@@ -2857,60 +3061,58 @@ function exibirResultados(res) {
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
+    const diaFormatado = primeiraLetraMaiuscula(r.dia);
+    const frequenciaFormatada = primeiraLetraMaiuscula(r.frequencia);
+
     const chaveCabecalho = `${r.equipamento}|${r.grupo}`;
 
-  // Quando muda o grupo, cria um cabeçalho
-  //if (r.grupo && r.grupo !== grupoAnterior) {
-  // Agora, quando muda grupo ou equipamento, cria um cabeçalho  
   if (chaveCabecalho !== cabecalhoAnterior) {
 
-    //const qtd =
-        //res.filter(x => x.grupo === r.grupo).length;
-    const qtd =
-        res.filter(x =>
-            x.grupo === r.grupo &&
-            x.equipamento === r.equipamento
-        ).length;
+      //const qtd = res.filter(x => x.grupo === r.grupo).length;
+      const qtd =
+          res.filter(x =>
+              x.grupo === r.grupo &&
+              x.equipamento === r.equipamento
+          ).length;
 
-    let tituloGrupo = "";
-    let estiloTitulo = "";
+      let tituloGrupo = "";
+      let estiloTitulo = "";
 
-    switch (qtd) {
+      switch (qtd) {
 
-        case 1:
-            tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
-            estiloTitulo = "color:#d32f2f;font-weight:bold;";
-            break;
+          case 1:
+              tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+              estiloTitulo = "color:#d32f2f;font-weight:bold;";
+              break;
 
-        case 2:
-            tituloGrupo = "👥 DUPLA";
-            break;
+          case 2:
+              tituloGrupo = "👥 DUPLA";
+              break;
 
-        case 3:
-            tituloGrupo = "👥 TRIO";
-            break;
+          case 3:
+              tituloGrupo = "👥 TRIO";
+              break;
 
-        case 4:
-            tituloGrupo = "👥 GRUPO";
-            break;
+          case 4:
+              tituloGrupo = "👥 GRUPO";
+              break;
 
-        default:
-            tituloGrupo = `👥 GRUPO (${qtd})`;
-            break;
+          default:
+              tituloGrupo = `👥 GRUPO (${qtd})`;
+              break;
 
-    }
+      }
 
-    html += `
-    <div class="titulo-grupo-designacao">
-        ${r.equipamento} • Turno ${turnoPalavra}
-        <span>${tituloGrupo}</span>
-    </div>
-    `;
+      html += `
+      <div class="titulo-grupo-designacao">
+          ${r.equipamento} • Turno ${turnoPalavra}
+          <span>${tituloGrupo}</span>
+      </div>
+      `;
 
-    //grupoAnterior = r.grupo;
-    cabecalhoAnterior = chaveCabecalho;
+      cabecalhoAnterior = chaveCabecalho;
 
-}
+  }
 
     //const partes = (r.turno || "").split(" ");
     //const pontoNumero = partes[partes.length - 1] || "";
@@ -2953,7 +3155,7 @@ function exibirResultados(res) {
 
                     <span>📅</span>
 
-                    ${r.dia}
+                   ${diaFormatado} <!--${r.dia}-->
 
                 </div>
 
@@ -2967,7 +3169,7 @@ function exibirResultados(res) {
 
                 <div>
 
-                    <span>📍</span>
+                    <span>🚩</span>
 
                     Ponto ${pontoNumero}
 
@@ -3043,8 +3245,6 @@ function exibirResultados(res) {
     }
 
   }
-
-  msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
 
   c.querySelectorAll('.linha-designacao').forEach(linha => {
 
@@ -6063,6 +6263,106 @@ function preencherDadosTP(dados) {
     });
   }
 }
+function gerarCardsTP() {
+
+  const container =
+    document.getElementById("cardsTP");
+
+  if (!container) return;
+
+
+  container.innerHTML = "";
+
+
+  const diasT = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sabado",
+    "Domingo"
+  ];
+
+
+  const turnosT = [
+    "Matinal",
+    "Manhã",
+    "Tarde",
+    "Noite"
+  ];
+
+
+  diasT.forEach(diaT => {
+
+
+    const card =
+      document.createElement("div");
+
+
+    card.className =
+      "card-disponibilidade";
+
+
+    let html = `
+
+      <h4>📅 ${diaT}</h4>
+
+
+      <div class="turnos-card">
+
+    `;
+
+
+    turnosT.forEach(turnoT => {
+
+
+      html += `
+
+        <label class="turno-item">
+
+
+          <input
+
+            type="checkbox"
+
+            class="dia-turno-treinamentoPratico"
+
+            data-dia-t="${diaT}"
+
+            data-turno-t="${turnoT}"
+
+            disabled>
+
+
+          <span>${turnoT}</span>
+
+
+        </label>
+
+      `;
+
+
+    });
+
+
+    html += `
+
+      </div>
+
+    `;
+
+
+    card.innerHTML = html;
+
+
+    container.appendChild(card);
+
+
+  });
+
+
+}
 
 let modoEdicaoAtivoTP = false;
 
@@ -6252,6 +6552,109 @@ function preencherDadosTPId(dados) {
     cb.disabled = !habilitar;
   });
 }
+function gerarCardsTPId() {
+
+  const container =
+    document.getElementById("cardsTPId");
+
+  if (!container) return;
+
+
+  container.innerHTML = "";
+
+
+  const diasTId = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sabado",
+    "Domingo"
+  ];
+
+
+  const turnosTId = [
+    "Matinal",
+    "Manhã",
+    "Tarde",
+    "Noite"
+  ];
+
+
+  diasTId.forEach(diaTId => {
+
+
+    const card =
+      document.createElement("div");
+
+
+    card.className =
+      "card-disponibilidade";
+
+
+    let html = `
+
+
+      <h4>📅 ${diaTId}</h4>
+
+
+      <div class="turnos-card">
+
+
+    `;
+
+
+    turnosTId.forEach(turnoTId => {
+
+
+      html += `
+
+
+        <label class="turno-item">
+
+
+          <input
+            type="checkbox"
+
+            class="dia-turno-treinamentoPraticoId"
+
+            data-dia-t-id="${diaTId}"
+
+            data-turno-t-id="${turnoTId}"
+
+            disabled>
+
+
+          <span>${turnoTId}</span>
+
+
+        </label>
+
+
+      `;
+
+
+    });
+
+
+    html += `
+
+      </div>
+
+    `;
+
+
+    card.innerHTML = html;
+
+
+    container.appendChild(card);
+
+
+  });
+
+
+}
 
 let modoEdicaoAtivoTPId = false;
 
@@ -6269,6 +6672,45 @@ function alternarModoEdicaoTPId() {
     cb.disabled = !modoEdicaoAtivoTPId;
   });
 
+  const cards =
+    document.querySelectorAll("#cardsTPId .card-disponibilidade");
+
+
+    cards.forEach(card => {
+
+      if (modoEdicaoAtivoTPId) {
+
+        card.classList.add(
+          "card-disponibilidade-edicao"
+        );
+
+      } else {
+
+        card.classList.remove(
+          "card-disponibilidade-edicao"
+        );
+
+      }
+
+    });
+
+  const botaoSalvar =
+    document.getElementById("btnSalvarTPId");
+
+  if (botaoSalvar) {
+
+    if (modoEdicaoAtivoTPId) {
+
+      botaoSalvar.classList.add("btn-edicao");
+
+    } else {
+
+      botaoSalvar.classList.remove("btn-edicao");
+
+    }
+
+  }
+
   const botao =
     document.getElementById('btnEditarTPId');
 
@@ -6281,6 +6723,7 @@ function alternarModoEdicaoTPId() {
     pesquisarTPPorId();
   }
 }
+
 
 
 
@@ -16661,6 +17104,14 @@ function exportarEscalaEv() {
     }
   );
 }*/
+function primeiraLetraMaiuscula(texto) {
+    if (!texto) return "";
+
+    texto = texto.toLowerCase();
+
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
 function buscarDesignacoesPorPonto() {
   
   const ponto = window.camposSelecionados.pontobepp
@@ -16686,51 +17137,33 @@ function buscarDesignacoesPorPonto() {
     (res) => {
       esconderSpinner();
 
-      //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao})));
-
       if (!res || res.length === 0) {
         mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
         return;
       }
 
-      msg.textContent = `✅ ${res.length} designações encontradas.`;
-
       const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
 
       let html = `
-
       <div class="titulo-painel-designacao">
-
-          📍 Escalas do Ponto ${numeroDoPonto}
-
+          🚩 Ponto ${numeroDoPonto} - ${res.length} designações
       </div>
-
       `;
 
-      //let html = "";
-
       const ordemDias = {
-
           "SEGUNDA": 1,
-
           "TERÇA": 2,
           "TERCA": 2,
-
           "QUARTA": 3,
-
           "QUINTA": 4,
-
           "SEXTA": 5,
-
           "SÁBADO": 6,
           "SABADO": 6,
-
           "DOMINGO 1": 7,
           "DOMINGO 2": 8,
           "DOMINGO 3": 9,
           "DOMINGO 4": 10,
           "DOMINGO 5": 11
-
       };
 
 
@@ -16808,6 +17241,8 @@ function buscarDesignacoesPorPonto() {
 
       res.forEach(r => {
 
+          const diaFormatado = primeiraLetraMaiuscula(r.dia);
+          const frequenciaFormatada = primeiraLetraMaiuscula(r.frequencia);
 
           // ==============================
           // CABEÇALHO DO DIA
@@ -16832,17 +17267,16 @@ function buscarDesignacoesPorPonto() {
 
           }
 
-         //if (r.grupo && r.grupo !== grupoAtual) {
-         const chaveCabecalho =
-            `${r.equipamento}|${r.grupo}`;
+          const chaveCabecalho = `${r.equipamento}|${r.grupo}`;
+
+          const partes = (r.turno || "").split(" ");
+          const pontoNumero = partes[partes.length - 1] || "";
+          const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
         if (chaveCabecalho !== cabecalhoAtual) {
 
-              //grupoAtual = r.grupo;
               cabecalhoAtual = chaveCabecalho;
 
-              /*const integrantes =
-                  res.filter(x => x.grupo === grupoAtual).length;*/
               const integrantes =
                 res.filter(x =>
                     x.grupo === r.grupo &&
@@ -16876,9 +17310,9 @@ function buscarDesignacoesPorPonto() {
 
               }
 
-              const partes = (r.turno || "").split(" ");
-              const pontoNumero = partes[partes.length - 1] || "";
-              const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+              //const partes = (r.turno || "").split(" ");
+              //const pontoNumero = partes[partes.length - 1] || "";
+              //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
               html += `
 
@@ -16929,7 +17363,7 @@ function buscarDesignacoesPorPonto() {
 
                       <span>📅</span>
 
-                      ${r.dia}
+                      ${diaFormatado}
 
                   </div>
 
@@ -16937,13 +17371,13 @@ function buscarDesignacoesPorPonto() {
 
                       <span>🕒</span>
 
-                      ${r.turno}
+                      ${turnoPalavra} <!--${r.turno}-->
 
                   </div>
 
                   <div>
 
-                      <span>📍</span>
+                      <span>🚩</span>
 
                       Ponto ${numeroDoPonto}
 
@@ -16955,7 +17389,7 @@ function buscarDesignacoesPorPonto() {
 
                   <span
 
-                      class="linha-designacao-ponto"
+                      class="linha-designacao-ponto icone-editar-designacao"
 
                       data-id="${r.idParticipante}"
                       data-nome="${r.nome}"
@@ -16972,15 +17406,15 @@ function buscarDesignacoesPorPonto() {
 
                       style="cursor:pointer">
 
-                      ✏️
+                     ✏️
 
                   </span>
-
+                  
                   <img
 
                       src="img/whatsapp.svg"
 
-                      class="icone-whatsapp-ponto"
+                      class="icone-whatsapp-ponto icone-formatar-whatsapp"
 
                       data-id="${r.idParticipante}"
                       data-nome="${r.nome}"
@@ -16992,7 +17426,7 @@ function buscarDesignacoesPorPonto() {
                       data-equipamento="${r.equipamento}"
 
                       title="Conversar pelo WhatsApp">
-
+                    
               </div>
 
           </div>
@@ -20129,7 +20563,7 @@ function tratarNotificacaoAoAbrir() {
 
 }*/
 
-function carregarVagasDisponiveis() {
+/*function carregarVagasDisponiveis() {
 
   const lista =
     document.getElementById("listaVagasDisponiveis");
@@ -20242,6 +20676,212 @@ function carregarVagasDisponiveis() {
             Quero assumir esta vaga
 
           </button>
+
+        `;
+
+        lista.appendChild(div);
+
+        if (destaque) {
+
+          setTimeout(() => {
+
+            div.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+
+          }, 300);
+
+        }
+
+      });
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(err);
+
+      lista.innerHTML =
+        "❌ Erro: " + err.message;
+
+    }
+  );
+
+}*/
+function carregarVagasDisponiveis() {
+
+  const lista =
+    document.getElementById("listaVagasDisponiveis");
+
+  lista.innerHTML =
+    "Carregando vagas...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarVagasDisponiveisN",
+    {},
+    function(res) {
+
+      console.log("📋 RESPOSTA VAGAS:", res);
+
+      esconderSpinner();
+
+      if (!res.sucesso) {
+
+        lista.innerHTML =
+          "❌ Erro ao carregar vagas.";
+
+        return;
+
+      }
+
+      if (!res.vagas.length) {
+
+        lista.innerHTML =
+          "🎉 Nenhuma vaga disponível.";
+
+        return;
+
+      }
+
+      lista.innerHTML = "";
+
+      res.vagas.forEach(vaga => {
+
+        const diaFormatado = primeiraLetraMaiuscula(vaga.dia);
+        const periodoFormatado = primeiraLetraMaiuscula(vaga.periodo);
+
+        const destaque =
+          vaga.idVaga === idVagaNotificacao;
+
+        const div =
+          document.createElement("div");
+
+        div.className = "card-vaga";
+
+        if (destaque) {
+          div.classList.add("card-vaga-destaque");
+        }
+
+        div.innerHTML = `
+
+        <div class="titulo-vaga">
+
+            ${
+              destaque
+                ? "🔔 Vaga da sua notificação"
+                : "🚨 Vaga disponível"
+            }
+
+        </div>
+
+
+        ${
+          destaque
+            ? `
+            <div class="aviso-vaga-notificacao">
+                🔔 Esta é a vaga da sua notificação
+            </div>
+            `
+            : ""
+        }
+
+
+        <div class="card-designacao">
+
+
+            <div class="card-designacao-topo">
+
+
+                <div>
+
+                    <div class="nome-designacao">
+
+                        🚩 ${vaga.ponto}
+
+                    </div>
+
+                    <div class="congregacao-designacao">
+
+                        ${vaga.nomeParticipante || "Companheiro não informado"}
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="freq-designacao">
+
+                    ${vaga.frequencia}
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <div class="card-designacao-infos">
+
+                <div>
+
+                    <span>🌅</span>
+
+                    ${periodoFormatado} <!-- ${vaga.periodo} -->
+
+                </div>
+
+
+                <div>
+
+                    <span>📅</span>
+
+                    ${diaFormatado} <!-- ${vaga.dia} -->
+
+                </div>
+
+
+                <div>
+
+                    <span>🚗</span>
+
+                    ${vaga.equipamento || "-"}
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="card-designacao-acoes">
+
+
+                <button
+
+                    class="${
+                      destaque
+                        ? "btn-aceitar-vaga btn-aceitar-destaque"
+                        : "btn-aceitar-vaga"
+                    }"
+
+                    onclick="aceitarVaga('${vaga.idVaga}')">
+
+                    🙋 Quero assumir esta vaga
+
+                </button>
+
+
+            </div>
+
+
+        </div>
 
         `;
 

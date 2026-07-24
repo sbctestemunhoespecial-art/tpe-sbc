@@ -2953,7 +2953,8 @@ td {
 
 }
 
-.icone-whatsapp-designacao{
+.icone-whatsapp-designacao,
+.icone-whatsapp-lembrete{
 
     width:2.5rem;
     height:2.5rem;
@@ -2963,7 +2964,8 @@ td {
 
 }
 
-.icone-whatsapp-designacao:hover{
+.icone-whatsapp-designacao:hover,
+.icone-whatsapp-lembrete:hover{
 
     transform:scale(1.15);
 
@@ -3490,7 +3492,7 @@ td {
 
 .titulo-dia-designacao{
 
-    margin:25px 0 10px;
+    margin:10px 0 10px;
     padding:10px 15px;
 
     background:#2563eb;
@@ -3498,7 +3500,7 @@ td {
 
     border-radius:12px;
 
-    font-size:1.1rem;
+    font-size:1rem;
     font-weight:700;
 
     box-shadow:0 2px 8px rgba(0,0,0,.15);
@@ -3572,7 +3574,7 @@ td {
 
 .nome-designacao{
 
-    font-size:1.05rem;
+    font-size:1rem;
     font-weight:700;
     color:#1f2937;
 
@@ -3608,7 +3610,7 @@ td {
 
     grid-template-columns:repeat(3,1fr);
 
-    gap:10px;
+    gap:5px;
 
     margin-bottom:15px;
 
@@ -3618,7 +3620,7 @@ td {
 
     background:#f8fafc;
 
-    padding:10px;
+    padding:5px;
 
     border-radius:10px;
 
@@ -3638,17 +3640,45 @@ td {
 
     display:flex;
 
-    justify-content:flex-end;
+    justify-content: flex-end;
 
     gap:18px;
 
     align-items:center;
-
+    
     padding-top:10px;
 
     border-top:1px solid #eee;
 
 }
+
+/* Acrescentado para estilo da linha do lapis e icone do zap */
+.icone-editar-designacao{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:28px;
+    height:28px;
+
+    cursor:pointer;
+    font-size:20px;
+
+}
+
+
+.icone-formatar-whatsapp{
+
+    width:28px;
+    height:28px;
+
+    display:block;
+
+    cursor:pointer;
+
+}
+/* Acrescentado para estilo da linha do lapis e icone do zap */
 
 .card-designacao-acoes .linha-designacao{
 
@@ -3690,7 +3720,7 @@ td {
     font-size:1.15rem;
     font-weight:700;
 
-    margin-bottom:20px;
+    margin-top:10px;
 
     box-shadow:0 3px 10px rgba(0,0,0,.15);
 

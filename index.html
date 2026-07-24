@@ -1648,7 +1648,8 @@
 
             <div id="candidatoTreinamentoPratico" class="nome-pesquisado"></div>
         
-         <table id="tabelaTP" class="tabela-sistema tabela-checkbox tabela-destaque">
+         <div id="cardsTP"></div>
+         <!--<table id="tabelaTP" class="tabela-sistema tabela-checkbox tabela-destaque">
           <thead>
             <tr>
               <th>Dia</th>
@@ -1681,7 +1682,7 @@
               });
             </script>
           </tbody>
-        </table>
+        </table>-->
 
         <div class="botoes-lado-a-lado">
               <button id="btnEditarTP"
@@ -1702,7 +1703,8 @@
 
     <div id="treinamentoPraticoContainerId">
 
-      <table id="tabelaTPId" class="tabela-sistema tabela-checkbox tabela-destaque">
+      <div id="cardsTPId"></div>
+      <!--<table id="tabelaTPId" class="tabela-sistema tabela-checkbox tabela-destaque">
 
         <thead>
           <tr>
@@ -1760,14 +1762,15 @@
           </script>
         </tbody>
 
-      </table>
+      </table>-->
 
       <div class="botoes-lado-a-lado">
         <button id="btnEditarTPId"
                 onclick="alternarModoEdicaoTPId()">
           ✏️ Editar Disponibilidade
         </button>
-        <button onclick="salvarTPPorId()">
+        <button id="btnSalvarTPId"
+        onclick="salvarTPPorId()">
           💾 Salvar Disponibilidade
         </button>
       </div>
@@ -3578,13 +3581,13 @@
 
       <button type="button" onclick="pesquisarLembretesParticipantes()">🔍 Pesquisar</button>
 
-      <div style="display: flex; align-items: center; gap: 10px;">
+      <!--<div style="display: flex; align-items: center; gap: 10px;">
       <p id="msgPesqLembretesParticipantes" class="mensagem-verde"></p>
       </div>
 
       <div style="display: flex; align-items: center; gap: 10px;">
       <p id="msgRemoverDesignadosLP" class="mensagem-verde"></p>
-      </div>
+      </div>-->
 
       <div id="resultadoLembretesParticipantes"></div>
 
@@ -3671,13 +3674,13 @@
 
       <button type="button" onclick="pesquisarDesignados()">🔍 Pesquisar</button>
 
-      <div style="display: flex; align-items: center; gap: 10px;">
+      <!--<div style="display: flex; align-items: center; gap: 10px;">
       <p id="msgPesqDesignados" class="mensagem-verde"></p>
       </div>
 
       <div style="display: flex; align-items: center; gap: 10px;">
       <p id="msgRemoverDesignados" class="mensagem-verde"></p>
-      </div>
+      </div>-->
 
       <div id="resultadoDesignadosContainer"></div>
 

@@ -624,6 +624,8 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   script.src = API_URL + "?" + query.toString();
 
+  alert(script.src);
+
   //console.log("🌐 URL chamada:", script.src);
 
   document.body.appendChild(script);

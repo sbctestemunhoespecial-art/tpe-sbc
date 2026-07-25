@@ -620,13 +620,18 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   };
 
-  //alert(API_URL + "?" + query.toString());
+  //script.src = API_URL + "?" + query.toString();
+  let urlFinal = API_URL + "?" + query.toString();
 
-  script.src = API_URL + "?" + query.toString();
+  // Remove qualquer /u/n/ que o Google possa inserir
+  urlFinal = urlFinal.replace(
+    "/macros/u/\\d+/s/",
+    "/macros/s/"
+  );
 
-  //alert(script.src);
+  console.log("🌐 URL JSONP final:", urlFinal);
 
-  //console.log("🌐 URL chamada:", script.src);
+  script.src = urlFinal;
 
   document.body.appendChild(script);
 

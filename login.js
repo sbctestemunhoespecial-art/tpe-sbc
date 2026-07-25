@@ -1205,6 +1205,8 @@ function fazerLogin() {
     },
     function(res) {
 
+      alert("ENTREI NO CALLBACK DO LOGIN");
+
       if (!res.sucesso) {
 
         esconderSpinner();

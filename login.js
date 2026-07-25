@@ -610,7 +610,7 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
     esconderSpinner();
 
-    alert("ERRO AO CARREGAR O SCRIPT JSONP");
+    alert("ERRO JSONP na ação: " + acao);
 
     if (onError) {
       onError({
@@ -620,11 +620,11 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   };
 
-  alert(API_URL + "?" + query.toString());
+  //alert(API_URL + "?" + query.toString());
 
   script.src = API_URL + "?" + query.toString();
 
-  alert(script.src);
+  //alert(script.src);
 
   //console.log("🌐 URL chamada:", script.src);
 
@@ -1209,7 +1209,7 @@ function fazerLogin() {
     },
     function(res) {
 
-      alert("ENTREI NO CALLBACK DO LOGIN");
+      //alert("ENTREI NO CALLBACK DO LOGIN");
 
       if (!res.sucesso) {
 

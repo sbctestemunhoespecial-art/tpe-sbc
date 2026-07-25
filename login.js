@@ -569,11 +569,6 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   window[callbackName] = function(resposta) {
 
-    /*if (resposta && resposta.sucesso === false) {
-      if (onError) onError(resposta);
-    } else {
-      callback(resposta);
-    }*/
     if (resposta && resposta.sucesso === false) {
 
         if (onError) {
@@ -608,8 +603,21 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
     console.log("📥 Script JSONP carregado.");
   };
 
-  script.onerror = function (e) {
+  /*script.onerror = function (e) {
     console.error("❌ Erro ao carregar o script JSONP:", e);
+  };*/
+  script.onerror = function (e) {
+
+    esconderSpinner();
+
+    alert("ERRO AO CARREGAR O SCRIPT JSONP");
+
+    if (onError) {
+      onError({
+        message: "Erro ao carregar o script JSONP."
+      });
+    }
+
   };
 
   script.src = API_URL + "?" + query.toString();

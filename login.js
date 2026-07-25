@@ -19898,10 +19898,10 @@ function limparSubstituirQuemsai() {
   select.innerHTML = '<option value="">-- Nenhum --</option>';
 }
 
-function atualizarContagemVagas(vagas) {
+/*function atualizarContagemVagas(vagas) {
   const total = vagas.length;
   document.getElementById("totalVagas").textContent = total;
-}
+}*/
 
 function preencherFormularioDesignacao(vaga) {
   /*document.getElementById("ponto").value = vaga.ponto;
@@ -20158,7 +20158,7 @@ function carregarTodasVagasAbertas() {
   });
 
 }*/
-function mostrarVagas(vagas) {
+/*function mostrarVagas(vagas) {
 
   atualizarContagemVagas(vagas);
 
@@ -20276,8 +20276,166 @@ function mostrarVagas(vagas) {
 
   });
 
-}
+}*/
+function mostrarVagas(vagas) {
 
+  //atualizarContagemVagas(vagas);
+
+  const container = document.getElementById("listaVagasPendentes");
+  
+  const totalDeVagas = vagas.length;
+
+  container.innerHTML = "";
+
+  vagas.forEach(vaga => {
+
+    const card = document.createElement("div");
+    card.className = "card-vaga";
+
+
+    // ==========================================
+    // Cor conforme tempo em aberto
+    // ==========================================
+
+    let classeTempo = "tempo-verde";
+
+    if (vaga.diasAberta >= 15) {
+
+      classeTempo = "tempo-vermelho";
+
+    } else if (vaga.diasAberta >= 7) {
+
+      classeTempo = "tempo-laranja";
+
+    } else if (vaga.diasAberta >= 3) {
+
+      classeTempo = "tempo-amarelo";
+
+    }
+
+    card.innerHTML = `
+
+
+<div class="titulo-vaga">
+    <span>
+    🚨 ${totalDeVagas} vagas pendentes
+    </span>
+
+
+
+
+</div>
+
+<div class="card-designacao">
+
+
+
+    <div class="card-designacao-topo">
+
+
+
+        <div>
+
+
+            <div class="nome-designacao">
+
+                🚩 ${vaga.ponto}
+
+            </div>
+
+
+
+            <div class="congregacao-designacao">
+
+                ${vaga.quemSai || "Sem informação"}
+
+            </div>
+
+
+        </div>
+
+
+        <div>
+
+            <span>⏳</span>
+
+            <span class="tempo ${classeTempo}">
+
+                ${vaga.tempoAberta}
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-designacao-infos">
+
+
+
+        <div>
+
+            <span>🌅</span>
+
+            ${vaga.periodo}
+
+        </div>
+
+
+        <div>
+
+            <span>📅</span>
+
+            ${vaga.dia}
+
+        </div>
+
+
+        <div class="freq-designacao">
+
+            ${vaga.frequencia}
+
+        </div>
+
+
+    </div>
+
+
+    <div class="card-designacao-acoes">
+
+
+
+        <button class="btn btn-danger btn-block">
+
+            🗑️ Excluir vaga
+
+        </button>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+`;
+
+
+    card.querySelector("button").onclick = () => {
+
+      excluirVaga(vaga);
+
+    };
+
+
+    container.appendChild(card);
+
+  });
+
+}
 
 function excluirVaga(vaga) {
 

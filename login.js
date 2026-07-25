@@ -610,6 +610,8 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
     esconderSpinner();
 
+    console.log("URL que falhou:", script.src);
+
     alert("ERRO JSONP na ação: " + acao);
 
     if (onError) {
@@ -620,18 +622,18 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
   };
 
-  //script.src = API_URL + "?" + query.toString();
-  let urlFinal = API_URL + "?" + query.toString();
-
+  script.src = API_URL + "?" + query.toString();
+  
+  //let urlFinal = API_URL + "?" + query.toString();
   // Remove qualquer /u/n/ que o Google possa inserir
-  urlFinal = urlFinal.replace(
-    "/macros/u/\\d+/s/",
-    "/macros/s/"
-  );
+  //urlFinal = urlFinal.replace(
+    //"/macros/u/\\d+/s/",
+    //"/macros/s/"
+  //);
 
-  console.log("🌐 URL JSONP final:", urlFinal);
+  //console.log("🌐 URL JSONP final:", urlFinal);
 
-  script.src = urlFinal;
+  //script.src = urlFinal;
 
   document.body.appendChild(script);
 

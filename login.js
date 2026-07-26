@@ -21774,19 +21774,15 @@ function carregarOpcoes() {
         err
       );
 
-
-      /*mostrarAlertaGlobal(
+      mostrarAlertaGlobal(
         "❌ Erro ao carregar opções: " +
         (err.message || err)
-      );*/
+      );
+
       /*mostrarErroCarregamento(
-            "Não foi possível carregar os dados iniciais.",
-            carregarOpcoes
-        );*/
-      mostrarErroCarregamento(
             "Não foi possível carregar as opções do sistema.",
             carregarDadosIniciais
-        );
+        );*/
 
     }
 

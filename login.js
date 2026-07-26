@@ -22243,14 +22243,19 @@ function carregarOpcoesGenerica(inputId, selectId, metodoScript, listaKey = 'nom
     }*/
       function(err) {
 
-        mostrarErroCarregamento(
+        mostrarAlertaGlobal(
+          "❌ Erro ao carregar participantes: " +
+          (err.message || err)
+        );
+
+        /*mostrarErroCarregamento(
             "Não foi possível carregar participantes.",
             () => carregarOpcoesGenerica(
                 "filtroBusca1",
                 "participante",
                 "buscarOpcoesParaForm"
             )
-        );
+        );*/
 
     }
   );
@@ -25069,10 +25074,15 @@ function carregarCatalogoPontos() {
     },
     (err)=>{
 
-       mostrarErroCarregamento(
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar os pontos: " +
+        (err.message || err)
+      );
+
+       /*mostrarErroCarregamento(
             "Não foi possível carregar os pontos.",
             carregarDadosIniciais
-        );
+        );*/
 
     }
   );

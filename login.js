@@ -1923,7 +1923,7 @@ document.addEventListener("click", function(event) {
 
 function pesquisarLembretesParticipantes() {
 
-  const turno =
+  /*const turno =
     document.getElementById("turnoLembreteVisual")?.value ||
     window.camposSelecionados.turnoLembrete ||
     "";
@@ -1935,6 +1935,21 @@ function pesquisarLembretesParticipantes() {
 
   const ponto =
     document.getElementById("pontoLembreteVisual")?.value ||
+    window.camposSelecionados.pontoLembrete ||
+    "";*/
+
+  const turno =
+    document.getElementById("turnoLembreteVisual")?.textContent ||
+    window.camposSelecionados.turnoLembrete ||
+    "";
+
+  const dia =
+    document.getElementById("diaLembreteVisual")?.textContent ||
+    window.camposSelecionados.diaLembrete ||
+    "";
+
+  const ponto =
+    document.getElementById("pontoLembreteVisual")?.textContent ||
     window.camposSelecionados.pontoLembrete ||
     "";
 
@@ -5522,9 +5537,7 @@ function gerarCardsDisponibilidadeUsuarioLogado4h() {
     card.className = "card-disponibilidade";
 
     card.innerHTML = `
-      <div class="titulo-disponibilidade">
-        📅 ${dia}
-      </div>
+      <h4>📅 ${dia}</h4>
 
       <div class="turnos-card">
 
@@ -8533,6 +8546,8 @@ let mapaIniciado = false;
 
 function initMap() {
 
+console.log("ENTROU NO initMap");
+
   if (mapaIniciado) return;
 
   map = new google.maps.Map(
@@ -8638,17 +8653,28 @@ function verMapa() {
     label: {
       text: ponto.nome,
       color: "blue",
-      fontSize: "30px",
+      fontSize: "14px",
       fontWeight: "bold"
     }
   });
 
-  const conteudo =
+  /*const conteudo =
     "<div style='font-family: Arial; border: 1px solid #888; border-radius: 6px; overflow: hidden;'>" +
     "<div style='background-color:#2a4d8f;color:white;font-weight:bold;padding:6px 10px;font-size:40px;'>" +
     ponto.nome +
     "</div>" +
     "<div style='padding:10px;font-size:30px;'>" +
+    "<b>AAC:</b> " + (ponto.encarregado || "") + "<br>" +
+    "<b>Endereço:</b> " + (ponto.endereco || "") + "<br>" +
+    "<b>Depósito:</b> " + (ponto.deposito || "") +
+    "</div></div>";*/
+
+  const conteudo =
+    "<div style='font-family: Arial; border: 1px solid #888; border-radius: 6px; overflow: hidden; max-width:260px;'>" +
+    "<div style='background-color:#2a4d8f;color:white;font-weight:bold;padding:6px 10px;font-size:16px;'>" +
+    ponto.nome +
+    "</div>" +
+    "<div style='padding:10px;font-size:14px;line-height:1.4;'>" +
     "<b>AAC:</b> " + (ponto.encarregado || "") + "<br>" +
     "<b>Endereço:</b> " + (ponto.endereco || "") + "<br>" +
     "<b>Depósito:</b> " + (ponto.deposito || "") +
@@ -8759,7 +8785,7 @@ function carregarMapaQuandoClicar() {
   if (!mapScriptLoaded) {
     const script = document.createElement("script");
     script.src =
-    //"https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
+    "https://maps.googleapis.com/maps/api/js?key=AIzaSyDYnIBhSeL0_SmimlgDn8Ube3jS6uporHg&callback=initMap";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
@@ -11236,7 +11262,7 @@ let participantesEncontrados = [];
     }
   );
 }*/
-function buscarParticipantes() {
+/*function buscarParticipantes() {
 
   const campos = {
     dia: document.getElementById('diasSelectVisual'),
@@ -11391,37 +11417,6 @@ function buscarParticipantes() {
         const tdNome =
           tr.insertCell();
 
-        /*const nome =
-          p.nomeCompleto || '';
-
-        const linhas =
-          nome.split('\n');
-
-        if (linhas.length > 0) {
-
-          tdNome.innerHTML =
-            `<strong>${linhas[0]}</strong>` +
-            (linhas.length > 1
-              ? '<br>' + linhas.slice(1).join('<br>')
-              : '');
-
-        } else {
-
-          tdNome.textContent = nome;
-
-        }
-        
-
-        tdNome.dataset.id = p.id || "";
-
-        tdNome.classList.add('clicavel-nome');
-
-        tdNome.style.cursor = 'pointer';
-
-        tdNome.style.color = 'green';
-
-        tdNome.title = 'Clique para interagir';*/
-
         tdNome.innerHTML = `
 
         <div class="nome-com-whatsapp">
@@ -11462,6 +11457,252 @@ function buscarParticipantes() {
       });
 
       resultadoDiv.appendChild(tabela);
+
+      document.getElementById('dadosUsuarioContainer').style.display =
+        'inline-block';
+
+      document.getElementById('enviarEmailTodosBtn').style.display =
+        'inline-block';
+
+    },
+
+    (erro) => {
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro na busca: " +
+
+        (erro?.mensagem ||
+
+         erro?.error ||
+
+         "Erro desconhecido")
+
+      );
+
+      resultadoDiv.textContent = '';
+
+    }
+
+  );
+
+}*/
+function buscarParticipantes() {
+
+  const campos = {
+    dia: document.getElementById('diasSelectVisual'),
+    turno: document.getElementById('turnosSelectVisual'),
+    frequencia: document.getElementById('frequenciasSelectVisual')
+  };
+
+  const valores = {
+    dia: window.camposSelecionados.diasSelect,
+    turno: window.camposSelecionados.turnosSelect,
+    frequencia: window.camposSelecionados.frequenciasSelect
+  };
+
+  const msg = document.getElementById("msgPesqDisponiveis");
+
+  // Remove marcações de erro anteriores
+  Object.values(campos).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+  // Verifica se há campos vazios
+  const camposVazios = Object.entries(valores)
+    .filter(([_, valor]) => !valor)
+    .map(([chave]) => chave);
+
+  if (camposVazios.length > 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, selecione dia, turno e frequência."
+    );
+
+    camposVazios.forEach(campo => {
+
+      if (campos[campo]) {
+
+        campos[campo].classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+  const diasTurnos = [
+    `${valores.dia} - ${valores.turno}`
+  ];
+
+  const frequencias = [
+    valores.frequencia
+  ];
+
+  const resultadoDiv =
+    document.getElementById('resultadoBusca');
+
+  resultadoDiv.textContent = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarParticipantesPorFiltroAvancado",
+
+    {
+
+      dados: JSON.stringify({
+
+        diasTurnos,
+
+        frequencias
+
+      })
+
+    },
+
+    (participantes) => {
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+      participantesEncontrados = participantes;
+
+      esconderSpinner();
+
+      if (!participantes || participantes.length === 0) {
+
+        mostrarAlertaGlobal(
+          "❌ Nenhum participante encontrado."
+        );
+
+        resultadoDiv.textContent = '';
+
+        return;
+
+      }
+
+      msg.textContent =
+        `✅ ${participantes.length} participante(s) encontrado(s).`;
+
+
+
+
+
+      let html = "";
+
+
+
+
+      participantes.forEach(p => {
+
+        html += `
+
+          <div class="card-designacao">
+
+              <div class="card-designacao-topo">
+
+                  <div>
+
+                      <div class="nome-designacao">
+
+                          ${p.nome}
+
+                      </div>
+
+                      <div class="congregacao-designacao">
+
+                          ${p.congregacao}
+
+                      </div>
+
+                  </div>
+
+                  <div class="freq-designacao">
+
+                      ${p.frequencia || "-"}
+
+                  </div>
+
+          </div>
+
+          <div class="card-designacao-infos">
+
+              <div>
+
+                  <span>👤</span>
+
+                  ${p.condicao || "-"}
+
+              </div>
+
+              <div>
+
+                  <span>📅</span>
+
+                  ${valores.dia}
+
+              </div>
+
+              <div>
+
+                  <span>🌅</span>
+
+                  ${valores.turno}
+
+              </div>
+
+          </div>
+
+          <div class="card-designacao-acoes">
+
+              <img
+                  src="img/whatsapp.svg"
+                  class="icone-whatsapp-participante"
+
+                  data-id="${p.id}"
+
+                  data-nome="${p.nome}"
+
+                  data-telefone="${p.telefone}"
+
+                  title="Conversar pelo WhatsApp">
+
+          </div>
+
+        </div>
+
+      `;
+
+      });
+
+      resultadoDiv.innerHTML = html;
 
       document.getElementById('dadosUsuarioContainer').style.display =
         'inline-block';
@@ -12137,7 +12378,7 @@ let participantesEncontrados2h = [];
     }
   );
 }*/
-function buscarParticipantes2h() {
+/*function buscarParticipantes2h() {
 
   const campos = {
 
@@ -12359,65 +12600,7 @@ function buscarParticipantes2h() {
 
 
 
-        /*const nome =
-          p.nomeCompleto || '';
-
-
-
-        const linhas =
-          nome.split('\n');
-
-
-
-        if (linhas.length > 0) {
-
-
-          tdNome.innerHTML =
-
-            `<strong>${linhas[0]}</strong>` +
-
-            (linhas.length > 1
-
-              ? '<br>' +
-                linhas.slice(1).join('<br>')
-
-              : '');
-
-        }
-
-        else {
-
-
-          tdNome.textContent =
-            nome;
-
-        }
-
-
-
-        tdNome.dataset.id =
-          p.id || "";
-
-
-
-        tdNome.classList.add(
-          'clicavel-nome2h'
-        );
-
-
-
-        tdNome.style.cursor =
-          'pointer';
-
-
-
-        tdNome.style.color =
-          'green';
-
-
-
-        tdNome.title =
-          'Clique para interagir';*/
+        
 
           tdNome.innerHTML = `
 
@@ -12532,7 +12715,345 @@ function buscarParticipantes2h() {
 
   );
 
+}*/
+function buscarParticipantes2h() {
+
+  const campos = {
+
+    dia: document.getElementById('diasSelect2hVisual'),
+    turno: document.getElementById('turnosSelect2hVisual'),
+    frequencia: document.getElementById('frequenciasSelect2hVisual')
+
+  };
+
+
+  const valores = {
+
+    dia: window.camposSelecionados.diasSelect2h,
+
+    turno: window.camposSelecionados.turnosSelect2h,
+
+    frequencia: window.camposSelecionados.frequenciasSelect2h
+
+  };
+
+
+  const msg =
+    document.getElementById("msgPesqDisponiveis2h");
+
+
+  Object.values(campos).forEach(el => {
+
+    if (!el) return;
+
+    el.classList.remove('erro-campo');
+
+  });
+
+
+  const camposVazios =
+    Object.entries(valores)
+
+      .filter(([_, valor]) => !valor)
+
+      .map(([chave]) => chave);
+
+
+
+  if (camposVazios.length > 0) {
+
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, selecione dia, turno e frequência."
+    );
+
+
+    camposVazios.forEach(campo => {
+
+      if (campos[campo]) {
+
+        campos[campo]
+          .classList.add('erro-campo');
+
+      }
+
+    });
+
+    return;
+
+  }
+
+
+
+  const diasTurnos = [
+
+    `${valores.dia} - ${valores.turno}`
+
+  ];
+
+
+  const frequencias = [
+
+    valores.frequencia
+
+  ];
+
+
+
+  const resultadoDiv =
+    document.getElementById('resultadoBusca2h');
+
+
+  resultadoDiv.textContent = '';
+
+
+  mostrarSpinner();
+
+
+
+  apiJSONP(
+
+    "buscarParticipantesPorFiltroAvancado2h",
+
+    {
+
+      dados: JSON.stringify({
+
+        diasTurnos,
+
+        frequencias
+
+      })
+
+    },
+
+
+    (participantes) => {
+
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+
+      participantesEncontrados2h =
+        participantes;
+
+
+
+      esconderSpinner();
+
+
+
+      if (!participantes ||
+          participantes.length === 0) {
+
+
+        mostrarAlertaGlobal(
+          "❌ Nenhum participante encontrado."
+        );
+
+
+        resultadoDiv.textContent = '';
+
+        return;
+
+      }
+
+
+
+      msg.textContent =
+        `✅ ${participantes.length} participante(s) encontrado(s).`;
+
+
+
+      const tabela =
+        document.createElement('table');
+
+
+      tabela.classList.add(
+        'tabela-listagem'
+      );
+
+
+
+      let html = "";
+
+
+
+      participantes.forEach(p => {
+
+ html += `
+
+<div class="card-designacao">
+
+
+    <div class="card-designacao-topo">
+
+
+        <div>
+
+
+            <div class="nome-designacao">
+
+                ${p.nome}
+
+            </div>
+
+
+            <div class="congregacao-designacao">
+
+                ${p.congregacao}
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="freq-designacao">
+
+            ${p.frequencia || "-"}
+
+        </div>
+
+
+    </div>
+
+    <div class="card-designacao-infos">
+
+
+    <div>
+
+        <span>👤</span>
+
+        ${p.condicao || "-"}
+
+    </div>
+
+
+    <div>
+
+        <span>📅</span>
+
+        ${valores.dia}
+
+    </div>
+
+
+    <div>
+
+        <span>🌅</span>
+
+        ${valores.turno}
+
+    </div>
+
+
+</div>
+
+<div class="card-designacao-acoes">
+
+
+    <img
+        src="img/whatsapp.svg"
+
+        class="icone-whatsapp-participante2h"
+
+        data-id="${p.id}"
+
+        data-nome="${p.nome}"
+
+        data-telefone="${p.telefone}"
+
+        title="Conversar pelo WhatsApp">
+
+
+</div>
+
+
+</div>
+
+`;
+
+});
+
+
+
+
+
+      resultadoDiv.innerHTML = html;
+
+
+
+      document.getElementById(
+        'dadosUsuarioContainer2h'
+      ).style.display =
+        'inline-block';
+
+
+
+      document.getElementById(
+        'enviarEmailTodosBtn2h'
+      ).style.display =
+        'inline-block';
+
+
+
+    },
+
+
+    (erro) => {
+
+
+
+      Object.values(campos).forEach(el => {
+
+        if (el) {
+
+          el.classList.remove('erro-campo');
+
+        }
+
+      });
+
+
+
+      esconderSpinner();
+
+
+
+      mostrarAlertaGlobal(
+
+        "❌ Erro na busca: " +
+
+        (erro?.mensagem ||
+
+         erro?.error ||
+
+         "Erro desconhecido")
+
+      );
+
+
+
+      resultadoDiv.textContent = '';
+
+
+
+    }
+
+  );
+
 }
+
 /*document.addEventListener('click', function (event) {
 
   const alvo = event.target.closest('.clicavel-nome2h');
@@ -17655,7 +18176,7 @@ async function salvarDesignacao() {
       ponto,
       dia
     );
-
+console.log("SUBSTITUTO RETORNADO:", substituto);
 
 
   const substituirQuem =
@@ -17717,6 +18238,15 @@ async function salvarDesignacao() {
 
 
       mostrarSpinner();
+
+      console.log("DADOS ENVIO DESIGNACAO", {
+  idParticipante,
+  ponto,
+  dia,
+  frequencia,
+  substituirQuem,
+  equipamento
+});
 
       apiJSONP(
 
@@ -17897,9 +18427,15 @@ function limparCamposDesignar(){
             "nomeSubstituido"
         );
 
-    if(substituido){
+    /*if(substituido){
 
         substituido.value = "";
+
+    }*/
+    if(substituido){
+
+        substituido.textContent =
+            "Nenhum participante selecionado";
 
     }
 
@@ -18201,7 +18737,7 @@ document.addEventListener('click', function(event) {
   }
 });*/
 
-function buscarTreinando() {
+/*function buscarTreinando() {
   const resultadoDiv = document.getElementById('resultadoTreinando');
   const msg = document.getElementById('msgTreinando') || { textContent: () => {} };
 
@@ -18290,11 +18826,131 @@ function buscarTreinando() {
       mostrarAlertaGlobal("❌ Erro na busca: " + (err.message || err));
     }
   );
+}*/
+function buscarTreinando() {
+  const resultadoDiv = document.getElementById('resultadoTreinando');
+  const msg = document.getElementById('msgTreinando') || { textContent: () => {} };
+
+  resultadoDiv.innerHTML = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "buscarTreinandoCompacto",
+    {},
+    (lista) => {
+
+      esconderSpinner();
+
+      if (!lista || lista.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhum participante em treinamento encontrado.");
+        return;
+      }
+
+      if (msg) msg.textContent = `✅ ${lista.length} treinando(s) encontrado(s).`;
+
+      lista.forEach(item => {
+
+        console.log("ITEM DIAS:", item.nome, item.diasTurnos);
+
+  const card = document.createElement("div");
+
+  card.classList.add(
+    "card-designacao"
+  );
+
+
+  card.innerHTML = `
+
+    <div class="card-designacao-topo">
+
+      <div>
+
+        <div class="nome-designacao">
+          ${item.nome || ""}
+        </div>
+
+        <div class="congregacao-designacao">
+          🏠 ${item.congregacao || ""}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card-designacao-infos">
+
+      <div>
+        ⚧ ${item.sexo || ""}
+      </div>
+
+    </div>
+
+
+    <div class="card-designacao-acoes">
+
+
+      <span
+        class="icone-ver-disponibilidade-treinando"
+
+        data-id="${item.id || ''}"
+        data-nome="${item.nome || ''}"
+        data-congregacao="${item.congregacao || ''}"
+        data-telefone="${item.telefone || ''}"
+        data-sexo="${item.sexo || ''}"
+
+        data-dias-turnos='${JSON.stringify(
+          (item.diasTurnos || '')
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean)
+        )}'
+      >
+        📅
+      </span>
+
+
+      ${
+        item.telefone
+        ?
+        `
+        <img
+          src="img/whatsapp.svg"
+
+          class="icone-whatsapp-treinando"
+
+          data-telefone="${item.telefone}"
+
+          data-nome="${item.nome || ""}"
+
+          title="Enviar mensagem pelo WhatsApp">
+        `
+        :
+        ""
+      }
+
+
+    </div>
+
+  `;
+
+
+  resultadoDiv.appendChild(card);
+
+});
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro na busca: " + (err.message || err));
+    }
+  );
 }
 
-document.addEventListener('click', function(event) {
-  if (event.target && event.target.classList.contains('clicavel-nome-treinando')) {
+/*document.addEventListener('click', function(event) {
 
+  if (event.target && event.target.classList.contains('clicavel-nome-treinando')) {
+  
     if (perfilUsuario !== 'admin') {
       mostrarAlertaGlobal("⚠️ Permitido apenas consultar quem está alistado para o próximo treinamento.");
       return;
@@ -18365,6 +19021,212 @@ document.addEventListener('click', function(event) {
 
     container.appendChild(tabela);
   }
+});*/
+document.addEventListener('click', function(event) {
+
+  const botao =
+    event.target.closest('.icone-ver-disponibilidade-treinando');
+
+  if (!botao) return;
+
+console.log(botao.dataset);
+
+  if (perfilUsuario !== 'admin') {
+    mostrarAlertaGlobal(
+      "⚠️ Permitido apenas consultar quem está alistado para o próximo treinamento."
+    );
+    return;
+  }
+
+
+  const nome = botao.dataset.nome || "";
+  const idTreinando = botao.dataset.id || "";
+  const sexo = botao.dataset.sexo || "";
+  const congregacao = botao.dataset.congregacao || "";
+  const telefone = botao.dataset.telefone || "";
+
+
+  let diasTurnosArray;
+
+  console.log("DIAS TURNOS RAW:", botao.dataset.diasTurnos);
+
+  try {
+
+    diasTurnosArray =
+      JSON.parse(botao.dataset.diasTurnos || "[]");
+
+  } catch (e) {
+
+    diasTurnosArray = [];
+
+  }
+  console.log("DIAS TURNOS ARRAY:", diasTurnosArray);
+
+    document.getElementById('idTreinando').value = idTreinando;
+    document.getElementById('nomeTreinando').value = nome;
+    document.getElementById('congregacaoTreinando').value = congregacao;
+    document.getElementById('telefoneTreinando').value = telefone;
+    document.getElementById('sexoTreinando').value = sexo;
+
+    /*const container = document.getElementById('resultadoDiasTurnos');
+    container.innerHTML = '';*/
+    const modal =
+      document.getElementById("modalDiasTurnos");
+
+
+    const container =
+      document.getElementById("conteudoModalDiasTurnos");
+
+
+    container.innerHTML = "";
+
+
+    const containerTreinadores = document.getElementById('resultadoTreinadores');
+   
+    if (containerTreinadores) containerTreinadores.innerHTML = '';
+
+    if (!diasTurnosArray || diasTurnosArray.length === 0) {
+      mostrarAlertaGlobal(`❌ Nenhum dia/turno disponível para ${nome}.`);
+      return;
+    }
+
+    const titulo = document.createElement('h4');
+    titulo.textContent = `Dias disponíveis de ${nome}:`;
+    container.appendChild(titulo);
+
+    /*const tabela = document.createElement('table');
+    tabela.className = 'tabela-listagem';
+
+    const thead = tabela.createTHead();
+    const trHead = thead.insertRow();
+    ['Dia', 'Turno', 'Ação'].forEach(txt => {
+      const th = document.createElement('th');
+      th.textContent = txt;
+      trHead.appendChild(th);
+    });
+
+    const tbody = tabela.createTBody();
+    diasTurnosArray.forEach(dt => {
+      const [dia, turno] = dt.split(" - ").map(s => s.trim());
+      if (!dia || !turno) return;
+
+      const tr = tbody.insertRow();
+      tr.insertCell().textContent = dia;
+      tr.insertCell().textContent = turno;
+
+      const tdAcao = tr.insertCell();
+      tdAcao.textContent = "Buscar treinador";
+      tdAcao.style.color = 'blue';
+      tdAcao.style.cursor = 'pointer';
+      tdAcao.classList.add('btn-dia-turno');
+      tdAcao.dataset.sexo = sexo;
+      tdAcao.dataset.dia = dia;
+      tdAcao.dataset.turno = turno;
+    });
+
+    container.appendChild(tabela);*/
+    const listaCards = document.createElement("div");
+
+
+diasTurnosArray.forEach(dt => {
+
+  const [dia, turno] =
+    dt.split(" - ").map(s => s.trim());
+
+
+  if (!dia || !turno) return;
+
+
+  const card = document.createElement("div");
+
+  card.classList.add(
+    "card-designacao"
+  );
+
+
+  card.innerHTML = `
+
+    <div class="card-designacao-topo">
+
+      <div>
+
+        <div class="nome-designacao">
+          ${dia}
+        </div>
+
+        <div class="congregacao-designacao">
+          ${turno}
+        </div>
+
+      </div>
+
+
+      <div class="freq-designacao">
+        📅
+      </div>
+
+    </div>
+
+
+    <div class="card-designacao-acoes">
+
+      <span
+        class="btn-dia-turno"
+
+        style="color:blue;cursor:pointer;"
+
+        data-sexo="${sexo}"
+        data-dia="${dia}"
+        data-turno="${turno}"
+      >
+        🔎 Buscar treinador
+      </span>
+
+    </div>
+
+  `;
+
+
+  listaCards.appendChild(card);
+
+});
+
+
+container.appendChild(listaCards);
+document
+  .getElementById("modalDiasTurnos")
+  .classList.remove("oculto");
+
+});
+
+document.addEventListener("click", function(event){
+
+    if (
+      event.target.id === "fecharModalDiasTurnos"
+    ){
+
+      document
+        .getElementById("modalDiasTurnos")
+        .classList.add("oculto");
+
+    }
+
+});
+document.addEventListener('click', function(event) {
+
+
+  if (
+    event.target &&
+    event.target.id === "fecharModalTreinadores"
+  ) {
+
+    document
+      .getElementById("modalTreinadores")
+      .classList.add("oculto");
+
+  }
+
+
 });
 
 document.addEventListener("click", function(e){
@@ -18405,6 +19267,11 @@ document.addEventListener('click', function (event) {
     const turno = event.target.dataset.turno;
     const sexo = event.target.dataset.sexo;
 
+    // fecha o modal após escolher o horário
+    document
+      .getElementById("modalDiasTurnos")
+      .classList.add("oculto");
+
     enviarPesquisaDireta(sexo, dia, turno);
   }
 });
@@ -18443,7 +19310,7 @@ function buscarTreinadoresParaTreinando(treinandoSelecionado, treinadores) {
   montarTabela(treinadores);
 }
 
-function montarTabela(treinadores) {
+/*function montarTabela(treinadores) {
 
   const container = document.getElementById('resultadoContainer');
   container.innerHTML = '';
@@ -18503,8 +19370,298 @@ function montarTabela(treinadores) {
   });
 
   container.appendChild(tabela);
-}
+}*/
+/*function montarTabela(treinadores) {
 
+  const container =
+    document.getElementById('resultadoContainer');
+
+  container.innerHTML = '';
+
+
+  if (!treinadores || treinadores.length === 0) {
+
+    container.textContent =
+      "❌ Nenhum treinador encontrado.";
+
+    return;
+
+  }
+
+
+  treinadores.forEach(treinador => {
+
+
+    const card =
+      document.createElement("div");
+
+    card.classList.add(
+      "card-designacao"
+    );
+
+
+    card.innerHTML = `
+
+      <div class="card-designacao-topo">
+
+        <div>
+
+          <div class="nome-designacao">
+            ${treinador.nome || ""}
+          </div>
+
+
+        </div>
+
+
+        <div class="freq-designacao">
+          ${treinador.sexo || ""}
+        </div>
+
+      </div>
+
+
+      <div class="card-designacao-acoes">
+
+
+        <button
+          class="btn-designar-treinador"
+        >
+          📌 Designar
+        </button>
+
+
+      </div>
+
+    `;
+
+
+    const btn =
+      card.querySelector(
+        ".btn-designar-treinador"
+      );
+
+
+    btn.onclick = () => {
+
+
+      const nomeTreinando =
+        document
+        .getElementById('nomeTreinando')
+        .value.trim();
+
+
+      const idTreinando =
+        document
+        .getElementById('idTreinando')
+        .value.trim();
+
+
+      const congregacao =
+        document
+        .getElementById('congregacaoTreinando')
+        .value.trim();
+
+
+      const telefone =
+        document
+        .getElementById('telefoneTreinando')
+        .value.trim();
+
+
+
+      if (
+        !nomeTreinando ||
+        !congregacao ||
+        !telefone
+      ) {
+
+        mostrarAlertaGlobal(
+          "⚠️ Atenção! Os dados do candidato estão incompletos."
+        );
+
+        return;
+
+      }
+
+
+      abrirFluxoDesignacao(
+
+        idTreinando,
+
+        treinador.id,
+
+        nomeTreinando,
+
+        congregacao,
+
+        telefone
+
+      );
+
+
+    };
+
+
+    container.appendChild(card);
+
+
+  });
+
+
+}*/
+function montarCardsTreinadores(treinadores, sexo, dia, turno) {
+
+
+  const container =
+    document.getElementById(
+      "conteudoModalTreinadores"
+    );
+
+
+  container.innerHTML = "";
+
+
+  if (!treinadores || treinadores.length === 0) {
+
+    container.innerHTML =
+      "❌ Nenhum treinador encontrado.";
+
+  } else {
+
+
+    treinadores.forEach(treinador => {
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.classList.add(
+        "card-designacao"
+      );
+
+      const designacao = treinador.designacoes[0] || "";
+
+      const ponto =
+        designacao.match(/\d+/)?.[0] || "";
+
+
+      card.innerHTML = `
+
+        <div class="card-designacao-topo">
+
+          <div>
+
+            <div class="nome-designacao">
+              ${treinador.nome || ""}
+            </div>
+
+
+            <div class="congregacao-designacao">
+              ${treinador.congregacao || ""}
+            </div>
+
+          </div>
+
+
+          <div class="freq-designacao">
+            ${dia}
+          </div>
+
+
+        </div>
+
+
+        <div class="card-designacao-infos">
+          
+          <div>
+            👤 ${treinador.sexo}
+          </div> 
+          <div>
+            🚩 Ponto ${ponto}
+          </div>
+          <div>
+            ⏰ ${turno}
+          </div>
+
+
+        </div>
+
+
+        <div class="card-designacao-acoes">
+
+
+          <button class="btn-designar-treinador">
+            📌 Designar
+          </button>
+
+
+        </div>
+
+      `;
+
+
+
+      card
+      .querySelector(".btn-designar-treinador")
+      .onclick = function(){
+
+
+        const nomeTreinando =
+          document
+          .getElementById('nomeTreinando')
+          .value.trim();
+
+
+        const idTreinando =
+          document
+          .getElementById('idTreinando')
+          .value.trim();
+
+
+        const congregacao =
+          document
+          .getElementById('congregacaoTreinando')
+          .value.trim();
+
+
+        const telefone =
+          document
+          .getElementById('telefoneTreinando')
+          .value.trim();
+
+        document
+          .getElementById("modalTreinadores")
+          .classList.add("oculto");
+
+        abrirFluxoDesignacao(
+          idTreinando,
+          treinador.id,
+          nomeTreinando,
+          congregacao,
+          telefone
+        );
+
+
+      };
+
+
+      container.appendChild(card);
+
+
+    });
+
+
+  }
+
+
+  document
+  .getElementById("modalTreinadores")
+  .classList.remove("oculto");
+
+
+}
 function abrirFluxoDesignacao(idTreinando, idTreinador, nomeTreinando, congregacao, telefone) {
 
   const modal = document.getElementById('modalConfirmarDesignacao');
@@ -18686,7 +19843,7 @@ function fecharModalWhatsapp() {
   document.getElementById('modalEnviarWhatsapp').classList.add('oculto');
 }
 
-function buscarTreinamentosEmAndamento() {
+/*function buscarTreinamentosEmAndamento() {
 
   mostrarSpinner();
 
@@ -18729,7 +19886,7 @@ function buscarTreinamentosEmAndamento() {
 
       lista.forEach(item => {
 
-        /*console.log("ITEM:", item);*/
+        //console.log("ITEM:", item);
 
         const tr = tbody.insertRow();
 
@@ -18754,12 +19911,155 @@ function buscarTreinamentosEmAndamento() {
         btnAcoes.dataset.telefoneTreinador = item.telefoneTreinador;
         btnAcoes.dataset.congregacaoTreinador = item.congregacaoTreinador;
 
-        /*console.log("DATASET:", btnAcoes.dataset);*/
+        //console.log("DATASET:", btnAcoes.dataset);
 
         tdAcao.appendChild(btnAcoes);
       });
 
       container.appendChild(tabela);
+    },
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal('❌ ' + (err.message || err));
+    }
+  );
+}*/
+function buscarTreinamentosEmAndamento() {
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarTreinamentosEmAndamento",
+    {},
+    (lista) => {
+
+      esconderSpinner();
+
+      const container = document.getElementById('resultadoTreinamentosAndamento');
+
+      container.innerHTML = '';
+
+      if (!lista || lista.length === 0) {
+        container.innerHTML =
+          '<p>❌ Nenhum treinamento em andamento.</p>';
+        return;
+      }
+
+      lista.forEach(item => {
+
+
+  const card =
+    document.createElement("div");
+
+
+  card.classList.add(
+    "card-designacao"
+  );
+
+
+  card.innerHTML = `
+
+    <div class="card-designacao-topo">
+
+      <div>
+
+        <div class="nome-designacao">
+          ${item.nomeTreinando || ""}
+        </div>
+
+
+        <div class="congregacao-designacao">
+          ${item.congregacao || ""}
+        </div>
+
+      </div>
+
+
+      <div class="freq-designacao">
+        📅 Há ${item.diasTreinamento || 0} dias
+      </div>
+
+    </div>
+
+    <div class="card-designacao-infos">
+
+
+      <div>
+        👤 ${item.nomeTreinador || ""}
+      </div>
+
+
+      <div>
+        📱 ${item.telefone || ""}
+      </div>
+
+      <div>
+        🏫 Em andamento
+      </div>
+
+
+    </div>
+
+
+
+    <div class="card-designacao-acoes">
+
+
+      <button
+        class="btn-acoes-treinamento"
+      >
+        ✏️ Editar
+      </button>
+
+
+    </div>
+
+  `;
+
+
+
+  const btnAcoes =
+    card.querySelector(
+      ".btn-acoes-treinamento"
+    );
+
+
+
+  btnAcoes.dataset.idTreinando =
+    item.idTreinando;
+
+  btnAcoes.dataset.nomeTreinando =
+    item.nomeTreinando;
+
+  btnAcoes.dataset.congregacao =
+    item.congregacao;
+
+  btnAcoes.dataset.telefone =
+    item.telefone;
+
+
+  btnAcoes.dataset.idTreinador =
+    item.idTreinador;
+
+  btnAcoes.dataset.nomeTreinador =
+    item.nomeTreinador;
+
+  btnAcoes.dataset.telefoneTreinador =
+    item.telefoneTreinador;
+
+  btnAcoes.dataset.congregacaoTreinador =
+    item.congregacaoTreinador;
+
+
+
+  container.appendChild(card);
+
+
+});
+
+
     },
     (err) => {
 
@@ -20354,7 +21654,7 @@ function mostrarVagas(vagas) {
 
             <div class="congregacao-designacao">
 
-                ${vaga.quemSai || "Sem informação"}
+               <div>Quem saiu</div> ${vaga.quemSai || "Sem informação"}
 
             </div>
 
@@ -20364,7 +21664,7 @@ function mostrarVagas(vagas) {
 
         <div>
 
-            <span>⏳</span>
+            <!--<span>⏳</span>-->
 
             <span class="tempo ${classeTempo}">
 
@@ -20398,8 +21698,8 @@ function mostrarVagas(vagas) {
 
         </div>
 
-
-        <div class="freq-designacao">
+        <div>
+        <!--<div class="freq-designacao">-->
 
             ${vaga.frequencia}
 
@@ -20985,7 +22285,7 @@ function carregarVagasDisponiveis() {
 
                     <div class="congregacao-designacao">
 
-                        ${vaga.nomeParticipante || "Companheiro não informado"}
+                      <div>Companheiro(a)</div> ${vaga.nomeParticipante || "Não informado"}
 
                     </div>
 
@@ -22125,7 +23425,7 @@ function listarPontosSistema(){
     },
     function(participantesDesignados) {
 
-      const select = document.getElementById("substituirQuem");
+      /*const select = document.getElementById("substituirQuem");
       select.innerHTML = '<option value="">-- Nenhum --</option>';
 
       (participantesDesignados || []).forEach(participante => {
@@ -22133,7 +23433,10 @@ function listarPontosSistema(){
         option.value = participante.id;
         option.textContent = participante.nomeCompleto;
         select.appendChild(option);
-      });
+      });*/
+
+    window.participantesParaSubstituir =
+      participantesDesignados || [];
 
     },
     function(err) {
@@ -22147,9 +23450,24 @@ function listarPontosSistema(){
 
 }
 
-function limparSubstituirQuem() {
+/*function limparSubstituirQuem() {
   const select = document.getElementById("substituirQuem");
   select.innerHTML = '<option value="">-- Nenhum --</option>';
+}*/
+function limparSubstituirQuem() {
+
+  const campo =
+    document.getElementById("nomeSubstituido");
+
+  if (campo) {
+
+    campo.textContent =
+      "Nenhum participante selecionado";
+
+  }
+
+  window.participantesParaSubstituir = [];
+
 }
 
 function carregarDadosVaga() {
@@ -22285,7 +23603,13 @@ function enviarPesquisaDireta(sexo, dia, turno) {
 
       (res.logs || []).forEach(l => console.log(l));
 
-      montarTabela(res.resultados, sexo, dia, turno);
+      //montarTabela(res.resultados, sexo, dia, turno);
+      montarCardsTreinadores(
+        res.resultados,
+        sexo,
+        dia,
+        turno
+      );
 
     },
     function(err) {
@@ -23640,7 +24964,9 @@ function renderizarDesignados(lista) {
 
           participanteSubstituido = p;
 
-          document.getElementById("nomeSubstituido").value = p.nome;
+          //document.getElementById("nomeSubstituido").value = p.nome;
+          document.getElementById("nomeSubstituido").textContent =
+            p.nome;
 
           fecharModalDesignados();
 
@@ -23657,7 +24983,9 @@ function confirmarNenhumDesignados() {
 
   participanteSubstituido = null;
 
-  document.getElementById("nomeSubstituido").value = "";
+  //document.getElementById("nomeSubstituido").value = "";
+  document.getElementById("nomeSubstituido").textContent =
+    "Nenhum participante selecionado";
 
   fecharModalDesignados();
 
@@ -23976,7 +25304,7 @@ function executarAcaoModalEditarDisponibilidade() {
 }
 
 //MEU TREINAMENTO PRÁTICO x
-function consultarMeuTreinamento() {
+/*function consultarMeuTreinamento() {
 
   //console.log("🔥 consultarMeuTreinamento INICIOU");
 
@@ -24085,6 +25413,101 @@ function consultarMeuTreinamento() {
       container.appendChild(
         tabela
       );
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err.message
+      );
+
+    }
+  );
+
+}*/
+function consultarMeuTreinamento() {
+
+  //console.log("🔥 consultarMeuTreinamento INICIOU");
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "consultarMeuTreinamento",
+    {
+      id: idUsuarioLogado
+    },
+
+    function(res) {
+      
+      //console.log("🔥 RESPOSTA CHEGOU:", res);
+
+      esconderSpinner();
+
+      if (!res || res.sucesso === false) {
+        mostrarAlertaGlobal(res?.mensagem || "Sem dados");
+        return;
+      }
+
+      const container =
+  document.getElementById(
+    'resultadoMeuTreinamento'
+  );
+
+container.innerHTML = '';
+
+const card = document.createElement("div");
+
+card.classList.add(
+  "card-designacao"
+);
+
+
+card.innerHTML = `
+
+  <div class="card-designacao-topo">
+
+    <div>
+
+      <div class="nome-designacao">
+        ${res.nome || ""}
+      </div>
+
+      <div class="congregacao-designacao">
+        🏠 ${res.congregacao || ""}
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card-designacao-infos">
+
+    <div>
+      📱 ${res.telefone || ""}
+    </div>
+
+  </div>
+
+
+  <div class="card-designacao-acoes">
+
+    <button
+      class="concluir-meu-treinamento"
+      data-id-treinando="${res.idTreinando}"
+      data-id-treinador="${idUsuarioLogado}"
+      data-nome-treinando="${res.nome}"
+    >
+      ✅ Concluir
+    </button>
+
+  </div>
+
+`;
+
+container.appendChild(card);
 
     },
     function(err) {
@@ -25129,9 +26552,14 @@ function selecionarCampoComModal(config = {}) {
             }
 
 
-            if (elemento) {
+            /*if (elemento) {
 
                 elemento.value = valor;
+
+            }*/
+            if (elemento) {
+
+                elemento.textContent = valor;
 
             }
 
@@ -25356,9 +26784,15 @@ function abrirSelecaoPontoDesignar(){
 
 
 
-                    if(campo){
+                    /*if(campo){
 
                         campo.value =
+                            `${ponto} - ${turno.texto}`;
+
+                    }*/
+                    if(campo){
+
+                        campo.textContent =
                             `${ponto} - ${turno.texto}`;
 
                     }
@@ -25512,9 +26946,15 @@ function abrirSelecaoPontoVaga(){
                         );
 
 
-                    if(campo){
+                    /*if(campo){
 
                         campo.value =
+                            `${ponto} - ${turno.texto}`;
+
+                    }*/
+                    if(campo){
+
+                        campo.textContent =
                             `${ponto} - ${turno.texto}`;
 
                     }
@@ -25529,7 +26969,6 @@ function abrirSelecaoPontoVaga(){
     });
 
 }
-
 function abrirSelecaoDiaVaga(){
 
     selecionarCampoComModal({
@@ -25553,7 +26992,6 @@ function abrirSelecaoDiaVaga(){
     });
 
 }
-
 function abrirSelecaoFrequenciaVaga(){
 
     selecionarCampoComModal({
@@ -25685,8 +27123,11 @@ function abrirSelecaoLista(
             const visual =
                 document.getElementById(campo + "Visual");
 
-            if (visual) {
+            /*if (visual) {
                 visual.value = valor;
+            }*/
+            if (visual) {
+                visual.textContent = valor;
             }
 
         }
@@ -25924,6 +27365,7 @@ function criarGrupoCompanheiros(){
         "✅ Grupo criado"
       );
 
+      pesquisarDesignados();
 
       abrirModalCompanheiros(
         idParticipante,
@@ -26219,8 +27661,8 @@ function removerCompanheiro(
         "✅ Companheiro removido."
       );
 
+      pesquisarDesignados();
 
-      // Atualiza o modal mantendo o contexto atual
 
       if (
         window.contextoCompanheiros
@@ -26595,6 +28037,8 @@ function confirmarAdicionarCompanheiro(participante){
                     mostrarAlertaGlobal(
                         "✅ Companheiro adicionado."
                     );
+
+                    pesquisarDesignados();
 
                     abrirModalCompanheiros(
 

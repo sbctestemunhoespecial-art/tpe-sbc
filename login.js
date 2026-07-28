@@ -15437,7 +15437,7 @@ function mostrarConfirmacaoRegistrarInscritos() {
 
 }
 
-//document.addEventListener("DOMContentLoaded", function() {
+/*//document.addEventListener("DOMContentLoaded", function() {
 
   //carregarEventosInscritos();
 
@@ -15451,7 +15451,8 @@ function mostrarConfirmacaoRegistrarInscritos() {
   selEv.addEventListener("change", eventoMudouDesignados);
 
   const btn = document.getElementById("btnMostrarDesignados");
-  btn.addEventListener("click", function() {
+
+btn.addEventListener("click", function() {
     const eventoId = selEv.value;
     const turno = document.getElementById("turnoSelectDesignados").value;
 
@@ -15469,102 +15470,6 @@ function mostrarConfirmacaoRegistrarInscritos() {
     mostrarSpinner();
     container.innerHTML = "<p>Carregando designados...</p>";
 
-    /*apiJSONP(
-      "listarDesignadosDoEvento",
-      { eventoId, turno },
-      function(designados) {
-
-        esconderSpinner();
-
-        if (!designados || (Array.isArray(designados) && designados.length === 0)) {
-          container.innerHTML = "<p>❌ Nenhum designado encontrado para esse turno.</p>";
-        } else if (typeof designados === "string") {
-          container.innerHTML = `<p style="color: gray;">${designados}</p>`;
-        } else {
-
-          let html = "<table class='tabela-listagem'>";
-
-          html += `
-            <thead>
-              <tr>
-                <th style="width: 20%;">Mostruário</th>
-                <th style="width: 40%;">Nome</th>
-                <th style="width: 15%;">Sexo</th>
-                <th style="width: 20%;">Telefone</th>
-                <th style="display:none; width: 5%;">Email</th>
-              </tr>
-            </thead>
-            <tbody>
-          `;
-
-          designados.forEach(function(d, idx) {
-
-            var telefoneLimpo = String(d.telefone || "").replace(/\D/g, "");
-            var nome = d.nome || "participante";
-
-            var selEv = document.getElementById("eventoSelectDesignados");
-            var evento = selEv.options[selEv.selectedIndex].text;
-
-            var selectTurno = document.getElementById("turnoSelectDesignados");
-            var turnoTxt = selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
-
-            var mensagem =
-              "*Evento do TPE - Confirmação de Participação*\n\n" +
-              "👤 Olá,\n" + nome + "\n\n" +
-              "✍️ Você foi designado para o evento *" + evento + "*, para o dia *" + turnoTxt + "*.\n\n" +
-              "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
-              "*Equipe de Eventos do TPE SBC*";
-
-            var linkWhatsapp = telefoneLimpo
-              ? "https://wa.me/55" + telefoneLimpo + "?text=" + encodeURIComponent(mensagem)
-              : "";
-
-            html += "<tr>" +
-              "<td class='carrinho-editavel' style='color:blue; cursor:pointer;' data-carrinho='" + (d.carrinho || "") + "'>" + (d.carrinho || "Carrinho do Evento") + "</td>" +
-              "<td class='nome-editavel' data-id='" + d.id + "'>" + (d.nome || "Participante") + "</td>" +
-              "<td>" + (d.sexo || "") + "</td>" +
-              "<td>" + (linkWhatsapp ? "<a href='" + linkWhatsapp + "' target='_blank' rel='noopener noreferrer'>" + (d.telefone || "") + "</a>" : "") + "</td>" +
-              "<td style='display:none;'>" + (d.email || "") + "</td>" +
-              "</tr>";
-          });
-
-          html += "</tbody></table>";
-          container.innerHTML = html;
-
-          container.querySelectorAll(".carrinho-editavel").forEach(td => {
-            td.style.color = "blue";
-            td.style.cursor = "pointer";
-            td.addEventListener("click", () => transformarCarrinhoEmSelect(td));
-          });
-
-          document.getElementById("areaBotoes").style.display = "block";
-
-          document.getElementById("btnEnviarTodos").addEventListener("click", () => {
-            const container = document.getElementById("resultadoDesignadosContainerEv");
-            enviarEmailParaTodos(container);
-          });
-
-          document.getElementById("btnEnviarDaAba").addEventListener("click", () => {
-            enviarEmailParaTodosDaAba();
-          });
-
-          container.querySelectorAll(".nome-editavel").forEach(td => {
-            td.style.color = "blue";
-            td.style.cursor = "pointer";
-            td.addEventListener("click", () => {
-              mostrarSpinner();
-              transformarNomeEmSelect(td);
-            });
-          });
-
-        }
-      },
-      function(err) {
-        esconderSpinner();
-        mostrarAlertaGlobal("❌ Erro: " + err.message);
-      }
-    );
-  });*/
   apiJSONP(
     "listarDesignadosDoEvento",
     { eventoId, turno },
@@ -15836,6 +15741,396 @@ function mostrarConfirmacaoRegistrarInscritos() {
 
   });
 
+});*/
+
+const selEv = document.getElementById("eventoSelectDesignados");
+selEv.addEventListener("change", eventoMudouDesignados);
+
+const btn = document.getElementById("btnMostrarDesignados");
+  
+btn.addEventListener("click", function() {
+    const eventoId = selEv.value;
+    const turno = document.getElementById("turnoSelectDesignados").value;
+
+    window.eventoIdAtual = eventoId;
+    window.turnoSelecionadoAtual = turno;
+
+    const container = document.getElementById("resultadoDesignadosContainerEv");
+    container.innerHTML = "";
+
+    if (!eventoId || !turno) {
+      mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
+      return;
+    }
+
+    mostrarSpinner();
+    container.innerHTML = "<p>Carregando designados...</p>";
+
+  apiJSONP(
+    "listarDesignadosDoEvento",
+    { eventoId, turno },
+
+    function(designados) {
+
+      esconderSpinner();
+
+      if (!designados || (Array.isArray(designados) && designados.length === 0)) {
+
+        container.innerHTML =
+          "<p>❌ Nenhum designado encontrado para esse turno.</p>";
+
+      } else if (typeof designados === "string") {
+
+        container.innerHTML =
+          `<p style="color: gray;">${designados}</p>`;
+
+      } else {
+
+        const selEv =
+          document.getElementById("eventoSelectDesignados");
+
+        const evento =
+          selEv.options[selEv.selectedIndex].text;
+
+        const selectTurno =
+          document.getElementById("turnoSelectDesignados");
+
+        const turnoTxt =
+          selectTurno.options[selectTurno.selectedIndex]?.textContent || "Turno";
+
+        container.innerHTML = "";
+
+      //=========================================
+      // Agrupa por carrinho
+      //=========================================
+
+      const grupos = {};
+
+      designados.forEach(d => {
+
+        const chave =
+          (d.carrinho || "").trim() || "__SEM_CARRINHO__";
+
+        if (!grupos[chave]) {
+          grupos[chave] = [];
+        }
+
+        grupos[chave].push(d);
+
+      });
+
+      const chaves =
+        Object.keys(grupos)
+          .sort((a, b) => {
+
+            if (a === "__SEM_CARRINHO__") return -1;
+            if (b === "__SEM_CARRINHO__") return 1;
+
+            return a.localeCompare(
+              b,
+              "pt-BR",
+              {
+                numeric: true,
+                sensitivity: "base"
+              }
+            );
+
+          });
+
+      //=========================================
+      // Exibe grupos
+      //=========================================
+      chaves.forEach(chave => {
+
+        const cardCarrinho =
+        document.createElement("div");
+
+        cardCarrinho.className =
+          "card-carrinho-evento";
+
+
+        const titulo =
+          document.createElement("div");
+
+        titulo.className =
+          "titulo-carrinho-evento";
+
+        titulo.textContent =
+          chave === "__SEM_CARRINHO__"
+            ? "🚗 Carrinho do Evento"
+            : `🚗 ${chave}`;
+
+
+        cardCarrinho.appendChild(titulo);
+
+        container.appendChild(cardCarrinho);
+
+
+
+        grupos[chave].forEach(d => {
+
+
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "card-designacao";
+
+          card.innerHTML = `
+
+            <div class="card-designacao-topo">
+
+                <div>
+
+                    <div class="nome-designacao">
+                        ${evento}
+                    </div>
+
+                    <div class="congregacao-designacao">
+                        ${turnoTxt}
+                    </div>
+
+                </div>
+
+                  <!--<span
+                      class="freq-designacao carrinho-editavel"
+                      data-id="${d.id}"
+                      data-carrinho="${d.carrinho || ""}">
+
+                      ✏️ ${d.carrinho || "Carrinho do Evento"}
+
+                  </span>-->
+
+            </div>
+
+            
+
+            <div class="card-evento-infos">
+
+            <span
+                class="freq-designacao nome-editavel"
+                data-id="${d.id}"
+                data-nome="${d.nome}"
+                data-sexo="${d.sexo}"
+                data-telefone="${d.telefone || ""}">
+
+                ✏️ ${d.nome}
+
+            </span>
+
+            <!--<span class="sexo-evento">
+
+                👤 ${d.sexo}
+
+            </span>-->
+
+            <span
+                class="freq-designacao carrinho-editavel"
+                data-id="${d.id}"
+                data-carrinho="${d.carrinho || ""}">
+
+                ✏️ ${d.carrinho || "Carrinho do Evento"}
+
+            </span>
+
+            <div class="card-designacao-acoes">
+
+                <span class="sexo-evento">
+
+                  👤 ${d.sexo}
+
+                </span>
+
+                
+              <img
+                  src="img/whatsapp.svg"
+                  class="icone-whatsapp-evento"
+
+                  data-id="${d.id}"
+                  data-telefone="${d.telefone}"
+
+                  data-nome="${d.nome || ""}"
+
+                  data-evento="${evento}"
+
+                  data-turno="${turnoTxt}"
+
+                  title="Conversar pelo WhatsApp"
+
+                  ${!d.telefone ? 'style="display:none"' : ""}>
+
+            </div>
+
+          `;
+
+          cardCarrinho.appendChild(card);
+
+        });
+
+      });
+
+
+        container.querySelectorAll(".carrinho-editavel")
+          .forEach(td => {
+
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+
+            td.addEventListener("click", () => {
+
+              transformarCarrinhoEmSelect(td);
+
+            });
+
+          });
+
+        document.getElementById("areaBotoes").style.display = "block";
+
+        document.getElementById("btnEnviarTodos")
+          .addEventListener("click", () => {
+
+            enviarEmailParaTodos(container);
+
+          });
+
+        document.getElementById("btnEnviarDaAba")
+          .addEventListener("click", () => {
+
+            enviarEmailParaTodosDaAba();
+
+          });
+
+        container.querySelectorAll(".nome-editavel")
+          .forEach(td => {
+
+            td.style.color = "blue";
+            td.style.cursor = "pointer";
+
+            td.addEventListener("click", () => {
+
+              mostrarSpinner();
+
+              transformarNomeEmSelect(td);
+
+            });
+
+          });
+
+      }
+
+    },
+
+    function(err){
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " + err.message
+      );
+
+    }
+
+  );
+
+  document.addEventListener("click", function(e){
+
+    const icone =
+        e.target.closest(".icone-whatsapp-evento");
+
+    if (!icone) return;
+
+    e.stopPropagation();
+
+    const mensagem =
+                      "*Evento do TPE - Confirmação de Participação*\n\n" +
+
+                      "👤 Olá,\n" +
+                      icone.dataset.nome + "\n\n" +
+
+                      "✍️ Você foi designado para o evento *" +
+                      icone.dataset.evento +
+                      "*, para o dia *" +
+                      icone.dataset.turno +
+                      "*.\n\n" +
+
+                      "📲 Por favor, confirme sua participação respondendo esta mensagem.\n\n" +
+
+                      "*Equipe de Eventos do TPE SBC*";
+
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
+    );
+
+  });
+  
+  const btnRegistrarDesignados = document.getElementById("btnRegistrarDesignados");
+  btnRegistrarDesignados.replaceWith(btnRegistrarDesignados.cloneNode(true));
+  document.getElementById("btnRegistrarDesignados")
+    .addEventListener("click", mostrarConfirmacaoRegistrar);
+
+});
+
+
+document
+    .getElementById("eventoSelectInscritos")
+    .addEventListener("change", eventoMudouInscritos);
+
+const btnMostrarInscritos =
+  document.getElementById("btnMostrarInscritos");
+
+
+btnMostrarInscritos.addEventListener("click", function() {
+
+  const container =
+    document.getElementById("resultadoInscritosContainer");
+
+  container.innerHTML = "";
+
+  const eventoId =
+    document.getElementById("eventoSelectInscritos").value;
+
+  const valorSelecionado =
+    document.getElementById("turnoSelectInscritos").value;
+
+  if (!eventoId || !valorSelecionado) {
+    mostrarAlertaGlobal("⚠️ Selecione evento e turno.");
+    return;
+  }
+
+  const partes = valorSelecionado.split("|");
+
+  const data = partes[0];
+  const turno = partes[1];
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarInscritosPorTurno",
+    { eventoId, data, turno },
+    function(res) {
+
+      esconderSpinner();
+      mostrarInscritos(res);
+      document.getElementById("areaBotoesInscritos").style.display = "block";
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error("Erro backend:", err);
+
+      mostrarAlertaGlobal("❌ Erro: " + err.message);
+
+    }
+  );
+
+  const btnRegistrarInscritos = document.getElementById("btnRegistrarInscritos");
+    btnRegistrarInscritos.replaceWith(btnRegistrarInscritos.cloneNode(true));
+    document.getElementById("btnRegistrarInscritos")
+      .addEventListener("click", mostrarConfirmacaoRegistrarInscritos);
+
 });
 
 function carregarEventosInscritos() {
@@ -15944,62 +16239,151 @@ function eventoMudouInscritos() {
 
 }
 
-function mostrarInscritos(inscritos) {
+/*function mostrarInscritos(inscritos) {
 
-    esconderSpinner();
+  esconderSpinner();
 
-    const container =
-      document.getElementById(
-        "resultadoInscritosContainer"
-      );
+  const container =
+    document.getElementById(
+      "resultadoInscritosContainer"
+    );
 
-    if (!inscritos || inscritos.length === 0) {
+  if (!inscritos || inscritos.length === 0) {
 
-      container.innerHTML =
-        "<p>❌ Nenhum inscrito encontrado.</p>";
+    container.innerHTML =
+      "<p>❌ Nenhum inscrito encontrado.</p>";
 
-      return;
-    }
+    return;
+  }
 
-    let html = `<table class='tabela-listagem'>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Sexo</th>
-            <th>Telefone</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-    inscritos.forEach(i => {
-
-      html += `
+  let html = `<table class='tabela-listagem'>
+      <thead>
         <tr>
-          <td>${i.nome}</td>
-          <td>${i.sexo || ""}</td>
-          <td>${i.telefone || ""}</td>
-          <td>
-            <button
-              onclick="confirmarExclusao(
-                '${i.participanteId}'
-              )">
-              Excluir
-            </button>
-          </td>
+          <th>Nome</th>
+          <th>Sexo</th>
+          <th>Telefone</th>
+          <th>Ação</th>
         </tr>
-      `;
+      </thead>
+      <tbody>
+  `;
 
-    });
+  inscritos.forEach(i => {
 
     html += `
-        </tbody>
-      </table>
+      <tr>
+        <td>${i.nome}</td>
+        <td>${i.sexo || ""}</td>
+        <td>${i.telefone || ""}</td>
+        <td>
+          <button
+            onclick="confirmarExclusao(
+              '${i.participanteId}'
+            )">
+            Excluir
+          </button>
+        </td>
+      </tr>
     `;
 
-    container.innerHTML = html;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML = html;
+}*/
+function mostrarInscritos(inscritos) {
+
+  esconderSpinner();
+
+  const container =
+    document.getElementById(
+      "resultadoInscritosContainer"
+    );
+
+  container.innerHTML = "";
+
+  if (!inscritos || inscritos.length === 0) {
+
+    container.innerHTML =
+      "<p>❌ Nenhum inscrito encontrado.</p>";
+
+    return;
+
   }
+
+  inscritos.forEach(i => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-designacao";
+
+    card.innerHTML = `
+
+      <div class="card-designacao-topo">
+
+        <div>
+
+          <div class="nome-designacao">
+            ${i.nome}
+          </div>
+
+          <div class="congregacao-designacao">
+            ${i.congregacao || ""}
+          </div>
+
+        </div>
+
+        <div class="freq-designacao">
+          ${i.sexo || ""}
+        </div>
+
+      </div>
+
+      <div class="card-designacao-acoes">
+
+        <button
+          class="btn-icone-excluir btn-excluir-inscrito">
+          🗑️
+        </button>
+
+        <!--${
+          i.telefone
+          ? `
+            <img
+              src="img/whatsapp.svg"
+              class="icone-whatsapp-evento"
+              data-telefone="${i.telefone}"
+              data-nome="${i.nome}"
+              title="Conversar pelo WhatsApp">
+          `
+          : ""
+        }-->
+
+      </div>
+
+    `;
+
+    card
+      .querySelector(".btn-excluir-inscrito")
+      .addEventListener("click", () => {
+
+        confirmarExclusao(
+          i.participanteId
+        );
+
+      });
+
+    container.appendChild(card);
+
+  });
+
+}
 
 function confirmarExclusao(participanteId) {
 
@@ -16135,7 +16519,7 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-function transformarNomeEmSelect(td) {
+/*function transformarNomeEmSelect(td) {
   const eventoId = document.getElementById("eventoSelectDesignados").value;
   const selectTurno = document.getElementById("turnoSelectDesignados");
   const turnoCompleto = selectTurno.options[selectTurno.selectedIndex]?.textContent || "";
@@ -16289,9 +16673,438 @@ function transformarNomeEmSelect(td) {
       mostrarAlertaGlobal("❌ Erro ao buscar cadastro reserva: " + err.message);
     }
   );
-}
+}*/
+function transformarNomeEmSelect(td) {
 
-function transformarCarrinhoEmSelect(td) {
+  const eventoId =
+    document.getElementById("eventoSelectDesignados").value;
+
+  const selectTurno =
+    document.getElementById("turnoSelectDesignados");
+
+  const turnoCompleto =
+    selectTurno.options[
+      selectTurno.selectedIndex
+    ]?.textContent || "";
+
+  const nomeAtual =
+    td.dataset.nome || "";
+
+  const idAtual =
+    td.dataset.id || "";
+
+
+  if (!eventoId || !turnoCompleto) {
+
+    mostrarAlertaGlobal(
+      "❌ Evento ou turno não selecionado"
+    );
+
+    return;
+
+  }
+
+
+  if (td.querySelector("select")) return;
+
+
+  const card =
+    td.closest(".card-designacao");
+
+
+  if (card) {
+
+    card.classList.add(
+      "linha-em-edicao"
+    );
+
+  }
+
+
+  apiJSONP(
+    "listarCadastroReservaAdm",
+    {
+      eventoId,
+      turnoCompleto
+    },
+
+    function(nomesReserva) {
+
+
+      const candidatos =
+        nomesReserva.candidatos;
+
+
+      const selectNome =
+        document.createElement("select");
+
+
+      selectNome.style.fontSize =
+        "25px";
+
+
+      const optVaga =
+        document.createElement("option");
+
+
+      optVaga.value = "VAGA";
+      optVaga.textContent = "VAGA";
+
+      optVaga.dataset.sexo = "";
+      optVaga.dataset.telefone = "";
+      optVaga.dataset.email = "";
+      optVaga.dataset.nome = "VAGA";
+
+
+      if (nomeAtual === "VAGA") {
+
+        optVaga.selected = true;
+
+      }
+
+
+      selectNome.appendChild(optVaga);
+
+
+
+      candidatos.forEach(item => {
+
+
+        const opt =
+          document.createElement("option");
+
+
+        opt.value =
+          item.id;
+
+
+        opt.textContent =
+          item.nome;
+
+
+        opt.dataset.sexo =
+          item.sexo || "";
+
+
+        opt.dataset.telefone =
+          item.telefone || "";
+
+
+        opt.dataset.email =
+          item.email || "";
+
+
+        opt.dataset.nome =
+          item.nome || "";
+
+
+
+        if (item.id === idAtual) {
+
+          opt.selected = true;
+
+        }
+
+
+        selectNome.appendChild(opt);
+
+
+      });
+
+
+
+      td.innerHTML = "";
+
+      td.appendChild(selectNome);
+
+      selectNome.focus();
+
+
+      esconderSpinner();
+
+
+
+      const valorOriginal =
+        selectNome.value;
+
+
+
+      setTimeout(() => {
+
+
+        function cliqueFora(event) {
+
+
+          if (!td.contains(event.target)) {
+
+
+            const novoValor =
+              selectNome.value;
+
+
+
+            if (
+              novoValor === valorOriginal
+            ) {
+
+
+              td.innerHTML =
+                `✏️ ${nomeAtual}`;
+
+
+              if (card) {
+
+                card.classList.remove(
+                  "linha-em-edicao"
+                );
+
+              }
+
+
+              document.removeEventListener(
+                "click",
+                cliqueFora
+              );
+
+
+              return;
+
+            }
+
+
+            if (card) {
+
+              card.classList.remove(
+                "linha-em-edicao"
+              );
+
+            }
+
+
+            document.removeEventListener(
+              "click",
+              cliqueFora
+            );
+
+
+          }
+
+        }
+
+
+        document.addEventListener(
+          "click",
+          cliqueFora
+        );
+
+
+      },0);
+
+
+
+
+      selectNome.addEventListener(
+        "change",
+        () => {
+
+
+          const novoId =
+            selectNome.value;
+
+
+          const optSelecionada =
+            selectNome.options[
+              selectNome.selectedIndex
+            ];
+
+
+
+          const novoNome =
+            optSelecionada.dataset.nome;
+
+
+          const novoSexo =
+            optSelecionada.dataset.sexo;
+
+
+          const novoTelefone =
+            optSelecionada.dataset.telefone;
+
+
+
+          const spanSexo =
+            card.querySelector(
+              ".sexo-evento"
+            );
+
+
+          const whatsapp =
+            card.querySelector(
+              ".icone-whatsapp-evento"
+            );
+
+
+          const carrinho =
+            card.querySelector(
+              ".carrinho-editavel"
+            );
+
+
+
+          const carrinhoSelecionado =
+            carrinho?.dataset.carrinho || "";
+
+
+
+          // Atualiza nome
+
+          td.innerHTML =
+            `✏️ ${novoNome}`;
+
+
+          td.dataset.id =
+            novoId;
+
+
+          td.dataset.nome =
+            novoNome;
+
+
+          td.dataset.sexo =
+            novoSexo;
+
+
+          td.style.color =
+            "blue";
+
+
+          td.style.cursor =
+            "pointer";
+
+
+
+          td.onclick = () =>
+            transformarNomeEmSelect(td);
+
+
+
+          // Atualiza sexo
+
+          if (spanSexo) {
+
+            spanSexo.textContent =
+              `👤 ${novoSexo}`;
+
+          }
+
+
+
+          // Atualiza WhatsApp
+
+          if (whatsapp) {
+
+
+            whatsapp.dataset.id =
+              novoId;
+
+
+            whatsapp.dataset.nome =
+              novoNome;
+
+
+            whatsapp.dataset.telefone =
+              novoTelefone;
+
+
+
+            if (novoTelefone) {
+
+              whatsapp.style.display =
+                "";
+
+            } else {
+
+              whatsapp.style.display =
+                "none";
+
+            }
+
+          }
+
+
+
+          if (card) {
+
+            card.classList.remove(
+              "linha-em-edicao"
+            );
+
+          }
+
+
+
+          mostrarSpinner();
+
+
+
+          apiJSONP(
+            "salvarAlteracaoDesignadoAdm",
+            {
+              eventoId,
+              turnoCompleto,
+              idAtual,
+              novoId,
+              carrinhoSelecionado
+            },
+
+            function() {
+
+              esconderSpinner();
+
+              document
+                .getElementById("btnMostrarDesignados")
+                .click();
+
+            },
+
+
+            function(err) {
+
+              esconderSpinner();
+
+              mostrarAlertaGlobal(
+                "❌ Erro ao salvar alteração: " +
+                err.message
+              );
+
+            }
+
+          );
+
+
+        }
+
+      );
+
+
+    },
+
+
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao buscar cadastro reserva: " +
+        err.message
+      );
+
+    }
+
+  );
+
+}
+/*function transformarCarrinhoEmSelect(td) {
   let carrinhoAtual = td.dataset.carrinho;
   if (!carrinhoAtual) {
     const texto = td.textContent.trim();
@@ -16406,6 +17219,208 @@ function transformarCarrinhoEmSelect(td) {
     td.style.color = "blue";
     td.style.cursor = "pointer";
   });
+}*/
+function transformarCarrinhoEmSelect(td) {
+
+  let carrinhoAtual = td.dataset.carrinho;
+
+  if (!carrinhoAtual) {
+
+    const texto = td.textContent
+      .replace("✏️", "")
+      .trim();
+
+    carrinhoAtual =
+      texto === "Carrinho do Evento"
+        ? ""
+        : texto;
+
+  }
+
+  const card =
+    td.closest(".card-designacao");
+
+  if (card) {
+    card.classList.add("linha-em-edicao");
+  }
+
+  if (td.querySelector("select")) return;
+
+  const select =
+    document.createElement("select");
+
+  select.style.fontSize = "25px";
+
+  const optInicial =
+    document.createElement("option");
+
+  optInicial.value = "";
+  optInicial.textContent = "Selecione";
+  optInicial.disabled = true;
+  optInicial.selected = true;
+
+  select.appendChild(optInicial);
+
+  for (let i = 1; i <= 10; i++) {
+
+    const opt =
+      document.createElement("option");
+
+    opt.value = `Carrinho ${i}`;
+    opt.textContent = `Carrinho ${i}`;
+
+    if (opt.value === carrinhoAtual) {
+      opt.selected = true;
+    }
+
+    select.appendChild(opt);
+
+  }
+
+  td.innerHTML = "";
+  td.appendChild(select);
+
+  select.focus();
+
+  esconderSpinner();
+
+  const valorOriginal = carrinhoAtual;
+
+  setTimeout(() => {
+
+    function cliqueFora(event) {
+
+      if (!td.contains(event.target)) {
+
+        const novoValor =
+          select.value;
+
+        if (
+          novoValor === valorOriginal ||
+          novoValor === ""
+        ) {
+
+          td.innerHTML =
+            `✏️ ${valorOriginal || "Carrinho do Evento"}`;
+
+          td.dataset.carrinho =
+            valorOriginal;
+
+          td.style.color = "blue";
+          td.style.cursor = "pointer";
+
+          td.onclick = () =>
+            transformarCarrinhoEmSelect(td);
+
+        }
+
+        if (card) {
+          card.classList.remove("linha-em-edicao");
+        }
+
+        document.removeEventListener(
+          "click",
+          cliqueFora
+        );
+
+      }
+
+    }
+
+    document.addEventListener(
+      "click",
+      cliqueFora
+    );
+
+  }, 0);
+
+  select.addEventListener("change", () => {
+
+    const novoCarrinho =
+      select.value;
+
+    td.innerHTML =
+      `✏️ ${novoCarrinho}`;
+
+    td.dataset.carrinho =
+      novoCarrinho;
+
+    td.style.color = "blue";
+    td.style.cursor = "pointer";
+
+    if (card) {
+      card.classList.remove("linha-em-edicao");
+    }
+
+    td.onclick = () =>
+      transformarCarrinhoEmSelect(td);
+
+    const eventoId =
+      document.getElementById(
+        "eventoSelectDesignados"
+      ).value;
+
+    const selectTurno =
+      document.getElementById(
+        "turnoSelectDesignados"
+      );
+
+    const turnoCompleto =
+      selectTurno.options[
+        selectTurno.selectedIndex
+      ]?.textContent || "";
+
+    const id =
+      td.dataset.id;
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "salvarAlteracaoDesignadoAdm",
+      {
+        eventoId,
+        turnoCompleto,
+        idAtual: id,
+        novoId: id,
+        carrinhoSelecionado: novoCarrinho
+      },
+      function () {
+
+        esconderSpinner();
+
+        document
+          .getElementById("btnMostrarDesignados")
+          .click();
+
+      },
+      function (err) {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal(
+          "❌ Erro ao salvar carrinho: " +
+          err.message
+        );
+
+      }
+    );
+
+  });
+
+  /*select.addEventListener("blur", () => {
+
+    if (td.querySelector("select")) {
+
+      td.innerHTML =
+        `✏️ ${td.dataset.carrinho || "Carrinho do Evento"}`;
+
+      td.style.color = "blue";
+      td.style.cursor = "pointer";
+
+    }
+
+  });*/
+
 }
 
 function enviarEmailParaTodosDaAba() {

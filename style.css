@@ -3811,3 +3811,94 @@ td {
   height: 60vh;
   min-height: 350px;
 }
+
+/* Estilo para os cards dos designados para o evento */
+/*.card-evento-infos{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:5px;
+
+    margin-bottom:15px;
+
+}*/
+.card-evento-infos {
+
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+
+    gap: 5px;
+
+    margin-bottom: 15px;
+
+}
+.card-carrinho-evento {
+
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:10px;
+    margin-bottom:15px;
+
+}
+
+/*.titulo-carrinho-evento {
+
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
+
+}*/
+.titulo-carrinho-evento {
+
+    font-size: 1.25rem;
+    font-weight: bold;
+
+    padding: 10px 15px;
+
+    margin: 20px 0 10px;
+
+    border-radius: 10px;
+
+    background: #f1f5f9;
+    background: #9fc9f3;
+
+    color: #1e3a8a;
+
+    border-left: 6px solid #2563eb;
+
+}
+
+/*Estilo do botão excluir dos inscritos do evento*/
+.btn-icone-excluir{
+
+    width:40px;
+    height:40px;
+
+    border:none;
+    border-radius:50%;
+
+    /*background:#ef4444;*/
+    background:#fff;
+    color:#fff;
+
+    font-size:20px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:.2s;
+
+}
+
+.btn-icone-excluir:hover{
+
+    transform:scale(1.08);
+
+    background:#dc2626;
+
+}

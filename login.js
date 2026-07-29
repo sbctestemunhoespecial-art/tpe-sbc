@@ -1532,6 +1532,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById('telaLogin').style.display = 'none';
         document.getElementById('conteudoProtegido').style.display = 'block';
 
+        mostrarSecoesPorPerfil(perfilUsuario);
 
         apiJSONP(
           "buscarNomeDoUsuario",
@@ -1600,6 +1601,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById('telaLogin').style.display = 'none';
         document.getElementById('conteudoProtegido').style.display = 'block';
 
+        mostrarSecoesPorPerfil(perfilUsuario);
 
         apiJSONP(
           "buscarNomeDoUsuario",
@@ -8602,9 +8604,9 @@ function renderAllMarkers(pontos) {
       },
       label: {
         text: ponto.nome,
-        color: "black",
-        fontSize: "30px",
-        fontWeight: "normal"
+        color: "red",
+        fontSize: "14px",
+        fontWeight: "bold"
       },
       title: ponto.nome
     });
@@ -8657,17 +8659,6 @@ function verMapa() {
       fontWeight: "bold"
     }
   });
-
-  /*const conteudo =
-    "<div style='font-family: Arial; border: 1px solid #888; border-radius: 6px; overflow: hidden;'>" +
-    "<div style='background-color:#2a4d8f;color:white;font-weight:bold;padding:6px 10px;font-size:40px;'>" +
-    ponto.nome +
-    "</div>" +
-    "<div style='padding:10px;font-size:30px;'>" +
-    "<b>AAC:</b> " + (ponto.encarregado || "") + "<br>" +
-    "<b>Endereço:</b> " + (ponto.endereco || "") + "<br>" +
-    "<b>Depósito:</b> " + (ponto.deposito || "") +
-    "</div></div>";*/
 
   const conteudo =
     "<div style='font-family: Arial; border: 1px solid #888; border-radius: 6px; overflow: hidden; max-width:260px;'>" +

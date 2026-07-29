@@ -4422,37 +4422,123 @@
   <!-- CRIAR AQUI O PAINEL DE CONTAGEM -->
 
     <h5>📊 Estatísticas</h5>
-  <div id="painelResumo">
-    <table id="resumoTable" class="tabela-sistema">
-      <tr><th>Aprovados</th>              <td id="totalDeAprovados"></td></tr>
-    <tr><th>Designações</th>            <td id="totalDesignacoes"></td></tr>
-    <tr><th>Pessoas designadas</th>     <td id="totalComDesignacoes"></td></tr>
-    <tr><th>Designações semanais</th>   <td id="countSemanal"></td></tr>
-    <tr><th>Designações quinzenais</th> <td id="countQuinzenal"></td></tr>
-    <tr><th>Designações mensais</th>    <td id="countMensal"></td></tr>
-    <tr><th>Pessoas com 1 designação</th><td id="totalPessoas1Designacao"></td></tr>
-    <tr><th>Pessoas com mais de 1 designação</th><td id="totalPessoasMais1Designacao"></td></tr>
-    <tr><th>Pessoas sem designação</th> <td id="totalDeIrregulares"></td></tr>
-    <tr><th>Vagas</th>                  <td id="totalVagasAbertas"></td></tr>
-    </table>
-    <!-- Adicione dentro do painelResumo -->
-    <div style="margin-top: 20px;">
-      <h5>Participantes por Circuito</h5>
-      <table id="tabelaCircuitos" style="width: 100%; border-collapse: collapse;">
-        <thead>
-          <tr>
-            <th style="border: 1px solid #ccc; padding: 8px;">Circuito</th>
-            <th style="border: 1px solid #ccc; padding: 8px;">Quantidade</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyCircuitos">
-          <!-- Linhas serão inseridas via JS -->
-        </tbody>
-      </table>
-    </div>
+    <div id="painelResumo">
 
-    <button onclick="carregarResumo()">🔄 Atualizar resumo</button>
-  </div>
+      <div id="cardsResumo" class="lista-cards-resumo"></div>
+
+      <h5 style="margin-top:20px;">Participantes por Circuito</h5>
+
+      <div id="cardsCircuitos" class="lista-cards-circuitos"></div>
+
+      <button onclick="carregarResumo()">
+        🔄 Atualizar resumo
+      </button>
+
+    </div>
+    <!--
+    <div id="painelResumo">
+
+      <div class="lista-cards-resumo">
+
+        <div class="card-resumo">
+          <span class="titulo">✔️ Aprovados</span>
+          <span id="totalDeAprovados" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">📅 Designações</span>
+          <span id="totalDesignacoes" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">👥 Pessoas designadas</span>
+          <span id="totalComDesignacoes" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">📆 Semanais</span>
+          <span id="countSemanal" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">📆 Quinzenais</span>
+          <span id="countQuinzenal" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">📆 Mensais</span>
+          <span id="countMensal" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">1️⃣ Uma designação</span>
+          <span id="totalPessoas1Designacao" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">➕ Mais de uma</span>
+          <span id="totalPessoasMais1Designacao" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">⚠️ Sem designação</span>
+          <span id="totalDeIrregulares" class="valor"></span>
+        </div>
+
+        <div class="card-resumo">
+          <span class="titulo">🚨 Vagas</span>
+          <span id="totalVagasAbertas" class="valor"></span>
+        </div>
+
+      </div>
+
+      <div class="card-resumo card-circuitos">
+
+        <h5>🌎 Participantes por Circuito</h5>
+
+        <div id="tbodyCircuitos"></div>
+
+      </div>
+
+      <button onclick="carregarResumo()">
+        🔄 Atualizar resumo
+      </button>
+
+    </div>
+    -->
+    <!--
+    <div id="painelResumo">
+      <table id="resumoTable" class="tabela-sistema">
+        <tr><th>Aprovados</th>              <td id="totalDeAprovados"></td></tr>
+      <tr><th>Designações</th>            <td id="totalDesignacoes"></td></tr>
+      <tr><th>Pessoas designadas</th>     <td id="totalComDesignacoes"></td></tr>
+      <tr><th>Designações semanais</th>   <td id="countSemanal"></td></tr>
+      <tr><th>Designações quinzenais</th> <td id="countQuinzenal"></td></tr>
+      <tr><th>Designações mensais</th>    <td id="countMensal"></td></tr>
+      <tr><th>Pessoas com 1 designação</th><td id="totalPessoas1Designacao"></td></tr>
+      <tr><th>Pessoas com mais de 1 designação</th><td id="totalPessoasMais1Designacao"></td></tr>
+      <tr><th>Pessoas sem designação</th> <td id="totalDeIrregulares"></td></tr>
+      <tr><th>Vagas</th>                  <td id="totalVagasAbertas"></td></tr>
+      </table>
+
+      <div style="margin-top: 20px;">
+        <h5>Participantes por Circuito</h5>
+        <table id="tabelaCircuitos" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid #ccc; padding: 8px;">Circuito</th>
+              <th style="border: 1px solid #ccc; padding: 8px;">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyCircuitos">
+
+          </tbody>
+        </table>
+      </div>
+
+      <button onclick="carregarResumo()">🔄 Atualizar resumo</button>
+    </div>
+    -->
   </div>
 
     <div id="painelPerfil" class="painel-exportar tela">

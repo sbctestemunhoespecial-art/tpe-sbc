@@ -3813,26 +3813,42 @@ td {
 }
 
 /* Estilo para os cards dos designados para o evento */
-/*.card-evento-infos{
+.card-evento-infos{
 
     display:grid;
 
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(1,1fr);
 
     gap:5px;
 
     margin-bottom:15px;
 
-}*/
-.card-evento-infos {
+}
+.card-evento2-infos{
 
-    display: grid;
+    display:grid;
 
-    grid-template-columns: 1fr auto;
+    /*grid-template-columns:repeat(2,1fr);*/
+    grid-template-columns:repeat(2,auto);
 
-    gap: 5px;
+    gap:5px;
 
-    margin-bottom: 15px;
+    margin-bottom:15px;
+
+}
+.editar-evento{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+    padding:6px 12px;
+
+    border-radius:var(--raio-borda);
+
+    font-weight:700;
+
+    white-space:nowrap;
 
 }
 .card-carrinho-evento {
@@ -3901,4 +3917,133 @@ td {
 
     background:#dc2626;
 
+}
+
+/* NOVO ESTILO PARA A NOVA TELA DE ESTATISTICAS */
+/*.lista-cards-resumo{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+}
+
+.card-resumo{
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    padding:18px;
+}
+
+.card-resumo .titulo{
+    font-size:1rem;
+    font-weight:700;
+    margin-bottom:12px;
+    color:#1f4f82;
+}
+
+.card-resumo .valor{
+    font-size:2rem;
+    font-weight:700;
+    text-align:center;
+    color:#333;
+}
+
+.linha-circuito{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+.linha-circuito:last-child{
+    border-bottom:none;
+}
+
+.badge-circuito{
+    background:#1f4f82;
+    color:#fff;
+    padding:3px 10px;
+    border-radius:999px;
+    font-weight:700;
+    min-width:36px;
+    text-align:center;
+}*/
+.lista-cards-resumo{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+}
+
+.card-resumo{
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    padding:18px;
+    font-weight:bold;
+}
+
+.card-resumo .titulo-resumo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-size:1rem;
+    font-weight:bold;
+    color:#1f4f82;
+    margin-bottom:14px;
+}
+
+.card-resumo .icone-resumo{
+    font-size:1.5rem;
+    line-height:1;
+}
+
+.card-resumo .valor-resumo{
+    font-size:1.3rem;
+    font-weight:bold;
+    text-align:center;
+    color:#333;
+}
+
+.lista-cards-circuitos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.card-circuito {
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-left: 6px solid #1976d2;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  text-align: center;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card-circuito:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+.numero-circuito {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+
+.quantidade-circuito {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.titulo-circuitos {
+  margin: 24px 0 12px;
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
 }

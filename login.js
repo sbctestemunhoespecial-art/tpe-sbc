@@ -722,6 +722,17 @@ function sair() {
   idVagaNotificacao = null;
   notificacaoEscala = null;
 
+  const saudacaoEl = document.getElementById("saudacaoUsuario");
+  const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+  if (saudacaoEl) {
+    saudacaoEl.textContent = "";
+  }
+
+  if (tipoAcessoEl) {
+    tipoAcessoEl.textContent = "";
+  }
+
   mostrarAlertaGlobal("Você saiu da conta.");
 
 }
@@ -759,6 +770,17 @@ function sairPorExpiracao() {
   document.getElementById("emailLogin").value = "";
   document.getElementById("senhaLogin").value = "";
   document.getElementById("msgLogin").textContent = "";
+
+  const saudacaoEl = document.getElementById("saudacaoUsuario");
+  const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
+
+  if (saudacaoEl) {
+    saudacaoEl.textContent = "";
+  }
+
+  if (tipoAcessoEl) {
+    tipoAcessoEl.textContent = "";
+  }
 
   mostrarAlertaGlobal(
     "⏰ Sua sessão expirou. Faça login novamente."
@@ -1500,6 +1522,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const dados = JSON.parse(usuarioSalvo);
 
+    // Esconde imediatamente a tela de login
+    document.getElementById("telaLogin").style.display = "none";
+    document.getElementById("conteudoProtegido").style.display = "block";
+    document.getElementById("menuBtn").style.display = "inline-block";
+
+    // Oculta imediatamente os cards que não pertencem ao perfil
+    mostrarSecoesPorPerfil(dados.perfil);
+
     const expirou =
       Date.now() - dados.timestamp > 60 * 60 * 1000;
 
@@ -1528,11 +1558,11 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        document.getElementById("menuBtn").style.display = "inline-block";
-        document.getElementById('telaLogin').style.display = 'none';
-        document.getElementById('conteudoProtegido').style.display = 'block';
+        //document.getElementById("menuBtn").style.display = "inline-block";
+        //document.getElementById('telaLogin').style.display = 'none';
+        //document.getElementById('conteudoProtegido').style.display = 'block';
 
-        mostrarSecoesPorPerfil(perfilUsuario);
+        //mostrarSecoesPorPerfil(perfilUsuario);
 
         apiJSONP(
           "buscarNomeDoUsuario",
@@ -1597,11 +1627,11 @@ window.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        document.getElementById("menuBtn").style.display = "inline-block";
-        document.getElementById('telaLogin').style.display = 'none';
-        document.getElementById('conteudoProtegido').style.display = 'block';
+        //document.getElementById("menuBtn").style.display = "inline-block";
+        //document.getElementById('telaLogin').style.display = 'none';
+        //document.getElementById('conteudoProtegido').style.display = 'block';
 
-        mostrarSecoesPorPerfil(perfilUsuario);
+        //mostrarSecoesPorPerfil(perfilUsuario);
 
         apiJSONP(
           "buscarNomeDoUsuario",
@@ -15883,14 +15913,6 @@ btn.addEventListener("click", function() {
 
                 </div>
 
-                  <!--<span
-                      class="freq-designacao carrinho-editavel"
-                      data-id="${d.id}"
-                      data-carrinho="${d.carrinho || ""}">
-
-                      ✏️ ${d.carrinho || "Carrinho do Evento"}
-
-                  </span>-->
 
             </div>
 
@@ -15898,57 +15920,61 @@ btn.addEventListener("click", function() {
 
             <div class="card-evento-infos">
 
-            <span
-                class="freq-designacao nome-editavel"
-                data-id="${d.id}"
-                data-nome="${d.nome}"
-                data-sexo="${d.sexo}"
-                data-telefone="${d.telefone || ""}">
+              <span
+                  class="editar-evento nome-editavel"
+                  data-id="${d.id}"
+                  data-nome="${d.nome}"
+                  data-sexo="${d.sexo}"
+                  data-telefone="${d.telefone || ""}">
 
-                ✏️ ${d.nome}
+                  ✏️ ${d.nome}
 
-            </span>
+              </span>
 
-            <!--<span class="sexo-evento">
-
-                👤 ${d.sexo}
-
-            </span>-->
-
-            <span
-                class="freq-designacao carrinho-editavel"
-                data-id="${d.id}"
-                data-carrinho="${d.carrinho || ""}">
-
-                ✏️ ${d.carrinho || "Carrinho do Evento"}
-
-            </span>
-
-            <div class="card-designacao-acoes">
-
+              <div class="card-evento2-infos">
+                
                 <span class="sexo-evento">
 
-                  👤 ${d.sexo}
+                    👤 ${d.sexo}
+
+                </span>
+                <span class="sexo-evento">
+
+                    🏛️ ${d.congregacao}
 
                 </span>
 
-                
-              <img
-                  src="img/whatsapp.svg"
-                  class="icone-whatsapp-evento"
+              </div>
 
-                  data-id="${d.id}"
-                  data-telefone="${d.telefone}"
 
-                  data-nome="${d.nome || ""}"
+              <div class="card-designacao-acoes">
 
-                  data-evento="${evento}"
+                  <span
+                      class="editar-evento carrinho-editavel"
+                      data-id="${d.id}"
+                      data-carrinho="${d.carrinho || ""}">
 
-                  data-turno="${turnoTxt}"
+                      ✏️ ${d.carrinho || "Carrinho do Evento"}
 
-                  title="Conversar pelo WhatsApp"
+                  </span>
 
-                  ${!d.telefone ? 'style="display:none"' : ""}>
+                  
+                <img
+                    src="img/whatsapp.svg"
+                    class="icone-whatsapp-evento"
+
+                    data-id="${d.id}"
+                    data-telefone="${d.telefone}"
+
+                    data-nome="${d.nome || ""}"
+
+                    data-evento="${evento}"
+
+                    data-turno="${turnoTxt}"
+
+                    title="Conversar pelo WhatsApp"
+
+                    ${!d.telefone ? 'style="display:none"' : ""}>
 
             </div>
 
@@ -24661,12 +24687,16 @@ function carregarAbas() {
 
 }
 
-function carregarResumo() {
+/*function carregarResumo() {
+
+  mostrarSpinner();
 
   apiJSONP(
     "obterResumoTPEComPlanilha",
     {},
     function(resumo) {
+
+      esconderSpinner();
 
       for (const chave in resumo) {
         const el = document.getElementById(chave);
@@ -24704,9 +24734,126 @@ function carregarResumo() {
 
     },
     function(err) {
+      
+      esconderSpinner();
+
       mostrarAlertaGlobal("❌ Erro ao carregar resumo: " + err.message);
+
     }
   );
+}*/
+function carregarResumo() {
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "obterResumoTPEComPlanilha",
+    {},
+    function(resumo) {
+
+      esconderSpinner();
+
+      const painel =
+        document.getElementById("painelResumo");
+
+      let html = `<div class="lista-cards-resumo">`;
+
+      const itens = [
+
+        ["👥", "Aprovados", resumo.totalDeAprovados],
+        ["✅", "Designações", resumo.totalDesignacoes],
+        ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
+        ["📅", "Designações semanais", resumo.countSemanal],
+        ["📆", "Designações quinzenais", resumo.countQuinzenal],
+        ["🗓️", "Designações mensais", resumo.countMensal],
+        ["1️⃣", "Pessoas com 1 designação", resumo.totalPessoas1Designacao],
+        ["➕", "Pessoas com mais de 1 designação", resumo.totalPessoasMais1Designacao],
+        ["⚠️", "Pessoas sem designação", resumo.totalDeIrregulares],
+        ["🪑", "Vagas", resumo.totalVagasAbertas]
+
+      ];
+
+      itens.forEach(item => {
+
+        html += `
+        <div class="card-resumo">
+            <div class="titulo-resumo">
+                <span class="icone-resumo">${item[0]}</span>
+                <span>${item[1]}</span>
+            </div>
+
+            <div class="valor-resumo">
+                ${item[2]}
+            </div>
+        </div>
+        `;
+
+      });
+
+      html += `</div>`;
+
+      if (resumo.contagemCircuitos) {
+
+        html += `
+          <h3 class="titulo-circuitos">
+            🌍 Participantes por Circuito
+          </h3>
+
+          <div class="lista-cards-circuitos">
+        `;
+
+        const circuitos =
+          Object.keys(resumo.contagemCircuitos).sort((a, b) => {
+
+            if (a === "Desconhecido") return 1;
+            if (b === "Desconhecido") return -1;
+
+            return parseInt(a) - parseInt(b);
+
+          });
+
+        circuitos.forEach(circuito => {
+
+          html += `
+            <div class="card-circuito">
+              <div class="numero-circuito">
+                Circuito ${circuito}
+              </div>
+
+              <div class="quantidade-circuito">
+               ${resumo.contagemCircuitos[circuito]}
+              </div>
+            </div>
+          `;
+
+        });
+
+        html += `</div>`;
+
+      }
+
+      html += `
+        <div style="text-align:center;margin-top:20px;">
+          <button onclick="carregarResumo()">
+            🔄 Atualizar resumo
+          </button>
+        </div>
+      `;
+
+      painel.innerHTML = html;
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar resumo: " + err.message
+      );
+
+    }
+  );
+
 }
 
 function selecionarSubstituicaoDesignados(ponto, dia) {

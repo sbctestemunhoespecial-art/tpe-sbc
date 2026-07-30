@@ -718,6 +718,27 @@ function sair() {
   document.getElementById("menuBtn").style.display = "none";
   document.getElementById('conteudoProtegido').style.display = 'none';
   document.getElementById('telaLogin').style.display = 'block';
+  
+  //Esconder o sino e zerar o badge
+  const areaNotificacoes =
+    document.getElementById("areaNotificacoes");
+
+  if (areaNotificacoes) {
+
+    areaNotificacoes.style.display = "none";
+
+  }
+
+  const badge =
+    document.getElementById("badgeNotificacoes");
+
+  if (badge) {
+
+    badge.style.display = "none";
+    badge.textContent = "0";
+
+  }
+
 
   idVagaNotificacao = null;
   notificacaoEscala = null;
@@ -765,6 +786,26 @@ function sairPorExpiracao() {
   document.getElementById("menuBtn").style.display = "none";
   document.getElementById("conteudoProtegido").style.display = "none";
   document.getElementById("telaLogin").style.display = "block";
+
+  //Esconder o sino e zerar o badge
+  const areaNotificacoes =
+    document.getElementById("areaNotificacoes");
+
+  if (areaNotificacoes) {
+
+    areaNotificacoes.style.display = "none";
+
+  }
+
+  const badge =
+    document.getElementById("badgeNotificacoes");
+
+  if (badge) {
+
+    badge.style.display = "none";
+    badge.textContent = "0";
+
+  }
 
   // limpa campos do login
   document.getElementById("emailLogin").value = "";
@@ -1301,6 +1342,15 @@ function fazerLogin() {
       document.getElementById("menuBtn").style.display = "inline-block";
       document.getElementById('telaLogin').style.display = 'none';
       document.getElementById('conteudoProtegido').style.display = 'block';
+      
+      const areaNotificacoes =
+        document.getElementById("areaNotificacoes");
+
+      if (areaNotificacoes) {
+
+        areaNotificacoes.style.display = "flex";
+
+      }
 
       historico.length = 0;
 
@@ -1314,6 +1364,7 @@ function fazerLogin() {
 
       atualizarBotaoVoltar();
       mostrarSecoesPorPerfil(res.perfil);
+      atualizarBadgeNotificacoes(); //IMPLANTAÇÃO DAS NOTIFICAÇÕES DENTRO DO APP DE CADA USUARIO
       limparCamposUsuario();
       restaurarCamposPerfil();
 
@@ -29218,5 +29269,328 @@ function confirmarAdicionarCompanheiro(participante){
         }
 
     );
+
+}
+
+//NOVAS FUNÇÕES PARA ARMAZENAR, MOSTRAR, LER E EXCLUIR NOTIFICAÇÕES DENTRO DO APP DO URUARIO
+function atualizarBadgeNotificacoes() {
+
+  if (!idUsuarioLogado) return;
+
+  apiJSONP(
+
+    "buscarNotificacoes",
+
+    {
+      idParticipante: idUsuarioLogado
+    },
+
+    function(res) {
+
+      const badge =
+        document.getElementById("badgeNotificacoes");
+
+      if (!badge) return;
+
+      const naoLidas =
+        res.filter(n => !n.lida).length;
+
+      if (naoLidas > 0) {
+
+        badge.textContent = naoLidas;
+        badge.style.display = "flex";
+
+      } else {
+
+        badge.style.display = "none";
+
+      }
+
+    },
+
+    function(err) {
+
+      console.error(
+        "Erro ao buscar notificações:",
+        err
+      );
+
+    }
+
+  );
+
+}
+
+function abrirPainelNotificacoes(){
+
+    document
+        .getElementById("painelNotificacoes")
+        .classList
+        .add("aberto");
+
+    document
+        .getElementById("fundoPainelNotificacoes")
+        .classList
+        .add("aberto");
+
+    carregarNotificacoes();
+
+}
+
+function fecharPainelNotificacoes(){
+
+    document
+        .getElementById("painelNotificacoes")
+        .classList
+        .remove("aberto");
+
+    document
+        .getElementById("fundoPainelNotificacoes")
+        .classList
+        .remove("aberto");
+
+}
+
+function excluirNotificacao(idNotificacao) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "excluirNotificacao",
+
+    {
+      idNotificacao
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      if (res && res.sucesso) {
+
+        carregarNotificacoes(false);
+
+        atualizarBadgeNotificacoes();
+
+      }
+
+    },
+
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao excluir notificação:",
+        err
+      );
+
+    }
+
+  );
+
+}
+
+function restaurarNotificacao(idNotificacao) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "restaurarNotificacao",
+
+    {
+      idNotificacao
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      if (res && res.sucesso) {
+
+        carregarNotificacoes(true);
+
+        atualizarBadgeNotificacoes();
+
+      }
+
+    },
+
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao restaurar notificação:",
+        err
+      );
+
+    }
+
+  );
+
+}
+
+let mostrandoHistorico = false;
+
+function carregarNotificacoes(historico = false) {
+
+  mostrarSpinner();
+
+  mostrandoHistorico = historico;
+
+  document
+    .getElementById("abaNotificacoesAtivas")
+    ?.classList.toggle("ativa", !historico);
+
+  document
+    .getElementById("abaNotificacoesHistorico")
+    ?.classList.toggle("ativa", historico);
+
+  apiJSONP(
+
+    "buscarNotificacoes",
+
+    {
+      idParticipante: idUsuarioLogado,
+      historico: historico
+    },
+
+    function(lista) {
+
+      esconderSpinner();
+
+      const container =
+        document.getElementById("listaNotificacoes");
+
+      if (!container) {
+        
+        esconderSpinner();
+
+        return;
+
+      }
+
+      if (lista.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="card-notificacao-vazia">
+
+            ${
+                historico
+                ? "🗂️ Nenhuma notificação no histórico."
+                : "📭 Nenhuma notificação."
+              }
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+      let html = "";
+
+      lista.forEach(item => {
+
+        html += `
+
+        <div class="card-notificacao">
+
+            <div class="topo-notificacao">
+
+                <div class="titulo-notificacao">
+
+                    ${item.titulo}
+
+                </div>
+
+                ${
+                    historico
+                    ?
+
+                    `<button
+                        class="btn-excluir-notificacao"
+                        onclick="restaurarNotificacao(${item.id})">
+
+                        ↩️ Restaurar notificação
+
+                    </button>`
+
+                    :
+
+                    `<button
+                        class="btn-excluir-notificacao"
+                        onclick="excluirNotificacao(${item.id})">
+
+                        🗑️ Excluir notificação
+
+                    </button>`
+                  }
+
+            </div>
+
+            <div class="data-notificacao">
+
+                ${item.dataHora}
+
+            </div>
+
+            <div class="mensagem-notificacao">
+
+                ${item.mensagem}
+
+            </div>
+
+        </div>
+
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+      // Marca todas como lidas
+
+      if (!historico) {
+
+          apiJSONP(
+
+              "marcarNotificacoesComoLidas",
+
+              {
+
+                  idParticipante: idUsuarioLogado
+
+              },
+
+              function(){
+
+                  atualizarBadgeNotificacoes();
+
+              }
+
+          );
+
+      }
+
+    },
+
+    function(err){
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao buscar notificações:",
+        err
+      );
+
+    }
+
+  );
 
 }

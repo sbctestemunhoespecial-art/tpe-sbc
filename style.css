@@ -286,7 +286,7 @@ h6 {
 
 .quadro-centralizado {
   position: fixed;
-  margin-top: 6em;
+  /*margin-top: 6em;*/
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--cor-fundo);
@@ -631,14 +631,14 @@ footer {
 
 .painel.ativo {
   display: block;
-  margin-top: 6em;
+/*margin-top: 6em;*/
 }
 
 .painel-exportar {
   display: none;
   background-color: var(--cor-fundo);
   border-radius: var(--raio-borda);
-  margin-top: 6em;
+  /*margin-top: 6em;*/
 }
 
 .painel-exportar.visivel {
@@ -883,7 +883,7 @@ caption {
 }
 
 .cards-menu{
-    margin-top: 7em;
+    /*margin-top: 7em;*/
     display: grid;
     grid-template-columns: repeat(auto-fit, 6rem);
     justify-content: center;
@@ -964,7 +964,7 @@ caption {
 
 .btn-voltar-menu{
     width: fit-content;
-    margin-top: 0.8rem;
+    /*margin-top: 0.8rem;*/
     justify-self:end;
     align-self:start;
     padding: 0.5rem 0.75rem;
@@ -994,7 +994,7 @@ button.btn-voltar-menu:hover {
 
 .tela.aberta {
     display: block;
-    margin-top: 6em;
+    /*margin-top: 6em;*/
 }
 
 #modalAlterarTreinador {
@@ -1775,6 +1775,12 @@ button.btn-voltar-menu:hover {
   /*font-size: 1.5em;*/
   box-shadow: 0 0 0.8em rgba(0, 0, 0, 0.2);
   text-align: center;
+
+  width: min(90vw, 420px);
+
+  box-sizing: border-box;
+
+  overflow-wrap: break-word;
 }
 
 #alertaGlobal .alerta-btn {
@@ -4046,4 +4052,339 @@ td {
   text-align: center;
   font-size: 1rem;
   color: #333;
+}
+
+/* ESTILO PARA O NOVO SINO DE NOTIFICAÇÕES */
+.area-acoes-topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+    padding:8px 15px;
+    box-sizing:border-box;
+    margin-top: 6rem;
+}
+
+.area-notificacoes{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.btn-notificacoes{
+    position:relative;
+    background:none;
+    border:none;
+    font-size:1.3rem;
+    cursor:pointer;
+    padding:4px;
+    transition:transform .15s;
+}
+
+.btn-notificacoes:hover{
+    transform:scale(1.1);
+}
+
+.badge-notificacoes{
+    position:absolute;
+    top:0;
+    right:-3px;
+    min-width:16px;
+    height:16px;
+    padding:0 4px;
+    border-radius:50%;
+    background:#d50000;
+    color:#fff;
+    font-size:.65rem;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+
+/* PAINEL LATERAL DAS NOTIFICAÇÕES */
+.painel-notificacoes{
+
+    position:fixed;
+
+    top:6rem;
+
+    right:-420px;
+
+    width:400px;
+
+    max-width:100%;
+
+    height:100%;
+
+    background:#fff;
+
+    box-shadow:-4px 0 16px rgba(0,0,0,.25);
+
+    z-index:9999;
+
+    transition:right .30s;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.painel-notificacoes.aberto{
+
+    right:0;
+
+}
+
+.fundo-painel-notificacoes{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    display:none;
+
+    z-index:9998;
+
+}
+
+.fundo-painel-notificacoes.aberto{
+
+    display:block;
+
+}
+
+.painel-notificacoes-topo{
+
+    background:#1f4f82;
+
+    color:#fff;
+
+    padding:16px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:1.1rem;
+
+    font-weight:bold;
+
+}
+
+.fechar-painel-notificacoes{
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:1.2rem;
+
+}
+
+.lista-notificacoes{
+
+    flex:1;
+
+    overflow:auto;
+
+    padding:16px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+
+/* ABAS DO PAINEL DE NOTIFICAÇÕES */
+
+.abas-notificacoes{
+
+    display:flex;
+
+    background:#f5f7fa;
+
+    border-bottom:1px solid #d9d9d9;
+
+}
+
+.aba-notificacao{
+
+    flex:1;
+
+    background:none;
+
+    border:none;
+
+    padding:12px 10px;
+
+    cursor:pointer;
+
+    font-size:.95rem;
+
+    font-weight:bold;
+
+    color:#666;
+
+    transition:.2s;
+
+}
+
+.aba-notificacao:hover{
+
+    background:#eceff3;
+
+}
+
+.aba-notificacao.ativa{
+
+    background:#fff;
+
+    color:#1f4f82;
+
+    border-bottom:3px solid #1f4f82;
+
+}
+
+
+
+
+
+/* ESTILO DOS CARDS DAS NOTIFICAÇÕES DENTRO DO PAINEL LATERAL NO APP */
+.card-notificacao{
+
+    background:#fff;
+
+    border-left:5px solid #1f4f82;
+
+    border-radius:10px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+
+    padding:14px;
+
+}
+
+.titulo-notificacao{
+
+    font-weight:bold;
+
+    color:#1f4f82;
+
+    margin-bottom:6px;
+
+}
+
+.data-notificacao{
+
+    font-size:.8rem;
+
+    color:#888;
+
+    margin-bottom:10px;
+
+}
+
+.mensagem-notificacao{
+
+    line-height:1.5;
+
+    color:#333;
+
+}
+
+.card-notificacao-vazia{
+
+    text-align:center;
+
+    color:#777;
+
+    padding:40px;
+
+    font-size:1rem;
+
+}
+
+.topo-notificacao{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:6px;
+
+}
+
+/*
+.btn-excluir-notificacao{
+
+    background:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    font-size:1.1rem;
+
+    opacity:.65;
+
+    transition:.2s;
+
+    color:#1f4f82;
+
+}
+
+.btn-excluir-notificacao:hover{
+
+    opacity:1;
+
+    transform:scale(1.15);
+
+}*/
+.btn-excluir-notificacao{
+
+    background:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    font-size:.9rem;
+
+    color:#1f4f82;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    opacity:.75;
+
+    transition:.2s;
+
+}
+
+.btn-excluir-notificacao:hover{
+
+    opacity:1;
+
+    transform:scale(1.05);
+
 }

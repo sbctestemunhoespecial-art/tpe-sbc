@@ -17,6 +17,82 @@
 
 <body>
 
+  <!--<div id="painelNotificacoes" class="painel-notificacoes">
+
+      <div class="painel-notificacoes-topo">
+
+        <span>🔔 Notificações</span>
+
+        <button
+          class="fechar-painel-notificacoes"
+          onclick="fecharPainelNotificacoes()">
+          ✖
+        </button>
+
+      </div>
+
+      <div id="listaNotificacoes"
+          class="lista-notificacoes">
+      </div>
+
+    </div>
+
+    <div
+        id="fundoPainelNotificacoes"
+        class="fundo-painel-notificacoes"
+        onclick="fecharPainelNotificacoes()">
+    </div>-->
+    <div id="painelNotificacoes" class="painel-notificacoes">
+
+      <div class="painel-notificacoes-topo">
+
+        <span>🔔 Notificações</span>
+
+        <button
+          class="fechar-painel-notificacoes"
+          onclick="fecharPainelNotificacoes()">
+          ✖
+        </button>
+
+      </div>
+
+      <!-- NOVO -->
+      <div class="abas-notificacoes">
+
+        <button
+          id="abaNotificacoesAtivas"
+          class="aba-notificacao ativa"
+          onclick="carregarNotificacoes(false)">
+
+          Ativas
+
+        </button>
+
+        <button
+          id="abaNotificacoesHistorico"
+          class="aba-notificacao"
+          onclick="carregarNotificacoes(true)">
+
+          Histórico
+
+        </button>
+
+      </div>
+
+      <!-- JÁ EXISTENTE -->
+      <div
+          id="listaNotificacoes"
+          class="lista-notificacoes">
+      </div>
+
+    </div>
+
+    <div
+        id="fundoPainelNotificacoes"
+        class="fundo-painel-notificacoes"
+        onclick="fecharPainelNotificacoes()">
+    </div>
+
   <!-- =========================================
      NOVO MODAL PARA A TELA DE DIAS E TURNOS DOS CANDIDATOS PARA MOSTRAR OS TREINADORES QUE COMBINAM
   ========================================= -->
@@ -290,33 +366,27 @@
 </div>
 
 <div class="top-bar">
-<!--<button class="menu-btn" id="menuBtn" onclick="toggleMenu()"> ☰ Menu </button>
-<button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
 
-  <div class="top-bar">
-    <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
-        ☰ Menu
-    </button>
-    <div class="header-center">
-        <div class="linha-sistema">
-            <div class="titulo-sistema">
-                TPE SBC
-            </div>
-            <!--<div class="subtitulo-sistema">
-                Testemunho Público Especial
-            </div>-->
-        </div>
-        <div class="linha-usuario">
-            <div id="saudacaoUsuario" class="usuario">
-                <!--Bem-vindo(a)... 👋-->
-            </div>
-            <div id="tipoAcessoUsuario" class="acesso">
-                <!--Seu tipo de acesso é...-->
-            </div>
-        </div>
-    </div>
-     <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
-</div>
+    <div class="top-bar">
+      <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+          ☰ Menu
+      </button>
+      <div class="header-center">
+          <div class="linha-sistema">
+              <div class="titulo-sistema">
+                  TPE SBC
+              </div>
+
+          </div>
+          <div class="linha-usuario">
+              <div id="saudacaoUsuario" class="usuario">
+              </div>
+              <div id="tipoAcessoUsuario" class="acesso">
+              </div>
+          </div>
+      </div>
+
+  </div>
 
   <div id="sidebar" class="sidebar">
     <a href="#" onclick="event.preventDefault(); sair()" >Sair</a>
@@ -339,6 +409,33 @@
 
   <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
 </div>
+
+<div class="area-acoes-topo">
+
+    <div id="areaNotificacoes" class="area-notificacoes" style="display:none;">
+
+          <button
+            id="btnNotificacoes"
+            class="btn-notificacoes"
+            onclick="abrirPainelNotificacoes()">
+
+            🔔
+
+            <span
+              id="badgeNotificacoes"
+              class="badge-notificacoes"
+              style="display:none;">
+              0
+            </span>
+
+          </button>
+
+      </div>
+
+      <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
+
+</div>
+
 
 <div id="modalEditarDisponibilidade" class="modal-editar">
 
@@ -825,7 +922,6 @@
                 </div>
             </div>
         </div>-->
-
 
         <!-- MENU -->
 

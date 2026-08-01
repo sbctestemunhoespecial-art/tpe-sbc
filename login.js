@@ -24124,6 +24124,7 @@ function carregarOpcoes() {
           .sort((a, b) =>
             a.localeCompare(b, 'pt-BR')
           );
+    
 
 
 
@@ -24235,16 +24236,209 @@ function carregarOpcoes() {
         (err.message || err)
       );
 
-      /*mostrarErroCarregamento(
-            "Não foi possível carregar as opções do sistema.",
-            carregarDadosIniciais
-        );*/
+      //mostrarErroCarregamento(
+            //"Não foi possível carregar as opções do sistema.",
+            //carregarDadosIniciais
+        //);
 
     }
 
   );
 
 }
+/*function carregarOpcoes() {
+
+  //console.log("carregarOpcoes iniciou");
+
+  apiJSONP(
+    "buscarOpcoesParaForm",
+    {},
+    function(opcoes) {
+
+
+      //console.log({turnos: opcoes.turnos, dias: opcoes.dias});
+
+
+
+      // ===============================
+      // MAPA PARTICIPANTES
+      // ===============================
+
+      window.mapaParticipantesPorNome = {};
+
+      (opcoes.participantes || []).forEach(p => {
+
+        window.mapaParticipantesPorNome[p.nome] = p.id;
+
+      });
+
+
+      // ===============================
+      // VAGAS NO MODAL DE PARTICIPANTES
+      // ===============================
+
+      (opcoes.vagas || []).forEach(vaga => {
+
+        window.mapaParticipantesPorNome[vaga.nome] =
+          vaga.id;
+
+      });
+
+
+
+      // ===============================
+      // NOMES PARA PESQUISA
+      // ===============================
+
+      const mapa = new Map();
+
+      for (const n of (opcoes.pesquisar || [])) {
+
+        const k = norm(n);
+
+        if (k) {
+
+          mapa.set(k, n);
+
+        }
+
+      }
+
+
+      window.todosNomesSimples =
+        Array.from(mapa.values())
+          .sort((a, b) =>
+            a.localeCompare(b, 'pt-BR')
+          );
+
+
+      const nomesModalParticipantes = [
+
+        ...window.todosNomesSimples,
+
+        ...(opcoes.vagas || [])
+          .map(vaga => vaga.nome)
+
+      ].sort((a, b) =>
+        a.localeCompare(b, 'pt-BR')
+      );
+
+
+
+      // ===============================
+      // FILTROS DO MODAL DE PARTICIPANTES
+      // ===============================
+
+      ligarFiltroAoSelect(
+        'filtroModalParticipantes',
+        'selectModalParticipantes',
+        nomesModalParticipantes
+      );
+
+
+      ligarFiltroAoSelect(
+        'filtroBuscaTrei',
+        'listaNomesTrei',
+        window.todosNomesSimples
+      );
+
+
+
+      // ===============================
+      // CONGREGAÇÕES
+      // ===============================
+
+      window.opcoesCongregacoes =
+        opcoes.congregacao || [];
+
+
+      const sel =
+        document.getElementById('congregacao');
+
+
+      if (sel) {
+
+        sel.innerHTML =
+          '<option value="">- Selecione -</option>';
+
+
+        (opcoes.congregacao || [])
+          .forEach(item => {
+
+            const o =
+              document.createElement('option');
+
+            o.value = item;
+            o.textContent = item;
+
+            sel.appendChild(o);
+
+          });
+
+      }
+
+
+
+      // ===============================
+      // TURNOS / DIAS
+      // ===============================
+
+      window.opcoesTurnos =
+        (opcoes.turnos || [])
+          .filter(item => item !== "");
+
+
+      window.opcoesDias =
+        (opcoes.dias || [])
+          .filter(item => item !== "");
+
+
+
+      // ===============================
+      // PRIVILÉGIOS
+      // ===============================
+
+      window.opcoesPrivilegios =
+        opcoes.privilegios || {};
+
+
+
+      //console.log("✅ Opções carregadas");
+
+
+
+      // ===============================
+      // NOTIFICAÇÃO ESCALA
+      // ===============================
+
+      if (notificacaoEscala) {
+
+        aplicarNotificacaoEscala();
+
+      }
+
+
+    },
+
+
+    function(err) {
+
+      console.error(
+        "❌ Erro carregarOpcoes:",
+        err
+      );
+
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar opções: " +
+        (err.message || err)
+      );
+
+
+    }
+
+  );
+
+}*/
 
 /*function inicializarBuscasUsuarios() {
 
@@ -25621,6 +25815,12 @@ function confirmarSelecaoParticipante() {
   const id =
     window.mapaParticipantesPorNome?.[nome];
 
+
+console.log("SELEÇÃO MODAL:", {
+nome,
+id
+});
+
   if (!id) {
     mostrarAlertaGlobal("❌ ID não encontrado.");
     return;
@@ -25857,6 +26057,11 @@ function abrirModalEscolherGrupo(dados){
 
 function montarListaGruposDisponiveis(grupos){
 
+  console.log(
+  "GRUPOS RECEBIDOS NO MODAL:",
+  JSON.stringify(grupos)
+);
+
 
     const div =
         document.getElementById(
@@ -25885,7 +26090,8 @@ function montarListaGruposDisponiveis(grupos){
 
             nomes +=
             `
-            👤 ${p.id}<br>
+            <!--👤 ${p.id}<br>-->
+             👤 ${p.nome || p.id}<br>
             `;
 
         });
@@ -26122,26 +26328,6 @@ function criarNovoGrupoNaDesignacao(){
 
 }
 
-/*function fecharModalEscolherGrupo(){
-
-
-    document
-    .getElementById(
-        "modalEscolherGrupoDesignacao"
-    )
-    .classList.add("oculto");
-
-
-    document
-    .getElementById(
-        "listaGruposDisponiveis"
-    )
-    .innerHTML = "";
-
-
-    window.contextoEscolhaGrupo = null;
-
-}*/
 function fecharModalEscolherGrupo(){
 
     const dados =
@@ -28818,6 +29004,11 @@ function montarTelaCompanheiros(res){
         <hr>
 
         `;
+
+console.log(
+"COMPANHEIROS RECEBIDOS:",
+JSON.stringify(res.companheiros)
+);
 
         res.companheiros.forEach(c=>{
 

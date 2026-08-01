@@ -16,32 +16,7 @@
 </head>
 
 <body>
-
-  <!--<div id="painelNotificacoes" class="painel-notificacoes">
-
-      <div class="painel-notificacoes-topo">
-
-        <span>🔔 Notificações</span>
-
-        <button
-          class="fechar-painel-notificacoes"
-          onclick="fecharPainelNotificacoes()">
-          ✖
-        </button>
-
-      </div>
-
-      <div id="listaNotificacoes"
-          class="lista-notificacoes">
-      </div>
-
-    </div>
-
-    <div
-        id="fundoPainelNotificacoes"
-        class="fundo-painel-notificacoes"
-        onclick="fecharPainelNotificacoes()">
-    </div>-->
+ 
     <div id="painelNotificacoes" class="painel-notificacoes">
 
       <div class="painel-notificacoes-topo">
@@ -412,7 +387,7 @@
 
 <div class="area-acoes-topo">
 
-    <div id="areaNotificacoes" class="area-notificacoes" style="display:none;">
+    <!--<div id="areaNotificacoes" class="area-notificacoes" style="display:none;">
 
           <button
             id="btnNotificacoes"
@@ -432,7 +407,7 @@
 
       </div>
 
-      <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>
+      <button id="btnVoltarMenu" class="btn-voltar-menu oculto" onclick="voltar()">👈 Voltar</button>-->
 
 </div>
 
@@ -953,6 +928,16 @@
             <div class="titulo">Vagas Disponíveis</div>
         </div>
         <div class="card-menu btn-relatoriosSubMenu so-participantes"
+            onclick="abrirTela('telaVagasDisponiveisRT', this)">
+            <div class="icone">🔄</div>
+            <div class="titulo">Vagas Rotativas</div>
+        </div>
+        <!--<div class="card-menu btn-relatoriosSubMenu so-admin"
+            onclick="abrirTela('telaVagasRotativas', this)">
+            <div class="icone">🔄</div>
+            <div class="titulo">Vagas Rotativas</div>
+        </div>-->
+        <div class="card-menu btn-relatoriosSubMenu so-participantes"
             onclick="abrirTela('telaeventos', this)">
             <div class="icone">🎊</div>
             <div class="titulo">Eventos</div>
@@ -1012,6 +997,11 @@
             <div class="icone">🪑</div>
             <div class="titulo">Vagas</div>
         </div>
+        <div class="card-menu btn-relatoriosSubMenu so-admin"
+            onclick="abrirTela('vagasRT', this)">
+            <div class="icone">🪑</div>
+            <div class="titulo">Vagas Rotativas</div>
+        </div>
         <div class="card-menu btn-relatoriosSubMenu so-organizadores"
             onclick="abrirTela('relatorios', this)">
             <div class="icone">📈</div>
@@ -1019,6 +1009,22 @@
         </div>
       </div>
   </div>
+
+  <!-- TELA PARA VAGAS ROTATIVAS -->
+    <div id="telaVagasRotativas" class="painel tela">
+
+        <div class="cabecalho-tela">
+            <h2>🔄 Vagas Rotativas</h2>
+        </div>
+
+
+        <div id="cardsVagasRotativas"
+            class="lista-cards">
+
+        </div>
+
+    </div>
+  <!-- TELA PARA VAGAS ROTATIVAS -->
 
 <div id="painelSemDisponibilidade" class="painel-exportar tela"> <!-- AQUI TERMINA O PAINEL PARTICIPANTES SEM DISPONIBILIDADE-->
 
@@ -3882,20 +3888,6 @@
     <div id="painelPontosTotal" class="painel-exportar tela">
     <h5>📌 Escalas Por Ponto</h5>
 
-    <!--
-    <label>
-        Selecione o ponto
-      </label>
-
-      <input
-          id="pontobeppVisual"
-          class="campo-selecao-visual"
-          type="text"
-          readonly
-          placeholder="Escolha o ponto"
-          onclick="abrirSelecaoPontoBepp()"
-      />
-    --> 
     <div class="grupo-seletores">
         <div class="seletor"
               onclick="abrirSelecaoPontoBepp()">
@@ -4311,55 +4303,7 @@
     <body>
 
     <div id="painelVagas">
-      <!--
-      <label>
-          Ponto
-      </label>
-
-      <input
-          id="pontoVagaVisual"
-          type="text"
-          readonly
-          placeholder="Escolha o ponto"
-          onclick="abrirSelecaoPontoVaga()"
-      />
-
-      <label>
-          Dia
-      </label>
-
-      <input
-          id="diaVagaVisual"
-          type="text"
-          readonly
-          placeholder="Escolha o dia"
-          onclick="abrirSelecaoDiaVaga()"
-      />
-
-      <label>
-          Frequência
-      </label>
-
-      <input
-          id="frequenciaVagaVisual"
-          type="text"
-          readonly
-          placeholder="Escolha a frequência"
-          onclick="abrirSelecaoFrequenciaVaga()"
-      />
-
-      <label>
-          Equipamento
-      </label>
-
-      <input
-          id="equipamentoVagaVisual"
-          type="text"
-          readonly
-          placeholder="Escolha o equipamento"
-          onclick="abrirSelecaoEquipamentoVaga()"
-      />
-    -->
+      
       <div class="seletor" onclick="abrirSelecaoPontoVaga()">
 
           <div class="seletor-titulo">
@@ -4434,23 +4378,6 @@
       <p id="msgCadastrarVaga" class="mensagem-verde"></p>
       </div>
 
-    <!--<table id="tabelaTotalVagasPendentes" class="tabela-sistema">
-      <thead>
-        <tr>
-          <th>Total de vagas em aberto</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <span id="totalVagas" style="color: red; font-weight: bold; font-size: 50px">
-              0
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>-->
-
       <div id="listaVagasPendentes"></div>
 
       <div>
@@ -4460,6 +4387,119 @@
                 🔄 Atualizar Vagas
               </button>
       </div>
+    </div>
+  </div> 
+
+  <div id="telaVagasDisponiveisRT" class="painel tela">
+
+      <h3>🚨 Vagas Rotativas</h3>
+
+      <div id="listaVagasDisponiveisRT">
+        <p>Carregando vagas...</p>
+      </div>
+
+  </div>
+
+  <div id="vagasRT" class="painel tela"> 
+    <h5>🪑 Vagas</h5>
+
+    <body>
+
+    <div id="painelVagasRT">
+      
+      <div class="seletor" onclick="abrirSelecaoPontoVagaRT()">
+
+          <div class="seletor-titulo">
+              🚩 Ponto
+          </div>
+
+          <div id="pontoVagaVisualRT" class="seletor-valor">
+              Escolha o ponto
+          </div>
+
+      </div>
+
+      <div class="seletor" onclick="abrirSelecaoDiaVagaRT()">
+
+          <div class="seletor-titulo">
+              📅 Dia
+          </div>
+
+          <div id="diaVagaVisualRT" class="seletor-valor">
+              Escolha o dia
+          </div>
+
+      </div>
+
+      <div class="seletor" onclick="abrirSelecaoFrequenciaVagaRT()">
+
+          <div class="seletor-titulo">
+              🔄 Frequência
+          </div>
+
+          <div id="frequenciaVagaVisualRT" class="seletor-valor">
+              Escolha a frequência
+          </div>
+
+      </div>
+
+      <div class="seletor" onclick="abrirSelecaoEquipamentoVagaRT()">
+
+          <div class="seletor-titulo">
+              🚗 Equipamento
+          </div>
+
+          <div id="equipamentoVagaVisualRT" class="seletor-valor">
+              Escolha o equipamento
+          </div>
+
+      </div>
+
+      <table id="tabelaQuemsaiRT" style="display:none;" class="tabela-sistema">
+            <tbody>
+              <tr>
+                <th>Substituir</th>
+              </tr>
+            <td>
+            <select id="substituirQuemsaiRT">
+              <option value="">-- Ninguém --</option>
+            </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <label>
+          
+      </label>
+
+        <button type="button" onclick="salvarVagaRT()">
+          💾 Cadastrar Vaga Rotativa
+        </button>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+      <p id="msgCadastrarVagaRT" class="mensagem-verde"></p>
+      </div>
+
+      <div id="listaVagasPendentesRT"></div>
+
+      <div>
+
+        <button type="button"
+                onclick="carregarTodasVagasAbertasRT()">
+                🔄 Atualizar Vagas
+              </button>
+      </div>
+
+      <label>Use esse botão com cuidado!</label>
+      <div>
+
+        <button type="button"
+                onclick="renovarVagasRotativasFrontend()">
+                🔄 Refazer todas vagas rotativas da próxima semana
+              </button>
+      </div>
+
     </div>
   </div> 
 
@@ -4756,6 +4796,41 @@
   </div>
 
   </div> 
+
+  </div>
+
+
+
+  <div class="area-acoes-rodape">
+
+      <div id="areaNotificacoes" class="area-notificacoes" style="display:none;">
+
+          <button
+            id="btnNotificacoes"
+            class="btn-notificacoes"
+            onclick="abrirPainelNotificacoes()">
+
+            🔔
+
+            <span
+              id="badgeNotificacoes"
+              class="badge-notificacoes"
+              style="display:none;">
+              0
+            </span>
+
+          </button>
+
+      </div>
+
+      <button 
+        id="btnVoltarMenu"
+        class="btn-voltar-menu oculto"
+        onclick="voltar()">
+
+        👈 Voltar
+
+      </button>
 
   </div>
 

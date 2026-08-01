@@ -286,7 +286,7 @@ h6 {
 
 .quadro-centralizado {
   position: fixed;
-  /*margin-top: 6em;*/
+  margin-top: 6em;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--cor-fundo);
@@ -631,14 +631,14 @@ footer {
 
 .painel.ativo {
   display: block;
-/*margin-top: 6em;*/
+margin-top: 6em;
 }
 
 .painel-exportar {
   display: none;
   background-color: var(--cor-fundo);
   border-radius: var(--raio-borda);
-  /*margin-top: 6em;*/
+  margin-top: 6em;
 }
 
 .painel-exportar.visivel {
@@ -883,7 +883,7 @@ caption {
 }
 
 .cards-menu{
-    /*margin-top: 7em;*/
+    margin-top: 7em;
     display: grid;
     grid-template-columns: repeat(auto-fit, 6rem);
     justify-content: center;
@@ -964,7 +964,7 @@ caption {
 
 .btn-voltar-menu{
     width: fit-content;
-    /*margin-top: 0.8rem;*/
+    margin-top: 0.8rem;
     justify-self:end;
     align-self:start;
     padding: 0.5rem 0.75rem;
@@ -974,13 +974,13 @@ caption {
     color: var(--cor-texto);
     font-weight:bold;
     cursor:pointer;
-    transition:.2s;
+    transition:none;
     user-select:none;
 }
-button.btn-voltar-menu:hover {
+/*button.btn-voltar-menu:hover {
   background: #DCDCDC;
   transform: scale(1.05);
-}
+}*/
 
 .btn-fechar-painel {
   float: right;
@@ -994,7 +994,7 @@ button.btn-voltar-menu:hover {
 
 .tela.aberta {
     display: block;
-    /*margin-top: 6em;*/
+    margin-top: 6em;
 }
 
 #modalAlterarTreinador {
@@ -4055,7 +4055,7 @@ td {
 }
 
 /* ESTILO PARA O NOVO SINO DE NOTIFICAÇÕES */
-.area-acoes-topo{
+/*.area-acoes-topo{
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -4063,19 +4063,20 @@ td {
     padding:8px 15px;
     box-sizing:border-box;
     margin-top: 6rem;
-}
+}*/
 
 .area-notificacoes{
     position:relative;
     display:flex;
     align-items:center;
+    margin-left:20px;
 }
 
 .btn-notificacoes{
     position:relative;
     background:none;
     border:none;
-    font-size:1.3rem;
+    font-size:1rem;
     cursor:pointer;
     padding:4px;
     transition:transform .15s;
@@ -4108,7 +4109,8 @@ td {
 
     position:fixed;
 
-    top:6rem;
+    /*top:6rem;*/
+    top:0;
 
     right:-420px;
 
@@ -4208,8 +4210,6 @@ td {
 
 }
 
-
-
 /* ABAS DO PAINEL DE NOTIFICAÇÕES */
 
 .abas-notificacoes{
@@ -4259,10 +4259,6 @@ td {
     border-bottom:3px solid #1f4f82;
 
 }
-
-
-
-
 
 /* ESTILO DOS CARDS DAS NOTIFICAÇÕES DENTRO DO PAINEL LATERAL NO APP */
 .card-notificacao{
@@ -4386,5 +4382,57 @@ td {
     opacity:1;
 
     transform:scale(1.05);
+
+}
+
+/* estilo para a area de notificações do botão voltar no rodapé */
+.area-acoes-rodape {
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 60px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    background: white;
+
+    box-shadow: 0 -2px 8px rgba(0,0,0,.15);
+
+    z-index: 1000;
+
+}
+
+#conteudoProtegido {
+
+    padding-bottom: 50px;
+
+}
+
+/* Estilo para remover hover do botão voltar */
+button#btnVoltarMenu:hover,
+button#btnVoltarMenu:active,
+button#btnVoltarMenu:focus {
+
+    background: transparent !important;
+
+    transform: none !important;
+
+    box-shadow: none !important;
+
+    color: var(--cor-texto) !important;
+
+    outline: none !important;
 
 }

@@ -142,7 +142,8 @@ const telasSempreAtualizar = new Set([
   "painelVagas",
   "telaVagasDisponiveis",
   "disponibilidadeContainerUsuarioLogado2h",
-  "disponibilidadeContainerUsuarioLogado4h"
+  "disponibilidadeContainerUsuarioLogado4h",
+  "telaVagasDisponiveisRT"
 ]);
 
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
@@ -230,6 +231,8 @@ const inicializadores = {
 
     telaVagasDisponiveis: carregarVagasDisponiveis,
 
+    telaVagasDisponiveisRT: carregarVagasDisponiveisRT,
+
     disponibilidadeContainer2h: gerarCardsDisponibilidade2h,
 
     disponibilidadeContainer: gerarCardsDisponibilidade,
@@ -273,6 +276,14 @@ const inicializadores = {
       carregarDadosVaga();
 
       carregarTodasVagasAbertas();
+
+    },
+
+    vagasRT() {
+
+      //carregarDadosVaga();
+
+      carregarTodasVagasAbertasRT();
 
     },
 
@@ -1577,6 +1588,15 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("telaLogin").style.display = "none";
     document.getElementById("conteudoProtegido").style.display = "block";
     document.getElementById("menuBtn").style.display = "inline-block";
+
+    const areaNotificacoes =
+        document.getElementById("areaNotificacoes");
+
+      if (areaNotificacoes) {
+
+        areaNotificacoes.style.display = "flex";
+
+      }
 
     // Oculta imediatamente os cards que não pertencem ao perfil
     mostrarSecoesPorPerfil(dados.perfil);
@@ -3176,6 +3196,14 @@ function exibirResultados(res) {
 
   res.forEach(r => {  
 
+                                      /*console.table(res.map(r => ({
+                                        nome: r.nome,
+                                        idVaga: r.idVaga,
+                                        ehVaga: r.ehVaga,
+                                        frequencia: r.frequencia,
+                                        frequenciaVaga: r.frequenciaVaga
+                                      })));*/
+
     const partes = (r.turno || "").split(" ");
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
@@ -3222,9 +3250,19 @@ function exibirResultados(res) {
 
       }
 
+
+
+      const equipamentoExibicao =
+          r.ehVaga
+          ? r.equipamentoVaga
+          : r.equipamento;
+
+
+
       html += `
       <div class="titulo-grupo-designacao">
-          ${r.equipamento} • Turno ${turnoPalavra}
+          <!--${r.equipamento} • Turno ${turnoPalavra}-->
+          ${equipamentoExibicao} • Turno ${turnoPalavra}
           <span>${tituloGrupo}</span>
       </div>
       `;
@@ -3237,6 +3275,19 @@ function exibirResultados(res) {
     //const pontoNumero = partes[partes.length - 1] || "";
     //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
+    const ehVaga =
+        r.ehVaga === true;
+
+    const nomeExibicao =
+        ehVaga
+        ? "🚧 VAGA"
+        : r.nome;
+
+    const frequenciaExibicao =
+        ehVaga
+        ? r.frequenciaVaga
+        : r.frequencia;
+
         html += `
 
         <div class="card-designacao">
@@ -3248,7 +3299,8 @@ function exibirResultados(res) {
                     <div class="nome-designacao">
 
                         ${r.posicao ? r.posicao + ". " : ""}
-                        ${r.nome}
+                        <!--${r.nome}-->
+                        ${nomeExibicao}
 
                     </div>
 
@@ -3262,7 +3314,8 @@ function exibirResultados(res) {
 
                 <div class="freq-designacao">
 
-                    ${r.frequencia}
+                    <!--${r.frequencia}-->
+                    ${frequenciaExibicao}
 
                 </div>
 
@@ -18939,11 +18992,17 @@ function buscarDesignacoesPorPonto() {
               //const pontoNumero = partes[partes.length - 1] || "";
               //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
 
+              const equipamentoExibicao =
+                  r.ehVaga
+                  ? r.equipamentoVaga
+                  : r.equipamento;
+
               html += `
 
               <div class="titulo-grupo-designacao">
 
-                  ${r.equipamento} • Turno ${turnoPalavra}
+                  <!--${r.equipamento} • Turno ${turnoPalavra}-->
+                  ${equipamentoExibicao} • Turno ${turnoPalavra}
 
                   <span>${tituloGrupo}</span>
 
@@ -18951,6 +19010,18 @@ function buscarDesignacoesPorPonto() {
 
               `;
           }
+
+
+
+          
+              
+          const nomeExibicao =
+            r.ehVaga ? "🚧 VAGA" : r.nome;
+
+          const frequenciaExibicao =
+            r.ehVaga ? r.frequenciaVaga : r.frequencia;
+          
+
 
           html += `
 
@@ -18962,7 +19033,8 @@ function buscarDesignacoesPorPonto() {
 
                       <div class="nome-designacao">
 
-                          ${r.posicao ? r.posicao + ". " : ""}${r.nome}
+                          <!--${r.posicao ? r.posicao + ". " : ""}${r.nome}-->
+                          ${r.posicao ? r.posicao + ". " : ""}${nomeExibicao}
 
                       </div>
 
@@ -18976,7 +19048,8 @@ function buscarDesignacoesPorPonto() {
 
                   <div class="freq-designacao">
 
-                      ${r.frequencia}
+                      <!--${r.frequencia}-->
+                      ${frequenciaExibicao}
 
                   </div>
 
@@ -26995,7 +27068,7 @@ function verificarTreinamentoPendente() {
 
         res.nome +
 
-        '\n\nAcesse "Meus Treinamentos" para concluir o processo após realizar o treinamento.'
+        '! \n\nAcesse "Meus Treinamentos" para concluir o processo após realizar o treinamento!'
 
       );
 
@@ -29591,6 +29664,862 @@ function carregarNotificacoes(historico = false) {
 
     }
 
+  );
+
+}
+
+/* FUNÇÕES PARA NOVAS VAGAS ROTATIVAS */
+/*function carregarVagasRotativas() {
+
+  const container =
+    document.getElementById("cardsVagasRotativas");
+
+
+  if (!container)
+    return;
+
+
+  //container.innerHTML = '<div class="spinner">Carregando vagas...</div>';
+  mostrarSpinner();
+
+
+  apiJSONP(
+    "buscarVagasRotativas",
+    {},
+    function(res) {
+
+      //container.innerHTML = "";
+      esconderSpinner();
+
+
+      if (!res || !res.length) {
+
+        container.innerHTML =
+          `
+          <div class="card-vazio">
+            Nenhuma vaga rotativa disponível.
+          </div>
+          `;
+
+        return;
+
+      }
+
+
+      res.forEach(vaga => {
+
+
+        const card = document.createElement("div");
+
+        card.className =
+          "card-vaga";
+
+
+        card.innerHTML =
+          `
+
+          <div class="titulo-vaga">
+            🔄 ${vaga.ponto}
+          </div>
+
+
+          <div class="card-infos">
+
+            <div>
+              📅 ${vaga.dia}
+            </div>
+
+            <div>
+              🕒 ${vaga.turno}
+            </div>
+
+            <div>
+              🔁 ${vaga.frequencia}
+            </div>
+
+            <div>
+              🧰 ${vaga.equipamento}
+            </div>
+
+          </div>
+
+          `;
+
+
+        container.appendChild(card);
+
+
+      });
+
+
+    },
+    function(erro) {
+
+      container.innerHTML =
+        `
+        <div class="card-erro">
+          Erro ao carregar vagas rotativas.
+        </div>
+        `;
+
+      console.error(
+        "Erro buscarVagasRotativas:",
+        erro
+      );
+
+    }
+
+  );
+
+}*/
+
+function cadastrarVagaRT() {
+
+  const { ponto, dia, frequencia, equipamento } = window.vagaContextoRT;
+
+  const mensagem =
+    `⚠️ Tem certeza que quer criar uma vaga "<b>${frequencia}</b>"<br>` +
+    `no ponto "<b>${ponto}</b>" dia "<b>${dia}</b>" sem exlcuir nenhum participante?`;
+
+  mostrarConfirmacaoGlobal(mensagem, () => {
+
+    fecharModal(); // só fecha depois da confirmação
+
+    mostrarSpinner();
+
+    apiJSONP(
+      "cadastrarVagaRT",
+      {
+        ponto,
+        dia,
+        frequencia,
+        equipamento
+      },
+      function() {
+
+        esconderSpinner();
+
+        mostrarAlertaGlobal("✅ Vaga criada com sucesso");
+
+        //carregarTodasVagasAbertas();
+
+        //apiJSONP("atualizarVagasEmAberto", {}, function(){});
+
+      },
+      function(err) {
+
+        esconderSpinner();
+        mostrarAlertaGlobal("❌ " + err.message);
+
+      }
+    );
+
+  });
+}
+
+function carregarVagasDisponiveisRT() {
+
+  const lista =
+    document.getElementById("listaVagasDisponiveisRT");
+
+  lista.innerHTML =
+    "Carregando vagas...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarVagasDisponiveisNRT",
+    {},
+    function(res) {
+
+      console.log("📋 RESPOSTA VAGAS:", res);
+
+      esconderSpinner();
+
+      if (!res.sucesso) {
+
+        lista.innerHTML =
+          "❌ Erro ao carregar vagas.";
+
+        return;
+
+      }
+
+      if (!res.vagas.length) {
+
+        lista.innerHTML =
+          "🎉 Nenhuma vaga disponível.";
+
+        return;
+
+      }
+
+      lista.innerHTML = "";
+
+      res.vagas.forEach(vaga => {
+
+        const diaFormatado = primeiraLetraMaiuscula(vaga.dia);
+        const periodoFormatado = primeiraLetraMaiuscula(vaga.periodo);
+
+        const destaque =
+          vaga.idVaga === idVagaNotificacao;
+
+        const div =
+          document.createElement("div");
+
+        div.className = "card-vaga";
+
+        if (destaque) {
+          div.classList.add("card-vaga-destaque");
+        }
+
+        div.innerHTML = `
+
+        <div class="titulo-vaga">
+
+            ${
+              destaque
+                ? "🔔 Vaga da sua notificação"
+                : "🚨 Vaga disponível"
+            }
+
+        </div>
+
+
+        ${
+          destaque
+            ? `
+            <div class="aviso-vaga-notificacao">
+                🔔 Esta é a vaga da sua notificação
+            </div>
+            `
+            : ""
+        }
+
+
+        <div class="card-designacao">
+
+
+            <div class="card-designacao-topo">
+
+
+                <div>
+
+                    <div class="nome-designacao">
+
+                        🚩 ${vaga.ponto}
+
+                    </div>
+
+                    <div class="congregacao-designacao">
+
+                      <div>Companheiro(a)</div> ${vaga.nomeParticipante || "Não informado"}
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="freq-designacao">
+
+                    ${vaga.frequencia}
+
+                </div>
+
+
+            </div>
+
+
+
+
+            <div class="card-designacao-infos">
+
+                <div>
+
+                    <span>🌅</span>
+
+                    ${periodoFormatado} <!-- ${vaga.periodo} -->
+
+                </div>
+
+
+                <div>
+
+                    <span>📅</span>
+
+                    ${diaFormatado} <!-- ${vaga.dia} -->
+
+                </div>
+
+
+                <div>
+
+                    <span>🚗</span>
+
+                    ${vaga.equipamento || "-"}
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="card-designacao-acoes">
+
+
+                <button
+
+                    class="${
+                      destaque
+                        ? "btn-aceitar-vaga btn-aceitar-destaque"
+                        : "btn-aceitar-vaga"
+                    }"
+
+                    onclick="aceitarVagaRotativa('${vaga.idVaga}')">
+
+                    🙋 Quero assumir esta vaga
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+        `;
+
+        lista.appendChild(div);
+
+        if (destaque) {
+
+          setTimeout(() => {
+
+            div.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+
+          }, 300);
+
+        }
+
+      });
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      console.error(err);
+
+      lista.innerHTML =
+        "❌ Erro: " + err.message;
+
+    }
+  );
+
+}
+
+function abrirSelecaoPontoVagaRT(){
+
+    abrirModalSelecaoUniversal({
+
+        titulo:"Escolha o ponto",
+
+        valores:listarPontosSistema(),
+
+        selecionar(ponto){
+
+            abrirModalSelecaoUniversal({
+
+                titulo:ponto,
+
+                valores:listarTurnosDoPonto(ponto),
+
+               selecionar(turno){
+
+                    const aba =
+                        obterAbaPonto(
+                            ponto,
+                            turno.valor
+                        );
+
+                    window.camposSelecionados.pontoVaga =
+                        aba;
+
+
+                    const campo =
+                        document.getElementById(
+                            "pontoVagaVisualRT"
+                        );
+
+
+                    /*if(campo){
+
+                        campo.value =
+                            `${ponto} - ${turno.texto}`;
+
+                    }*/
+                    if(campo){
+
+                        campo.textContent =
+                            `${ponto} - ${turno.texto}`;
+
+                    }
+
+                    //atualizarParticipantesParaCadastrarVaga();
+                }
+
+            });
+
+        }
+
+    });
+
+}
+function abrirSelecaoDiaVagaRT(){
+
+    selecionarCampoComModal({
+
+        campo:"diaVagaVisualRT",
+
+        titulo:"Escolha o dia",
+
+        valores:window.opcoesDias,
+
+        aoSelecionar(valor){
+
+            window.camposSelecionados.diaVaga =
+                valor;
+
+
+            //atualizarParticipantesParaCadastrarVaga();
+
+        }
+
+    });
+
+}
+function abrirSelecaoFrequenciaVagaRT(){
+
+    selecionarCampoComModal({
+
+        campo:"frequenciaVagaVisualRT",
+
+        titulo:"Escolha a frequência",
+
+        valores:[
+            "ROTATIVA"
+        ],
+
+        aoSelecionar(valor){
+
+
+            window.camposSelecionados.frequenciaVaga =
+                valor;
+
+        }
+
+    });
+
+}
+function abrirSelecaoEquipamentoVagaRT() {
+
+    const equipamentos =
+        Array.from(
+            document.getElementById("equipamento").options
+        ).map(o => o.value).filter(v => v);
+
+    selecionarCampoComModal({
+
+        campo: "equipamentoVagaVisualRT",
+
+        titulo: "Escolha o equipamento",
+
+        valores: equipamentos,
+
+        aoSelecionar(valor) {
+
+            window.camposSelecionados.equipamentoVaga =
+                valor;
+
+        }
+
+    });
+
+}
+
+let vagaContextoRT = {};
+
+function salvarVagaRT() {
+
+  const ponto = window.camposSelecionados.pontoVaga;
+  const dia = window.camposSelecionados.diaVaga;
+  const frequencia = window.camposSelecionados.frequenciaVaga;
+  const equipamento = window.camposSelecionados.equipamentoVaga;
+
+  if (!ponto || !dia || !frequencia || !equipamento) {
+    mostrarAlertaGlobal("⚠️ Preencha todos os campos");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "obterColunaPontoDiaRT",
+    {
+      ponto,
+      dia
+    },
+    function(res) {
+      esconderSpinner();
+      //mostrarModalSubstituicao(res);
+      cadastrarVagaRT();
+
+    },
+
+    
+
+    function(err) {
+
+      esconderSpinner();
+      mostrarAlertaGlobal("Erro ao carregar dados do ponto");
+
+    }
+  );
+
+  // guarda contexto global
+  //window.vagaContextoRT = { ponto, dia, frequencia };
+  window.vagaContextoRT = { ponto, dia, frequencia, equipamento: window.camposSelecionados.equipamentoVaga };
+}
+
+function aceitarVagaRotativa(idVaga) {
+
+  mostrarConfirmacaoGlobal(
+
+    "Confirma que deseja assumir esta vaga?",
+
+    function() {
+
+      console.log({
+          idVaga,
+          idUsuarioLogado
+      });
+
+      mostrarSpinner();
+
+      apiJSONP(
+
+        "aceitarVagaRotativa",
+
+        {
+          idVaga: idVaga,
+          idParticipante: idUsuarioLogado
+        },
+
+        function(res) {
+
+          console.log("Resposta:", res);
+
+          esconderSpinner();
+
+          // Vaga já foi preenchida
+          if (typeof res === "string" && res.startsWith("🚫")) {
+
+            mostrarAlertaGlobal(res);
+
+            carregarVagasDisponiveisRT();
+
+            idVagaNotificacao = null;
+
+            return;
+          }
+
+          if (res.sucesso) {
+
+            mostrarAlertaGlobal(
+              "✅ Parabéns! Você assumiu esta vaga."
+            );
+
+            idVagaNotificacao = null;
+
+            setTimeout(() => {
+
+              abrirTela("menuCards");
+
+              carregarVagasDisponiveisRT();
+
+            }, 1200);
+
+          }
+          else {
+
+            mostrarAlertaGlobal(
+              res.mensagem || "Não foi possível assumir a vaga."
+            );
+
+          }
+
+        },
+
+        function(err) {
+
+          console.log("Erro:", err);
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+              err?.message || err?.mensagem || err
+          );
+
+        }
+
+      );
+
+    }
+
+  );
+
+}
+
+function carregarTodasVagasAbertasRT() {
+  console.count("carregarTodasVagasAbertasRT chamou");
+  mostrarSpinner();
+
+  // 1. Primeiro atualiza
+  apiJSONP(
+    "atualizarVagasEmAbertoRT",
+    {},
+    function() {
+
+      // 2. Depois busca as vagas
+      apiJSONP(
+        "getVagasAbertasRT",
+        {},
+        function(dados) {
+
+          esconderSpinner();
+          //mostrarVagasNaTabela(dados);
+          mostrarVagasRotativas(dados);
+
+        },
+        function(err) {
+
+          mostrarAlertaGlobal("❌ Erro ao buscar vagas: " + err.message);
+          esconderSpinner();
+
+        }
+      ); 
+
+    },
+    function(err) {
+
+      mostrarAlertaGlobal("❌ Erro ao atualizar vagas: " + err.message);
+      esconderSpinner();
+
+    }
+  );
+}
+
+function mostrarVagasRotativas(vagas) {
+
+  //atualizarContagemVagas(vagas);
+
+  const container = document.getElementById("listaVagasPendentesRT");
+  
+  const totalDeVagas = vagas.length;
+
+  container.innerHTML = "";
+
+  vagas.forEach(vaga => {
+
+    const card = document.createElement("div");
+    card.className = "card-vaga";
+
+
+    // ==========================================
+    // Cor conforme tempo em aberto
+    // ==========================================
+
+    let classeTempo = "tempo-verde";
+
+    if (vaga.diasAberta >= 15) {
+
+      classeTempo = "tempo-vermelho";
+
+    } else if (vaga.diasAberta >= 7) {
+
+      classeTempo = "tempo-laranja";
+
+    } else if (vaga.diasAberta >= 3) {
+
+      classeTempo = "tempo-amarelo";
+
+    }
+
+    card.innerHTML = `
+
+
+    <div class="titulo-vaga">
+        <span>
+        🚨 ${totalDeVagas} vagas pendentes
+        </span>
+
+
+
+    </div>
+
+    <div class="card-designacao">
+
+
+
+        <div class="card-designacao-topo">
+
+
+
+            <div>
+
+
+                <div class="nome-designacao">
+
+                    🚩 ${vaga.ponto}
+
+                </div>
+
+
+
+                <div class="congregacao-designacao">
+
+                  <div>Quem saiu</div> ${vaga.quemSai || "Sem informação"}
+
+                </div>
+
+
+            </div>
+
+
+            <div>
+
+                <!--<span>⏳</span>-->
+
+                <span class="tempo ${classeTempo}">
+
+                    ${vaga.tempoAberta}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-designacao-infos">
+
+
+
+            <div>
+
+                <span>🌅</span>
+
+                ${vaga.periodo}
+
+            </div>
+
+
+            <div>
+
+                <span>📅</span>
+
+                ${vaga.dia}
+
+            </div>
+
+            <div>
+            <!--<div class="freq-designacao">-->
+
+                ${vaga.frequencia}
+
+            </div>
+
+
+        </div>
+
+
+        <div class="card-designacao-acoes">
+
+
+
+            <button class="btn btn-danger btn-block">
+
+                🗑️ Excluir vaga
+
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+    `;
+
+
+    card.querySelector("button").onclick = () => {
+
+      excluirVaga(vaga);
+
+    };
+
+
+    container.appendChild(card);
+
+  });
+
+}
+
+function renovarVagasRotativasFrontend() {
+
+  mostrarConfirmacaoGlobal(
+    "⚠️ Renovar todas as vagas rotativas da semana?<br><br>Todas as designações atuais serão encerradas e as vagas voltarão a ficar abertas.",
+    () => {
+
+      fecharModal();
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "renovarVagasRotativas",
+        {},
+        function(res) {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            `✅ ${res.quantidade} vagas renovadas.`
+          );
+
+          carregarVagasDisponiveisRT();
+
+        },
+        function(err) {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            "❌ " + err.message
+          );
+
+        }
+      );
+
+    }
   );
 
 }

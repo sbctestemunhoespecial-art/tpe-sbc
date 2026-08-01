@@ -3196,14 +3196,6 @@ function exibirResultados(res) {
 
   res.forEach(r => {  
 
-                                      /*console.table(res.map(r => ({
-                                        nome: r.nome,
-                                        idVaga: r.idVaga,
-                                        ehVaga: r.ehVaga,
-                                        frequencia: r.frequencia,
-                                        frequenciaVaga: r.frequenciaVaga
-                                      })));*/
-
     const partes = (r.turno || "").split(" ");
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
@@ -3215,11 +3207,16 @@ function exibirResultados(res) {
 
   if (chaveCabecalho !== cabecalhoAnterior) {
 
-      //const qtd = res.filter(x => x.grupo === r.grupo).length;
+      //const qtd =
+          //res.filter(x =>
+              //x.grupo === r.grupo &&
+              //x.equipamento === r.equipamento
+          //).length;
       const qtd =
           res.filter(x =>
               x.grupo === r.grupo &&
-              x.equipamento === r.equipamento
+              x.equipamento === r.equipamento &&
+              x.ehVaga !== true
           ).length;
 
       let tituloGrupo = "";
@@ -18955,11 +18952,18 @@ function buscarDesignacoesPorPonto() {
 
               cabecalhoAtual = chaveCabecalho;
 
+              //const integrantes =
+                //res.filter(x =>
+                    //x.grupo === r.grupo &&
+                    //x.equipamento === r.equipamento
+                //).length;
               const integrantes =
-                res.filter(x =>
-                    x.grupo === r.grupo &&
-                    x.equipamento === r.equipamento
-                ).length;
+                  res.filter(x =>
+                      x.grupo === r.grupo &&
+                      x.equipamento === r.equipamento &&
+                      x.ehVaga !== true
+                  ).length;
+
 
               let tituloGrupo = "";
               let estiloTitulo = "";
@@ -28919,7 +28923,9 @@ function abrirModalCompanheiros(
 
 }
 
-function montarTelaCompanheiros(res){
+/*function montarTelaCompanheiros(res){
+
+
 
     let situacao = "";
 
@@ -29005,11 +29011,6 @@ function montarTelaCompanheiros(res){
 
         `;
 
-console.log(
-"COMPANHEIROS RECEBIDOS:",
-JSON.stringify(res.companheiros)
-);
-
         res.companheiros.forEach(c=>{
 
             html += `
@@ -29054,7 +29055,201 @@ JSON.stringify(res.companheiros)
 
     listaGrupo.innerHTML = html;
 
+}*/
+function montarTelaCompanheiros(res){
+
+    // ==========================================
+    // VAGA NÃO CONTA COMO COMPANHEIRO
+    // ==========================================
+
+    const quantidadeParticipantes =
+        res.companheiros.filter(c =>
+            !(c.id || "")
+                .toString()
+                .trim()
+                .toUpperCase()
+                .startsWith("V")
+        ).length;
+
+
+    let situacao = "";
+
+
+    switch (quantidadeParticipantes) {
+
+        case 0:
+            situacao = "⚠️ Nenhum participante no grupo";
+            break;
+
+        case 1:
+            situacao = "👤 Ainda precisa de companheiro";
+            break;
+
+        case 2:
+            situacao = "👥 Dupla formada";
+            break;
+
+        case 3:
+            situacao = "👥 Trio formado";
+            break;
+
+        default:
+            situacao =
+                `👥 Grupo com ${quantidadeParticipantes} participantes`;
+
+    }
+
+
+    const listaGrupo =
+        document.getElementById(
+            "listaCompanheirosGrupo"
+        );
+
+    const listaAdicionar =
+        document.getElementById(
+            "listaAdicionarCompanheiro"
+        );
+
+    listaGrupo.style.display = "block";
+    listaAdicionar.style.display = "none";
+
+
+    if(!res.sucesso){
+
+        listaGrupo.innerHTML =
+            "❌ Erro ao carregar grupo.";
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    if(!res.grupo){
+
+        html += `
+
+            <p>
+            Esta designação ainda não possui grupo.
+            </p>
+
+            <button
+                onclick="criarGrupoCompanheiros()">
+
+                ➕ Criar grupo
+
+            </button>
+
+        `;
+
+    }
+
+    else{
+
+        html += `
+
+        <p>
+
+            <strong>Grupo:</strong>
+            ${res.grupo}
+
+            <br>
+
+            <small>${situacao}</small>
+
+        </p>
+
+        <hr>
+
+        `;
+
+
+        console.log(
+            "COMPANHEIROS RECEBIDOS:",
+            JSON.stringify(res.companheiros)
+        );
+
+
+        res.companheiros.forEach(c=>{
+
+            const ehVaga =
+                (c.id || "")
+                    .toString()
+                    .trim()
+                    .toUpperCase()
+                    .startsWith("V");
+
+
+            html += `
+
+            <div class="cabecalho-companheiro">
+
+                <strong>
+
+                    ${c.posicao} -
+
+                    ${
+                        ehVaga
+                            ? `🚧 Vaga ${c.id}`
+                            : c.nome
+                    }
+
+                </strong>
+
+                <span
+                    class="icone-remover-companheiro"
+                    title="Remover companheiro"
+                    onclick="
+                        confirmarRemocaoCompanheiro(
+                            '${res.grupo}',
+                            '${c.id}',
+                            '${c.designacao}',
+                            '${(c.nome || `Vaga ${c.id}`).replace(/'/g, "\\'")}'
+                        )
+                    ">
+
+                    🗑️
+
+                </span>
+
+            </div>
+
+            ${
+                ehVaga
+                    ? `<div class="congregacao-companheiro">
+                           Vaga pendente — ${c.id}
+                       </div>`
+                    : `<div class="congregacao-companheiro">
+                           ${c.congregacao}
+                       </div>`
+            }
+
+            `;
+
+        });
+
+
+        html += `
+
+            <button
+                class="btn-desig-comp"
+                onclick="adicionarCompanheiroTela()">
+
+                ➕ Adicionar companheiro
+
+            </button>
+
+        `;
+
+    }
+
+
+    listaGrupo.innerHTML = html;
+
 }
+
 function confirmarRemocaoCompanheiro(
     grupo,
     id,

@@ -30266,7 +30266,7 @@ function carregarVagasDisponiveisRT() {
             ${
               destaque
                 ? "🔔 Vaga da sua notificação"
-                : "🚨 Vaga disponível"
+                : "🚨 Vaga Rotativa Disponível"
             }
 
         </div>
@@ -30299,7 +30299,8 @@ function carregarVagasDisponiveisRT() {
 
                     <div class="congregacao-designacao">
 
-                      <div>Companheiro(a)</div> ${vaga.nomeParticipante || "Não informado"}
+                      <!--<div>Companheiro(a)</div> ${vaga.nomeParticipante || "Não informado"}-->
+                      <div>Seu companheiro deve aceitar a outra vaga no mesmo turno</div>
 
                     </div>
 
@@ -30364,8 +30365,8 @@ function carregarVagasDisponiveisRT() {
                         : "btn-aceitar-vaga"
                     }"
 
-                    onclick="aceitarVagaRotativa('${vaga.idVaga}')">
-
+                    onclick="verificarDuplaVagaRotativa('${vaga.idVaga}')">
+                    
                     🙋 Quero assumir esta vaga
 
                 </button>
@@ -30581,6 +30582,300 @@ function salvarVagaRT() {
   // guarda contexto global
   //window.vagaContextoRT = { ponto, dia, frequencia };
   window.vagaContextoRT = { ponto, dia, frequencia, equipamento: window.camposSelecionados.equipamentoVaga };
+}
+
+/*function verificarCompanheiroVagaRotativa(idVaga) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "consultarCompanheiroVagaRotativa",
+
+    {
+      idVaga: idVaga,
+      idParticipante: idUsuarioLogado
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      console.log(
+        "Resposta consulta companheiro:",
+        res
+      );
+
+
+      // ==================================================
+      // ERRO NA CONSULTA
+      // ==================================================
+
+      if (!res || res.sucesso === false) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível verificar o companheiro."
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // AINDA NÃO HÁ COMPANHEIRO
+      // ==================================================
+
+      if (!res.temCompanheiro) {
+
+        mostrarConfirmacaoGlobal(
+
+          "⚠️ Você será o primeiro a aceitar esta vaga.<br><br>" +
+          "Ainda não há um companheiro definido para esta designação.<br><br>" +
+          "Deseja prosseguir com o aceite?",
+
+          function() {
+
+            aceitarVagaRotativa(idVaga);
+
+          }
+
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // JÁ EXISTE UM COMPANHEIRO
+      // ==================================================
+
+      const nomeCompanheiro =
+        res.nomeCompanheiro ||
+        "outro participante";
+
+
+      mostrarConfirmacaoGlobal(
+
+        `👥 <b>${nomeCompanheiro}</b> já aceitou a outra vaga desta designação.<br><br>` +
+        `Você confirma que deseja trabalhar com essa pessoa?`,
+
+        function() {
+
+          aceitarVagaRotativa(idVaga);
+
+        }
+
+      );
+
+    },
+
+
+    function(err) {
+
+      esconderSpinner();
+
+      console.log(
+        "Erro ao consultar companheiro:",
+        err
+      );
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Não foi possível verificar o companheiro."
+      );
+
+    }
+
+  );
+
+}*/
+function verificarDuplaVagaRotativa(idVaga) {
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "verificarDuplaVagaRotativa",
+
+    {
+      idVaga: idVaga,
+      idParticipante: idUsuarioLogado
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      console.log(
+        "Resposta verificar dupla:",
+        res
+      );
+
+
+      // ==================================================
+      // ERRO NA CONSULTA
+      // ==================================================
+
+      if (!res || res.sucesso === false) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível verificar a dupla."
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // NÃO EXISTE OUTRA VAGA
+      // ==================================================
+
+      if (
+        res.situacao ===
+        "SEM_OUTRA_VAGA"
+      ) {
+
+        mostrarConfirmacaoGlobal(
+
+          "⚠️ Esta é a única vaga rotativa encontrada para esta designação.<br><br>" +
+          "Você será o primeiro a aceitar.<br><br>" +
+          "Deseja prosseguir com o aceite?",
+
+          function() {
+
+            aceitarVagaRotativa(idVaga);
+
+          }
+
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // OUTRA VAGA EXISTE, MAS AINDA ESTÁ ABERTA
+      // ==================================================
+
+      if (
+        res.situacao ===
+        "SEM_COMPANHEIRO"
+      ) {
+
+        mostrarConfirmacaoGlobal(
+
+          "⚠️ Ainda não há um companheiro definido para esta designação.<br><br>" +
+          "Você será o primeiro a aceitar esta vaga.<br><br>" +
+          "Deseja prosseguir com o aceite?",
+
+          function() {
+
+            aceitarVagaRotativa(idVaga);
+
+          }
+
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // A OUTRA VAGA FOI ACEITA PELO MESMO PARTICIPANTE
+      // ==================================================
+
+      if (
+        res.situacao ===
+        "MESMO_PARTICIPANTE"
+      ) {
+
+        mostrarAlertaGlobal(
+          "🚫 Você já aceitou a outra vaga desta designação."
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // COMPANHEIRO ENCONTRADO
+      // ==================================================
+
+      if (
+        res.situacao ===
+        "COMPANHEIRO_ENCONTRADO"
+      ) {
+
+        // Aqui ainda temos somente o ID.
+        // Não vamos inventar o nome do participante.
+        // Primeiro usamos o ID para confirmar o fluxo.
+
+        mostrarConfirmacaoGlobal(
+
+         `👥 <b>${res.nomeCompanheiro}</b> já aceitou a outra vaga desta designação.<br>` + 
+         `Congregação: <b>${res.congregacaoCompanheiro || "Não informada"}</b><br><br>` + 
+         `Você confirma que deseja trabalhar com essa pessoa?`,
+
+          function() {
+
+            aceitarVagaRotativa(idVaga);
+
+          }
+
+        );
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // OUTRO STATUS
+      // ==================================================
+
+      mostrarAlertaGlobal(
+
+        res.status
+          ? `🚫 A outra vaga está com status "${res.status}".`
+          : "🚫 A outra vaga não está disponível para aceite."
+
+      );
+
+    },
+
+
+    function(err) {
+
+      esconderSpinner();
+
+      console.log(
+        "Erro ao verificar dupla:",
+        err
+      );
+
+      mostrarAlertaGlobal(
+
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Não foi possível verificar a dupla."
+
+      );
+
+    }
+
+  );
+
 }
 
 function aceitarVagaRotativa(idVaga) {
@@ -30859,7 +31154,7 @@ function mostrarVagasRotativas(vagas) {
 
     card.querySelector("button").onclick = () => {
 
-      excluirVaga(vaga);
+      excluirVagaRotativa(vaga);
 
     };
 
@@ -30867,6 +31162,40 @@ function mostrarVagasRotativas(vagas) {
     container.appendChild(card);
 
   });
+
+}
+
+function excluirVagaRotativa(vaga) {
+
+  mostrarConfirmacaoGlobal(
+    `⚠️ Deseja excluir a vaga <strong>${vaga.frequencia}</strong> de <strong>${vaga.dia}</strong> no ponto <strong>${vaga.ponto}</strong>?`,
+    () => {
+
+      mostrarSpinner();
+
+      apiJSONP(
+        "excluirVagaRotativa",
+        { idVaga: vaga.idVaga },
+        () => {
+
+          esconderSpinner();
+
+          carregarTodasVagasAbertas();
+
+          mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
+
+        },
+        err => {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal("❌ " + err.message);
+
+        }
+      );
+
+    }
+  );
 
 }
 

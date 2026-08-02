@@ -60,7 +60,8 @@ input, select, button {
   box-sizing: border-box;
   width: 100%;
   min-height: 2.5rem;
-  font-size: 1rem;
+  /*font-size: 1rem;*/
+  font-size: .8rem;
 }
 
 input,
@@ -3761,6 +3762,16 @@ td {
 
 }
 
+.grupo-seletores2 {
+
+    display:grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap:.1rem;
+
+}
+
 .seletor{
 
     background:#fff;
@@ -3789,7 +3800,7 @@ td {
 
 .seletor-titulo{
 
-    font-size:.65rem;
+    font-size:.8rem;
 
     color:#6b7280;
 
@@ -3803,7 +3814,7 @@ td {
 
 .seletor-valor{
 
-    font-size:.65rem;
+    font-size:.8rem;
 
     font-weight:600;
 

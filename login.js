@@ -140,6 +140,7 @@ const telasInicializadas = {};
 const telasSempreAtualizar = new Set([
   // telas que devem sempre atualizar quando abertas, ou seja, a cada abertura nova, atualiza
   "painelVagas",
+  "painelVagasRT",
   "telaVagasDisponiveis",
   "disponibilidadeContainerUsuarioLogado2h",
   "disponibilidadeContainerUsuarioLogado4h",
@@ -30349,7 +30350,7 @@ function cadastrarVagaRT() {
 
         mostrarAlertaGlobal("✅ Vaga criada com sucesso");
 
-        //carregarTodasVagasAbertas();
+        carregarTodasVagasAbertasRT();
 
         //apiJSONP("atualizarVagasEmAberto", {}, function(){});
 
@@ -30736,6 +30737,7 @@ function salvarVagaRT() {
     function(err) {
 
       esconderSpinner();
+
       mostrarAlertaGlobal("Erro ao carregar dados do ponto");
 
     }
@@ -31344,7 +31346,7 @@ function excluirVagaRotativa(vaga) {
 
           esconderSpinner();
 
-          carregarTodasVagasAbertas();
+          carregarTodasVagasAbertasRT();
 
           mostrarAlertaGlobal("✅ Vaga excluída com sucesso.");
 

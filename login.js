@@ -1,5 +1,9 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwrlEvENxytMFmrTmzSWDmXCXcy-0dBU7ve5fWRVf871plhTW5TqvtsS4-9LiwjnXvU/exec";
 
+//let perfilUsuario = null;
+//let idUsuarioLogado = null;
+//let emailUsuario = null;
+
 function mostrarTelaManutencao(){
 
   document.body.innerHTML = `
@@ -144,7 +148,8 @@ const telasSempreAtualizar = new Set([
   "telaVagasDisponiveis",
   "disponibilidadeContainerUsuarioLogado2h",
   "disponibilidadeContainerUsuarioLogado4h",
-  "telaVagasDisponiveisRT"
+  "telaVagasDisponiveisRT",
+  "telaMinhasDesignacoesRotativas"
 ]);
 
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
@@ -255,6 +260,8 @@ const inicializadores = {
     telameutreinamentopraticoId: gerarCardsTPId,
 
     telameutreinamentopratico: gerarCardsTP,
+
+    telaMinhasDesignacoesRotativas: carregarMinhasDesignacoesRotativas,
 
     disponibilidadeContainerUsuarioLogado2h() {
 
@@ -28954,6 +28961,47 @@ function obterCodigoTurno(turno) {
   return turnoCodigoMap[turno] || turno;
 
 }
+function obterNomeTurnoPorCodigo(codigo) {
+
+  const c =
+    (codigo || "")
+      .toString()
+      .trim()
+      .toUpperCase();
+
+  const turnoCodigoMap = {
+
+    A: "Matinal",
+
+    M: "Manhã",
+
+    T: "Tarde",
+
+    N: "Noite",
+
+    MA: "Manhã (9–11h)",
+
+    MB: "Manhã (11–13h)",
+
+    TA: "Tarde (13–15h)",
+
+    TB: "Tarde (15–17h)"
+
+  };
+
+  // Primeiro verifica códigos específicos
+  if (turnoCodigoMap[c]) {
+    return turnoCodigoMap[c];
+  }
+
+  // Para códigos como T18, N18 etc.
+  const codigoBase =
+    c.match(/^[A-Z]+/)?.[0] || "";
+
+  return turnoCodigoMap[codigoBase] || c;
+
+}
+
 function criarGrupoCompanheiros(){
 
   const {
@@ -31405,6 +31453,540 @@ function renovarVagasRotativasFrontend() {
 
 }
 
+/*function carregarMinhasDesignacoesRotativas() {
+
+  console.log(
+    "🔄 carregarMinhasDesignacoesRotativas chamada",
+    "idUsuarioLogado:",
+    idUsuarioLogado
+  );
+
+  const container =
+    document.getElementById(
+      "cardsMinhasDesignacoesRotativas"
+    );
+
+  if (!container) {
+    console.error(
+      "Container cardsMinhasDesignacoesRotativas não encontrado."
+    );
+    return;
+  }
+
+  container.innerHTML = "";
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarDesignacoesRotativasParticipante",
+
+    {
+      idParticipante:
+        idUsuarioLogado
+    },
+
+    function(res) {
+
+      console.log(
+    "📦 Resposta minhas designações rotativas:",
+    res
+  );
+
+      esconderSpinner();
+
+      console.log(
+        "Designações rotativas:",
+        res
+      );
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível carregar suas designações rotativas."
+        );
+
+        return;
+
+      }
+
+      const designacoes =
+        res.designacoes || [];
+
+      if (!designacoes.length) {
+
+        container.innerHTML = `
+          <div class="aviso-sem-resultados">
+            Você não possui designações rotativas no momento.
+          </div>
+        `;
+
+        return;
+
+      }
+
+      designacoes.forEach(
+        designacao => {
+
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "card-designacao";
+
+          card.innerHTML = `
+
+            <div class="card-designacao-topo">
+
+              <div class="nome-designacao">
+                ${designacao.designacao || `${designacao.ponto} ${designacao.dia}`}
+              </div>
+
+            </div>
+
+            <div class="card-designacao-infos">
+
+              <div>
+                <strong>📍 Ponto:</strong>
+                ${designacao.ponto}
+              </div>
+
+              <div>
+                <strong>📅 Dia:</strong>
+                ${designacao.dia}
+              </div>
+
+              <div>
+                <strong>🔄 Frequência:</strong>
+                ${designacao.frequencia}
+              </div>
+
+              <div>
+                <strong>🖥️ Equipamento:</strong>
+                ${designacao.equipamento || "Não informado"}
+              </div>
+
+              <div>
+                <strong>👥 Grupo:</strong>
+                ${designacao.grupo || "Não informado"}
+              </div>
+
+            </div>
+
+            <div class="area-acoes-designacao">
+
+              <button
+                type="button"
+                class="btn-desistir-designacao"
+                onclick="desistirDaDesignacaoRotativa(
+                  '${designacao.idVaga}'
+                )">
+
+                🔓 Desistir
+
+              </button>
+
+            </div>
+
+          `;
+
+          container.appendChild(card);
+
+        }
+      );
+
+    },
+
+    function(err) {
+
+      console.error(
+    "❌ Erro ao carregar minhas designações rotativas:",
+    err
+  );
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao carregar designações rotativas:",
+        err
+      );
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Erro ao carregar suas designações rotativas."
+      );
+
+    }
+
+  );
+
+}*/
+function carregarMinhasDesignacoesRotativas() {
+
+  console.log(
+    "🔄 carregarMinhasDesignacoesRotativas chamada",
+    "idUsuarioLogado:",
+    idUsuarioLogado
+  );
+
+  const container =
+    document.getElementById(
+      "cardsMinhasDesignacoesRotativas"
+    );
+
+  if (!container) {
+
+    console.error(
+      "Container cardsMinhasDesignacoesRotativas não encontrado."
+    );
+
+    return;
+
+  }
+
+  container.innerHTML = "";
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarDesignacoesRotativasParticipante",
+
+    {
+      idParticipante:
+        idUsuarioLogado
+    },
+
+    function(res) {
+
+      console.log(
+        "📦 Resposta minhas designações rotativas:",
+        res
+      );
+      console.log(
+        "👥 COMPANHEIRO:",
+        res.designacoes?.[0]?.idCompanheiro,
+        res.designacoes?.[0]?.nomeCompanheiro,
+        res.designacoes?.[0]?.congregacaoCompanheiro
+      );
+
+      esconderSpinner();
+
+      console.log(
+        "Designações rotativas:",
+        res
+      );
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível carregar suas designações rotativas."
+        );
+
+        return;
+
+      }
+
+      const designacoes =
+        res.designacoes || [];
+
+      if (!designacoes.length) {
+
+        container.innerHTML = `
+          <div class="aviso-sem-resultados">
+            Você não possui designações rotativas no momento.
+          </div>
+        `;
+
+        return;
+
+      }
+
+      designacoes.forEach(
+        designacao => {
+
+          // ================================================== 
+          // OBTER TURNO 
+          // ==================================================
+          const partesDesignacao =
+            (designacao.designacao || "")
+              .toString()
+              .trim()
+              .split(/\s+/);
+
+          const codigoTurno =
+            partesDesignacao[0] || "";
+
+          const turnoPalavra =
+            obterNomeTurnoPorCodigo(codigoTurno);
+
+          // ================================================== 
+          // OBTER PALAVRA COM PRIMEIR LETRA MAIUSCULA
+          // ==================================================
+          const diaExibicao =
+            primeiraLetraMaiuscula(
+              designacao.dia
+            );
+
+          // ================================================== 
+          // OBTER NÚMERO DO PONTO
+          // ==================================================
+          const pontoNumero =
+            (designacao.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || "";
+
+
+              
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "card-designacao";
+
+
+          // ==================================================
+          // CARD
+          // ==================================================
+
+          card.innerHTML = `
+
+            <div class="titulo-grupo-designacao">
+                🚩 Ponto ${pontoNumero}
+            </div>
+
+            <div class="card-designacao-topo">
+
+              <div>
+
+                <div class="nome-designacao">
+
+                  ${designacao.nome || ""}
+
+                </div>
+
+                <div class="congregacao-designacao">
+
+                  ${designacao.congregacao || ""}
+
+                </div>
+
+              </div>
+
+              <div class="freq-designacao">
+
+                ${designacao.frequencia || ""}
+
+              </div>
+
+            </div>
+
+            
+            <div class="companheiro-designacao">
+
+              <div class="titulo-companheiro-designacao">
+                👥 Companheiro
+              </div>
+
+              <div class="nome-companheiro-designacao">
+                ${designacao.nomeCompanheiro || "Aguardando companheiro"}
+              </div>
+
+              ${
+                designacao.congregacaoCompanheiro
+                  ? `
+                    <div class="congregacao-companheiro-designacao">
+                      ${designacao.congregacaoCompanheiro}
+                    </div>
+                  `
+                  : ""
+              }
+
+            </div>
+
+
+            <div class="card-designacao-infos">
+
+              <div>
+
+                <span>📅</span>
+
+                ${diaExibicao}
+
+              </div>
+
+
+              <div>
+
+                <span>🕒</span>
+
+                ${turnoPalavra}
+
+
+              </div>
+
+
+              <div>
+
+                <span>🚗</span>
+
+                ${designacao.equipamento || "Não informado"}
+
+              </div>
+
+
+              <!--<div>
+
+                <span>👥</span>
+
+                ${designacao.grupo || "Não informado"}
+
+              </div>-->
+
+            </div>
+
+
+            <div class="card-designacao-acoes">
+
+              <button
+                type="button"
+                class="btn-desistir-designacao"
+                onclick="desistirDaDesignacaoRotativa('${designacao.idVaga}')">
+
+                🔓 Desistir
+
+              </button>
+
+            </div>
+
+          `;
+
+
+          container.appendChild(card);
+
+        }
+      );
+
+    },
+
+    function(err) {
+
+      console.error(
+        "❌ Erro ao carregar minhas designações rotativas:",
+        err
+      );
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Erro ao carregar suas designações rotativas."
+      );
+
+    }
+
+  );
+
+}
+
+
+function desistirDaDesignacaoRotativa(idVaga) {
+
+  mostrarConfirmacaoGlobal(
+
+    "Tem certeza que deseja desistir desta designação?",
+
+    function() {
+
+      mostrarSpinner();
+
+      apiJSONP(
+
+        "desistirDesignacaoRotativa",
+
+        {
+          idVaga:
+            idVaga,
+
+          idParticipante:
+            idUsuarioLogado
+        },
+
+        function(res) {
+
+          esconderSpinner();
+
+          console.log(
+            "Resposta desistência:",
+            res
+          );
+
+          if (
+            !res ||
+            !res.sucesso
+          ) {
+
+            mostrarAlertaGlobal(
+              res?.mensagem ||
+              "Não foi possível desistir da designação."
+            );
+
+            return;
+
+          }
+
+          mostrarAlertaGlobal(
+            "✅ Você desistiu da designação."
+          );
+
+          // Atualiza a lista de minhas designações
+          carregarMinhasDesignacoesRotativas();
+
+          // Atualiza também as vagas disponíveis
+          carregarVagasDisponiveisRT();
+
+        },
+
+        function(err) {
+
+          esconderSpinner();
+
+          console.error(
+            "Erro ao desistir da designação:",
+            err
+          );
+
+          mostrarAlertaGlobal(
+            err?.message ||
+            err?.mensagem ||
+            err ||
+            "Erro ao desistir da designação."
+          );
+
+        }
+
+      );
+
+    }
+
+  );
+
+}
+
+
+
 /* Funções pra o modal PDF */
 function extrairLinkPdf(linkHTML) {
 
@@ -31461,3 +32043,4 @@ function fecharModalPdf() {
   }
 
 }
+

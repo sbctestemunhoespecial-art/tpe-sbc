@@ -943,6 +943,11 @@
           <div class="titulo">Vagas Rotativas</div>
       </div>
       <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('telaMinhasDesignacoesRotativas', this)">
+          <div class="icone">✏️</div>
+          <div class="titulo">Minhas Designações Rotativas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
           onclick="abrirTela('telaeventos', this)">
           <div class="icone">🎊</div>
           <div class="titulo">Eventos</div>
@@ -1064,6 +1069,12 @@
 
    <div id="listaSemDisponibilidade"></div>
 
+  </div>
+
+  <div id="telaMinhasDesignacoesRotativas" class="painel-exportar tela">
+
+    <div id="cardsMinhasDesignacoesRotativas"></div>
+    
   </div>
 
   <div id="telaUsuarioLogado" class="painel-exportar tela"> <!-- <div id="telaUsuarioLogado" class="painel tela"> -->

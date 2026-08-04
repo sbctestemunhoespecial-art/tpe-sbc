@@ -16,7 +16,40 @@
 </head>
 
 <body>
- 
+
+  <div id="modalPdf" class="modal-pdf-ponto">
+
+    <div class="conteudo-modal-pdf">
+
+      <button
+        class="fechar-modal-pdf"
+        onclick="fecharModalPdf()">
+        ✕
+      </button>
+
+      <div class="icone-modal-pdf">
+        📄
+      </div>
+
+      <h3>PDF pronto!</h3>
+
+      <p>
+        O documento já pode ser baixado!
+      </p>
+
+      <a
+        id="linkPdf"
+        href="#"
+        target="_blank"
+        class="btn-abrir-pdf"
+        onclick="fecharModalPdf()">
+        📄 Abrir PDF
+      </a>
+
+    </div>
+
+  </div>
+
     <div id="painelNotificacoes" class="painel-notificacoes">
 
       <div class="painel-notificacoes-topo">
@@ -75,7 +108,7 @@
 
     <div class="modal-conteudo">
 
-        <h3 id="tituloModalTreinadores">
+        <h4 id="tituloModalTreinadores">
 
             <span>
                 👤 Treinadores disponíveis
@@ -88,7 +121,7 @@
                 ✖
             </span>
 
-        </h3>
+        </h4>
 
 
         <div id="conteudoModalTreinadores"></div>
@@ -105,7 +138,7 @@
 
   <div class="modal-conteudo">
 
-    <h3>
+    <h4>
         <span id="tituloModalDiasTurnos">
             📅 Dias disponíveis
         </span>
@@ -116,7 +149,7 @@
         >
           ✖
         </span>
-    </h3>
+    </h4>
 
 
     <div id="conteudoModalDiasTurnos"></div>
@@ -134,9 +167,9 @@
 
   <div class="modal-conteudo">
 
-    <h3>
+    <h4>
       👥 Escolher grupo
-    </h3>
+    </h4>
 
 
     <div id="listaGruposDisponiveis">
@@ -170,9 +203,9 @@
 
   <div class="modal-conteudo">
 
-    <h3>
+    <h4>
       👥 Companheiros da escala
-    </h3>
+    </h4>
 
 
     <div id="dadosGrupoCompanheiros">
@@ -210,7 +243,7 @@
 
 <div class="modal-conteudo">
 
-  <h3>Editar designação</h3>
+  <h4>Editar designação</h4>
 
   <label>Participante</label>
 
@@ -258,9 +291,9 @@
   <div class="modal-conteudo">
 
 
-    <h3 id="tituloModalSelecao">
+    <h4 id="tituloModalSelecao">
       Selecionar
-    </h3>
+    </h4>
 
 
     <input
@@ -752,7 +785,6 @@
 </div>
 
 <div id="telaLogin" class="quadro-centralizado">
-  <!--<h3 class="titulo-login">TPE SBC</h5>-->
 
   <label for="emailLogin">E-mail do usuário:</label>
   <input type="email" id="emailLogin" class="input-login" required>
@@ -772,7 +804,7 @@
 </div>
 
 <div id="telaSolicitarCodigo" class="quadro-centralizado" style="display:none;">
-  <h3 class="titulo-login">ESQUECI A SENHA</h5>
+  <h4 class="titulo-login">ESQUECI A SENHA</h4>
 
   <input type="email" id="emailCodigo" class="input-login" required>
 
@@ -829,7 +861,7 @@
 </div>
 
 <div id="telaInserirCodigo" class="quadro-centralizado" style="display:none;">
-  <h3 class="titulo-login">DIGITE O CÓDIGO</h5>
+  <h4 class="titulo-login">DIGITE O CÓDIGO</h4>
 
   <div id="inputsCodigo" style="display:flex; gap:5px; justify-content:center;">
     <input type="text" maxlength="1" class="input-codigo" inputmode="numeric" pattern="[0-9]*" oninput="autoAvancarCodigo(this)" required>
@@ -875,158 +907,129 @@
 
     <!-- CONTEÚDO DO SISTEMA -->
 
-    <div id="conteudoProtegido" style="display:none;">
+<div id="conteudoProtegido" style="display:none;">
 
-        <!-- CABEÇALHO -->
-
-        <!--<div id="conteudoPrincipal" class="header-dashboard">
-            <div class="linha-sistema">
-                <div class="titulo-sistema">
-                    TPE SBC
-                </div>
-                <div class="subtitulo-sistema">
-                    Testemunho Público Especial
-                </div>
-            </div>
-            <div class="linha-usuario">
-                <div id="saudacaoUsuario" class="usuario">
-                    Bem-vindo(a)... 👋
-                </div>
-                <div id="tipoAcessoUsuario" class="acesso">
-                    Seu tipo de acesso é...
-                </div>
-            </div>
-        </div>-->
-
-        <!-- MENU -->
-
-          <div id="menuCards" class="tela aberta">
-      <div class="cards-menu">
-        <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
-            onclick="abrirTela('cardPerfilMinhaInfo', this); pesquisarMinhaInfo();">
-            <div class="icone">👤</div>
-            <div class="titulo">Meu Perfil</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('painelMeusTreinamentos', this); consultarMeuTreinamento();">
-            <div class="icone">🎓</div>
-            <div class="titulo">Meus Treinamentos</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-            onclick="abrirTela('disponibilidade', this)">
-            <div class="icone">🕒</div>
-            <div class="titulo">Disponibilidade Geral</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes btn-edicao"
-            onclick="abrirTela('telaUsuarioLogado', this)"><!-- onclick="abrirTela('telaUsuarioLogado', this); atualizarCondicaoDisponibilidadeUsuario(idUsuarioLogado);"> -->
-            <div class="icone">🕒</div>
-            <div class="titulo">Minha Disponibilidade</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('telaVagasDisponiveis', this)">
-            <div class="icone">🚨</div>
-            <div class="titulo">Vagas Disponíveis</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('telaVagasDisponiveisRT', this)">
-            <div class="icone">🔄</div>
-            <div class="titulo">Vagas Rotativas</div>
-        </div>
-        <!--<div class="card-menu btn-relatoriosSubMenu so-admin"
-            onclick="abrirTela('telaVagasRotativas', this)">
-            <div class="icone">🔄</div>
-            <div class="titulo">Vagas Rotativas</div>
-        </div>-->
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('telaeventos', this)">
-            <div class="icone">🎊</div>
-            <div class="titulo">Eventos</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('escalas', this)">
-            <div class="icone">📅</div>
-            <div class="titulo">Escalas</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('lembretesParticipantes', this)">
-            <div class="icone">📢</div>
-            <div class="titulo">Lembrar Participantes</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-participantes"
-            onclick="abrirTela('telamapas', this); carregarMapaQuandoClicar();">
-            <div class="icone">🌍</div>
-            <div class="titulo">Mapas</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-            onclick="abrirTela('participantes', this)">
-            <div class="icone">🧑‍🤝‍🧑</div>
-            <div class="titulo">Participantes</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-escalas"
-            onclick="abrirTela('painelSemDisponibilidade', this)">
-            <div class="icone">⚠️</div>
-            <div class="titulo">Participantes Sem Disponibilidade</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-admin"
-            onclick="abrirTela('telameutreinamentopratico', this)">
-            <div class="icone">🎓</div>
-            <div class="titulo">Dias Treinamento Candidatos</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-treinandos"
-            onclick="abrirTela('telameutreinamentopraticoId', this); pesquisarTPPorId();">
-            <div class="icone">🎓</div>
-            <div class="titulo">Meus Dias Para Treinamento</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-escalas"
-            onclick="abrirTela('disponiveis', this)">
-            <div class="icone">👥</div>
-            <div class="titulo">Disponíveis</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-escalas"
-            onclick="abrirTela('designar', this)">
-            <div class="icone">✅</div>
-            <div class="titulo">Designar</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-admin"
-            onclick="abrirTela('admin', this); carregarManutencao();">
-            <div class="icone">👨‍💼</div>
-            <div class="titulo">Administração</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-            onclick="abrirTela('vagas', this)">
-            <div class="icone">🪑</div>
-            <div class="titulo">Vagas</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-admin"
-            onclick="abrirTela('vagasRT', this)">
-            <div class="icone">🪑</div>
-            <div class="titulo">Vagas Rotativas</div>
-        </div>
-        <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-            onclick="abrirTela('relatorios', this)">
-            <div class="icone">📈</div>
-            <div class="titulo">Relatórios</div>
-        </div>
+  <div id="menuCards" class="tela aberta">
+    <!-- <h5>☰ Menu</h5> -->
+    <div class="cards-menu">
+      <div class="card-menu btn-relatoriosSubMenu so-participantes so-treinandos"
+          onclick="abrirTela('cardPerfilMinhaInfo', this); pesquisarMinhaInfo();">
+          <div class="icone">👤</div>
+          <div class="titulo">Meu Perfil</div>
       </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('painelMeusTreinamentos', this); consultarMeuTreinamento();">
+          <div class="icone">🎓</div>
+          <div class="titulo">Meus Treinamentos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('disponibilidade', this)">
+          <div class="icone">🕒</div>
+          <div class="titulo">Disponibilidade Geral</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('telaUsuarioLogado', this)">
+          <div class="icone">🕒</div>
+          <div class="titulo">Minha Disponibilidade</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('telaVagasDisponiveis', this)">
+          <div class="icone">🚨</div>
+          <div class="titulo">Vagas Disponíveis</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes btn-edicao"
+          onclick="abrirTela('telaVagasDisponiveisRT', this)">
+          <div class="icone">🔄</div>
+          <div class="titulo">Vagas Rotativas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('telaeventos', this)">
+          <div class="icone">🎊</div>
+          <div class="titulo">Eventos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('escalas', this)">
+          <div class="icone">📅</div>
+          <div class="titulo">Escalas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('lembretesParticipantes', this)">
+          <div class="icone">📢</div>
+          <div class="titulo">Lembrar Participantes</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-participantes"
+          onclick="abrirTela('telamapas', this); carregarMapaQuandoClicar();">
+          <div class="icone">🌍</div>
+          <div class="titulo">Mapas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('participantes', this)">
+          <div class="icone">🧑‍🤝‍🧑</div>
+          <div class="titulo">Participantes</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-escalas"
+          onclick="abrirTela('painelSemDisponibilidade', this)">
+          <div class="icone">⚠️</div>
+          <div class="titulo">Participantes Sem Disponibilidade</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('telameutreinamentopratico', this)">
+          <div class="icone">🎓</div>
+          <div class="titulo">Dias Treinamento Candidatos</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-treinandos"
+          onclick="abrirTela('telameutreinamentopraticoId', this); pesquisarTPPorId();">
+          <div class="icone">🎓</div>
+          <div class="titulo">Meus Dias Para Treinamento</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-escalas"
+          onclick="abrirTela('disponiveis', this)">
+          <div class="icone">👥</div>
+          <div class="titulo">Disponíveis</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-escalas"
+          onclick="abrirTela('designar', this)">
+          <div class="icone">✅</div>
+          <div class="titulo">Designar</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('admin', this); carregarManutencao();">
+          <div class="icone">👨‍💼</div>
+          <div class="titulo">Administração</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('vagas', this)">
+          <div class="icone">🪑</div>
+          <div class="titulo">Vagas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('vagasRT', this)">
+          <div class="icone">🪑</div>
+          <div class="titulo">Vagas Rotativas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+          onclick="abrirTela('relatorios', this)">
+          <div class="icone">📈</div>
+          <div class="titulo">Relatórios</div>
+      </div>
+    </div>
   </div>
 
-  <!-- TELA PARA VAGAS ROTATIVAS -->
-    <div id="telaVagasRotativas" class="painel tela">
+  <div id="telaVagasRotativas" class="painel tela"> <!-- <div id="telaVagasRotativas" class="painel tela"> -->
 
-        <div class="cabecalho-tela">
-            <h2>🔄 Vagas Rotativas</h2>
-        </div>
+      <div class="cabecalho-tela">
+          <h5>🔄 Vagas Rotativas</h5>
+      </div>
 
 
-        <div id="cardsVagasRotativas"
-            class="lista-cards">
+      <div id="cardsVagasRotativas"
+          class="lista-cards">
 
-        </div>
+      </div>
 
-    </div>
-  <!-- TELA PARA VAGAS ROTATIVAS -->
+  </div>
 
-<div id="painelSemDisponibilidade" class="painel-exportar tela"> <!-- AQUI TERMINA O PAINEL PARTICIPANTES SEM DISPONIBILIDADE-->
+  <div id="painelSemDisponibilidade" class="painel-exportar tela">
 
     <h5>📋 Participantes sem disponibilidade cadastrada</h5>
 
@@ -1061,170 +1064,9 @@
 
    <div id="listaSemDisponibilidade"></div>
 
-    <!--<table
-        id="tabelaSemDisponibilidade"
-        class="tabela-sistema tabela-destaque">
-
-        <thead>
-
-            <tr>
-
-                <th style="width:90px;">
-                    ID
-                </th>
-
-                <th>
-                    Nome
-                </th>
-
-                <th>
-                    E-mail
-                </th>
-
-                <th>
-                    WhatsApp
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="tbodySemDisponibilidade">
-
-        </tbody>
-
-    </table>-->
-
-</div>
-
-  <!--<div id="minhaInfo" class="painel tela"> 
-
-    <h5>👤 Meu Perfil</h5>
-    <div id="painelMinhaInfo">
-      
-    <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Congregação</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBodyMinhaInfo"></tbody>
-    </table>
-
-    <table id="tabelaInfoPessoal2MinhaInfo" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Contato</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-      <tbody id="infoPessoalBody2MinhaInfo"></tbody>
-    </table>
-
-    <table id="tabelaClassificacaoMinhaInfo" style="display:none;" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Grupo</th>
-            <th>Sexo</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-      <tbody id="classificacaoBodyMinhaInfo"></tbody>
-    </table>
-
-    <table id="tabelaDetalhesMinhaInfo" style="display:none;" class="tabela-sistema">
-        <colgroup>
-          <col style="width: 20%;">  
-          <col>                      
-        </colgroup>
-          <thead>
-            <tr>
-              <th>TCS</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-        <tbody id="detalhesBodyMinhaInfo">
-      </tbody>
-    </table>
-
-      <div style="display: flex; align-items: center; gap: 10px;">
-      <p id="msgSalvarAlteracoesMinhaInfo" class="mensagem-verde"></p>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 10px;">
-      <p id="msgExcluirMinhaInfo" class="mensagem-verde"></p>
-      </div>
-
-    <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
-
-      <h4 class="titulo-secao">Designações</h4>
-
-      <div class="card-info">
-          <span id="campoDesignacao1Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao2Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao3Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao4Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao5Mi"></span>
-      </div>
-
-      <span id="campoIdentificacaoMi" style="display:none;"></span>
-
-    </div>
-
-    <div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
-
-        <h4 class="titulo-secao">Privilégios</h4>
-
-        <div class="lista-privilegios">
-
-            <div class="item-privilegio">
-                <span class="rotulo-privilegio">Coordenação</span>
-                <span id="campoPrivOrganizacaoMi"></span>
-            </div>
-
-            <div class="item-privilegio">
-                <span class="rotulo-privilegio">AAC</span>
-                <span id="campoPrivAACMi"></span>
-            </div>
-
-            <div class="item-privilegio">
-                <span class="rotulo-privilegio">Escalas</span>
-                <span id="campoPrivEscalasMi"></span>
-            </div>
-
-            <div class="item-privilegio">
-                <span class="rotulo-privilegio">Equipe</span>
-                <span id="campoPrivEquipesMi"></span>
-            </div>
-
-            <div class="item-privilegio">
-                <span class="rotulo-privilegio">Treinador</span>
-                <span id="campoPrivTreinadorMi"></span>
-            </div>
-
-        </div>
-
-    </div>
-
   </div>
-</div>-->
 
-  
-
-  <div id="telaUsuarioLogado" class="painel tela">
+  <div id="telaUsuarioLogado" class="painel-exportar tela"> <!-- <div id="telaUsuarioLogado" class="painel tela"> -->
   
     <h5>🕒 Minha Disponibilidade</h5>
 
@@ -1309,8 +1151,7 @@
             </div>
   </div>
 
-
-    <div id="disponibilidadeContainerUsuarioLogado2h" class="painel-exportar tela">
+  <div id="disponibilidadeContainerUsuarioLogado2h" class="painel-exportar tela">
 
     <h5>🕒 Minha Disponibilidade Para 2 Horas</h5>
 
@@ -1442,7 +1283,7 @@
 
   </div>
 
-    <div id="disponibilidadeContainerUsuarioLogado4h" class="painel-exportar so-participantes bloquear-treinandos tela">
+  <div id="disponibilidadeContainerUsuarioLogado4h" class="painel-exportar so-participantes bloquear-treinandos tela">
 
       <h5>🕒 Minha Disponibilidade Para 4 Horas</h5>
 
@@ -1544,7 +1385,7 @@
 
   </div>
 
-    <div id="disponibilidade" class="painel tela"> 
+  <div id="disponibilidade" class="painel-exportar tela"> <!-- <div id="telaUsuarioLogado" class="painel tela"> -->
     
     <h5>🕒 Disponibilidade dos Participantes</h5>
             <div class="cards-menu">
@@ -1561,7 +1402,7 @@
             </div>
   </div>
 
-    <div id="disponibilidadeContainer2h" class="painel-exportar tela">
+  <div id="disponibilidadeContainer2h" class="painel-exportar so-participantes bloquear-treinandos tela">
 
     <h5>🕒 Disponibilidade dos Participantes (2 Horas)</h5>
 
@@ -1676,7 +1517,7 @@
 
   </div>
 
-    <div id="disponibilidadeContainer" class="painel-exportar so-participantes bloquear-treinandos tela">
+  <div id="disponibilidadeContainer" class="painel-exportar so-participantes bloquear-treinandos tela">
     <h5>🕒 Disponibilidade dos Participantes (4 Horas)</h5>
 
       <div class="botoes-lado-a-lado">
@@ -1794,7 +1635,7 @@
 
   </div>
 
-    <div id="telameutreinamentopratico" class="painel tela"> 
+  <div id="telameutreinamentopratico" class="painel-exportar tela"> <!-- <div id="telameutreinamentopratico" class="painel tela"> -->
 
       <h5>🎓 Dias dos Candidatos para Treinamento</h5>
       <div id="treinamentoPraticoContainer">
@@ -1857,7 +1698,7 @@
       </div>
   </div>
 
-    <div id="telameutreinamentopraticoId" class="painel tela">
+  <div id="telameutreinamentopraticoId" class="painel-exportar tela"> <!-- <div id="telameutreinamentopraticoId" class="painel tela"> -->
 
     <h5>🎓 Meus Dias Para Treinamento</h5>
 
@@ -1939,133 +1780,7 @@
 
   </div>
 
-    <!--<div id="minhaInfo" class="painel tela"> 
-
-      <h5>👤 Meu Perfil</h5>
-      <div id="painelMinhaInfo">
-        
-      <table id="tabelaInfoPessoalMinhaInfo" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Congregação</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBodyMinhaInfo"></tbody>
-      </table>
-
-      <table id="tabelaInfoPessoal2MinhaInfo" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Contato</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBody2MinhaInfo"></tbody>
-      </table>
-
-      <table id="tabelaClassificacaoMinhaInfo" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Grupo</th>
-              <th>Sexo</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-        <tbody id="classificacaoBodyMinhaInfo"></tbody>
-      </table>
-
-      <table id="tabelaDetalhesMinhaInfo" style="display:none;" class="tabela-sistema">
-          <colgroup>
-            <col style="width: 20%;">  
-            <col>                      
-          </colgroup>
-            <thead>
-              <tr>
-                <th>TCS</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-          <tbody id="detalhesBodyMinhaInfo">
-        </tbody>
-      </table>
-
-        <div style="display: flex; align-items: center; gap: 10px;">
-        <p id="msgSalvarAlteracoesMinhaInfo" class="mensagem-verde"></p>
-        </div>
-
-        <div style="display: flex; align-items: center; gap: 10px;">
-        <p id="msgExcluirMinhaInfo" class="mensagem-verde"></p>
-        </div>
-
-      <div id="detalhesDesignacoesMinhaInfo" class="cards-info" style="display:none; margin-top:15px;">
-
-      <h4 class="titulo-secao">Designações</h4>
-
-      <div class="card-info">
-          <span id="campoDesignacao1Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao2Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao3Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao4Mi"></span>
-      </div>
-
-      <div class="card-info">
-          <span id="campoDesignacao5Mi"></span>
-      </div>
-
-      <span id="campoIdentificacaoMi" style="display:none;"></span>
-
-  </div>
-
-  <div id="detalhesPrivilegiosMinhaInfo" style="display:none; margin-top:15px;">
-
-      <h4 class="titulo-secao">Privilégios</h4>
-
-      <div class="lista-privilegios">
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Coordenação</span>
-              <span id="campoPrivOrganizacaoMi"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">AAC</span>
-              <span id="campoPrivAACMi"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Escalas</span>
-              <span id="campoPrivEscalasMi"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Equipe</span>
-              <span id="campoPrivEquipesMi"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Treinador</span>
-              <span id="campoPrivTreinadorMi"></span>
-          </div>
-
-      </div>
-
-  </div>
-
-    </div>
-  </div>-->
-
-
-  <div id="cardPerfilMinhaInfo" class="card-perfil painel tela">
+  <div id="cardPerfilMinhaInfo" class="card-perfil painel-exportar tela"> <!-- <div id="cardPerfilMinhaInfo" class="card-perfil painel tela"> -->
 
     <h5>👤 Meu Perfil</h5>
       <div id="painelMinhaInfo">
@@ -2204,8 +1919,7 @@
     </div>
   </div>
 
-
-    <div id="telamapas" class="painel tela">
+  <div id="telamapas" class="painel-exportar tela"> <!-- <div id="telamapas" class="painel tela"> -->
 
   <div id="mapas">
   <h5>🌍 Mapas dos pontos</h5>
@@ -2254,6 +1968,7 @@
       </div>
 
   </div>
+
   <div id="novoMapa" class="painel-exportar tela">
   <h5>🌍 Cadastrar Mapa</h5>
     <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
@@ -2305,8 +2020,9 @@
 
   </div>
 
-    <div id="participantes" class="painel tela"> 
-  <h5>🧑‍🤝‍🧑 Participantes</h5>
+  <div id="participantes" class="painel-exportar tela"> <!-- <div id="participantes" class="painel tela"> -->
+
+      <h5>🧑‍🤝‍🧑 Participantes</h5>
         <div class="cards-menu">
                 <div class="card-menu btn-relatoriosSubMenu so-escalas"
                 onclick="abrirTela('painelCadastro', this)">
@@ -2336,7 +2052,7 @@
           </div>
   </div>
 
-    <div id="tcsContainer" class="painel-exportar tela">
+  <div id="tcsContainer" class="painel-exportar tela">
     <h5>🈶 TCS</h5>
       
         <div style="display:flex">
@@ -2374,360 +2090,210 @@
 
   </div>
 
-    <!--<div id="painelPesquisar" class="painel-exportar tela">
-    <h5>✏️👤 Editar Participante</h5>
+  <div id="painelPesquisar" class="card-perfil painel-exportar tela"> <!-- <div id="painelPesquisar" class="card-perfil painel tela"> -->
 
-          <div style="display:flex">
-            <button
+      <h5>✏️👤 Editar Participante</h5>
+
+      <div style="display:flex">
+          <button
               type="button"
               onclick="abrirSelecaoParticipante()">
               👤 Selecionar Nome
-            </button>
-          </div>
-          <div id="pesqPart" class="nome-pesquisado"></div>
-
-      <div style="display: flex; align-items: center; gap: 10px;"></div>
-      
-      <table id="tabelaInfoPessoal" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Congregação</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBody"></tbody>
-      </table>
-
-      <table id="tabelaInfoPessoal1" style="display:none;"class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>E-mail</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBody1"></tbody>
-      </table>
-
-      <table id="tabelaInfoPessoal2" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Telefone</th>
-              <th>Petição</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBody2"></tbody>
-      </table>
-
-      <table id="tabelaInfoPessoal3" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>D. nasc.</th>
-              <th>Idade</th>
-              <th>D. bat.</th>
-              <th>Anos bat.</th>
-            </tr>
-          </thead>
-        <tbody id="infoPessoalBody3"></tbody>
-      </table>
-
-      <table id="tabelaClassificacao" style="display:none;" class="tabela-sistema">
-          <thead>
-            <tr>
-              <th>Grupo</th>
-              <th>Sexo</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-        <tbody id="classificacaoBody"></tbody>
-      </table>
-
-      <table id="tabelaDetalhes" style="display:none;" class="tabela-sistema">
-          <colgroup>
-            <col style="width: 20%;">   
-            <col>                       
-          </colgroup>
-            <thead>
-              <tr>
-                <th>TCS</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-          <tbody id="detalhesBody">
-        </tbody>
-      </table>
-
-        <div style="display: flex; align-items: center; gap: 10px;"></div>
-
-    <div id="detalhesDesignacoes" class="cards-info" style="display:none; margin-top:15px;">
-
-      <h4 class="titulo-secao">Designações</h4>
-
-      <div class="card-info">
-          <span id="campoDesignacao1"></span>
+          </button>
       </div>
 
-      <div class="card-info">
-          <span id="campoDesignacao2"></span>
+      <div id="pesqPart" class="nome-pesquisado"></div>
+
+      <div id="cardPerfilParticipante" class="painel tela" style="display:none;">
+
+          <div class="linha-perfil">
+              <span class="rotulo">Nome</span>
+              <span id="perfilNome"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Congregação</span>
+              <span id="perfilCongregacao"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">E-mail</span>
+              <span id="perfilEmail"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Telefone</span>
+              <span id="perfilTelefone"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Petição</span>
+              <span id="perfilPeticao"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Nascimento</span>
+              <span id="perfilDataNascimento"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Idade</span>
+              <span id="perfilIdade"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Batismo</span>
+              <span id="perfilDataBatismo"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Anos de Batismo</span>
+              <span id="perfilAnosBatismo"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Grupo</span>
+              <span id="perfilGrupo"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Sexo</span>
+              <span id="perfilSexo"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">Situação</span>
+              <span id="perfilSituacao"></span>
+          </div>
+
+          <div class="linha-perfil">
+              <span class="rotulo">TCS</span>
+              <span id="perfilTCS"></span>
+          </div>
+
+          <div class="acoes-perfil">
+
+              <button
+                  id="btnEditarParticipante"
+                  class="botao editar"
+                  onclick="tornarEditavel();">
+                  ✏️ Editar
+              </button>
+
+              <button
+                  id="btnSalvarParticipante"
+                  class="botao salvar"
+                  style="display:none"
+                    onclick="salvarAlteracoes();">
+                  💾 Salvar
+              </button>
+
+              <button
+                  id="btnCancelarParticipante"
+                  class="botao cancelar"
+                  style="display:none"
+                  onclick="cancelarEdicao();">
+                  ❌ Cancelar
+              </button>
+
+              <button
+                  id="btnExcluirParticipante"
+                  class="botao excluir"
+                  onclick="excluirParticipante();">
+                  🗑️ Excluir
+              </button>
+
+          </div>
+
       </div>
 
-      <div class="card-info">
-          <span id="campoDesignacao3"></span>
+      <div id="detalhesDesignacoes"
+          class="cards-info"
+          style="display:none; margin-top:15px;">
+
+          <h4 class="titulo-secao">
+              Designações
+          </h4>
+
+          <div class="card-info">
+              <span id="campoDesignacao1"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao2"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao3"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao4"></span>
+          </div>
+
+          <div class="card-info">
+              <span id="campoDesignacao5"></span>
+          </div>
+
+          <span
+              id="campoIdentificacao"
+              style="display:none;">
+          </span>
+
       </div>
 
-      <div class="card-info">
-          <span id="campoDesignacao4"></span>
-      </div>
+      <div id="detalhesPrivilegios"
+          style="display:none; margin-top:15px;">
 
-      <div class="card-info">
-          <span id="campoDesignacao5"></span>
-      </div>
+          <h4 class="titulo-secao">
+              Privilégios
+          </h4>
 
-      <span id="campoIdentificacao" style="display:none;"></span>
+          <div class="lista-privilegios">
 
-    </div>
+              <div class="item-privilegio">
+                  <span class="rotulo-privilegio">
+                      Coordenação
+                  </span>
+                  <span id="campoPrivOrganizacao"></span>
+              </div>
 
-        <div style="display: flex; align-items: center; gap: 10px;">
-        </div>
+              <div class="item-privilegio">
+                  <span class="rotulo-privilegio">
+                      AAC
+                  </span>
+                  <span id="campoPrivAAC"></span>
+              </div>
 
+              <div class="item-privilegio">
+                  <span class="rotulo-privilegio">
+                      Escalas
+                  </span>
+                  <span id="campoPrivEscalas"></span>
+              </div>
 
-    <div id="detalhesPrivilegios" style="display:none; margin-top:15px;">
+              <div class="item-privilegio">
+                  <span class="rotulo-privilegio">
+                      Equipe
+                  </span>
+                  <span id="campoPrivEquipes"></span>
+              </div>
 
-      <h4 class="titulo-secao">Privilégios</h4>
+              <div class="item-privilegio">
+                  <span class="rotulo-privilegio">
+                      Treinador
+                  </span>
+                  <span id="campoPrivTreinador"></span>
+              </div>
 
-      <div class="lista-privilegios">
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Coordenação</span>
-              <span id="campoPrivOrganizacao"></span>
           </div>
 
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">AAC</span>
-              <span id="campoPrivAAC"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Escalas</span>
-              <span id="campoPrivEscalas"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Equipe</span>
-              <span id="campoPrivEquipes"></span>
-          </div>
-
-          <div class="item-privilegio">
-              <span class="rotulo-privilegio">Treinador</span>
-              <span id="campoPrivTreinador"></span>
-          </div>
       </div>
 
   </div>
 
-</div>-->
-
-    <div id="painelPesquisar" class="card-perfil painel tela">
-
-        <h5>✏️👤 Editar Participante</h5>
-
-        <div style="display:flex">
-            <button
-                type="button"
-                onclick="abrirSelecaoParticipante()">
-                👤 Selecionar Nome
-            </button>
-        </div>
-
-        <div id="pesqPart" class="nome-pesquisado"></div>
-
-        <div id="cardPerfilParticipante" class="painel tela" style="display:none;">
-
-            <div class="linha-perfil">
-                <span class="rotulo">Nome</span>
-                <span id="perfilNome"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Congregação</span>
-                <span id="perfilCongregacao"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">E-mail</span>
-                <span id="perfilEmail"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Telefone</span>
-                <span id="perfilTelefone"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Petição</span>
-                <span id="perfilPeticao"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Nascimento</span>
-                <span id="perfilDataNascimento"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Idade</span>
-                <span id="perfilIdade"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Batismo</span>
-                <span id="perfilDataBatismo"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Anos de Batismo</span>
-                <span id="perfilAnosBatismo"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Grupo</span>
-                <span id="perfilGrupo"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Sexo</span>
-                <span id="perfilSexo"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">Situação</span>
-                <span id="perfilSituacao"></span>
-            </div>
-
-            <div class="linha-perfil">
-                <span class="rotulo">TCS</span>
-                <span id="perfilTCS"></span>
-            </div>
-
-            <div class="acoes-perfil">
-
-                <button
-                    id="btnEditarParticipante"
-                    class="botao editar"
-                    onclick="tornarEditavel();">
-                    ✏️ Editar
-                </button>
-
-                <button
-                    id="btnSalvarParticipante"
-                    class="botao salvar"
-                    style="display:none"
-                     onclick="salvarAlteracoes();">
-                    💾 Salvar
-                </button>
-
-                <button
-                    id="btnCancelarParticipante"
-                    class="botao cancelar"
-                    style="display:none"
-                    onclick="cancelarEdicao();">
-                    ❌ Cancelar
-                </button>
-
-                <button
-                    id="btnExcluirParticipante"
-                    class="botao excluir"
-                    onclick="excluirParticipante();">
-                    🗑️ Excluir
-                </button>
-
-            </div>
-
-        </div>
-
-        <div id="detalhesDesignacoes"
-            class="cards-info"
-            style="display:none; margin-top:15px;">
-
-            <h4 class="titulo-secao">
-                Designações
-            </h4>
-
-            <div class="card-info">
-                <span id="campoDesignacao1"></span>
-            </div>
-
-            <div class="card-info">
-                <span id="campoDesignacao2"></span>
-            </div>
-
-            <div class="card-info">
-                <span id="campoDesignacao3"></span>
-            </div>
-
-            <div class="card-info">
-                <span id="campoDesignacao4"></span>
-            </div>
-
-            <div class="card-info">
-                <span id="campoDesignacao5"></span>
-            </div>
-
-            <span
-                id="campoIdentificacao"
-                style="display:none;">
-            </span>
-
-        </div>
-
-        <div id="detalhesPrivilegios"
-            style="display:none; margin-top:15px;">
-
-            <h4 class="titulo-secao">
-                Privilégios
-            </h4>
-
-            <div class="lista-privilegios">
-
-                <div class="item-privilegio">
-                    <span class="rotulo-privilegio">
-                        Coordenação
-                    </span>
-                    <span id="campoPrivOrganizacao"></span>
-                </div>
-
-                <div class="item-privilegio">
-                    <span class="rotulo-privilegio">
-                        AAC
-                    </span>
-                    <span id="campoPrivAAC"></span>
-                </div>
-
-                <div class="item-privilegio">
-                    <span class="rotulo-privilegio">
-                        Escalas
-                    </span>
-                    <span id="campoPrivEscalas"></span>
-                </div>
-
-                <div class="item-privilegio">
-                    <span class="rotulo-privilegio">
-                        Equipe
-                    </span>
-                    <span id="campoPrivEquipes"></span>
-                </div>
-
-                <div class="item-privilegio">
-                    <span class="rotulo-privilegio">
-                        Treinador
-                    </span>
-                    <span id="campoPrivTreinador"></span>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div id="painelCadastro" class="painel-exportar tela">
-  <h5>➕👤 Cadastrar Participante</h5>
+  <div id="painelCadastro" class="painel-exportar tela">
+    <h5>➕👤 Cadastrar Participante</h5>
     <form id="formParticipante" style="width: 100%; table-layout: fixed;">
 
       <div class="grupo-form">
@@ -2822,8 +2388,8 @@
     </form>
   </div>
 
-    <div id="criaPontoNovo" class="painel-exportar tela">
-  <h5>➕📌 Criar Novo Ponto</h5>
+  <div id="criaPontoNovo" class="painel-exportar tela">
+    <h5>➕📌 Criar Novo Ponto</h5>
     <form id="form">
       <table>
         <tr>
@@ -2843,21 +2409,21 @@
                 </div>
   </div>
 
-    <div id="disponiveis" class="painel tela"> 
+  <div id="disponiveis" class="painel-exportar tela"> <!-- <div id="disponiveis" class="painel tela"> -->
 
-  <h5>👤 Pesquisar Disponíveis</h5>
-  <div class="cards-menu">
-              <div class="card-menu btn-relatoriosSubMenu so-escalas"
-                  onclick="abrirTela('disponibilidadeBuscada', this)">
-                  <div class="icone">👤</div>
-                  <div class="titulo">Disponíveis 4 Horas</div>
-              </div>
-              <div class="card-menu btn-relatoriosSubMenu so-admin"
-                  onclick="abrirTela('disponibilidadeBuscada2h', this)">
-                  <div class="icone">👤</div>
-                  <div class="titulo">Disponíveis 2 Horas</div>
-              </div>
-            </div>
+    <h5>👤 Pesquisar Disponíveis</h5>
+    <div class="cards-menu">
+      <div class="card-menu btn-relatoriosSubMenu so-escalas"
+          onclick="abrirTela('disponibilidadeBuscada', this)">
+          <div class="icone">👤</div>
+          <div class="titulo">Disponíveis 4 Horas</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('disponibilidadeBuscada2h', this)">
+          <div class="icone">👤</div>
+          <div class="titulo">Disponíveis 2 Horas</div>
+      </div>
+    </div>
   </div>
 
   <div id="disponibilidadeBuscada" class="painel-exportar tela">
@@ -3292,8 +2858,9 @@
 
   </div>
 
-    <div id="substitutos" class="painel tela"> 
-  <!--COMEÇA AQUI A BUSCA AVANÇADA POR SUBSTITUTOS-->
+  <div id="substitutos" class="painel-exportar tela"> <!-- <div id="substitutos" class="painel tela"> -->
+
+      <!--COMEÇA AQUI A BUSCA AVANÇADA POR SUBSTITUTOS-->
 
             <div class="cards-menu">
               <div class="card-menu btn-relatoriosSubMenu so-coordeacao"
@@ -3407,8 +2974,9 @@
         </button>
   </div>
 
-    <div id="telaeventos" class="painel tela">
-  <!-- DIV DE ABERTURA DO PAINEL GERAL DE EVENTOS=============================================================================================================-->
+  <div id="telaeventos" class="painel-exportar tela"> <!-- <div id="telaeventos" class="painel tela"> -->
+
+    <!-- DIV DE ABERTURA DO PAINEL GERAL DE EVENTOS=============================================================================================================-->
  
   <h5>🎊 Eventos</h5>
 
@@ -3455,9 +3023,10 @@
       </div>-->
     </div>
   </div>
+
   <div id="editarEventos" class="painel-exportar tela">
     <div>
-      <!--<label for="dataHistoricoDeEventos" style="color: black; display: block; text-align: center; margin-top: 90px;">PESQUISAR DADOS DE EVENTOS CADASTRADOS</label>-->
+
       <h5>✏️🎊 Editar Evento e Enviar Vagas Disponíveis</h5>
       <div style="display: flex; align-items: center; gap: 8px;">
         <label for="dataHistoricoDeEventos" style="color: #444444;">Data:</label>
@@ -3467,6 +3036,7 @@
     <div id="listaEventos"></div>
   </div>
   </div>
+
   <div id="eventos" class="painel-exportar tela">
     <h5>📅 Cadastrar Evento</h5>
       <table id="descricaoEv" class="tabela-sistema">
@@ -3576,7 +3146,7 @@
 
   </div>
 
-    <div id="painelEventos" class="painel-exportar tela">
+  <div id="painelEventos" class="painel-exportar tela">
   
     <h5>👥 Ver Designados</h5>
       <label for="eventoSelectDesignados">Selecione o Evento</label>
@@ -3605,6 +3175,7 @@
           </div>
         </div>
   </div>
+
   <div id="painelInscritos" class="painel-exportar tela">
 
     <h5>👥 Ver Inscritos</h5>
@@ -3630,7 +3201,7 @@
 
   </div>
 
-    <div id="minhaInscricaoContainer" class="painel-exportar tela">
+  <div id="minhaInscricaoContainer" class="painel-exportar tela">
     <h5>📝 Fazer Inscrição</h5>
 
     <div id="formMinhaInscricao">
@@ -3662,7 +3233,7 @@
     </pre>
   </div>
 
-    <div id="candidatosContainer" class="painel-exportar tela">
+  <div id="candidatosContainer" class="painel-exportar tela">
   <h5>📝 Fazer Inscrição</h5>
   <div id="formInscricao">
 
@@ -3711,7 +3282,7 @@
     <pre id="resultadoInscricao" style="margin-top:15px; background:#f0f0f0; padding:10px;display:none;"></pre>
   </div>
 
-    <div id="painelExportarEscalaEv" class="painel-exportar tela">
+  <div id="painelExportarEscalaEv" class="painel-exportar tela">
     <h5>⚙️ Gerar Escalas</h5>
     <label for="abaEv">Selecione o Relatório</label>
     <select id="abaEv" style="width: 100%;">- Selecione -</select>                          
@@ -3719,17 +3290,6 @@
     <!-- <div id="mensagemEv" style="margin-top: 10px; color: green; font-size:40px"></div> -->
     <div id="mensagemEv" style="margin-top: 10px; color: green;"></div>  
   </div>
-
-  <!--<div id="ajustarCandidatosEvContainer" class="painel-exportar tela">
-    <h5>🔄 Converter Designados do evento para ID</h5>
-    <h1>(Isto só foi usado quando mudamos para cadastrar inscritos de nome para ID)</h1>
-      
-      <label for="eventoSelectConversor">Selecione o Evento</label>
-      <select id="eventoSelectConversor"></select>
-      <button >Converter nomes para ID</button> 
-
-      <div id="status" style="margin-top: 10px;"></div>
-  </div>-->
 
   <div id="lembretesParticipantes" class="painel-exportar tela">
     <h5>📢 Lembretes dos próximos 7 dias</h5>
@@ -3782,7 +3342,7 @@
               </div>
 
           </div>
-      </div>
+    </div>
 
       <label>
         
@@ -3790,21 +3350,11 @@
 
       <button type="button" onclick="pesquisarLembretesParticipantes()">🔍 Pesquisar</button>
 
-      <!--<div style="display: flex; align-items: center; gap: 10px;">
-      <p id="msgPesqLembretesParticipantes" class="mensagem-verde"></p>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 10px;">
-      <p id="msgRemoverDesignadosLP" class="mensagem-verde"></p>
-      </div>-->
-
       <div id="resultadoLembretesParticipantes"></div>
 
   </div>
 
-
-  <div id="escalas" class="painel tela"> <!--Div de abertura para o painel de escalas do menu-->
-    <!-- DIV DE ABERTURA DO PAINEL GERAL DE ESCALAS-->
+  <div id="escalas" class="painel-exportar tela"> <!-- <div id="escalas" class="painel tela"> -->
   
     <h5>📅 Escalas</h5>
 
@@ -3823,10 +3373,11 @@
   </div>
 
   <div id="painelPontos" class="painel-exportar tela">
+    
     <h5>🕒 Escalas Por Turno</h5>
   
     <div class="grupo-seletores">
-      <div class="seletor"
+          <div class="seletor"
             onclick="abrirSelecaoPontoDesignado()">
 
             <div class="seletor-titulo">
@@ -3840,39 +3391,39 @@
 
             </div>
 
-        </div>
+          </div>
 
-        <div class="seletor"
-            onclick="abrirSelecaoDiaDesignado()">
+          <div class="seletor"
+              onclick="abrirSelecaoDiaDesignado()">
 
-            <div class="seletor-titulo">
-                📅 Dia
-            </div>
+              <div class="seletor-titulo">
+                  📅 Dia
+              </div>
 
-            <div id="diaDesignadoVisual"
-                class="seletor-valor">
+              <div id="diaDesignadoVisual"
+                  class="seletor-valor">
 
-                Escolha o dia
+                  Escolha o dia
 
-            </div>
+              </div>
 
-        </div>
+          </div>
 
-        <div class="seletor"
-            onclick="abrirSelecaoTurnoDesignado()">
+          <div class="seletor"
+              onclick="abrirSelecaoTurnoDesignado()">
 
-            <div class="seletor-titulo">
-                🌅 Turno
-            </div>
+              <div class="seletor-titulo">
+                  🌅 Turno
+              </div>
 
-            <div id="turnoDesignadoVisual"
-                class="seletor-valor">
+              <div id="turnoDesignadoVisual"
+                  class="seletor-valor">
 
-                Escolha o turno
+                  Escolha o turno
 
-            </div>
+              </div>
 
-        </div>
+          </div>
     </div>
 
       <label>
@@ -3885,55 +3436,47 @@
 
   </div>
 
-    <div id="painelPontosTotal" class="painel-exportar tela">
+  <div id="painelPontosTotal" class="painel-exportar tela">
+
     <h5>📌 Escalas Por Ponto</h5>
 
     <div class="grupo-seletores">
-        <div class="seletor"
-              onclick="abrirSelecaoPontoBepp()">
+      <div class="seletor"
+            onclick="abrirSelecaoPontoBepp()">
 
-              <div class="seletor-titulo">
-                  🚩 Ponto
-              </div>
+            <div class="seletor-titulo">
+                🚩 Ponto
+            </div>
 
-              <div id="pontobeppVisual"
-                  class="seletor-valor">
+            <div id="pontobeppVisual"
+                class="seletor-valor">
 
-                  Escolha o ponto
+                Escolha o ponto
 
-              </div>
+            </div>
 
-          </div>
-      </div>
-    <label>
+        </div>
+    </div>
 
-      </label>
+    <label></label>
 
-    <button onclick="buscarDesignacoesPorPonto()">📋 Ver Designações</button>
+    <button onclick="buscarDesignacoesPorPonto()">📋 Ver Designações</button>  
 
-    <!--<div id="painelVerDesignacoesPorPonto">
-      <label for="pontobepp">Selecione o Ponto:</label>
-      <select id="pontobepp">
-        <option value="">- Selecione -</option>
-      </select>-->
+    <div id="msgDesignacoesPorPontopppp" class="mensagem-verde"></div>
 
-      
+    <div id="resultadoDesignacoesPorPontopppp"></div>
 
-      <div id="msgDesignacoesPorPontopppp" class="mensagem-verde"></div>
+    <div id="btnExportarPdfDesignacoes" style="margin-top: 15px; display: none;">
+      <button onclick="baixarDesignacoesPorPonto()">📄 Baixar PDF</button>
+      <div id="msgBaixarPDFPonto" class="mensagem-verdePDF"></div>
 
-      <div id="resultadoDesignacoesPorPontopppp"></div>
-
-      <div id="btnExportarPdfDesignacoes" style="margin-top: 15px; display: none;">
-        <button onclick="baixarDesignacoesPorPonto()">📄 Baixar PDF</button>
-        <div id="msgBaixarPDFPonto" class="mensagem-verde"></div>
-
-      </div>
     </div>
   </div>
 
-    <div id="designar" class="painel tela"> 
+  <div id="designar" class="painel tela"> <!--<div id="designar" class="painel tela">-->
 
   <h5>✅ Designar Participantes</h5>
+
   <div id="painelDesignacoes">
 
     <div class="grupo-seletores">
@@ -4050,33 +3593,21 @@
         </tbody>
       </table>
 
-      <!--<table id="tabelaDesignar2" style="display: none" class="tabela-sistema">
-        <thead>
-          <tr>
-            <th>Substituir</th>
-            <th>Novo Designado</th>
-          </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td><select id="substituirQuem"><option value="">-- Nenhum --</option></select></td>
-        </tbody>
-      </table>-->
-      <div class="seletor"
-          onclick="abrirModalDesignados()">
+        <div class="seletor">
+            <!--onclick="abrirModalDesignados()">-->
 
-          <div class="seletor-titulo">
-              👤 Quem sai
-          </div>
+            <div class="seletor-titulo">
+                👤 Quem sai
+            </div>
 
-          <div id="nomeSubstituido"
-              class="seletor-valor">
+            <div id="nomeSubstituido"
+                class="seletor-valor">
 
-              Nenhum participante selecionado
+                Nenhum participante selecionado
 
-          </div>
+            </div>
 
-      </div>
+        </div>
 
             <div style="display: none">
               <button type="button"                        
@@ -4096,7 +3627,7 @@
             <input
                   type="text"
                   id="participanteDesignacao"
-                  placeholder="Selecione '👤 Novo Designado'"
+                  placeholder="Novo designado"
                   readonly>
             </div>
 
@@ -4119,7 +3650,7 @@
   </div>
   </div> 
 
-    <div id="admin" class="painel tela"> 
+  <div id="admin" class="painel tela">
 
         <h5>👨‍💼 Administração</h5>
         <div class="cards-menu">
@@ -4163,7 +3694,7 @@
             </div>
   </div>
 
-    <div id="painelVerificacao" class="painel-exportar tela">
+  <div id="painelVerificacao" class="painel-exportar tela">
 
       <h5>📝 Corrigir Ponto</h5>
 
@@ -4183,7 +3714,7 @@
 
   </div>
 
-    <div id="painelTreinadores" class="painel-exportar tela">
+  <div id="painelTreinadores" class="painel-exportar tela">
     <h5>🗣️ Reunião de Treinamento</h5>
     <div id="pesquisaTreinadores">
 
@@ -4213,7 +3744,7 @@
     </div>
   </div>  
 
-    <div id="painelTreinamentosAndamento" class="painel-exportar tela">
+  <div id="painelTreinamentosAndamento" class="painel-exportar tela">
 
     <h5>📋 Treinamentos em Andamento</h5>
 
@@ -4225,7 +3756,7 @@
 
   </div>
 
-    <div id="painelMeusTreinamentos"
+  <div id="painelMeusTreinamentos"
       class="painel-exportar tela">
     <h5>🎓 Meu Candidato em Treinamento</h5>
     <div id="resultadoMeuTreinamento"></div>
@@ -4289,7 +3820,7 @@
 
   <div id="telaVagasDisponiveis" class="painel tela">
 
-      <h3>🚨 Vagas Disponíveis</h3>
+      <h5>🚨 Vagas Disponíveis</h5>
 
       <div id="listaVagasDisponiveis">
         <p>Carregando vagas...</p>
@@ -4297,14 +3828,15 @@
 
   </div>
 
-  <div id="vagas" class="painel tela"> 
+  <div id="vagas" class="painel tela">
+
     <h5>🪑 Vagas</h5>
 
     <body>
 
     <div id="painelVagas">
       
-      <div class="grupo-seletores2">
+      <div class="grupo-seletores">
       <div class="seletor" onclick="abrirSelecaoPontoVaga()">
 
           <div class="seletor-titulo">
@@ -4394,7 +3926,7 @@
 
   <div id="telaVagasDisponiveisRT" class="painel tela">
 
-      <h3>🚨 Vagas Rotativas</h3>
+      <h5>🚨 Vagas Rotativas</h5>
 
       <div id="listaVagasDisponiveisRT">
         <p>Carregando vagas...</p>
@@ -4402,14 +3934,15 @@
 
   </div>
 
-  <div id="vagasRT" class="painel tela"> 
+  <div id="vagasRT" class="painel tela">
+
     <h5>🪑 Vagas Rotativas</h5>
 
     <body>
     
     <div id="painelVagasRT">
 
-      <div class="grupo-seletores2">
+      <div class="grupo-seletores">
       <div class="seletor" onclick="abrirSelecaoPontoVagaRT()">
 
           <div class="seletor-titulo">
@@ -4506,8 +4039,9 @@
     </div>
   </div> 
 
-    <div id="congregacoes" class="painel tela"> 
-  <!-- AQUI COMEÇA O PAINEL DE CONGREGAÇÕES -->
+  <div id="congregacoes" class="painel tela">
+
+      <!-- AQUI COMEÇA O PAINEL DE CONGREGAÇÕES -->
 
     <div id="painelCongregacoes">
       <div id="pesquisaCongregacoes">
@@ -4540,8 +4074,9 @@
 
   </div> 
 
-    <div id="relatorios" class="painel tela"> 
-  <!-- AQUI COMEÇA O PAINEL DE RELATÓRIOS -->
+  <div id="relatorios" class="painel tela">
+
+      <!-- AQUI COMEÇA O PAINEL DE RELATÓRIOS -->
  
     <h5>📈 Relatórios</h5>
     <div class="centralizador"> 
@@ -4557,8 +4092,9 @@
     </div>
   </div>
 
-    <div id="estatisticas" class="painel tela"> 
-  <!-- CRIAR AQUI O PAINEL DE CONTAGEM -->
+  <div id="estatisticas" class="painel tela">
+
+      <!-- CRIAR AQUI O PAINEL DE CONTAGEM -->
 
     <h5>📊 Estatísticas</h5>
     <div id="painelResumo">
@@ -4680,7 +4216,7 @@
     -->
   </div>
 
-    <div id="painelPerfil" class="painel-exportar tela">
+  <div id="painelPerfil" class="painel-exportar tela">
 
   <div id="painelPerfis" style="margin-top: 40px;">
     <h5>🔐 Gerenciar Perfis de Acesso</h5>
@@ -4739,7 +4275,7 @@
   </div> <!--DIV de fechamento de id="painelPerfis" style="margin-top: 40px;">-->
   </div>
 
-    <div id="painelDadosAcesso" class="painel-exportar tela"><!--Div de abertura para o painel de perfil do menu-->
+  <div id="painelDadosAcesso" class="painel-exportar tela">
 
   <div id="painelDadosAcesso" style="margin-top: 40px;">
     <h5>🔐 Gerenciar Dados de Acesso</h5>
@@ -4802,8 +4338,6 @@
 
   </div>
 
-
-
   <div class="area-acoes-rodape">
 
       <div id="areaNotificacoes" class="area-notificacoes" style="display:none;">
@@ -4837,19 +4371,12 @@
 
   </div>
 
+</div>
 
-
-    <!--<script src="utils.js"></script>-->
-    <!--<script src="api.js"></script>-->
     <script src="app.js"></script>
     <script src="login.js"></script>
 
   <script>
-    /*if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/tpe-sbc/service-worker.js')
-        .then(() => console.log('SW registrado'))
-        .catch(err => console.error('Erro SW:', err));
-    }*/
     
     if ('serviceWorker' in navigator) {
 
@@ -4862,6 +4389,7 @@
         .then(() => console.log('SW registrado'))
         .catch(err => console.error('Erro SW:', err));
     }
+
   </script>
 
   <script type="module" src="firebase.js"></script>

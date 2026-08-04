@@ -6,6 +6,12 @@
   --cor-texto: #444444;
   --cor-primaria: #004080;
   --cor-amarela: #FACC15;
+  --cor-amarela2: #facc1559;
+  --cor-vermelha: #ad2424;
+  --cor-bege:#f8f3e8;
+  --cor-roxa: #ccf0dc31;
+  --cor-azulclara: #EAF4FF;
+  --cor-azulborda:#2563eb;
   --cor-secundaria: #374151;
   --cor-terciaria: #5b9bd5;
   --cor-quartiaria: #fffff0;
@@ -61,7 +67,7 @@ input, select, button {
   width: 100%;
   min-height: 2.5rem;
   /*font-size: 1rem;*/
-  font-size: .8rem;
+  font-size: .9rem;
 }
 
 input,
@@ -229,7 +235,8 @@ h4 {
 
 h5 {
   font-size: clamp(1rem, 1.8vw, 1.25rem);
-  color: #0074D9;
+  /*color: #0074D9;*/
+  color: var(--cor-azul);
   /*margin: 1rem 0 0.4rem;*/
   margin: 0.25rem 0;
 }
@@ -446,7 +453,8 @@ button.menu-btn:hover {
   box-shadow: 0 0 0.8em rgba(0,0,0,0.15);
 }
 
-.box, .painel {
+.box, 
+.painel {
   background: #fff;
   padding: 2vw;
   margin: 2vh auto;
@@ -632,7 +640,7 @@ footer {
 
 .painel.ativo {
   display: block;
-margin-top: 6em;
+  margin-top: 6em;
 }
 
 .painel-exportar {
@@ -644,7 +652,7 @@ margin-top: 6em;
 
 .painel-exportar.visivel {
   display: block;
-  width: 100%;        
+  width: 100%;      
 }
 
 #buscaContainer, #buscaContainerMinhaInfo {
@@ -708,6 +716,14 @@ margin-top: 6em;
 .mensagem-verde {
   color: green;
   font-weight: bold;
+}
+
+.mensagem-verdePDF {
+  color: green;
+  font-weight: bold;
+  font-size: 3rem;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .mensagem-vermelha {
   color: red;
@@ -884,7 +900,8 @@ caption {
 }
 
 .cards-menu{
-    margin-top: 7em;
+    /*margin-top: 7em;*/
+    margin-top: 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, 6rem);
     justify-content: center;
@@ -3417,7 +3434,8 @@ td {
     margin:0 0 12px 0;
     font-size:16px;
     color:#1f2937;
-    border-bottom:1px solid #ececec;
+    color:var(--cor-primaria);
+    border-bottom:1px solid #ffff;
     padding-bottom:8px;
 }
 
@@ -3438,8 +3456,7 @@ td {
     padding: 4px 2px;
     background:#f8fafc;
     background:#ffffff;
-    background:#f8f3e8;
-    /*border:1px solid #e5e7eb;*/
+    border:1px solid var(--cor-azul);
     border-radius:8px;
     font-size:.9rem;
     font-weight:500;
@@ -3527,9 +3544,12 @@ td {
 
     padding:8px 15px;
 
-    background:#EAF4FF;
+    /*background:#EAF4FF;
+    background:var(--cor-roxa);*/
+    background: var(--cor-amarela2);
 
-    border-left:5px solid #2563eb;
+    /*border-left:5px solid var(--cor-azulborda);*/
+    border-left:5px solid var(--cor-vermelha);
 
     border-radius:10px;
 
@@ -3632,9 +3652,11 @@ td {
 
 .card-designacao-infos div{
 
-    /*background:#f8fafc;*/
-    background:#f8f3e8;
+    /*background:#f8f3e8;
+    background:var(--cor-roxa);*/
+    background: var(--cor-azulclara);
 
+    color:var(--cor-automatica);
 
     /*padding:5px;*/
     font-size:.80rem;
@@ -3645,6 +3667,8 @@ td {
 
     gap:.28rem;
 
+    /*border-left:3px solid var(--cor-vermelha);
+    border-right:2px solid var(--cor-vermelha);*/
 
     border-radius:10px;
 
@@ -3732,8 +3756,11 @@ td {
 
 .titulo-painel-designacao{
 
-    background:#1d4ed8;
-    color:#fff;
+    /*background:#1d4ed8;
+    color:#fff;*/
+
+    background:var(--cor-azulclara);
+    color:var(--cor-secundaria);
 
     padding:14px;
 
@@ -3756,13 +3783,13 @@ td {
 
     display:grid;
 
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
 
     gap:.1rem;
 
 }
 
-.grupo-seletores2 {
+/*.grupo-seletores2 {
 
     display:grid;
 
@@ -3770,15 +3797,18 @@ td {
 
     gap:.1rem;
 
-}
+}*/
 
 .seletor{
 
-    background:#fff;
+    /*background:#fff;*/
+    background: var(--cor-branca);
 
-    border:1px solid #dbe4ef;
+    /*border:1px solid #dbe4ef;*/
+    border:1px solid var(--cor-azul);
 
-    border-radius:12px;
+    /*border-radius:12px;*/
+    border-radius:var(--raio-borda);
 
     padding:.8rem .9rem;
 
@@ -4445,5 +4475,114 @@ button#btnVoltarMenu:focus {
     color: var(--cor-texto) !important;
 
     outline: none !important;
+
+}
+
+/* Novo estilo para o novo modal dos pdfs */
+.modal-pdf-ponto {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    z-index: 9999;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+}
+
+.conteudo-modal-pdf {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 380px;
+
+    background: #fff;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+
+}
+
+.fechar-modal-pdf {
+
+    position: absolute;
+
+    top: 10px;
+
+    right: 12px;
+
+    border: none;
+
+    background: none;
+
+    font-size: 1.3rem;
+
+    cursor: pointer;
+
+    color: #666;
+
+}
+
+.icone-modal-pdf {
+
+    font-size: 2.5rem;
+
+    margin-bottom: 8px;
+
+}
+
+.conteudo-modal-pdf h3 {
+
+    margin: 5px 0 10px;
+
+    color: #1f4f82;
+
+}
+
+.conteudo-modal-pdf p {
+
+    margin-bottom: 20px;
+
+    color: #555;
+
+}
+
+.btn-abrir-pdf {
+
+    display: inline-block;
+
+    padding: 11px 20px;
+
+    border-radius: 8px;
+
+    background: #1f4f82;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+}
+
+.btn-abrir-pdf:hover {
+
+    opacity: .9;
 
 }

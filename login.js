@@ -3225,7 +3225,7 @@ function exibirResultados(res) {
       switch (qtd) {
 
           case 1:
-              tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+              tituloGrupo = "⚠️ Precisa de companheiro";
               estiloTitulo = "color:#d32f2f;font-weight:bold;";
               break;
 
@@ -18071,7 +18071,7 @@ Confirmar inscrição?`,
 
 }*/
 
-function exportarEscalaEv() {
+/*function exportarEscalaEv() {
 
   const abaSelecionada = document.getElementById("abaEv").value;
   const mensagem = document.getElementById("mensagemEv");
@@ -18096,7 +18096,7 @@ function exportarEscalaEv() {
     }
   );
 
-}
+}*/
 
 /* FUNÇÕES EXTINTAS POIS JÁ MIGRAMOS AS INCRIÇÕES PARA ID - PODE APAGAR SEM MEDO
 carregarEventosConversor();
@@ -18209,7 +18209,7 @@ function carregarAbasEv() {
 
 }
 
-function exportarEscalaEv() {
+/*function exportarEscalaEv() {
 
   const abaSelecionada = document.getElementById('abaEv').value;
   const mensagem = document.getElementById('mensagemEv');
@@ -18230,6 +18230,62 @@ function exportarEscalaEv() {
 
       mensagem.innerText = "❌ Erro: " + err.message;
       esconderSpinner();
+
+    }
+  );
+
+}*/
+function exportarEscalaEv() {
+
+  const abaSelecionada =
+    document.getElementById("abaEv").value;
+
+  const mensagem =
+    document.getElementById("mensagemEv");
+
+  mensagem.innerHTML =
+    "Gerando link de download...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "exportarAbaSelecionada",
+    {
+      aba: abaSelecionada
+    },
+
+    function(linkHTML) {
+
+      try {
+
+        const link =
+          extrairLinkPdf(linkHTML);
+
+        console.log(
+          "LINK DO PDF EXTRAÍDO:",
+          link
+        );
+
+        mostrarModalPdf(link);
+
+      } catch (e) {
+
+        mensagem.innerText =
+          "❌ " + e.message;
+
+      }
+
+      esconderSpinner();
+
+    },
+
+    function(erro) {
+
+      esconderSpinner();
+
+      mensagem.innerText =
+        "❌ Erro: " +
+        (erro.message || erro);
 
     }
   );
@@ -18971,7 +19027,7 @@ function buscarDesignacoesPorPonto() {
               switch (integrantes) {
 
                   case 1:
-                      tituloGrupo = "⚠️ PRECISA DE COMPANHEIRO";
+                      tituloGrupo = "⚠️ Precisa de companheiro";
                       estiloTitulo = "color:#d32f2f;font-weight:bold;";
                       break;
 
@@ -19259,8 +19315,7 @@ document.addEventListener("click", function (e) {
 
 });
 
-function baixarDesignacoesPorPonto() {
-  //const ponto = document.getElementById("pontobepp").value;
+/*function baixarDesignacoesPorPonto() {
   const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgBaixarPDFPonto");
 
@@ -19287,6 +19342,55 @@ function baixarDesignacoesPorPonto() {
       mostrarAlertaGlobal("❌ Erro: " + (err.message || err));
     }
   );
+}*/
+function baixarDesignacoesPorPonto() {
+
+  const ponto =
+    window.camposSelecionados.pontobepp;
+
+  const msg =
+    document.getElementById("msgBaixarPDFPonto");
+
+  msg.textContent = "";
+
+  if (!ponto) {
+
+    mostrarAlertaGlobal("❌ Selecione um ponto.");
+
+    return;
+
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "gerarPdfDesignacoesDoPonto",
+
+    {
+      ponto
+    },
+
+    (link) => {
+
+      esconderSpinner();
+
+      mostrarModalPdf(link);
+
+    },
+
+    (err) => {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        "❌ Erro: " + (err.message || err)
+      );
+
+    }
+
+  );
+
 }
 
 async function salvarDesignacao() {
@@ -22581,7 +22685,7 @@ function carregarTodasVagasAbertas() {
     card.innerHTML = `
         <div class="card-vaga-header">
             <div>
-                <h3>📍 ${vaga.ponto}</h3>
+                <h4>📍 ${vaga.ponto}</h4>
                 <small>${vaga.status}</small>
             </div>
         </div>
@@ -23606,11 +23710,13 @@ function aceitarVaga(idVaga) {
 
             idVagaNotificacao = null;
 
+            carregarVagasDisponiveis();
+
             setTimeout(() => {
 
               abrirTela("menuCards");
 
-              carregarVagasDisponiveis();
+              //carregarVagasDisponiveis();
 
             }, 1200);
 
@@ -23829,7 +23935,7 @@ function carregarOpcoesCongregacoes() {
 
 }
 
-function exportar() {
+/*function exportar() {
 
   const abaSelecionada = document.getElementById("aba").value;
   const mensagem = document.getElementById("mensagem");
@@ -23850,6 +23956,62 @@ function exportar() {
 
       mensagem.innerText = "❌ Erro: " + erro.message;
       esconderSpinner();
+
+    }
+  );
+
+}*/
+function exportar() {
+
+  const abaSelecionada =
+    document.getElementById("aba").value;
+
+  const mensagem =
+    document.getElementById("mensagem");
+
+  mensagem.innerHTML =
+    "Gerando link de download...";
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "exportarAbaSelecionadaExportar",
+    {
+      abaSelecionada
+    },
+
+    function(linkHTML) {
+
+      try {
+
+        const link =
+          extrairLinkPdf(linkHTML);
+
+        console.log(
+          "LINK DO PDF EXTRAÍDO:",
+          link
+        );
+
+        mostrarModalPdf(link);
+
+      } catch (e) {
+
+        mensagem.innerText =
+          "❌ " + e.message;
+
+      }
+
+      esconderSpinner();
+
+    },
+
+    function(erro) {
+
+      esconderSpinner();
+
+      mensagem.innerText =
+        "❌ Erro: " +
+        (erro.message || erro);
 
     }
   );
@@ -25117,9 +25279,9 @@ function carregarResumo() {
       if (resumo.contagemCircuitos) {
 
         html += `
-          <h3 class="titulo-circuitos">
+          <h4 class="titulo-circuitos">
             🌍 Participantes por Circuito
-          </h3>
+          </h4>
 
           <div class="lista-cards-circuitos">
         `;
@@ -29497,9 +29659,9 @@ function carregarPossiveisCompanheiros(){
 
     let html = `
 
-        <h3>
+        <h4>
         Escolha um companheiro
-        </h3>
+        </h4>
 
     `;
 
@@ -30928,11 +31090,13 @@ function aceitarVagaRotativa(idVaga) {
 
             idVagaNotificacao = null;
 
+            carregarVagasDisponiveisRT();
+
             setTimeout(() => {
 
               abrirTela("menuCards");
 
-              carregarVagasDisponiveisRT();
+              //carregarVagasDisponiveisRT();
 
             }, 1200);
 
@@ -31236,5 +31400,62 @@ function renovarVagasRotativasFrontend() {
 
     }
   );
+
+}
+
+/* Funções pra o modal PDF */
+function extrairLinkPdf(linkHTML) {
+
+  const temp =
+    document.createElement("div");
+
+  temp.innerHTML = linkHTML;
+
+  const link =
+    temp.querySelector("a");
+
+  if (!link || !link.href) {
+
+    throw new Error(
+      "Link do PDF não encontrado no retorno."
+    );
+
+  }
+
+  return link.href;
+
+}
+
+function mostrarModalPdf(link) {
+
+  console.log("LINK DO PDF RECEBIDO:", link);
+
+  const modal =
+    document.getElementById("modalPdf");
+
+  const linkPdf =
+    document.getElementById("linkPdf");
+
+  if (!modal || !linkPdf) return;
+
+  linkPdf.href = link;
+
+  console.log("HREF DO LINK:", linkPdf.href);
+
+  modal.style.display = "flex";
+
+}
+
+
+function fecharModalPdf() {
+
+  const modal =
+    document.getElementById("modalPdf");
+
+  if (modal) {
+
+    modal.style.display = "none";
+
+  }
 
 }

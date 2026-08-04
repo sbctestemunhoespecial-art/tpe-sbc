@@ -2132,239 +2132,6 @@ function pesquisarLembretesParticipantes() {
 
 }
 
-/*function exibirResultadosLembretes(res) {
-
-  const c =
-    document.getElementById("resultadoLembretesParticipantes");
-
-  const msg =
-    document.getElementById("msgPesqLembretesParticipantes");
-
-
-  if (!res || res.length === 0) {
-
-    c.innerHTML =
-      '<p>📅 Não há designações nos próximos 7 dias para este filtro.</p>';
-
-    mostrarAlertaGlobal(
-      "📅 Não há designações nos próximos 7 dias."
-    );
-
-    return;
-
-  }
-
-  // Ordena pelos dias restantes
-  res.sort((a, b) => {
-
-      const da = Number.isFinite(a.diasFaltam) ? a.diasFaltam : 999;
-
-      const db = Number.isFinite(b.diasFaltam) ? b.diasFaltam : 999;
-
-      return da - db;
-
-  });
-
-  html = `
-          <table class="tabela-listagem">
-          <thead>
-          <tr>
-
-          <th style="width:35%">Nome</th>
-
-          <th style="width:25%">Freq.</th>
-
-          <th style="width:20%">Most.</th>
-
-          <th style="width:15%">Dias</th>
-
-          <th style="width:5%">Zap</th>
-
-          </tr>
-          </thead>
-          <tbody>
-          `;
-
-
-  res.forEach(r => {
-
-    //incluido para calcular os dias que faltam para a designação
-    let corDias = "#2e7d32";
-    let textoDias = `${r.diasFaltam} dias`;
-
-    if (r.diasFaltam === 0) {
-
-        corDias = "#d32f2f";
-        textoDias = "HOJE";
-
-    }
-    else if (r.diasFaltam === 1) {
-
-        corDias = "#ef6c00";
-        textoDias = "AMANHÃ";
-
-    }
-    else if (r.diasFaltam === 2) {
-
-        corDias = "#f9a825";
-
-    }
-
-
-    const partes =
-      (r.turno || "").split(" ");
-
-
-    const pontoNumero =
-      partes[partes.length - 1] || "";
-
-
-    const turnoPalavra =
-      partes
-      .slice(0, partes.length - 1)
-      .join(" ");
-
-    const ehVaga =
-      (r.nome || "")
-        .toUpperCase()
-        .startsWith("VAGA");
-
-      html += `
-
-    <tr class="linha-lembrete"
-
-        data-id="${r.idParticipante}"
-
-        data-nome="${r.nome}"
-
-        data-telefone="${r.telefone}"
-
-        data-ponto="${pontoNumero}"
-
-        data-dia="${r.dia}"
-
-        data-turno="${turnoPalavra}"
-
-        data-frequencia="${r.frequencia}"
-
-        data-equipamento="${r.equipamento}"
-
-        data-dias="${r.diasFaltam}">
-
-
-        <td>
-
-          <div class="nome-com-whatsapp">
-
-
-            <span>
-
-              <strong>${r.nome}</strong><br>
-
-              <small>
-                ${r.congregacao || ""}
-              </small>
-
-
-            </span>
-
-
-          </div>
-
-
-        </td>
-  
-
-        <td>
-
-          ${r.frequencia || ""}
-
-
-        </td>
-
-
-        <td>
-
-          ${r.equipamento || ""}
-
-
-        </td>
-
-
-<!-- coluna acrescentada para os dias formatados com cores -->
-  <td
-      style="
-          text-align:center;
-          font-weight:bold;
-          color:${corDias};
-      ">
-
-      ${textoDias}
-
-  </td>
-
-
-        <td>
-
-
-          ${!ehVaga ? `
-
-                      <img
-
-                          src="img/whatsapp.svg"
-
-                          class="icone-whatsapp-lembrete"
-
-                          data-id="${r.idParticipante}"
-
-                          data-nome="${r.nome}"
-
-                          data-telefone="${r.telefone}"
-
-                          data-ponto="${pontoNumero}"
-
-                          data-dia="${r.dia}"
-
-                          data-turno="${turnoPalavra}"
-
-                          data-frequencia="${r.frequencia}"
-
-                          data-equipamento="${r.equipamento}"
-
-                          data-dias="${r.diasFaltam}"
-
-                          title="Enviar lembrete pelo WhatsApp">
-
-                      ` : ""}
-
-
-        </td>
-
-
-    </tr>
-
-    `;
-
-
-  });
-
-
-  html += `
-
-    </tbody>
-
-  </table>
-
-  `;
-
-
-  c.innerHTML = html;
-
-
-  msg.textContent =
-    `✅ ${res.length} lembrete(s) encontrado(s).`;
-
-}*/
 function exibirResultadosLembretes(res) {
 
   const c =
@@ -4670,107 +4437,6 @@ function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipame
 
 /*function preencherTabelaSemDisponibilidade() {
 
-  const tbody = document.getElementById("tbodySemDisponibilidade");
-
-  tbody.innerHTML = "";
-
-  document.getElementById("totalSemDisponibilidade").textContent =
-    "Participantes sem disponibilidade: " +
-    participantesSemDisponibilidade.length;
-
-  participantesSemDisponibilidade.forEach(p => {
-
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${p.nome}</td>
-
-      <td style="text-align:center;">
-        <a href="${p.whatsapp}"
-          target="_blank"
-          title="Conversar pelo WhatsApp">
-
-          <img
-            src="img/whatsapp.svg"
-            class="icone-whatsapp-semdesignacao"
-            alt="WhatsApp">
-
-        </a>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-
-  });
-
-}*/
-/*function preencherTabelaSemDisponibilidade() {
-
-  const lista =
-    document.getElementById("listaSemDisponibilidade");
-
-  lista.innerHTML = "";
-
-  document.getElementById("totalSemDisponibilidade").textContent =
-    "Participantes sem disponibilidade: " +
-    participantesSemDisponibilidade.length;
-
-  if (!participantesSemDisponibilidade.length) {
-
-    lista.innerHTML =
-      "<div class='card-evento'>🎉 Todos os participantes possuem disponibilidade cadastrada.</div>";
-
-    return;
-
-  }
-
-  participantesSemDisponibilidade.forEach(p => {
-
-    const card = document.createElement("div");
-
-    card.className = "card-evento";
-
-    card.innerHTML = `
-
-      <div class="titulo-evento">
-        👤 Participante sem disponibilidade
-      </div>
-
-      <div class="evento-detalhes">
-
-        <div>
-          <span class="titulo">👤 Nome</span>
-          <span>${p.nome}</span>
-        </div>
-
-      </div>
-
-      <div class="rodape-evento">
-
-        <button
-          class="botao whatsapp"
-          onclick="window.open('${p.whatsapp}','_blank')">
-
-          <img
-            src="img/whatsapp.svg"
-            class="icone-whatsapp-semdesignacao"
-            alt="WhatsApp">
-
-          WhatsApp
-
-        </button>
-
-      </div>
-
-    `;
-
-    lista.appendChild(card);
-
-  });
-
-}*/
-function preencherTabelaSemDisponibilidade() {
-
   const lista =
     document.getElementById("listaSemDisponibilidade");
 
@@ -4845,7 +4511,98 @@ function preencherTabelaSemDisponibilidade() {
 
   });
 
+}*/
+
+function preencherTabelaSemDisponibilidade() {
+
+  const lista =
+    document.getElementById("listaSemDisponibilidade");
+
+  lista.innerHTML = "";
+
+  document.getElementById("totalSemDisponibilidade").textContent =
+    "Participantes sem disponibilidade: " +
+    participantesSemDisponibilidade.length;
+
+  if (!participantesSemDisponibilidade.length) {
+
+    lista.innerHTML = `
+      <div class="card-disponibilidade">
+        <div class="titulo-disponibilidade">
+          🎉 Todos os participantes possuem disponibilidade cadastrada.
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  participantesSemDisponibilidade.forEach(p => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-disponibilidade";
+
+    card.innerHTML = `
+
+      <div class="titulo-grupo-designacao">
+
+          <div class="nome-disponibilidade">
+            👤 ${p.nome || "-"}
+          </div>
+
+      </div>
+      
+      <div class="card-disponibilidade-topo">
+
+          <div class="congregacao-disponibilidade">
+            🏛 ${p.congregacao || "-"}
+          </div>
+
+          <div>
+            📞 ${p.telefone || "-"}
+          </div>
+
+      </div>
+
+      
+      <div class="card-semdesignacao-infos">
+      
+      </div>
+
+        <div class="card-semdesignacao-acoes">
+
+          ${
+            p.whatsapp
+              ? `
+                <a
+                  href="${p.whatsapp}"
+                  target="_blank"
+                  class="btn-whatsapp-disponibilidade"
+                  title="Conversar pelo WhatsApp">
+
+                  <img
+                    src="img/whatsapp.svg"
+                    alt="WhatsApp">
+
+                </a>
+              `
+              : ""
+          }
+
+        </div>
+
+
+    `;
+
+    lista.appendChild(card);
+
+  });
+
 }
+
 function salvarDisponibilidadeIdUsuarioLogado2h() {
 
   const jaTenhoDesignacao =

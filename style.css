@@ -67,7 +67,7 @@ input, select, button {
   width: 100%;
   min-height: 2.5rem;
   /*font-size: 1rem;*/
-  font-size: .9rem;
+  font-size: 1rem;
 }
 
 input,
@@ -4630,4 +4630,15 @@ button#btnVoltarMenu:focus {
 
     opacity: .9;
 
+}
+
+/* ESTILO PAR O AVISO DE VAGA OU DESIGNAÇÃO ROTATIVA NAS ESCALAS POR TURNO OU PONTO */
+.card-designacao-aviso {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
 }

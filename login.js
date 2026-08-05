@@ -149,7 +149,8 @@ const telasSempreAtualizar = new Set([
   "disponibilidadeContainerUsuarioLogado2h",
   "disponibilidadeContainerUsuarioLogado4h",
   "telaVagasDisponiveisRT",
-  "telaMinhasDesignacoesRotativas"
+  "telaMinhasDesignacoesRotativas",
+  "telaDesignacoesRotativas"
 ]);
 
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
@@ -263,6 +264,8 @@ const inicializadores = {
 
     telaMinhasDesignacoesRotativas: carregarMinhasDesignacoesRotativas,
 
+    telaDesignacoesRotativas: carregarDesignacoesRotativas,
+
     disponibilidadeContainerUsuarioLogado2h() {
 
       gerarCardsDisponibilidadeUsuarioLogado2h();
@@ -288,8 +291,6 @@ const inicializadores = {
     },
 
     vagasRT() {
-
-      //carregarDadosVaga();
 
       carregarTodasVagasAbertasRT();
 
@@ -1298,8 +1299,6 @@ function fazerLogin() {
     },
     function(res) {
 
-      //alert("ENTREI NO CALLBACK DO LOGIN");
-
       if (!res.sucesso) {
 
         esconderSpinner();
@@ -1313,7 +1312,6 @@ function fazerLogin() {
 
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
-      //registrarPush(idUsuarioLogado);
 
       apiJSONP(
         "verificarManutencao",
@@ -1332,8 +1330,6 @@ function fazerLogin() {
             return;
 
           }
-
-    // CONTINUA O FLUXO ORIGINAL AQUI
 
       const saudacaoEl = document.getElementById("saudacaoUsuario");
       const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
@@ -1383,10 +1379,11 @@ function fazerLogin() {
 
       atualizarBotaoVoltar();
       mostrarSecoesPorPerfil(res.perfil);
-      atualizarBadgeNotificacoes(); //IMPLANTAÇÃO DAS NOTIFICAÇÕES DENTRO DO APP DE CADA USUARIO
+      atualizarBadgeNotificacoes();
       limparCamposUsuario();
       restaurarCamposPerfil();
 
+      esconderSpinner();
 
       apiJSONP(
         "buscarNomeDoUsuario",
@@ -1412,16 +1409,11 @@ function fazerLogin() {
 
           }
 
-          esconderSpinner();
-
           registrarPush(idUsuarioLogado);
           
           verificarTreinamentoPendente();
           
           if (idVagaNotificacao) {
-
-            //console.log("📌 Abrindo vaga da notificação após login:", idVagaNotificacao);
-
 
             abrirTela("telaVagasDisponiveis");
 
@@ -1441,12 +1433,10 @@ function fazerLogin() {
             err.message || "❌ Erro ao buscar nome do usuário.";
 
         }
-      ); // fecha buscarNomeDoUsuario
-
+      );
 
     }
-  ); // fecha verificarManutencao
-
+  );
 
     },
     function(err) {
@@ -1459,7 +1449,7 @@ function fazerLogin() {
         "❌ Não foi possível comunicar com o servidor.";
 
     }
-  ); // fecha login
+  );
 
 }
 
@@ -2916,11 +2906,7 @@ function pesquisarDesignados() {
 }*/
 function exibirResultados(res) {
 
-  //console.table(res.map(r => ({nome: r.nome, grupo: r.grupo, posicao: r.posicao })));
-
   const c = document.getElementById('resultadoDesignadosContainer');
-  //const msg = document.getElementById("msgPesqDesignados");
-  //msg.textContent = `✅ ${res.length} designado(s) encontrado(s).`;
   
   esconderSpinner();
 
@@ -2933,13 +2919,11 @@ function exibirResultados(res) {
   const partes = (res[0]?.turno || "").split(" ");
   const numeroDoPonto = partes[partes.length - 1] || "";
 
-    //let html = "";
-
-    let html = `
-      <div class="titulo-painel-designacao">
-          🚩 Ponto ${numeroDoPonto} - ${res.length} designações
-      </div>
-      `;
+  let html = `
+    <div class="titulo-painel-designacao">
+        🚩 Ponto ${numeroDoPonto} - ${res.length} designações
+    </div>
+    `;
 
   res.sort((a, b) => {
 
@@ -2969,8 +2953,8 @@ function exibirResultados(res) {
   let grupoAnterior = "";
   let cabecalhoAnterior = "";
 
-  res.forEach(r => {  
-
+  res.forEach(r => {
+  
     const partes = (r.turno || "").split(" ");
     const pontoNumero = partes[partes.length - 1] || "";
     const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
@@ -2982,11 +2966,6 @@ function exibirResultados(res) {
 
   if (chaveCabecalho !== cabecalhoAnterior) {
 
-      //const qtd =
-          //res.filter(x =>
-              //x.grupo === r.grupo &&
-              //x.equipamento === r.equipamento
-          //).length;
       const qtd =
           res.filter(x =>
               x.grupo === r.grupo &&
@@ -3043,22 +3022,38 @@ function exibirResultados(res) {
 
   }
 
-    //const partes = (r.turno || "").split(" ");
-    //const pontoNumero = partes[partes.length - 1] || "";
-    //const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
-
     const ehVaga =
         r.ehVaga === true;
 
-    const nomeExibicao =
+    /*const nomeExibicao =
         ehVaga
         ? "🚧 VAGA"
-        : r.nome;
+        : r.nome;*/
+    const nomeExibicao =
+      ehVaga
+      ? (
+          r.ehVagaRotativa
+            ? "🔄 VAGA"
+            : "🚧 VAGA"
+        )
+      : r.nome;
+    
 
     const frequenciaExibicao =
         ehVaga
         ? r.frequenciaVaga
         : r.frequencia;
+
+    /*const frequenciaExibicao =
+        ehVaga
+          ? r.frequenciaVaga
+          : (r.frequencia || "ROTATIVA");*/
+
+    const ehRotativa =
+    frequenciaExibicao === "ROTATIVA";
+
+    const mostrarAcoes =
+        !ehVaga && !ehRotativa;
 
         html += `
 
@@ -3121,7 +3116,9 @@ function exibirResultados(res) {
 
             </div>
 
-            <div class="card-designacao-acoes">
+            ${
+            mostrarAcoes
+            ? `<div class="card-designacao-acoes">
 
                 <span
                     class="linha-designacao"
@@ -3158,6 +3155,13 @@ function exibirResultados(res) {
                     title="WhatsApp">
 
             </div>
+            `
+            : `
+            <div class="card-designacao-aviso">
+               ⚠️ NÃO PODE SER EDITADO AQUI
+            </div>
+            `
+            }
 
         </div>
 
@@ -18737,6 +18741,8 @@ function buscarDesignacoesPorPonto() {
 
       res.forEach(r => {
 
+
+
           const diaFormatado = primeiraLetraMaiuscula(r.dia);
           const frequenciaFormatada = primeiraLetraMaiuscula(r.frequencia);
 
@@ -18837,16 +18843,33 @@ function buscarDesignacoesPorPonto() {
           }
 
 
-
+          const ehVaga =
+            r.ehVaga === true;
           
-              
+          //const nomeExibicao = r.ehVaga ? "🚧 VAGA" : r.nome;
           const nomeExibicao =
-            r.ehVaga ? "🚧 VAGA" : r.nome;
+            r.ehVagaRotativa
+              ? "🔄 VAGA"
+              : r.ehVaga
+                ? "🚧 VAGA"
+                : r.nome;
 
-          const frequenciaExibicao =
-            r.ehVaga ? r.frequenciaVaga : r.frequencia;
+          const frequenciaExibicao = 
+              r.ehVaga 
+                ? r.frequenciaVaga 
+                  : r.frequencia;
+          /*const frequenciaExibicao =
+            r.frequencia
+              ? r.frequencia
+              : "ROTATIVA";*/
+
+
+          const ehRotativa =
+              frequenciaExibicao === "ROTATIVA";
+
+          const mostrarAcoes =
+              !ehVaga && !ehRotativa;
           
-
 
           html += `
 
@@ -18908,6 +18931,11 @@ function buscarDesignacoesPorPonto() {
 
               </div>
 
+            
+
+              ${
+              mostrarAcoes
+              ? `
               <div class="card-designacao-acoes">
 
                   <span
@@ -18951,6 +18979,13 @@ function buscarDesignacoesPorPonto() {
                       title="Conversar pelo WhatsApp">
                     
               </div>
+              `
+              : `
+              <div class="card-designacao-aviso">
+                 ⚠️ NÃO PODE SER EDITADO AQUI
+              </div>
+              `
+              }
 
           </div>
 
@@ -31742,6 +31777,824 @@ function desistirDaDesignacaoRotativa(idVaga) {
 
 }
 
+/*function carregarDesignacoesRotativas() {
+
+  console.log(
+    "🔄 carregarDesignacoesRotativas chamada"
+  );
+
+  const container =
+    document.getElementById(
+      "cardsDesignacoesRotativas"
+    );
+
+  if (!container) {
+
+    console.error(
+      "Container cardsDesignacoesRotativas não encontrado."
+    );
+
+    return;
+
+  }
+
+  container.innerHTML = "";
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarTodasDesignacoesRotativas",
+
+    {
+
+    },
+
+    function(res) {
+
+      console.log(
+        "📦 Resposta minhas designações rotativas:",
+        res
+      );
+      console.log(
+        "👥 COMPANHEIRO:",
+        res.designacoes?.[0]?.idCompanheiro,
+        res.designacoes?.[0]?.nomeCompanheiro,
+        res.designacoes?.[0]?.congregacaoCompanheiro
+      );
+
+      esconderSpinner();
+
+      console.log(
+        "Designações rotativas:",
+        res
+      );
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível carregar suas designações rotativas."
+        );
+
+        return;
+
+      }
+
+      const designacoes =
+        res.designacoes || [];
+
+      if (!designacoes.length) {
+
+        container.innerHTML = `
+          <div class="aviso-sem-resultados">
+            Nenhuma designação rotativa ativa no momento.
+          </div>
+        `;
+
+        return;
+
+      }
+
+      designacoes.forEach(
+        designacao => {
+
+          // ================================================== 
+          // OBTER TURNO 
+          // ==================================================
+          const partesDesignacao =
+            (designacao.designacao || "")
+              .toString()
+              .trim()
+              .split(/\s+/);
+
+          const codigoTurno =
+            partesDesignacao[0] || "";
+
+          const turnoPalavra =
+            obterNomeTurnoPorCodigo(codigoTurno);
+
+          // ================================================== 
+          // OBTER PALAVRA COM PRIMEIR LETRA MAIUSCULA
+          // ==================================================
+          const diaExibicao =
+            primeiraLetraMaiuscula(
+              designacao.dia
+            );
+
+          // ================================================== 
+          // OBTER NÚMERO DO PONTO
+          // ==================================================
+          const pontoNumero =
+            (designacao.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || "";
+
+
+              
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "card-designacao";
+
+
+          // ==================================================
+          // CARD
+          // ==================================================
+
+          card.innerHTML = `
+
+            <div class="titulo-grupo-designacao">
+                🚩 Ponto ${pontoNumero}
+            </div>
+
+            <div class="card-designacao-topo">
+
+              <div>
+
+                <div class="nome-designacao">
+
+                  ${designacao.nome || ""}
+
+                </div>
+
+                <div class="congregacao-designacao">
+
+                  ${designacao.congregacao || ""}
+
+                </div>
+
+              </div>
+
+              <div class="freq-designacao">
+
+                ${designacao.frequencia || ""}
+
+              </div>
+
+            </div>
+
+            
+            <div class="companheiro-designacao">
+
+              <div class="titulo-companheiro-designacao">
+                👥 Companheiro
+              </div>
+
+              <div class="nome-companheiro-designacao">
+                ${designacao.nomeCompanheiro || "Aguardando companheiro"}
+              </div>
+
+              ${
+                designacao.congregacaoCompanheiro
+                  ? `
+                    <div class="congregacao-companheiro-designacao">
+                      ${designacao.congregacaoCompanheiro}
+                    </div>
+                  `
+                  : ""
+              }
+
+            </div>
+
+
+            <div class="card-designacao-infos">
+
+              <div>
+
+                <span>📅</span>
+
+                ${diaExibicao}
+
+              </div>
+
+
+              <div>
+
+                <span>🕒</span>
+
+                ${turnoPalavra}
+
+
+              </div>
+
+
+              <div>
+
+                <span>🚗</span>
+
+                ${designacao.equipamento || "Não informado"}
+
+              </div>
+
+
+              <!--<div>
+
+                <span>👥</span>
+
+                ${designacao.grupo || "Não informado"}
+
+              </div>-->
+
+            </div>
+
+
+            <div class="card-designacao-acoes">
+
+              <button
+                type="button"
+                class="btn-desistir-designacao"
+                onclick="desistirDaDesignacaoRotativa('${designacao.idVaga}')">
+
+                🗑️ Excluir designação 
+
+              </button>
+
+            </div>
+
+          `;
+
+
+          container.appendChild(card);
+
+        }
+      );
+
+    },
+
+    function(err) {
+
+      console.error(
+        "❌ Erro ao carregar minhas designações rotativas:",
+        err
+      );
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Erro ao carregar suas designações rotativas."
+      );
+
+    }
+
+  );
+
+}*/
+function carregarDesignacoesRotativas() {
+
+  console.log(
+    "🔄 carregarDesignacoesRotativas chamada"
+  );
+
+  const container =
+    document.getElementById(
+      "cardsDesignacoesRotativas"
+    );
+
+  if (!container) {
+
+    console.error(
+      "Container cardsDesignacoesRotativas não encontrado."
+    );
+
+    return;
+
+  }
+
+  container.innerHTML = "";
+
+  mostrarSpinner();
+
+  apiJSONP(
+
+    "buscarTodasDesignacoesRotativas",
+
+    {},
+
+    function(res) {
+
+      console.log(
+        "📦 Resposta todas designações rotativas:",
+        res
+      );
+
+      esconderSpinner();
+
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível carregar as designações rotativas."
+        );
+
+        return;
+
+      }
+
+
+      const designacoes =
+        res.designacoes || [];
+
+
+      if (!designacoes.length) {
+
+        container.innerHTML = `
+          <div class="aviso-sem-resultados">
+            Nenhuma designação rotativa encontrada.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // ORDENAÇÃO
+      // ==================================================
+
+      designacoes.sort((a, b) => {
+
+        // ponto
+        const pontoA =
+          parseInt(
+            (a.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || 0,
+            10
+          );
+
+        const pontoB =
+          parseInt(
+            (b.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || 0,
+            10
+          );
+
+        if (pontoA !== pontoB) {
+          return pontoA - pontoB;
+        }
+
+
+        // dia
+        const dia =
+          (a.dia || "")
+            .toString()
+            .localeCompare(
+              (b.dia || "").toString()
+            );
+
+        if (dia !== 0) {
+          return dia;
+        }
+
+
+        // designação
+        return (
+          (a.designacao || "")
+            .toString()
+            .localeCompare(
+              (b.designacao || "").toString()
+            )
+        );
+
+      });
+
+
+      let html = "";
+
+      let pontoAnterior = "";
+      let diaAnterior = "";
+      let cabecalhoAnterior = "";
+
+
+      // ==================================================
+      // PERCORRER DESIGNACÕES
+      // ==================================================
+
+      designacoes.forEach(designacao => {
+
+
+        // ==================================================
+        // PONTO
+        // ==================================================
+
+        const pontoNumero =
+          (designacao.ponto || "")
+            .toString()
+            .match(/\d+/)?.[0] || "";
+
+
+        if (
+          pontoNumero !==
+          pontoAnterior
+        ) {
+
+          // conta quantas designações existem neste ponto
+          const quantidadePonto =
+            designacoes.filter(d => {
+
+              const numero =
+                (d.ponto || "")
+                  .toString()
+                  .match(/\d+/)?.[0] || "";
+
+              return numero === pontoNumero;
+
+            }).length;
+
+
+          html += `
+
+            <div class="titulo-painel-designacao">
+
+              🚩 Ponto ${pontoNumero}
+              - ${quantidadePonto} designações
+
+            </div>
+
+          `;
+
+
+          pontoAnterior =
+            pontoNumero;
+
+          // força recriação dos cabeçalhos abaixo
+          diaAnterior = "";
+          cabecalhoAnterior = "";
+
+        }
+
+
+        // ==================================================
+        // DIA
+        // ==================================================
+
+        const diaFormatado =
+          primeiraLetraMaiuscula(
+            designacao.dia
+          );
+
+
+        if (
+          designacao.dia !==
+          diaAnterior
+        ) {
+
+          html += `
+
+            <div class="titulo-dia-designacao">
+
+              📅 ${diaFormatado}
+
+            </div>
+
+          `;
+
+
+          diaAnterior =
+            designacao.dia;
+
+          // novo dia = novo cabeçalho
+          cabecalhoAnterior = "";
+
+        }
+
+
+        // ==================================================
+        // TURNO
+        // ==================================================
+
+        const partesDesignacao =
+          (designacao.designacao || "")
+            .toString()
+            .trim()
+            .split(/\s+/);
+
+
+        const codigoTurno =
+          partesDesignacao[0] || "";
+
+
+        const turnoPalavra =
+          obterNomeTurnoPorCodigo(
+            codigoTurno
+          );
+
+
+        // ==================================================
+        // EQUIPAMENTO
+        // ==================================================
+
+        const equipamento =
+          designacao.equipamento ||
+          "Não informado";
+
+
+        // ==================================================
+        // CABEÇALHO DO GRUPO
+        // ==================================================
+
+        /*
+         * As duas vagas da mesma designação
+         * compartilham o mesmo:
+         *
+         * ponto + dia + equipamento + turno
+         *
+         * Portanto usamos isso como chave.
+         */
+
+        const chaveCabecalho =
+          `${designacao.ponto}|` +
+          `${designacao.dia}|` +
+          `${equipamento}|` +
+          `${codigoTurno}`;
+
+
+        if (
+          chaveCabecalho !==
+          cabecalhoAnterior
+        ) {
+
+
+          // ------------------------------------------------
+          // quantidade de pessoas nesta mesma designação
+          // ------------------------------------------------
+
+          const quantidadeDupla =
+            designacoes.filter(d => {
+
+              return (
+                (d.ponto || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (designacao.ponto || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+                &&
+                (d.dia || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (designacao.dia || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+                &&
+                (d.designacao || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (designacao.designacao || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+              );
+
+            }).length;
+
+
+          let tituloGrupo = "";
+
+
+          if (
+            quantidadeDupla === 1
+          ) {
+
+            tituloGrupo =
+              `<span style="color:#d32f2f;font-weight:bold;">
+                ⚠️ Precisa de companheiro
+              </span>`;
+
+          }
+          else if (
+            quantidadeDupla === 2
+          ) {
+
+            tituloGrupo =
+              `<span>
+                👥 DUPLA
+              </span>`;
+
+          }
+          else {
+
+            tituloGrupo =
+              `<span>
+                👥 ${quantidadeDupla} designações
+              </span>`;
+
+          }
+
+
+          html += `
+
+            <div class="titulo-grupo-designacao">
+
+              ${equipamento}
+              • Turno ${turnoPalavra}
+
+              ${tituloGrupo}
+
+            </div>
+
+          `;
+
+
+          cabecalhoAnterior =
+            chaveCabecalho;
+
+        }
+
+
+        // ==================================================
+        // FREQUÊNCIA
+        // ==================================================
+
+        const frequenciaExibicao =
+          designacao.frequencia ||
+          "";
+
+
+        // ==================================================
+        // COMPANHEIRO
+        // ==================================================
+
+        const nomeCompanheiro =
+          designacao.nomeCompanheiro ||
+          "Aguardando companheiro";
+
+
+        // ==================================================
+        // CARD
+        // ==================================================
+
+        html += `
+
+          <div class="card-designacao">
+
+
+            <div class="card-designacao-topo">
+
+              <div>
+
+                <div class="nome-designacao">
+
+                  ${designacao.nome || ""}
+
+                </div>
+
+
+                <div class="congregacao-designacao">
+
+                  ${designacao.congregacao || ""}
+
+                </div>
+
+              </div>
+
+
+              <div class="freq-designacao">
+
+                ${frequenciaExibicao}
+
+              </div>
+
+            </div>
+
+
+            <div class="companheiro-designacao">
+
+              <div class="titulo-companheiro-designacao">
+
+                👥 Companheiro
+
+              </div>
+
+
+              <div class="nome-companheiro-designacao">
+
+                ${nomeCompanheiro}
+
+              </div>
+
+
+              ${
+                designacao.congregacaoCompanheiro
+                  ? `
+
+                    <div class="congregacao-companheiro-designacao">
+
+                      ${designacao.congregacaoCompanheiro}
+
+                    </div>
+
+                  `
+                  : ""
+              }
+
+            </div>
+
+
+            <div class="card-designacao-infos">
+
+
+              <div>
+
+                <span>📅</span>
+
+                ${diaFormatado}
+
+              </div>
+
+
+              <div>
+
+                <span>🕒</span>
+
+                ${turnoPalavra}
+
+              </div>
+
+
+              <div>
+
+                <span>🚩</span>
+
+                Ponto ${pontoNumero}
+
+              </div>
+
+
+            </div>
+
+
+            <div class="card-designacao-acoes">
+
+              <button
+                type="button"
+                class="btn-desistir-designacao"
+                onclick="
+                  desistirDaDesignacaoRotativa(
+                    '${designacao.idVaga}'
+                  )
+                ">
+
+                🗑️ Excluir designação
+
+              </button>
+
+            </div>
+
+
+          </div>
+
+        `;
+
+      });
+
+
+      container.innerHTML =
+        html;
+
+    },
+
+
+    function(err) {
+
+      console.error(
+        "❌ Erro ao carregar todas as designações rotativas:",
+        err
+      );
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Erro ao carregar as designações rotativas."
+      );
+
+    }
+
+  );
+
+}
 
 
 /* Funções pra o modal PDF */

@@ -25103,15 +25103,16 @@ function carregarResumo() {
       const itens = [
 
         ["👥", "Aprovados", resumo.totalDeAprovados],
-        ["👥", "Participantes ativos", resumo.totalParticipantesAtivos],  
-        ["⚠️", "Pessoas sem designação", resumo.totalDeIrregulares],
+        ["👥", "Ativos", resumo.totalParticipantesAtivos],  
+        ["⚠️", "Inativos", resumo.totalDeIrregulares],
 
         ["✅", "Designações", resumo.totalDesignacoes],
-        ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
+        
         ["📅", "Designações semanais", resumo.countSemanal],
         ["📆", "Designações quinzenais", resumo.countQuinzenal],
         ["🗓️", "Designações mensais", resumo.countMensal],
         
+        ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
         ["1️⃣", "Pessoas com 1 designação", resumo.totalPessoas1Designacao],
         ["➕", "Pessoas com mais de 1 designação", resumo.totalPessoasMais1Designacao],
         
@@ -30268,7 +30269,7 @@ function cadastrarVagaRT() {
   });
 }
 
-function carregarVagasDisponiveisRT() {
+/*function carregarVagasDisponiveisRT() {
 
   const lista =
     document.getElementById("listaVagasDisponiveisRT");
@@ -30472,6 +30473,625 @@ function carregarVagasDisponiveisRT() {
         "❌ Erro: " + err.message;
 
     }
+  );
+
+}*/
+
+function carregarVagasDisponiveisRT() {
+
+  console.log(
+    "🔄 carregarVagasDisponiveisRT chamada"
+  );
+
+
+  const container =
+    document.getElementById(
+      "listaVagasDisponiveisRT"
+    );
+
+
+  if (!container) {
+
+    console.error(
+      "Container listaVagasDisponiveisRT não encontrado."
+    );
+
+    return;
+
+  }
+
+
+  container.innerHTML = "";
+
+  mostrarSpinner();
+
+
+  apiJSONP(
+
+    "listarVagasDisponiveisNRT",
+
+    {},
+
+    function(res) {
+
+      console.log(
+        "📦 Resposta vagas rotativas:",
+        res
+      );
+
+
+      esconderSpinner();
+
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        mostrarAlertaGlobal(
+          res?.mensagem ||
+          "Não foi possível carregar as vagas rotativas."
+        );
+
+        return;
+
+      }
+
+
+      const vagas =
+        res.vagas || [];
+
+
+      if (!vagas.length) {
+
+        container.innerHTML = `
+
+          <div class="aviso-sem-resultados">
+
+            🎉 Nenhuma vaga rotativa disponível.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      // ==================================================
+      // ORDENAÇÃO
+      // ==================================================
+
+      vagas.sort((a, b) => {
+
+        // ----------------------------------------------
+        // PONTO
+        // ----------------------------------------------
+
+        const pontoA =
+          parseInt(
+            (a.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || 0,
+            10
+          );
+
+
+        const pontoB =
+          parseInt(
+            (b.ponto || "")
+              .toString()
+              .match(/\d+/)?.[0] || 0,
+            10
+          );
+
+
+        if (pontoA !== pontoB) {
+
+          return pontoA - pontoB;
+
+        }
+
+
+        // ----------------------------------------------
+        // DIA
+        // ----------------------------------------------
+
+        const dia =
+          (a.dia || "")
+            .toString()
+            .localeCompare(
+              (b.dia || "").toString()
+            );
+
+
+        if (dia !== 0) {
+
+          return dia;
+
+        }
+
+
+        // ----------------------------------------------
+        // PERÍODO / TURNO
+        // ----------------------------------------------
+
+        const ordemPeriodos = {
+          "MATINAL": 1,
+          "MANHÃ": 2,
+          "MANHA": 2,
+          "TARDE": 3,
+          "NOITE": 4
+        };
+
+
+        const periodoA =
+          (a.periodo || "")
+            .toString()
+            .trim()
+            .toUpperCase();
+
+
+        const periodoB =
+          (b.periodo || "")
+            .toString()
+            .trim()
+            .toUpperCase();
+
+
+        return (
+          (ordemPeriodos[periodoA] || 99) -
+          (ordemPeriodos[periodoB] || 99)
+        );
+
+      });
+
+
+      let html = "";
+
+      let pontoAnterior = "";
+      let diaAnterior = "";
+      let cabecalhoAnterior = "";
+
+
+      // ==================================================
+      // PERCORRER VAGAS
+      // ==================================================
+
+      vagas.forEach(vaga => {
+
+
+        // ==================================================
+        // PONTO
+        // ==================================================
+
+        const pontoNumero =
+          (vaga.ponto || "")
+            .toString()
+            .match(/\d+/)?.[0] || "";
+
+
+        if (
+          pontoNumero !==
+          pontoAnterior
+        ) {
+
+
+          // ----------------------------------------------
+          // quantidade de vagas neste ponto
+          // ----------------------------------------------
+
+          const quantidadePonto =
+            vagas.filter(v => {
+
+              const numero =
+                (v.ponto || "")
+                  .toString()
+                  .match(/\d+/)?.[0] || "";
+
+              return numero === pontoNumero;
+
+            }).length;
+
+
+          html += `
+
+            <div class="titulo-painel-designacao">
+
+              🚩 Ponto ${pontoNumero}
+              - ${quantidadePonto} vagas
+
+            </div>
+
+          `;
+
+
+          pontoAnterior =
+            pontoNumero;
+
+
+          // força recriação dos cabeçalhos
+
+          diaAnterior = "";
+          cabecalhoAnterior = "";
+
+        }
+
+
+        // ==================================================
+        // DIA
+        // ==================================================
+
+        const diaFormatado =
+          primeiraLetraMaiuscula(
+            vaga.dia
+          );
+
+
+        if (
+          vaga.dia !==
+          diaAnterior
+        ) {
+
+          html += `
+
+            <div class="titulo-dia-designacao">
+
+              📅 ${diaFormatado}
+
+            </div>
+
+          `;
+
+
+          diaAnterior =
+            vaga.dia;
+
+
+          // novo dia = novo cabeçalho
+
+          cabecalhoAnterior = "";
+
+        }
+
+
+        // ==================================================
+        // PERÍODO
+        // ==================================================
+
+        const periodoFormatado =
+          primeiraLetraMaiuscula(
+            vaga.periodo
+          );
+
+
+        // ==================================================
+        // EQUIPAMENTO
+        // ==================================================
+
+        const equipamento =
+          vaga.equipamento ||
+          "Não informado";
+
+
+        // ==================================================
+        // CABEÇALHO DO GRUPO
+        // ==================================================
+
+        /*
+         * Vagas do mesmo:
+         *
+         * ponto + dia + equipamento + período
+         *
+         * pertencem ao mesmo grupo visual.
+         */
+
+        const chaveCabecalho =
+          `${vaga.ponto}|` +
+          `${vaga.dia}|` +
+          `${equipamento}|` +
+          `${vaga.periodo}`;
+
+
+        if (
+          chaveCabecalho !==
+          cabecalhoAnterior
+        ) {
+
+
+          // ------------------------------------------------
+          // quantidade de vagas neste mesmo grupo
+          // ------------------------------------------------
+
+          const quantidadeGrupo =
+            vagas.filter(v => {
+
+              return (
+
+                (v.ponto || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (vaga.ponto || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+
+                &&
+
+                (v.dia || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (vaga.dia || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+
+                &&
+
+                (v.equipamento || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                equipamento
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+
+                &&
+
+                (v.periodo || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase() ===
+                (vaga.periodo || "")
+                  .toString()
+                  .trim()
+                  .toUpperCase()
+
+              );
+
+            }).length;
+
+
+          let tituloGrupo = "";
+
+
+          if (
+            quantidadeGrupo === 1
+          ) {
+
+            tituloGrupo =
+              `<span>
+                🚨 1 vaga disponível
+              </span>`;
+
+          }
+          else {
+
+            tituloGrupo =
+              `<span>
+                🚨 ${quantidadeGrupo} vagas disponíveis
+              </span>`;
+
+          }
+
+
+          html += `
+
+            <div class="titulo-grupo-designacao">
+
+              ${equipamento}
+              • ${periodoFormatado}
+
+              ${tituloGrupo}
+
+            </div>
+
+          `;
+
+
+          cabecalhoAnterior =
+            chaveCabecalho;
+
+        }
+
+
+        // ==================================================
+        // FREQUÊNCIA
+        // ==================================================
+
+        const frequenciaExibicao =
+          vaga.frequencia ||
+          "";
+
+
+        // ==================================================
+        // DESTAQUE DA NOTIFICAÇÃO
+        // ==================================================
+
+        const destaque =
+          vaga.idVaga ===
+          idVagaNotificacao;
+
+
+        // ==================================================
+        // CARD
+        // ==================================================
+
+        html += `
+
+          <div
+            class="card-designacao
+              ${destaque
+                ? "card-vaga-destaque"
+                : ""}"
+          >
+
+
+            <div class="card-designacao-topo">
+
+              <div>
+
+                <div class="nome-designacao">
+
+                  🚨 Vaga Rotativa Disponível
+
+                </div>
+
+
+                <div class="congregacao-designacao">
+
+                  Seu companheiro deve aceitar
+                  a outra vaga no mesmo turno
+
+                </div>
+
+              </div>
+
+
+              <div class="freq-designacao">
+
+                ${frequenciaExibicao}
+
+              </div>
+
+            </div>
+
+
+            ${
+              destaque
+                ? `
+
+                  <div class="aviso-vaga-notificacao">
+
+                    🔔 Esta é a vaga da sua notificação
+
+                  </div>
+
+                `
+                : ""
+            }
+
+
+            <div class="card-designacao-infos">
+
+
+              <div>
+
+                <span>📅</span>
+
+                ${diaFormatado}
+
+              </div>
+
+
+              <div>
+
+                <span>🌅</span>
+
+                ${periodoFormatado}
+
+              </div>
+
+
+              <div>
+
+                <span>🚩</span>
+
+                Ponto ${pontoNumero}
+
+              </div>
+
+
+            </div>
+
+
+            <div class="card-designacao-acoes">
+
+              <button
+                type="button"
+                class="${
+                  destaque
+                    ? "btn-aceitar-vaga btn-aceitar-destaque"
+                    : "btn-aceitar-vaga"
+                }"
+                onclick="
+                  verificarDuplaVagaRotativa(
+                    '${vaga.idVaga}'
+                  )
+                "
+              >
+
+                🙋 Quero assumir esta vaga
+
+              </button>
+
+            </div>
+
+
+          </div>
+
+        `;
+
+      });
+
+
+      container.innerHTML =
+        html;
+
+
+      // ==================================================
+      // ROLAGEM PARA NOTIFICAÇÃO
+      // ==================================================
+
+      const cardDestaque =
+        container.querySelector(
+          ".card-vaga-destaque"
+        );
+
+
+      if (cardDestaque) {
+
+        setTimeout(() => {
+
+          cardDestaque.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "center"
+
+          });
+
+        }, 300);
+
+      }
+
+    },
+
+
+    function(err) {
+
+      console.error(
+        "❌ Erro ao carregar vagas rotativas:",
+        err
+      );
+
+
+      esconderSpinner();
+
+
+      mostrarAlertaGlobal(
+        err?.message ||
+        err?.mensagem ||
+        err ||
+        "Erro ao carregar as vagas rotativas."
+      );
+
+    }
+
   );
 
 }
@@ -32224,6 +32844,85 @@ function carregarDesignacoesRotativas() {
 
 
         // designação
+        /*return (
+          (a.designacao || "")
+            .toString()
+            .localeCompare(
+              (b.designacao || "").toString()
+            )
+        );*/
+        // ==================================================
+        // TURNO
+        // ==================================================
+
+        const ordemTurnos = {
+          "MATINAL": 1,
+          "MANHÃ": 2,
+          "MANHA": 2,
+          "TARDE": 3,
+          "NOITE": 4
+        };
+
+
+        const partesA =
+          (a.designacao || "")
+            .toString()
+            .trim()
+            .split(/\s+/);
+
+
+        const partesB =
+          (b.designacao || "")
+            .toString()
+            .trim()
+            .split(/\s+/);
+
+
+        const codigoTurnoA =
+          partesA[0] || "";
+
+
+        const codigoTurnoB =
+          partesB[0] || "";
+
+
+        const turnoA =
+          obterNomeTurnoPorCodigo(
+            codigoTurnoA
+          )
+            .toString()
+            .trim()
+            .toUpperCase();
+
+
+        const turnoB =
+          obterNomeTurnoPorCodigo(
+            codigoTurnoB
+          )
+            .toString()
+            .trim()
+            .toUpperCase();
+
+
+        const ordemA =
+          ordemTurnos[turnoA] || 99;
+
+
+        const ordemB =
+          ordemTurnos[turnoB] || 99;
+
+
+        if (ordemA !== ordemB) {
+
+          return ordemA - ordemB;
+
+        }
+
+
+        // ==================================================
+        // DESIGNAÇÃO
+        // ==================================================
+
         return (
           (a.designacao || "")
             .toString()

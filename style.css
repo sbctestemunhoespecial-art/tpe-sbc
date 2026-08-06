@@ -4069,8 +4069,9 @@ td {
 .card-resumo{
     background:#fff;
     border-radius:12px;
+    border-left: 6px solid #1976d2;
     box-shadow:0 2px 8px rgba(0,0,0,.15);
-    padding:18px;
+    padding:16px;
     font-weight:bold;
 }
 
@@ -4082,16 +4083,16 @@ td {
     font-size:1rem;
     font-weight:bold;
     color:#1f4f82;
-    margin-bottom:14px;
+    margin-bottom:8px;
 }
 
 .card-resumo .icone-resumo{
-    font-size:1.5rem;
+    font-size:1rem;
     line-height:1;
 }
 
 .card-resumo .valor-resumo{
-    font-size:1.3rem;
+    font-size:1.1rem;
     font-weight:bold;
     text-align:center;
     color:#333;
@@ -4100,8 +4101,8 @@ td {
 .lista-cards-circuitos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .card-circuito {
@@ -4128,7 +4129,7 @@ td {
 }
 
 .quantidade-circuito {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #222;
 }

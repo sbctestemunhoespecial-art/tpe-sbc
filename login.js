@@ -24982,49 +24982,107 @@ function carregarAbas() {
 
       esconderSpinner();
 
-      for (const chave in resumo) {
-        const el = document.getElementById(chave);
-        if (el && chave !== 'contagemCircuitos') {
-          el.textContent = resumo[chave];
-        }
-      }
+      const painel =
+        document.getElementById("painelResumo");
 
-      const tbodyCircuitos = document.getElementById('tbodyCircuitos');
+      let html = `<div class="lista-cards-resumo">`;
 
-      if (tbodyCircuitos && resumo.contagemCircuitos) {
+      const itens = [
 
-        tbodyCircuitos.innerHTML = '';
+        ["👥", "Aprovados", resumo.totalDeAprovados],
+        ["✅", "Designações", resumo.totalDesignacoes],
+        ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
+        ["📅", "Designações semanais", resumo.countSemanal],
+        ["📆", "Designações quinzenais", resumo.countQuinzenal],
+        ["🗓️", "Designações mensais", resumo.countMensal],
+        ["1️⃣", "Pessoas com 1 designação", resumo.totalPessoas1Designacao],
+        ["➕", "Pessoas com mais de 1 designação", resumo.totalPessoasMais1Designacao],
+        ["⚠️", "Pessoas sem designação", resumo.totalDeIrregulares],
+        ["🪑", "Vagas", resumo.totalVagasAbertas]
 
-        const circuitos = Object.keys(resumo.contagemCircuitos).sort((a, b) => {
-          if (a === 'Desconhecido') return 1;
-          if (b === 'Desconhecido') return -1;
-          return parseInt(a) - parseInt(b);
-        });
+      ];
+
+      itens.forEach(item => {
+
+        html += `
+        <div class="card-resumo">
+            <div class="titulo-resumo">
+                <span class="icone-resumo">${item[0]}</span>
+                <span>${item[1]}</span>
+            </div>
+
+            <div class="valor-resumo">
+                ${item[2]}
+            </div>
+        </div>
+        `;
+
+      });
+
+      html += `</div>`;
+
+      if (resumo.contagemCircuitos) {
+
+        html += `
+          <h4 class="titulo-circuitos">
+            🌍 Participantes por Circuito
+          </h4>
+
+          <div class="lista-cards-circuitos">
+        `;
+
+        const circuitos =
+          Object.keys(resumo.contagemCircuitos).sort((a, b) => {
+
+            if (a === "Desconhecido") return 1;
+            if (b === "Desconhecido") return -1;
+
+            return parseInt(a) - parseInt(b);
+
+          });
 
         circuitos.forEach(circuito => {
 
-          const quantidade = resumo.contagemCircuitos[circuito];
+          html += `
+            <div class="card-circuito">
+              <div class="numero-circuito">
+                Circuito ${circuito}
+              </div>
 
-          const tr = document.createElement('tr');
-
-          tr.innerHTML = `
-            <td style="border: 1px solid #ccc; padding: 8px;">${circuito}</td>
-            <td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${quantidade}</td>
+              <div class="quantidade-circuito">
+               ${resumo.contagemCircuitos[circuito]}
+              </div>
+            </div>
           `;
 
-          tbodyCircuitos.appendChild(tr);
         });
+
+        html += `</div>`;
+
       }
+
+      html += `
+        <div style="text-align:center;margin-top:20px;">
+          <button onclick="carregarResumo()">
+            🔄 Atualizar resumo
+          </button>
+        </div>
+      `;
+
+      painel.innerHTML = html;
 
     },
     function(err) {
-      
+
       esconderSpinner();
 
-      mostrarAlertaGlobal("❌ Erro ao carregar resumo: " + err.message);
+      mostrarAlertaGlobal(
+        "❌ Erro ao carregar resumo: " + err.message
+      );
 
     }
   );
+
 }*/
 function carregarResumo() {
 
@@ -25045,14 +25103,18 @@ function carregarResumo() {
       const itens = [
 
         ["👥", "Aprovados", resumo.totalDeAprovados],
+        ["👥", "Participantes ativos", resumo.totalParticipantesAtivos],  
+        ["⚠️", "Pessoas sem designação", resumo.totalDeIrregulares],
+
         ["✅", "Designações", resumo.totalDesignacoes],
         ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
         ["📅", "Designações semanais", resumo.countSemanal],
         ["📆", "Designações quinzenais", resumo.countQuinzenal],
         ["🗓️", "Designações mensais", resumo.countMensal],
+        
         ["1️⃣", "Pessoas com 1 designação", resumo.totalPessoas1Designacao],
         ["➕", "Pessoas com mais de 1 designação", resumo.totalPessoasMais1Designacao],
-        ["⚠️", "Pessoas sem designação", resumo.totalDeIrregulares],
+        
         ["🪑", "Vagas", resumo.totalVagasAbertas]
 
       ];

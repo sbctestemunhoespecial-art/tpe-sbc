@@ -3158,7 +3158,7 @@ function exibirResultados(res) {
             `
             : `
             <div class="card-designacao-aviso">
-               ⚠️ NÃO PODE SER EDITADO AQUI
+               ⚠️ NÃO EDITÁVEL
             </div>
             `
             }
@@ -3237,21 +3237,20 @@ document.addEventListener("click", function(e){
     e.stopPropagation();
 
     const mensagem =
-                    `*DESIGNAÇÃO NO TPE*
 
-                    Olá, querido(a) irmão(ã)!
+      `*DESIGNAÇÃO NO TPE*
 
-                    Esta é uma confirmação de sua designação no TPE.
+        Olá, querido(a) irmão(ã)!
 
-                    📍 *Ponto:* ${icone.dataset.ponto}
-                    📅 *Dia:* ${icone.dataset.dia}
-                    🕒 *Turno:* ${icone.dataset.turno}
-                    📈 *Frequência:* ${icone.dataset.frequencia}
-                    📚 *Mostruário:* ${icone.dataset.equipamento}
+      Gostaria de falar sobre sua designação no TPE.
 
-                    Estou à disposição para qualquer dúvida.
+      🚩 *Ponto:* ${icone.dataset.ponto}
+      📅 *Dia:* ${icone.dataset.dia}
+      🕒 *Turno:* ${icone.dataset.turno}
+      📈 *Frequência:* ${icone.dataset.frequencia}
+      📚 *Mostruário:* ${icone.dataset.equipamento}
 
-                    Grande abraço!`;
+      Aguardo seu retorno!`;
 
     abrirWhatsApp(
         icone.dataset.telefone,
@@ -18612,7 +18611,7 @@ function primeiraLetraMaiuscula(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-function buscarDesignacoesPorPonto() {
+/*function buscarDesignacoesPorPonto() {
   
   const ponto = window.camposSelecionados.pontobepp
   const msg = document.getElementById("msgDesignacoesPorPontopppp");
@@ -18858,10 +18857,10 @@ function buscarDesignacoesPorPonto() {
               r.ehVaga 
                 ? r.frequenciaVaga 
                   : r.frequencia;
-          /*const frequenciaExibicao =
-            r.frequencia
-              ? r.frequencia
-              : "ROTATIVA";*/
+          //const frequenciaExibicao =
+           //r.frequencia
+              //? r.frequencia
+              //: "ROTATIVA";
 
 
           const ehRotativa =
@@ -19049,17 +19048,6 @@ function buscarDesignacoesPorPonto() {
               const designacao =
                   `${codigoTurno}${numeroPonto} ${dia}`;
 
-
-              /*console.log(
-                  "=== ESCALA POR PONTO ==="
-              );
-
-              console.log({
-                  idParticipante,
-                  designacao
-              });*/
-
-
               abrirModalCompanheiros(
                   idParticipante,
                   designacao
@@ -19105,6 +19093,498 @@ document.addEventListener("click", function (e) {
                   Estou à disposição para qualquer dúvida.
 
                   Grande abraço!`
+
+    abrirWhatsApp(
+        icone.dataset.telefone,
+        mensagem
+    );
+
+    esconderSpinner();
+
+});*/
+
+function buscarDesignacoesPorPonto() {
+  
+  const ponto = window.camposSelecionados.pontobepp
+  const msg = document.getElementById("msgDesignacoesPorPontopppp");
+  const container = document.getElementById("resultadoDesignacoesPorPontopppp");
+
+  container.innerHTML = "";
+  msg.textContent = "";
+  document.getElementById("btnExportarPdfDesignacoes").style.display = "none";
+
+  if (!ponto) {
+    mostrarAlertaGlobal("❌ Por favor, selecione um ponto.");
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarDesignacoesDoPonto",
+    {
+      ponto
+    },
+    (res) => {
+      esconderSpinner();
+
+      if (!res || res.length === 0) {
+        mostrarAlertaGlobal("❌ Nenhuma designação encontrada para esse ponto.");
+        return;
+      }
+
+      const numeroDoPonto = (ponto || "").replace("Ponto ", "").trim();
+
+      let html = `
+      <div class="titulo-painel-designacao">
+          🚩 Ponto ${numeroDoPonto} - ${res.length} designações
+      </div>
+      `;
+
+      const ordemDias = {
+          "SEGUNDA": 1,
+          "TERÇA": 2,
+          "TERCA": 2,
+          "QUARTA": 3,
+          "QUINTA": 4,
+          "SEXTA": 5,
+          "SÁBADO": 6,
+          "SABADO": 6,
+          "DOMINGO 1": 7,
+          "DOMINGO 2": 8,
+          "DOMINGO 3": 9,
+          "DOMINGO 4": 10,
+          "DOMINGO 5": 11
+      };
+
+
+      res.sort((a, b) => {
+
+
+          // 1º DIA DA SEMANA
+
+          const diaA =
+              ordemDias[
+                  (a.dia || "").toUpperCase()
+              ] || 99;
+
+
+          const diaB =
+              ordemDias[
+                  (b.dia || "").toUpperCase()
+              ] || 99;
+
+
+          if (diaA !== diaB) {
+
+              return diaA - diaB;
+
+          }
+
+
+          // 2º TURNO
+
+          if (a.turno !== b.turno) {
+
+              return a.turno.localeCompare(b.turno);
+
+          }
+
+
+          // 3º EQUIPAMENTO
+          const eqA = (a.equipamento || "");
+          const eqB = (b.equipamento || "");
+
+          if (eqA !== eqB) {
+              return eqA.localeCompare(eqB);
+          }
+
+          // 4º GRUPO
+
+          if (!a.grupo && !b.grupo) return 0;
+
+          if (!a.grupo) return 1;
+
+          if (!b.grupo) return -1;
+
+
+          if (a.grupo !== b.grupo) {
+
+              return a.grupo.localeCompare(b.grupo);
+
+          }
+
+
+          // 5º POSIÇÃO DENTRO DO GRUPO
+
+          return (
+              Number(a.posicao || 0)
+              -
+              Number(b.posicao || 0)
+          );
+
+
+      });
+
+      let grupoAtual = null;
+      let cabecalhoAtual = "";
+      let diaAtual = null;
+
+      res.forEach(r => {
+
+
+
+          const diaFormatado = primeiraLetraMaiuscula(r.dia);
+          const frequenciaFormatada = primeiraLetraMaiuscula(r.frequencia);
+
+          // ==============================
+          // CABEÇALHO DO DIA
+          // ==============================
+
+          if (r.dia !== diaAtual) {
+
+              diaAtual = r.dia;
+
+              //grupoAtual = null;
+              cabecalhoAtual = "";
+
+              html += `
+
+              <div class="titulo-dia-designacao">
+
+                  📅 ${r.dia}
+
+              </div>
+
+              `;
+
+          }
+
+          const chaveCabecalho = `${r.equipamento}|${r.grupo}`;
+
+          const partes = (r.turno || "").split(" ");
+          const pontoNumero = partes[partes.length - 1] || "";
+          const turnoPalavra = partes.slice(0, partes.length - 1).join(" ");
+
+        if (chaveCabecalho !== cabecalhoAtual) {
+
+              cabecalhoAtual = chaveCabecalho;
+
+              const integrantes =
+                  res.filter(x =>
+                      x.grupo === r.grupo &&
+                      x.equipamento === r.equipamento &&
+                      x.ehVaga !== true
+                  ).length;
+
+
+              let tituloGrupo = "";
+              let estiloTitulo = "";
+
+              switch (integrantes) {
+
+                  case 1:
+                      tituloGrupo = "⚠️ Precisa de companheiro";
+                      estiloTitulo = "color:#d32f2f;font-weight:bold;";
+                      break;
+
+                  case 2:
+                      tituloGrupo = "👥 Dupla";
+                      break;
+
+                  case 3:
+                      tituloGrupo = "👥 Trio";
+                      break;
+
+                  case 4:
+                      tituloGrupo = "👥 Grupo";
+                      break;
+
+                  default:
+                      tituloGrupo = `👥 Grupo (${integrantes})`;
+
+              }
+
+              const equipamentoExibicao =
+                  r.ehVaga
+                  ? r.equipamentoVaga
+                  : r.equipamento;
+
+              html += `
+
+              <div class="titulo-grupo-designacao">
+
+                  <!--${r.equipamento} • Turno ${turnoPalavra}-->
+                  ${equipamentoExibicao} • Turno ${turnoPalavra}
+
+                  <span>${tituloGrupo}</span>
+
+              </div>
+
+              `;
+          }
+
+
+          const ehVaga =
+            r.ehVaga === true;
+          
+          const nomeExibicao =
+            r.ehVagaRotativa
+              ? "🔄 VAGA"
+              : r.ehVaga
+                ? "🚧 VAGA"
+                : r.nome;
+
+          const frequenciaExibicao = 
+              r.ehVaga 
+                ? r.frequenciaVaga 
+                  : r.frequencia;
+
+
+          const ehRotativa =
+              frequenciaExibicao === "ROTATIVA";
+
+          //const mostrarAcoes = !ehVaga && !ehRotativa;
+          const podeEditar =
+              perfilUsuario === "admin" ||
+              perfilUsuario === "escalas" ||
+              perfilUsuario === "organizadores";
+
+          const mostrarAcoes =
+              !ehVaga &&
+              !ehRotativa &&
+              podeEditar;
+
+
+          html += `
+
+          <div class="card-designacao">
+
+              <div class="card-designacao-topo">
+
+                  <div>
+
+                      <div class="nome-designacao">
+
+                          <!--${r.posicao ? r.posicao + ". " : ""}${r.nome}-->
+                          ${r.posicao ? r.posicao + ". " : ""}${nomeExibicao}
+
+                      </div>
+
+                      <div class="congregacao-designacao">
+
+                          ${r.congregacao || ""}
+
+                      </div>
+
+                  </div>
+
+                  <div class="freq-designacao">
+
+                      <!--${r.frequencia}-->
+                      ${frequenciaExibicao}
+
+                  </div>
+
+              </div>
+
+              <div class="card-designacao-infos">
+
+                  <div>
+
+                      <span>📅</span>
+
+                      ${diaFormatado}
+
+                  </div>
+
+                  <div>
+
+                      <span>🕒</span>
+
+                      ${turnoPalavra} <!--${r.turno}-->
+
+                  </div>
+
+                  <div>
+
+                      <span>🚩</span>
+
+                      Ponto ${numeroDoPonto}
+
+                  </div>
+
+              </div>
+
+                          
+              <div class="card-designacao-acoes">
+
+                ${
+                mostrarAcoes
+                ? `
+
+                  <span
+
+                      class="linha-designacao-ponto icone-editar-designacao"
+
+                      data-id="${r.idParticipante}"
+                      data-nome="${r.nome}"
+                      data-telefone="${r.telefone}"
+                      data-turno="${r.turno}"
+                      data-dia="${r.dia}"
+                      data-ponto="${numeroDoPonto}"
+                      data-frequencia="${r.frequencia}"
+                      data-equipamento="${r.equipamento}"
+                      data-grupo="${r.grupo}"
+                      data-posicao="${r.posicao}"
+
+                      title="Editar"
+
+                      style="cursor:pointer">
+
+                     ✏️
+
+                  </span>
+
+                   `
+                  : `
+                  <div class="card-designacao-aviso">
+                    ⚠️ NÃO EDITÁVEL
+                  </div>
+                  `
+                  }
+                  
+                  <img
+
+                      src="img/whatsapp.svg"
+
+                      class="icone-whatsapp-ponto icone-formatar-whatsapp"
+
+                      data-id="${r.idParticipante}"
+                      data-nome="${r.nome}"
+                      data-telefone="${r.telefone}"
+                      data-ponto="${numeroDoPonto}"
+                      data-turno="${r.turno}"
+                      data-dia="${r.dia}"
+                      data-frequencia="${r.frequencia}"
+                      data-equipamento="${r.equipamento}"
+
+                      title="Conversar pelo WhatsApp">
+                    
+              </div>
+             
+          </div>
+
+          `;
+      });
+
+      container.innerHTML = html;
+
+      container.querySelectorAll(".linha-designacao-ponto")
+      .forEach(linha => {
+
+          linha.addEventListener("click", () => {
+
+              const participante =
+                  linha.dataset.nome;
+
+
+              if (
+                  participante
+                  .trim()
+                  .toUpperCase()
+                  .startsWith("VAGA")
+              ){
+                  mostrarAlertaGlobal(
+                      "❌ Vagas não podem ser editadas."
+                  );
+                  return;
+              }
+
+
+              const idParticipante =
+                  linha.dataset.id;
+
+
+              const ponto =
+                  linha.dataset.ponto;
+
+
+              const turno =
+                  linha.dataset.turno;
+
+
+              const dia =
+                  linha.dataset.dia;
+
+
+              const numeroPonto =
+                  ponto;
+
+
+              const turnoLimpo =
+                  turno
+                  .replace(numeroPonto, "")
+                  .trim();
+
+
+              const codigoTurno =
+                  obterCodigoTurno(turnoLimpo);
+
+
+              const designacao =
+                  `${codigoTurno}${numeroPonto} ${dia}`;
+
+              abrirModalCompanheiros(
+                  idParticipante,
+                  designacao
+              );
+
+
+          });
+
+      });
+
+      document.getElementById("btnExportarPdfDesignacoes").style.display = "block";
+    },
+    (err) => {
+      esconderSpinner();
+      mostrarAlertaGlobal("❌ Erro ao buscar designações: " + (err.message || err));
+    }
+  );
+}
+
+document.addEventListener("click", function (e) {
+
+    const icone = e.target.closest(".icone-whatsapp-ponto");
+
+    if (!icone) return;
+
+    e.stopPropagation();
+
+    mostrarSpinner();
+
+    const podeEnviarMensagem =
+    perfilUsuario === "admin" ||
+    perfilUsuario === "escalas" ||
+    perfilUsuario === "organizadores";
+
+    const mensagem =
+        podeEnviarMensagem
+            ? `*DESIGNAÇÃO NO TPE*
+
+    Olá, querido(a) irmão(ã)!
+
+    Gostaria de falar sobre sua designação no TPE.
+
+    🚩 *Ponto:* ${icone.dataset.ponto}
+    📅 *Dia:* ${icone.dataset.dia}
+    🕒 *Turno:* ${icone.dataset.turno}
+    📈 *Frequência:* ${icone.dataset.frequencia}
+    📚 *Mostruário:* ${icone.dataset.equipamento}
+
+    Aguardo seu retorno!`
+            : "";
 
     abrirWhatsApp(
         icone.dataset.telefone,

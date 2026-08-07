@@ -32375,7 +32375,6 @@ function carregarMinhasDesignacoesRotativas() {
 
 }
 
-
 function desistirDaDesignacaoRotativa(idVaga) {
 
   mostrarConfirmacaoGlobal(

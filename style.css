@@ -4643,3 +4643,1022 @@ button#btnVoltarMenu:focus {
     font-weight: 600;
     color: #666;
 }
+
+/* NOVO ESTILO PARA OS NOVOS CARDS DE CHAVES */
+/* ============================================================
+   INVENTÁRIO — CHAVES
+   ============================================================ */
+
+.card-chave-inventario {
+
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.10);
+
+  transition: .15s;
+
+}
+
+
+.card-chave-inventario:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 18px rgba(0,0,0,.15);
+
+}
+
+
+/* ============================================================
+   TOPO DO CARD
+   ============================================================ */
+
+.card-chave-topo {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 15px;
+
+}
+
+
+.id-chave-inventario {
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+
+.descricao-chave-inventario {
+
+  color: #666;
+
+  font-size: .88rem;
+
+  margin-top: 3px;
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status-chave-inventario {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-weight: 700;
+
+  font-size: .80rem;
+
+  white-space: nowrap;
+
+}
+
+
+/* ============================================================
+   SITUAÇÃO
+   ============================================================ */
+
+.situacao-chave-com-pessoa,
+.situacao-chave-no-deposito {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: .45rem .65rem;
+
+  border-radius: 10px;
+
+  font-size: .88rem;
+
+  margin-bottom: 12px;
+
+}
+
+
+.situacao-chave-com-pessoa strong {
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   OBSERVAÇÕES
+   ============================================================ */
+
+.observacoes-chave-inventario {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 8px;
+
+  margin-bottom: 12px;
+
+}
+
+
+/* ============================================================
+   AÇÕES
+   ============================================================ */
+
+.acoes-chave-inventario {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 18px;
+
+  align-items: center;
+
+  padding-top: 10px;
+
+  border-top: 1px solid #eee;
+
+}
+
+
+/* ============================================================
+   FORMULÁRIOS DO INVENTÁRIO
+   ============================================================ */
+
+.area-formulario-inventario {
+
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.10);
+
+}
+
+
+.titulo-lista-inventario {
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+  margin-bottom: 12px;
+
+}
+
+
+.campo-inventario {
+
+  margin-bottom: 12px;
+
+}
+
+
+.campo-inventario:last-child {
+
+  margin-bottom: 0;
+
+}
+
+
+.campo-inventario label {
+
+  display: block;
+
+  font-weight: 600;
+
+  font-size: .88rem;
+
+  color: #1f2937;
+
+  margin-bottom: 5px;
+
+}
+
+
+.campo-inventario input,
+.campo-inventario select,
+.campo-inventario textarea {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: .55rem .65rem;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  font-size: .90rem;
+
+  background: #fff;
+
+}
+
+
+.campo-inventario input:focus,
+.campo-inventario select:focus,
+.campo-inventario textarea:focus {
+
+  outline: none;
+
+  border-color: var(--cor-azulclara);
+
+}
+
+
+/* ============================================================
+   RESPONSÁVEL SELECIONADO
+   ============================================================ */
+
+#responsavelChaveNomeInventario,
+#responsavelDepositoNomeInventario {
+
+  cursor: pointer;
+
+  background: #f8fafc;
+
+}
+
+
+#responsavelChaveNomeInventario:disabled {
+
+  cursor: not-allowed;
+
+  opacity: .60;
+
+}
+
+
+/* ============================================================
+   AÇÕES DOS FORMULÁRIOS
+   ============================================================ */
+
+.acoes-formulario-inventario {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  align-items: center;
+
+  padding-top: 10px;
+
+  margin-top: 5px;
+
+  border-top: 1px solid #eee;
+
+}
+
+
+.acoes-formulario-inventario button {
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 9px 14px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+}
+
+
+.acoes-formulario-inventario button:hover {
+
+  opacity: .90;
+
+}
+
+/* NOVO ETILO PARA OS CARDS DE DEPÓSITO */
+/* ============================================================
+   INVENTÁRIO — DEPÓSITOS
+   ============================================================ */
+
+.card-deposito-inventario {
+
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.10);
+
+  transition: .15s;
+
+}
+
+
+.card-deposito-inventario:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 18px rgba(0,0,0,.15);
+
+}
+
+
+/* ============================================================
+   TOPO
+   ============================================================ */
+
+.card-deposito-topo {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 15px;
+
+}
+
+
+.nome-deposito-inventario {
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+
+.id-deposito-inventario {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 3px;
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status-deposito-inventario {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-weight: 700;
+
+  font-size: .80rem;
+
+  white-space: nowrap;
+
+}
+
+
+/* ============================================================
+   INFORMAÇÕES
+   ============================================================ */
+
+.card-deposito-infos {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 5px;
+
+  margin-bottom: 15px;
+
+}
+
+
+.card-deposito-infos div {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  font-size: .80rem;
+
+  font-weight: 500;
+
+  padding: .35rem .55rem;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+}
+
+
+.card-deposito-infos span {
+
+  margin-right: 4px;
+
+}
+
+
+/* ============================================================
+   RESPONSÁVEL
+   ============================================================ */
+
+.responsavel-deposito-inventario {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: .45rem .65rem;
+
+  border-radius: 10px;
+
+  font-size: .88rem;
+
+  margin-bottom: 12px;
+
+}
+
+
+.responsavel-deposito-inventario strong {
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   OBSERVAÇÕES
+   ============================================================ */
+
+.observacoes-deposito-inventario {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 8px;
+
+  margin-bottom: 12px;
+
+}
+
+
+/* ============================================================
+   AÇÕES
+   ============================================================ */
+
+.acoes-deposito-inventario {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 18px;
+
+  align-items: center;
+
+  padding-top: 10px;
+
+  border-top: 1px solid #eee;
+
+}
+
+
+/* ============================================================
+   FORMULÁRIO DE DEPÓSITO
+   ============================================================ */
+
+#responsavelDepositoInventario {
+
+  cursor: pointer;
+
+  background: #f8fafc;
+
+}
+
+/* NOVO ESTILO PARA OS CARDS DOS EQUIPAMENTOS */
+/* ============================================================
+   INVENTÁRIO — EQUIPAMENTOS
+   ============================================================ */
+
+.card-equipamento-inventario {
+
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.10);
+
+  transition: .15s;
+
+}
+
+
+.card-equipamento-inventario:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 18px rgba(0,0,0,.15);
+
+}
+
+
+/* ============================================================
+   TOPO
+   ============================================================ */
+
+.card-equipamento-topo {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 15px;
+
+}
+
+
+.nome-equipamento-inventario {
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+
+.id-equipamento-inventario {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 3px;
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status-equipamento-inventario {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-weight: 700;
+
+  font-size: .80rem;
+
+  white-space: nowrap;
+
+}
+
+
+/* ============================================================
+   INFORMAÇÕES
+   ============================================================ */
+
+.card-equipamento-infos {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 5px;
+
+  margin-bottom: 15px;
+
+}
+
+
+.card-equipamento-infos div {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  font-size: .80rem;
+
+  font-weight: 500;
+
+  padding: .35rem .55rem;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+}
+
+
+/* ============================================================
+   RESPONSÁVEL
+   ============================================================ */
+
+.responsavel-equipamento-inventario {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  padding: .45rem .65rem;
+
+  border-radius: 10px;
+
+  font-size: .88rem;
+
+  margin-bottom: 12px;
+
+}
+
+
+.responsavel-equipamento-inventario strong {
+
+  font-weight: 700;
+
+}
+
+
+/* ============================================================
+   OBSERVAÇÕES
+   ============================================================ */
+
+.observacoes-equipamento-inventario {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 8px;
+
+  margin-bottom: 12px;
+
+}
+
+
+/* ============================================================
+   AÇÕES
+   ============================================================ */
+
+.acoes-equipamento-inventario {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 18px;
+
+  align-items: center;
+
+  padding-top: 10px;
+
+  border-top: 1px solid #eee;
+
+}
+
+
+.acoes-equipamento-inventario button {
+
+  cursor: pointer;
+
+}
+
+/* NOVO ESTILO PARA OS CARDS DOS TIPOS CADASTRADOS */
+/* ============================================================
+   CARDS — TIPOS DE EQUIPAMENTOS
+   ============================================================ */
+
+.card-tipo-equipamento {
+
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.10);
+
+  transition: .15s;
+
+}
+
+
+.card-tipo-equipamento:hover {
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.15);
+
+}
+
+
+/* ============================================================
+   TOPO
+   ============================================================ */
+
+.card-tipo-equipamento-topo {
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
+
+}
+
+
+/* ============================================================
+   NOME
+   ============================================================ */
+
+.nome-tipo-equipamento {
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+
+/* ============================================================
+   ID
+   ============================================================ */
+
+.id-tipo-equipamento {
+
+  color: #666;
+
+  font-size: .82rem;
+
+  margin-top: 3px;
+
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status-tipo-equipamento {
+
+  background:
+    var(--cor-azulclara);
+
+  color:
+    var(--cor-automatica);
+
+  padding:
+    6px 12px;
+
+  border-radius:
+    20px;
+
+  font-size:
+    .78rem;
+
+  font-weight:
+    700;
+
+  white-space:
+    nowrap;
+
+}
+
+
+/* ============================================================
+   DESCRIÇÃO
+   ============================================================ */
+
+.descricao-tipo-equipamento {
+
+  background:
+    var(--cor-azulclara);
+
+  color:
+    var(--cor-automatica);
+
+  padding:
+    .55rem .7rem;
+
+  border-radius:
+    10px;
+
+  font-size:
+    .88rem;
+
+  margin-bottom:
+    10px;
+
+}
+
+
+/* ============================================================
+   OBSERVAÇÕES
+   ============================================================ */
+
+.observacoes-tipo-equipamento {
+
+  color:
+    #666;
+
+  font-size:
+    .82rem;
+
+  padding:
+    4px 2px 10px 2px;
+
+}
+
+
+/* ============================================================
+   AÇÕES
+   ============================================================ */
+
+.acoes-tipo-equipamento {
+
+  display: flex;
+
+  justify-content:
+    flex-end;
+
+  gap: 18px;
+
+  align-items:
+    center;
+
+  padding-top:
+    10px;
+
+  border-top:
+    1px solid #eee;
+
+}
+
+/* NOVO ESTILO PARA O MODAL DOS FORMULARIOS DE INVENTARIO */
+/* ============================================================
+   MODAL UNIVERSAL — INVENTÁRIO
+   ============================================================ */
+
+.modal-formulario-inventario {
+
+  position: fixed;
+
+  inset: 0;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(0, 0, 0, .45);
+
+  z-index: 8888;
+
+}
+
+
+.modal-formulario-inventario-conteudo {
+
+  width: 100%;
+
+  max-width: 650px;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  background: #fff;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.25);
+
+  padding: 20px;
+
+}
+
+
+/* ============================================================
+   TOPO
+   ============================================================ */
+
+.modal-formulario-inventario-topo {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+
+  padding-bottom: 12px;
+
+  border-bottom:
+    1px solid #eee;
+
+}
+
+
+.modal-formulario-inventario-topo h3 {
+
+  margin: 0;
+
+  font-size: 1.15rem;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+
+.modal-formulario-inventario-topo button {
+
+  border: none;
+
+  background: transparent;
+
+  font-size: 1.1rem;
+
+  cursor: pointer;
+
+  padding: 4px 8px;
+
+}

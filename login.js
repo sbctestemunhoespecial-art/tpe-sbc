@@ -150,6 +150,10 @@ const telasSempreAtualizar = new Set([
   "disponibilidadeContainerUsuarioLogado4h",
   "telaVagasDisponiveisRT",
   "telaMinhasDesignacoesRotativas",
+  "telaDepositos",
+  "telaChavesInventario",
+  "telaEquipamentosInventario",
+  "telaTiposEquipamentos",
   "telaDesignacoesRotativas"
 ]);
 
@@ -265,6 +269,14 @@ const inicializadores = {
     telaMinhasDesignacoesRotativas: carregarMinhasDesignacoesRotativas,
 
     telaDesignacoesRotativas: carregarDesignacoesRotativas,
+
+    telaDepositos: carregarDepositosFrontend,
+
+    telaChavesInventario: carregarDepositosParaChavesFrontend,
+
+    telaEquipamentosInventario: carregarEquipamentosFrontend,
+
+    telaTiposEquipamentos: carregarTiposEquipamentosFrontend,
 
     disponibilidadeContainerUsuarioLogado2h() {
 
@@ -3116,6 +3128,8 @@ function exibirResultados(res) {
 
             </div>
 
+            
+
             ${
             mostrarAcoes
             ? `<div class="card-designacao-acoes">
@@ -3157,11 +3171,14 @@ function exibirResultados(res) {
             </div>
             `
             : `
-            <div class="card-designacao-aviso">
-               ⚠️ NÃO EDITÁVEL
-            </div>
-            `
+            
+              <div>
+                ⚠️ NÃO EDITÁVEL
+              </div>
+              `            
             }
+
+
 
         </div>
 
@@ -19366,7 +19383,6 @@ function buscarDesignacoesPorPonto() {
 
                       <div class="nome-designacao">
 
-                          <!--${r.posicao ? r.posicao + ". " : ""}${r.nome}-->
                           ${r.posicao ? r.posicao + ". " : ""}${nomeExibicao}
 
                       </div>
@@ -19448,12 +19464,13 @@ function buscarDesignacoesPorPonto() {
 
                    `
                   : `
-                  <div class="card-designacao-aviso">
+                  <div>
                     ⚠️ NÃO EDITÁVEL
                   </div>
                   `
                   }
                   
+      
                   <img
 
                       src="img/whatsapp.svg"
@@ -24527,15 +24544,9 @@ function carregarOpcoes() {
     {},
     function(opcoes) {
 
-
-      //console.log({turnos: opcoes.turnos, dias: opcoes.dias});
-
-
-
       // ===============================
       // MAPA PARTICIPANTES
       // ===============================
-
       window.mapaParticipantesPorNome = {};
 
       (opcoes.participantes || []).forEach(p => {
@@ -24544,6 +24555,17 @@ function carregarOpcoes() {
 
       });
 
+
+      // ===============================
+      // MAPA IDS
+      // ===============================
+      window.mapaParticipantesPorId = {};
+
+      (opcoes.participantes || []).forEach(p => {
+
+        window.mapaParticipantesPorId[p.id] = p.nome;
+
+      });
 
 
       // ===============================
@@ -26297,6 +26319,67 @@ function abrirSelecaoDesignacao() {
   abrirModalParticipantes();
 }
 
+function abrirSelecaoDepositos() {
+
+  window.destinoModalParticipantes = "depositos";
+
+  abrirModalParticipantes();
+}
+
+function abrirSelecaoResponsavelChave() {
+
+  /*const situacao =
+    document.getElementById(
+      "situacaoChaveInventario"
+    ).value;
+
+  if (situacao !== "COM_PESSOA") {
+    return;
+  }*/
+
+  window.destinoModalParticipantes = "responsavelChave";
+
+  abrirModalParticipantes();
+
+}
+
+function abrirSelecaoResponsavelEquipamento() {
+
+  /*const situacao =
+    document
+      .getElementById(
+        "situacaoEquipamentoMovimentacao"
+      )
+      .value;
+
+
+  if (situacao !== "COM_PESSOA") {
+
+    mostrarAlertaGlobal(
+      "⚠️ Selecione primeiro a situação COM PESSOA."
+    );
+
+    return;
+
+  }*/
+
+
+  window.destinoModalParticipantes =
+    "equipamentos";
+
+
+  abrirModalParticipantes();
+
+}
+
+function abrirSelecaoPermissaoInventario() {
+
+  window.destinoModalParticipantes = "permissaoInventario";
+
+  abrirModalParticipantes();
+
+}
+
 function abrirSelecaoTrocaDesignacao() {
 
   window.destinoModalParticipantes = "trocaDesignacao";
@@ -26451,6 +26534,89 @@ id
       document.getElementById("participanteDesignacao").value = nome;
 
       break;
+
+      case "depositos":
+
+      participanteSelecionadoDepositos = {
+        nome,
+        id
+      };
+
+      document
+        .getElementById(
+          "responsavelDepositoNomeInventario"
+        )
+        .value = nome;
+
+      document
+        .getElementById(
+          "responsavelDepositoInventario"
+        )
+        .value = id;
+
+      break;
+
+
+
+      case "responsavelChave":
+
+      participanteSelecionadoResponsavelChave = {
+        nome,
+        id
+      };
+
+      document
+        .getElementById(
+          "responsavelChaveNomeInventario"
+        )
+        .value = nome;
+
+      document
+        .getElementById(
+          "responsavelChaveInventario"
+        )
+        .value = id;
+
+      break;
+
+
+      case "permissaoInventario":
+
+      document
+        .getElementById(
+          "nomeParticipantePermissaoInventario"
+        )
+        .value = nome;
+
+
+      document
+        .getElementById(
+          "idParticipantePermissaoInventario"
+        )
+        .value = id;
+
+      break;
+
+
+      case "equipamentos":
+
+        participanteSelecionadoEquipamento = {
+          nome,
+          id
+        };
+
+
+        document
+          .getElementById(
+            "responsavelEquipamentoMovimentacao"
+          )
+          .value =
+            nome;
+
+        break;
+
+
+
 
       case "trocarDesignacao":
 
@@ -26915,6 +27081,9 @@ let participanteSelecionado = null;
 let participanteSelecionadoPerfil = null;
 let participanteSubstituido = null;
 let participanteSelecionadoDesignacao = null;
+let participanteSelecionadoDepositos = null;
+let participanteSelecionadoResponsavelChave = null;
+let participanteSelecionadoEquipamento = null;
 let modalSubstituicaoResolvido = false;
 let participanteSelecionadoGP = null;
 let acaoModalEditarDisponibilidade = null;

@@ -17,6 +17,38 @@
 
 <body>
 
+
+  <!--NOVO MODAL PARA ABRIGAR OS FORMULARIOS DE CADASTRO E EDIÇÃO DOS INVENTARIOS-->
+  <div id="modalFormularioInventario"
+      class="modal-formulario-inventario">
+
+    <div class="modal-formulario-inventario-conteudo">
+
+      <div class="modal-formulario-inventario-topo">
+
+        <h3 id="tituloModalFormularioInventario">
+        </h3>
+
+        <button
+          type="button"
+          onclick="fecharModalFormularioInventario()">
+          ✖
+        </button>
+
+      </div>
+
+      <div id="conteudoModalFormularioInventario">
+
+        <!-- formulário entra aqui -->
+
+      </div>
+
+    </div>
+
+  </div>
+  <!--NOVO MODAL PARA ABRIGAR OS FORMULARIOS DE CADASTRO E EDIÇÃO DOS INVENTARIOS-->
+
+
   <div id="modalPdf" class="modal-pdf-ponto">
 
     <div class="conteudo-modal-pdf">
@@ -1021,6 +1053,11 @@
           onclick="abrirTela('relatorios', this)">
           <div class="icone">📈</div>
           <div class="titulo">Relatórios</div>
+      </div>
+      <div class="card-menu btn-relatoriosSubMenu so-admin"
+          onclick="abrirTela('inventarios', this)">
+          <div class="icone">📈</div>
+          <div class="titulo">Inventarios</div>
       </div>
     </div>
   </div>
@@ -3713,6 +3750,17 @@
 
               </label>
 
+              <div class="acoes-formulario-inventario">
+
+                <button
+                  type="button"
+                  onclick="abrirCadastroPermissaoInventarioFrontend()"
+                >
+                  ➕ Conceder permissão
+                </button>
+
+            </div>
+
             </div>
   </div>
 
@@ -4393,10 +4441,1049 @@
 
   </div>
 
+  <div id="inventarios" class="painel-exportar tela">
+
+    <h5>👨‍💼 Inventários</h5>
+        <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('telaTiposEquipamentos', this)">
+                  <div class="icone">⚠️</div>
+                  <div class="titulo">Tipos de Equipamento</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('telaEquipamentosInventario', this)">
+                  <div class="icone">⚠️</div>
+                  <div class="titulo">Equipamentos Disponíveis</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('telaDepositos', this)">
+                  <div class="icone">⚠️</div>
+                  <div class="titulo">Depósitos</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('telaChavesInventario', this)">
+                  <div class="icone">⚠️</div>
+                  <div class="titulo">Chaves</div>
+              </div>
+              <!--<div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('painelVerificacao', this)">
+                  <div class="icone">📝</div>
+                  <div class="titulo">Corrigir Ponto</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-admin"
+                  onclick="abrirTela('criaPontoNovo', this)">
+                  <div class="icone">➕📌</div>
+                  <div class="titulo">Criar Novo Ponto</div>
+              </div>
+
+              <label>
+              🔧 Manutenção
+
+              <input 
+              type="checkbox"
+              id="switchManutencao"
+              onchange="alterarModoManutencao(this.checked)"
+              >
+
+              </label>-->
+
+            </div>
+
+  </div>
+
+    <!-- ============================================================
+     INVENTÁRIO — TIPOS DE EQUIPAMENTOS
+     ============================================================ -->
+    <!--<div id="telaTiposEquipamentos" class="painel-exportar tela">
+
+      <div class="card-inventario">
+
+        <div class="card-inventario-titulo">
+          ⚙️ Tipos de Equipamentos
+        </div>
+
+        <div class="area-formulario-inventario">
+
+          <input
+            type="hidden"
+            id="idTipoEquipamento"
+          >
+
+          <div class="campo-inventario">
+
+            <label for="tipoEquipamento">
+              Tipo
+            </label>
+
+            <input
+              type="text"
+              id="tipoEquipamento"
+              placeholder="Ex.: Carrinho de Publicações"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="descricaoTipoEquipamento">
+              Descrição
+            </label>
+
+            <input
+              type="text"
+              id="descricaoTipoEquipamento"
+              placeholder="Descrição do tipo de equipamento"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="observacoesTipoEquipamento">
+              Observações
+            </label>
+
+            <textarea
+              id="observacoesTipoEquipamento"
+              rows="3"
+              placeholder="Observações opcionais"
+            ></textarea>
+
+          </div>
+
+
+          <div class="acoes-formulario-inventario">
+
+            <button
+              type="button"
+              id="btnSalvarTipoEquipamento"
+              onclick="salvarTipoEquipamentoFrontend()"
+            >
+              💾 Salvar
+            </button>
+
+            <button
+              type="button"
+              id="btnCancelarEdicaoTipoEquipamento"
+              onclick="cancelarEdicaoTipoEquipamento()"
+              style="display:none;"
+            >
+              ✖️ Cancelar
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="titulo-lista-inventario">
+
+          Tipos cadastrados
+
+        </div>
+
+
+        <div
+          id="listaTiposEquipamentos"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>-->
+    <!--<div id="telaTiposEquipamentos" class="painel-exportar tela">
+
+      <div class="card-inventario">
+
+        <div class="card-inventario-titulo">
+
+          <span>
+            ⚙️ Tipos de Equipamentos
+          </span>
+
+          <button
+            type="button"
+            class="btn-novo-inventario"
+            onclick="novoTipoEquipamentoFrontend()"
+          >
+            ➕ Novo tipo
+          </button>
+
+        </div>
+
+        <div
+          id="formularioTipoEquipamento"
+          class="area-formulario-inventario"
+          style="display:none;"
+        >
+
+          <input
+            type="hidden"
+            id="idTipoEquipamento"
+          >
+
+
+          <div
+            id="tituloFormularioTipoEquipamento"
+            class="titulo-formulario-inventario"
+          >
+            ➕ Novo tipo de equipamento
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="tipoEquipamento">
+              Tipo
+            </label>
+
+            <input
+              type="text"
+              id="tipoEquipamento"
+              placeholder="Ex.: Carrinho de Publicações"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="descricaoTipoEquipamento">
+              Descrição
+            </label>
+
+            <input
+              type="text"
+              id="descricaoTipoEquipamento"
+              placeholder="Descrição do tipo de equipamento"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="observacoesTipoEquipamento">
+              Observações
+            </label>
+
+            <textarea
+              id="observacoesTipoEquipamento"
+              rows="3"
+              placeholder="Observações opcionais"
+            ></textarea>
+
+          </div>
+
+
+          <div class="acoes-formulario-inventario">
+
+            <button
+              type="button"
+              id="btnSalvarTipoEquipamento"
+              onclick="salvarTipoEquipamentoFrontend()"
+            >
+              💾 Salvar
+            </button>
+
+
+            <button
+              type="button"
+              id="btnCancelarEdicaoTipoEquipamento"
+              onclick="cancelarEdicaoTipoEquipamento()"
+            >
+              ✖️ Cancelar
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="titulo-lista-inventario">
+          Tipos cadastrados
+        </div>
+
+
+        <div
+          id="listaTiposEquipamentos"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>-->
+    
+    <div id="telaTiposEquipamentos" class="painel-exportar tela">
+
+        <div class="card-inventario-titulo">
+
+          <span>
+            ⚙️ Tipos de Equipamentos
+          </span>
+
+          <button
+            type="button"
+            class="btn-novo-inventario"
+            onclick="novoTipoEquipamentoFrontend()"
+          >
+            ➕ Novo tipo
+          </button>
+
+        </div>
+
+
+        <div class="titulo-lista-inventario">
+          Tipos cadastrados
+        </div>
+
+
+        <div
+          id="listaTiposEquipamentos"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando...
+          </div>
+
+        </div>
+
+
+    </div>
+
+    <!-- ============================================================
+     INVENTÁRIO — EQUIPAMENTOS QTD
+     ============================================================ -->
+    <div id="telaEquipamentosInventario" class="painel-exportar tela">
+
+      <div class="card-inventario">
+
+        <div class="card-inventario-titulo">
+          🧰 Equipamentos
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-novo-inventario"
+          onclick="novoEquipamentoFrontend()"
+        >
+          ➕ Novo equipamento
+        </button>
+
+
+        <div
+          id="listaEquipamentosInventario"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando...
+          </div>
+
+        </div>
+
+      </div>
+
+
+    <!-- ============================================================
+     MOVIMENTAÇÃO DE EQUIPAMENTO
+     ============================================================ -->
+    <div
+      id="areaMovimentacaoEquipamento"
+      class="area-formulario-inventario"
+      style="display:none;"
+    >
+
+      <div class="titulo-lista-inventario">
+
+        🔄 Movimentar equipamento
+
+      </div>
+
+
+      <!-- ID -->
+
+      <input
+        type="hidden"
+        id="idEquipamentoMovimentacao"
+      >
+
+
+      <!-- EQUIPAMENTO -->
+
+      <div class="campo-inventario">
+
+        <label>
+          Equipamento
+        </label>
+
+        <input
+          type="text"
+          id="descricaoEquipamentoMovimentacao"
+          readonly
+        >
+
+      </div>
+
+
+      <!-- PATRIMÔNIO -->
+
+      <div class="campo-inventario">
+
+        <label>
+          Nº Patrimônio
+        </label>
+
+        <input
+          type="text"
+          id="patrimonioEquipamentoMovimentacao"
+          readonly
+        >
+
+      </div>
+
+
+      <!-- SITUAÇÃO -->
+
+      <div class="campo-inventario">
+
+        <label for="situacaoEquipamentoMovimentacao">
+
+          Nova situação
+
+        </label>
+
+        <select
+          id="situacaoEquipamentoMovimentacao"
+          onchange="atualizarResponsavelEquipamentoMovimentacao()"
+        >
+
+          <option value="">
+            - Selecione -
+          </option>
+
+          <option value="NO_DEPOSITO">
+            🏢 No depósito
+          </option>
+
+          <option value="COM_PESSOA">
+            👤 Com pessoa
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- RESPONSÁVEL -->
+
+      <div class="campo-inventario">
+
+        <label for="responsavelEquipamentoMovimentacao">
+
+          Responsável
+
+        </label>
+
+        <input
+          type="text"
+          id="responsavelEquipamentoMovimentacao"
+          readonly
+          placeholder="Clique para selecionar"
+          onclick="abrirSelecaoResponsavelEquipamento()"
+        >
+
+      </div>
+
+
+      <!-- OBSERVAÇÕES -->
+
+      <div class="campo-inventario">
+
+        <label for="observacoesMovimentacaoEquipamento">
+
+          Observações
+
+        </label>
+
+        <textarea
+          id="observacoesMovimentacaoEquipamento"
+          rows="3"
+          placeholder="Observações da movimentação"
+        ></textarea>
+
+      </div>
+
+
+      <!-- AÇÕES -->
+
+      <div class="acoes-formulario-inventario">
+
+        <button
+          type="button"
+          onclick="salvarMovimentacaoEquipamentoFrontend()"
+        >
+          🔄 Movimentar
+        </button>
+
+
+        <button
+          type="button"
+          onclick="cancelarMovimentacaoEquipamentoFrontend()"
+        >
+          ✖️ Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+
+    </div>
+
+    <!-- ============================================================
+     INVENTÁRIO — DEPÓSITOS
+     ============================================================ -->
+    <div id="telaDepositos" class="painel-exportar tela">
+
+      <div class="card-inventario">
+
+        <div class="card-inventario-titulo">
+          🏢 Depósitos
+        </div>
+
+        <button
+          type="button"
+          onclick="abrirCadastroDepositoFrontend()"
+        >
+          ➕ Adicionar depósito
+        </button>
+
+        <!-- ========================================================
+        FORMULÁRIO
+        ======================================================== -->
+        <!--<div class="area-formulario-inventario">
+
+          <input
+            type="hidden"
+            id="idDepositoInventario"
+          >
+
+          <input
+            type="hidden"
+            id="ativoDepositoInventario"
+          >
+
+
+          <div class="campo-inventario">
+
+            <label for="nomeDepositoInventario">
+              Nome do depósito
+            </label>
+
+            <input
+              type="text"
+              id="nomeDepositoInventario"
+              placeholder="Ex.: Depósito Principal"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="localizacaoDepositoInventario">
+              Localização
+            </label>
+
+            <input
+              type="text"
+              id="localizacaoDepositoInventario"
+              placeholder="Ex.: Sala de equipamentos"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="responsavelDepositoNomeInventario">
+              Responsável
+            </label>
+
+            <input
+              type="text"
+              id="responsavelDepositoNomeInventario"
+              readonly
+              onclick="abrirSelecaoDepositos()"
+              placeholder="Clique para selecionar"
+            >
+
+            <input
+              type="hidden"
+              id="responsavelDepositoInventario"
+            >
+
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="observacoesDepositoInventario">
+              Observações
+            </label>
+
+            <textarea
+              id="observacoesDepositoInventario"
+              rows="3"
+              placeholder="Observações opcionais"
+            ></textarea>
+
+          </div>
+
+
+          <div class="acoes-formulario-inventario">
+
+            <button
+              type="button"
+              id="btnSalvarDepositoInventario"
+              onclick="salvarDepositoFrontend()"
+            >
+              💾 Salvar
+            </button>
+
+
+            <button
+              type="button"
+              id="btnCancelarEdicaoDepositoInventario"
+              onclick="cancelarEdicaoDepositoFrontend()"
+              style="display:none;"
+            >
+              ✖️ Cancelar
+            </button>
+
+          </div>
+
+        </div>-->
+
+
+        <!-- ========================================================
+        LISTA
+        ======================================================== -->
+
+        <div class="titulo-lista-inventario">
+          Depósitos cadastrados
+        </div>
+
+
+        <div
+          id="listaDepositosInventario"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+     INVENTÁRIO — CHAVES
+     ============================================================ -->
+    <!--<div id="telaChavesInventario" class="painel-exportar tela">
+
+      <div class="card-inventario">
+
+        <div class="card-inventario-titulo">
+          🔑 Chaves dos Depósitos
+        </div>
+
+        <div class="campo-inventario">
+
+          <label for="depositoChavesInventario">
+            Depósito
+          </label>
+
+          <select
+            id="depositoChavesInventario"
+            onchange="carregarChavesDoDepositoFrontend()"
+          >
+
+            <option value="">
+              Selecione um depósito
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="titulo-lista-inventario">
+          Chaves cadastradas
+        </div>
+
+        <div
+          id="listaChavesInventario"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Selecione um depósito.
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="area-formulario-inventario">
+
+        <div class="titulo-lista-inventario">
+          ➕ Cadastrar nova cópia
+        </div>
+
+
+        <div class="campo-inventario">
+
+          <label for="descricaoChaveInventario">
+            Descrição
+          </label>
+
+          <input
+            type="text"
+            id="descricaoChaveInventario"
+            placeholder="Ex.: Chave do depósito"
+          >
+
+        </div>
+
+        <div class="campo-inventario">
+
+          <label for="observacoesChaveInventario">
+            Observações
+          </label>
+
+          <textarea
+            id="observacoesChaveInventario"
+            rows="3"
+            placeholder="Observações opcionais"
+          ></textarea>
+
+        </div>
+
+
+        <div class="acoes-formulario-inventario">
+
+          <button
+            type="button"
+            onclick="cadastrarChaveFrontend()"
+          >
+            🔑 Cadastrar chave
+          </button>
+
+        </div>
+
+      </div>
+
+      
+    </div>-->
+    <div id="telaChavesInventario" class="painel-exportar tela">
+
+        <div class="card-inventario">
+
+          <div class="card-inventario-titulo">
+            🔑 Chaves dos Depósitos
+          </div>
+
+
+          <!-- ========================================================
+              SELEÇÃO DO DEPÓSITO
+              ======================================================== -->
+
+          <div class="campo-inventario">
+
+            <label for="depositoChavesInventario">
+              Depósito
+            </label>
+
+            <select
+              id="depositoChavesInventario"
+              onchange="carregarChavesDoDepositoFrontend()"
+            >
+
+              <option value="">
+                Selecione um depósito
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- ========================================================
+              NOVA CHAVE
+              ======================================================== -->
+
+          <div class="acoes-formulario-inventario">
+
+            <button
+              type="button"
+              onclick="abrirCadastroChaveFrontend()"
+            >
+              ➕ Cadastrar nova chave
+            </button>
+
+          </div>
+
+
+          <!-- ========================================================
+              LISTA DE CHAVES
+              ======================================================== -->
+
+          <div class="titulo-lista-inventario">
+            Chaves cadastradas
+          </div>
+
+
+          <div
+            id="listaChavesInventario"
+            class="lista-inventario"
+          >
+
+            <div class="aviso-inventario">
+              Selecione um depósito.
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ============================================================
+      TELA — MOVIMENTAR CHAVE
+      ============================================================ -->
+      <div id="telaMovimentarChaveInventario" class="painel-exportar tela">
+
+        <div class="conteudo-tela-inventario">
+
+          <div class="topo-tela-inventario">
+
+            <h2>🔑 Movimentar Chave</h2>
+
+          </div>
+
+
+          <!-- ======================================================
+              IDENTIFICAÇÃO DA CHAVE
+              ====================================================== -->
+
+          <div class="area-formulario-inventario">
+
+            <div class="titulo-lista-inventario">
+              Chave selecionada
+            </div>
+
+
+            <div class="campo-inventario">
+
+              <label for="idChaveMovimentacaoInventario">
+                ID da chave
+              </label>
+
+              <input
+                type="text"
+                id="idChaveMovimentacaoInventario"
+                readonly
+              >
+
+            </div>
+
+
+            <div class="campo-inventario">
+
+              <label for="descricaoChaveMovimentacaoInventario">
+                Descrição
+              </label>
+
+              <input
+                type="text"
+                id="descricaoChaveMovimentacaoInventario"
+                readonly
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- ======================================================
+              NOVA SITUAÇÃO
+              ====================================================== -->
+
+          <div class="area-formulario-inventario">
+
+            <div class="titulo-lista-inventario">
+              Nova situação
+            </div>
+
+
+            <div class="campo-inventario">
+
+              <label for="situacaoChaveInventario">
+                Situação
+              </label>
+
+              <select
+                id="situacaoChaveInventario"
+                onchange="atualizarResponsavelChaveFrontend()"
+              >
+
+                <option value="NO_DEPOSITO">
+                  🏢 No depósito
+                </option>
+
+                <option value="COM_PESSOA">
+                  👤 Com pessoa
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- ======================================================
+              RESPONSÁVEL
+              ====================================================== -->
+
+          <div class="area-formulario-inventario">
+
+            <div class="titulo-lista-inventario">
+              Responsável
+            </div>
+
+
+            <div class="campo-inventario">
+
+              <label for="responsavelChaveNomeInventario">
+                Pessoa que ficará com a chave
+              </label>
+
+
+              <!-- Nome visível para o usuário -->
+
+              <input
+                type="text"
+                id="responsavelChaveNomeInventario"
+                readonly
+                onclick="abrirSelecaoResponsavelChave()"
+                placeholder="Clique para selecionar"
+              >
+
+
+              <!-- ID utilizado pelo backend -->
+
+              <input
+                type="hidden"
+                id="responsavelChaveInventario"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- ======================================================
+              OBSERVAÇÕES
+              ====================================================== -->
+
+          <div class="area-formulario-inventario">
+
+            <div class="titulo-lista-inventario">
+              Observações
+            </div>
+
+
+            <div class="campo-inventario">
+
+              <label
+                for="observacoesMovimentacaoChaveInventario"
+              >
+                Observações da movimentação
+              </label>
+
+
+              <textarea
+                id="observacoesMovimentacaoChaveInventario"
+                rows="4"
+                placeholder="Informe uma observação, se necessário."
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <!-- ======================================================
+              AÇÕES
+              ====================================================== -->
+
+          <div class="acoes-formulario-inventario">
+
+            <button
+              type="button"
+              onclick="salvarMovimentacaoChaveFrontend()"
+            >
+              💾 Confirmar movimentação
+            </button>
+
+
+            <button
+              type="button"
+              onclick="fecharTelaMovimentacaoChaveInventario()"
+            >
+              ✖ Cancelar
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+
+
 </div>
 
     <script src="app.js"></script>
+    <script src="inventario.js"></script>
     <script src="login.js"></script>
+   
 
   <script>
     

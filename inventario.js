@@ -1255,8 +1255,7 @@ function escaparHTML(valor) {
 // ============================================================
 // CARREGAR EQUIPAMENTOS
 // ============================================================
-
-function carregarEquipamentosFrontend() {
+/*function carregarEquipamentosFrontend() {
 
   mostrarSpinner();
 
@@ -1325,13 +1324,89 @@ function carregarEquipamentosFrontend() {
     }
   );
 
+}*/
+function carregarEquipamentosFrontend() {
+
+  mostrarSpinner();
+
+  const container =
+    document.getElementById(
+      "listaEquipamentosInventario"
+    );
+
+  if (!container) {
+    return;
+  }
+
+
+  container.innerHTML =
+    '<div class="aviso-inventario">Carregando...</div>';
+
+
+  apiJSONP(
+    "listarEquipamentos",
+    {
+
+      idParticipante:
+        idUsuarioLogado
+
+    },
+
+    function(res) {
+
+      esconderSpinner();
+
+      if (!res || !res.sucesso) {
+
+        container.innerHTML =
+          '<div class="aviso-inventario">⚠️ ' +
+          (
+            res?.mensagem ||
+            "Não foi possível carregar os equipamentos."
+          ) +
+          '</div>';
+
+        return;
+      }
+
+
+      carregarMapaDepositosFrontend(
+        function(mapaCarregado) {
+
+          renderizarEquipamentosInventario(
+            res.equipamentos || []
+          );
+
+        }
+      );
+
+    },
+
+    function(erro) {
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao listar equipamentos:",
+        erro
+      );
+
+
+      container.innerHTML =
+        '<div class="aviso-inventario">' +
+        '⚠️ Erro ao carregar os equipamentos.' +
+        '</div>';
+
+    }
+  );
+
 }
 
 // ============================================================
 // RENDERIZAR EQUIPAMENTOS
 // ============================================================
 
-function renderizarEquipamentosInventario(
+/*function renderizarEquipamentosInventario(
   equipamentos
 ) {
 
@@ -1526,13 +1601,213 @@ function renderizarEquipamentosInventario(
 
   });
 
+}*/
+function renderizarEquipamentosInventario(
+  equipamentos
+) {
+
+  const container =
+    document.getElementById(
+      "listaEquipamentosInventario"
+    );
+
+  if (!container) {
+    return;
+  }
+
+
+  container.innerHTML = "";
+
+
+  if (!equipamentos.length) {
+
+    container.innerHTML =
+      '<div class="aviso-inventario">' +
+      'Nenhum equipamento cadastrado.' +
+      '</div>';
+
+    return;
+  }
+
+
+  equipamentos.forEach(function(equipamento) {
+
+    const ativo =
+      String(equipamento.ativo || "")
+        .trim()
+        .toUpperCase();
+
+
+    const situacao =
+      String(equipamento.situacao || "")
+        .trim()
+        .toUpperCase();
+
+
+    const card =
+      document.createElement("div");
+
+
+    const nomeResponsavel =
+      equipamento.responsavelAtual
+        ? (
+            window.mapaParticipantesPorId[
+              equipamento.responsavelAtual
+            ] ||
+            equipamento.responsavelAtual
+          )
+        : "";
+
+
+    card.className =
+      "card-equipamento-inventario";
+
+
+    card.innerHTML = `
+
+      <div class="card-equipamento-topo">
+
+        <div>
+
+          <div class="nome-equipamento-inventario">
+
+            ${escaparHTML(
+              equipamento.descricao ||
+              "Equipamento"
+            )}
+
+          </div>
+
+
+          <div class="id-equipamento-inventario">
+
+            ${escaparHTML(
+              equipamento.idEquipamento || ""
+            )}
+
+            ${
+              equipamento.numeroPatrimonio
+                ? " • " +
+                  escaparHTML(
+                    equipamento.numeroPatrimonio
+                  )
+                : ""
+            }
+
+          </div>
+
+        </div>
+
+
+        <div class="status-equipamento-inventario">
+
+          ${
+            ativo === "SIM"
+              ? "● ATIVO"
+              : "○ INATIVO"
+          }
+
+        </div>
+
+      </div>
+
+
+      <div class="card-equipamento-infos">
+
+        <div>
+
+          🏢
+
+          ${escaparHTML(
+            mapaDepositosPorId[
+              equipamento.idDeposito
+            ] ||
+            equipamento.idDeposito ||
+            "Sem depósito"
+          )}
+
+        </div>
+
+
+        <div>
+
+          ${
+            situacao === "COM_PESSOA"
+              ? "👤 COM PESSOA"
+              : "🏢 NO DEPÓSITO"
+          }
+
+        </div>
+
+      </div>
+
+
+      ${
+        equipamento.responsavelAtual
+          ? `
+            <div class="responsavel-equipamento-inventario">
+
+              👤 Responsável:
+
+              <strong>
+                ${escaparHTML(nomeResponsavel)}
+              </strong>
+
+            </div>
+          `
+          : ""
+      }
+
+
+      ${
+        equipamento.observacoes
+          ? `
+            <div class="observacoes-equipamento-inventario">
+
+              ${escaparHTML(
+                equipamento.observacoes
+              )}
+
+            </div>
+          `
+          : ""
+      }
+
+
+      <div class="acoes-equipamento-inventario">
+
+        <!--<button
+          type="button"
+          onclick='abrirMovimentacaoEquipamentoFrontend(
+            ${JSON.stringify(equipamento)}
+          )'
+        >
+          🔄 Movimentar
+        </button>-->
+
+        <button
+          type="button"
+          onclick='abrirMovimentacaoEquipamentoFrontend(${JSON.stringify(equipamento)})'
+        >
+          🔄 Movimentar
+        </button>
+
+      </div>
+
+    `;
+
+
+    container.appendChild(card);
+
+  });
+
 }
 
 // ============================================================
 // ABRIR MOVIMENTAÇÃO
 // ============================================================
 
-function abrirMovimentacaoEquipamentoFrontend(
+/*function abrirMovimentacaoEquipamentoFrontend(
   equipamento
 ) {
 
@@ -1596,7 +1871,7 @@ function abrirMovimentacaoEquipamentoFrontend(
     .style.display =
       "block";
 
-}
+}*/
 
 // ============================================================
 // ATUALIZAR RESPONSÁVEL
@@ -1641,7 +1916,7 @@ function atualizarResponsavelEquipamentoMovimentacao() {
 // SALVAR MOVIMENTAÇÃO
 // ============================================================
 
-function salvarMovimentacaoEquipamentoFrontend() {
+/*function salvarMovimentacaoEquipamentoFrontend() {
 
   const idEquipamento =
     document
@@ -1794,7 +2069,208 @@ function salvarMovimentacaoEquipamentoFrontend() {
 
   );
 
+}*/
+function salvarMovimentacaoEquipamentoFrontend() {
+
+const idEquipamento =
+document
+.getElementById(
+"idEquipamentoMovimentacao"
+)
+.value
+.trim();
+
+const situacao =
+document
+.getElementById(
+"situacaoEquipamentoMovimentacao"
+)
+.value
+.trim()
+.toUpperCase();
+
+const observacoes =
+document
+.getElementById(
+"observacoesMovimentacaoEquipamento"
+)
+.value
+.trim();
+
+if (!idEquipamento) {
+
+mostrarAlertaGlobal(
+  "⚠️ Equipamento não identificado."
+);
+
+return;
+
 }
+
+if (!situacao) {
+
+mostrarAlertaGlobal(
+  "⚠️ Selecione a nova situação."
+);
+
+return;
+
+}
+
+let novoResponsavel = "";
+let idDepositoNovo = "";
+
+// ==========================================================
+// COM PESSOA
+// ==========================================================
+
+if (situacao === "COM_PESSOA") {
+
+if (
+  !participanteSelecionadoEquipamento ||
+  !participanteSelecionadoEquipamento.id
+) {
+
+  mostrarAlertaGlobal(
+    "⚠️ Selecione o responsável pelo equipamento."
+  );
+
+  return;
+}
+
+
+novoResponsavel =
+  participanteSelecionadoEquipamento.id;
+
+}
+
+// ==========================================================
+// NO DEPÓSITO
+// ==========================================================
+
+if (situacao === "NO_DEPOSITO") {
+
+const selectDeposito =
+  document.getElementById(
+    "depositoEquipamentoMovimentacao"
+  );
+
+
+if (!selectDeposito) {
+
+  mostrarAlertaGlobal(
+    "⚠️ Campo de depósito não encontrado."
+  );
+
+  return;
+}
+
+
+idDepositoNovo =
+  selectDeposito.value
+    .trim()
+    .toUpperCase();
+
+
+if (!idDepositoNovo) {
+
+  mostrarAlertaGlobal(
+    "⚠️ Selecione o depósito."
+  );
+
+  return;
+}
+
+}
+
+mostrarSpinner();
+
+apiJSONP(
+"movimentarEquipamento",
+{
+
+  idOperador:
+    idUsuarioLogado,
+
+  idEquipamento:
+    idEquipamento,
+
+  novoResponsavel:
+    novoResponsavel,
+
+  novaSituacao:
+    situacao,
+
+  idDepositoNovo:
+    idDepositoNovo,
+
+  observacoes:
+    observacoes
+
+},
+
+function(res) {
+
+  esconderSpinner();
+
+
+  if (!res || !res.sucesso) {
+
+    mostrarAlertaGlobal(
+      "⚠️ " +
+      (
+        res?.mensagem ||
+        "Não foi possível movimentar o equipamento."
+      )
+    );
+
+    return;
+  }
+
+
+  mostrarAlertaGlobal(
+    "✅ Equipamento movimentado com sucesso."
+  );
+
+
+  participanteSelecionadoEquipamento =
+    null;
+
+
+  window.equipamentoSelecionadoMovimentacao =
+    null;
+
+
+  fecharModalFormularioInventario();
+
+
+  carregarEquipamentosFrontend();
+
+},
+
+function(erro) {
+
+  esconderSpinner();
+
+
+  console.error(
+    "Erro ao movimentar equipamento:",
+    erro
+  );
+
+
+  mostrarAlertaGlobal(
+    "⚠️ Erro ao movimentar o equipamento."
+  );
+
+}
+
+);
+
+}
+
+
+
 
 // ============================================================
 // CANCELAR MOVIMENTAÇÃO
@@ -4359,7 +4835,7 @@ function obterHTMLFormularioEquipamento() {
     .style.display = "flex";
 
 }*/
-function abrirMovimentacaoEquipamentoFrontend(equipamento) {
+/*function abrirMovimentacaoEquipamentoFrontend(equipamento) {
 
   const conteudo =
     document.getElementById(
@@ -4528,6 +5004,411 @@ function abrirMovimentacaoEquipamentoFrontend(equipamento) {
       "modalFormularioInventario"
     )
     .style.display = "flex";
+
+}*/
+function abrirMovimentacaoEquipamentoFrontend(equipamento) {
+
+const conteudo =
+document.getElementById(
+"conteudoModalFormularioInventario"
+);
+
+const titulo =
+document.getElementById(
+"tituloModalFormularioInventario"
+);
+
+if (!conteudo || !titulo) {
+
+console.error(
+  "Modal universal de inventário não encontrado."
+);
+
+return;
+
+}
+
+titulo.textContent =
+"🔄 Movimentar Equipamento";
+
+conteudo.innerHTML = `
+
+<input
+  type="hidden"
+  id="idEquipamentoMovimentacao"
+  value="${escaparHTML(
+    equipamento.idEquipamento || ""
+  )}"
+>
+
+
+<div class="campo-inventario">
+
+  <label>
+    Equipamento
+  </label>
+
+  <input
+    type="text"
+    value="${escaparHTML(
+      equipamento.idEquipamento || ""
+    )}"
+    readonly
+  >
+
+</div>
+
+
+<div class="campo-inventario">
+
+  <label>
+    Responsável atual
+  </label>
+
+  <input
+    type="text"
+    value="${escaparHTML(
+      mapaParticipantesPorId[
+        equipamento.responsavelAtual
+      ] ||
+      equipamento.responsavelAtual ||
+      "Sem responsável"
+    )}"
+    readonly
+  >
+
+</div>
+
+
+<div class="campo-inventario">
+
+  <label for="situacaoEquipamentoMovimentacao">
+    Nova situação
+  </label>
+
+  <select
+    id="situacaoEquipamentoMovimentacao"
+    onchange="alterarCamposMovimentacaoEquipamentoFrontend()"
+  >
+
+    <option value="">
+      - Selecione -
+    </option>
+
+    <option value="NO_DEPOSITO">
+      📦 No depósito
+    </option>
+
+    <option value="COM_PESSOA">
+      👤 Com pessoa
+    </option>
+
+    <option value="MANUTENCAO">
+      🔧 Em manutenção
+    </option>
+
+  </select>
+
+</div>
+
+
+<div
+  class="campo-inventario"
+  id="campoDepositoEquipamentoMovimentacao"
+  style="display:none;"
+>
+
+  <label for="depositoEquipamentoMovimentacao">
+    Depósito
+  </label>
+
+  <select
+    id="depositoEquipamentoMovimentacao"
+  >
+
+    <option value="">
+      Carregando depósitos...
+    </option>
+
+  </select>
+
+</div>
+
+
+<div
+  class="campo-inventario"
+  id="campoResponsavelEquipamentoMovimentacao"
+  style="display:none;"
+>
+
+  <label for="responsavelEquipamentoMovimentacao">
+    Novo responsável
+  </label>
+
+  <input
+    type="text"
+    id="responsavelEquipamentoMovimentacao"
+    placeholder="Clique para selecionar"
+    readonly
+    onclick="abrirSelecaoResponsavelEquipamento()"
+  >
+
+</div>
+
+
+<div class="campo-inventario">
+
+  <label for="observacoesMovimentacaoEquipamento">
+    Observações
+  </label>
+
+  <textarea
+    id="observacoesMovimentacaoEquipamento"
+    rows="3"
+    placeholder="Observações da movimentação"
+  ></textarea>
+
+</div>
+
+
+<div class="acoes-formulario-inventario">
+
+  <button
+    type="button"
+    onclick="salvarMovimentacaoEquipamentoFrontend()"
+  >
+    🔄 Movimentar
+  </button>
+
+
+  <button
+    type="button"
+    onclick="fecharModalFormularioInventario()"
+  >
+    ✖️ Cancelar
+  </button>
+
+</div>
+
+`;
+
+window.equipamentoSelecionadoMovimentacao =
+equipamento;
+
+window.participanteSelecionadoEquipamento =
+null;
+
+document
+.getElementById(
+"modalFormularioInventario"
+)
+.style.display = "flex";
+
+carregarDepositosParaMovimentacaoEquipamentoFrontend();
+
+}
+
+function alterarCamposMovimentacaoEquipamentoFrontend() {
+
+const situacao =
+document
+.getElementById(
+"situacaoEquipamentoMovimentacao"
+)
+.value;
+
+const campoDeposito =
+document.getElementById(
+"campoDepositoEquipamentoMovimentacao"
+);
+
+const campoResponsavel =
+document.getElementById(
+"campoResponsavelEquipamentoMovimentacao"
+);
+
+if (!campoDeposito || !campoResponsavel) {
+return;
+}
+
+campoDeposito.style.display =
+situacao === "NO_DEPOSITO"
+? "block"
+: "none";
+
+campoResponsavel.style.display =
+situacao === "COM_PESSOA"
+? "block"
+: "none";
+
+if (situacao !== "COM_PESSOA") {
+
+window.participanteSelecionadoEquipamento =
+  null;
+
+const campo =
+  document.getElementById(
+    "responsavelEquipamentoMovimentacao"
+  );
+
+if (campo) {
+  campo.value = "";
+}
+
+}
+
+}
+
+function carregarMapaDepositosFrontend(callback) {
+
+  apiJSONP(
+    "listarDepositos",
+    {
+      idUsuarioLogado:
+        idUsuarioLogado,
+
+      incluirInativos:
+        false
+    },
+
+    function(res) {
+
+      if (!res || !res.sucesso) {
+
+        console.error(
+          "Não foi possível carregar o mapa de depósitos:",
+          res?.mensagem
+        );
+
+        window.mapaDepositosPorId = {};
+
+        if (callback) {
+          callback(false);
+        }
+
+        return;
+      }
+
+
+      window.mapaDepositosPorId = {};
+
+
+      (res.depositos || []).forEach(
+        function(deposito) {
+
+          window.mapaDepositosPorId[
+            deposito.idDeposito
+          ] = deposito.nome;
+
+        }
+      );
+
+
+      if (callback) {
+        callback(true);
+      }
+
+    },
+
+    function(erro) {
+
+      console.error(
+        "Erro ao carregar mapa de depósitos:",
+        erro
+      );
+
+      window.mapaDepositosPorId = {};
+
+      if (callback) {
+        callback(false);
+      }
+
+    }
+  );
+
+}
+
+function carregarDepositosParaMovimentacaoEquipamentoFrontend() {
+
+const select =
+document.getElementById(
+"depositoEquipamentoMovimentacao"
+);
+
+if (!select) {
+return;
+}
+
+apiJSONP(
+"listarDepositos",
+{
+idUsuarioLogado:
+idUsuarioLogado,
+
+  incluirInativos:
+    false
+},
+
+function(res) {
+
+  if (!res || !res.sucesso) {
+
+    select.innerHTML =
+      '<option value="">Erro ao carregar depósitos</option>';
+
+    return;
+  }
+
+  /*//CRIANDO MAPA DE DEPOSITOS PARA USAR O NOME CO CARREGAMENTO DOS CARDS DE EQUIPAMENTOS. O QUE FAZER SE ISSO FOR PRECISO TAMBÉM EM DEPÓSITOS E CAHVES?
+  window.mapaDepositosPorId = {};
+
+  (res.depositos || []).forEach(
+    function(deposito) {
+
+      window.mapaDepositosPorId[
+        deposito.idDeposito
+      ] = deposito.nome;
+
+    }
+  );*/
+
+
+  select.innerHTML =
+    '<option value="">- Selecione -</option>';
+
+
+  (res.depositos || []).forEach(
+    function(deposito) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        deposito.idDeposito;
+
+      option.textContent =
+        deposito.nome;
+
+      select.appendChild(option);
+
+    }
+  );
+
+},
+
+function(erro) {
+
+  console.error(
+    "Erro ao carregar depósitos:",
+    erro
+  );
+
+  select.innerHTML =
+    '<option value="">Erro ao carregar depósitos</option>';
+
+}
+
+);
 
 }
 

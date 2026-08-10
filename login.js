@@ -278,6 +278,15 @@ const inicializadores = {
 
     telaTiposEquipamentos: carregarTiposEquipamentosFrontend,
 
+    //TESTE PARA ABRIR TELA PARA CADASTRO DE EQUIPAMENTOS SEM USAR O MODAL NOVAMENTE
+    telaCadastroEquipamentoInventario: abrirTelaCadastroEquipamentoInventario,
+
+    telaContagemEquipamentosInventario: carregarContagemEquipamentosFrontend,
+
+    telaContagemEquipamentosPorDepositoInventario: carregarContagemEquipamentosPorDepositoFrontend,
+
+    inventarios: carregarMapaDepositosFrontend,
+
     disponibilidadeContainerUsuarioLogado2h() {
 
       gerarCardsDisponibilidadeUsuarioLogado2h();
@@ -644,7 +653,8 @@ function apiJSONP(acao, parametros = {}, callback, onError) {
 
     console.log("URL que falhou:", script.src);
 
-    alert("ERRO JSONP na ação: " + acao);
+    //alert("ERRO JSONP na ação: " + acao);
+    mostrarAlertaGlobal("⚠️ Verifique a internet e tente novamente!");
 
     if (onError) {
       onError({

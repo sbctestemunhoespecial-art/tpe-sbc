@@ -154,6 +154,9 @@ const telasSempreAtualizar = new Set([
   "telaChavesInventario",
   "telaEquipamentosInventario",
   "telaTiposEquipamentos",
+  "telaContagemEquipamentosPorDepositoInventario",
+  "telaContagemEquipamentosPorPessoaInventario",
+
   "telaDesignacoesRotativas"
 ]);
 
@@ -270,6 +273,8 @@ const inicializadores = {
 
     telaDesignacoesRotativas: carregarDesignacoesRotativas,
 
+    telaInventarios: carregarMapasInventario,
+
     telaDepositos: carregarDepositosFrontend,
 
     telaChavesInventario: carregarDepositosParaChavesFrontend,
@@ -278,15 +283,11 @@ const inicializadores = {
 
     telaTiposEquipamentos: carregarTiposEquipamentosFrontend,
 
-    //TESTE PARA ABRIR TELA PARA CADASTRO DE EQUIPAMENTOS SEM USAR O MODAL NOVAMENTE
     telaCadastroEquipamentoInventario: abrirTelaCadastroEquipamentoInventario,
 
     telaContagemEquipamentosInventario: carregarContagemEquipamentosFrontend,
 
     telaContagemEquipamentosPorDepositoInventario: carregarContagemEquipamentosPorDepositoFrontend,
-
-    //inventarios: carregarMapaDepositosFrontend,
-    inventarios: carregarMapasInventario,
 
     telaContagemEquipamentosPorPessoaInventario: carregarContagemEquipamentosPorPessoaFrontend,
 
@@ -26079,7 +26080,7 @@ function carregarDadosIniciais() {
   }
 
   function mostrarSpinner() {
-    console.trace("MOSTRAR SPINNER FOI CHAMADO");
+    //console.trace("MOSTRAR SPINNER FOI CHAMADO");
     document.getElementById('spinnerGlobal').style.display = 'flex';
   }
 

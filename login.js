@@ -285,7 +285,10 @@ const inicializadores = {
 
     telaContagemEquipamentosPorDepositoInventario: carregarContagemEquipamentosPorDepositoFrontend,
 
-    inventarios: carregarMapaDepositosFrontend,
+    //inventarios: carregarMapaDepositosFrontend,
+    inventarios: carregarMapasInventario,
+
+    telaContagemEquipamentosPorPessoaInventario: carregarContagemEquipamentosPorPessoaFrontend,
 
     disponibilidadeContainerUsuarioLogado2h() {
 
@@ -15921,7 +15924,7 @@ btn.addEventListener("click", function() {
 
             td.addEventListener("click", () => {
 
-              mostrarSpinner();
+              //mostrarSpinner();
 
               transformarNomeEmSelect(td);
 
@@ -16620,6 +16623,7 @@ function transformarNomeEmSelect(td) {
 
   if (td.querySelector("select")) return;
 
+  mostrarSpinner();
 
   const card =
     td.closest(".card-designacao");
@@ -16732,9 +16736,10 @@ function transformarNomeEmSelect(td) {
 
       selectNome.focus();
 
-
+      
+      console.log("ANTES DE ESCONDER SPINNER");
       esconderSpinner();
-
+      console.log("DEPOIS DE ESCONDER SPINNER");
 
 
       const valorOriginal =
@@ -16823,6 +16828,12 @@ function transformarNomeEmSelect(td) {
 
           const novoId =
             selectNome.value;
+
+console.log("=== ALTERAÇÃO DE DESIGNADO ===");
+console.log("idAtual:", idAtual);
+console.log("novoId:", novoId);
+console.log("valorOriginal:", valorOriginal);
+console.log("nomeAtual:", nomeAtual);
 
 
           const optSelecionada =
@@ -26068,6 +26079,7 @@ function carregarDadosIniciais() {
   }
 
   function mostrarSpinner() {
+    console.trace("MOSTRAR SPINNER FOI CHAMADO");
     document.getElementById('spinnerGlobal').style.display = 'flex';
   }
 

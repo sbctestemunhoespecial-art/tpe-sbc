@@ -3039,7 +3039,7 @@
  
   <h5>🎊 Eventos</h5>
 
-  <div class="cards-menu">
+    <div class="cards-menu">
       <div class="card-menu btn-relatoriosSubMenu so-organizadores"
           onclick="abrirTela('eventos', this)">
           <div class="icone">🗂️</div>
@@ -4442,155 +4442,66 @@
   </div>
 
   <div id="inventarios" class="painel-exportar tela">
-
     <h5>📋 Inventários</h5>
         <div class="cards-menu">
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaTiposEquipamentos', this)">
-                  <div class="icone">⚙️</div>
-                  <div class="titulo">Tipos de equipamento</div>
-              </div>
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaEquipamentosInventario', this)">
-                  <div class="icone">🧰</div>
-                  <div class="titulo">Equipamentos disponíveis</div>
-              </div>
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaContagemEquipamentosInventario', this)">
-                  <div class="icone">📊</div>
-                  <div class="titulo">Totais equipamentos</div>
-              </div>
-               <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaContagemEquipamentosPorDepositoInventario', this)">
-                  <div class="icone">🏢</div>
-                  <div class="titulo">Equipamentos por depósito</div>
-              </div>
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaDepositos', this)">
-                  <div class="icone">🏢</div>
-                  <div class="titulo">Depósitos</div>
-              </div>
-              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
-                  onclick="abrirTela('telaChavesInventario', this)">
-                  <div class="icone">🗝️</div>
-                  <div class="titulo">Chaves</div>
-              </div>
-
-            </div>
-
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaTipos', this)">
+              <div class="icone">⚙️</div>
+              <div class="titulo">Tipos de Equipamento</div>
+          </div>
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaEquipamentos', this)">
+              <div class="icone">🧰</div>
+              <div class="titulo">Equipamentos</div>
+          </div>
+          <!--<div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaContagemEquipamentosInventario', this)">
+              <div class="icone">📊</div>
+              <div class="titulo">Totais equipamentos</div>
+          </div>
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaContagemEquipamentosPorDepositoInventario', this)">
+              <div class="icone">🏢</div>
+              <div class="titulo">Equipamentos por depósito</div>
+          </div>
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaContagemEquipamentosPorPessoaInventario', this)">
+              <div class="icone">👤</div>
+              <div class="titulo">Equipamentos por pessoa</div>
+          </div>-->
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaDepositos', this)">
+              <div class="icone">🏢</div>
+              <div class="titulo">Depósitos</div>
+          </div>
+          <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+              onclick="abrirTela('telaChavesInventario', this)">
+              <div class="icone">🗝️</div>
+              <div class="titulo">Chaves</div>
+          </div>
+        </div>
   </div>
 
     <!-- ============================================================
      INVENTÁRIO — TIPOS DE EQUIPAMENTOS
      ============================================================ -->
+    <div id="telaTipos" class="painel-exportar tela">
+        <h5>📋 Tipos</h5>
+            <div class="cards-menu">
+              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                  onclick="abrirTela('telaTiposEquipamentos', this)">
+                  <div class="icone">🧰</div>
+                  <div class="titulo">Tipos cadastrados</div>
+              </div>
+              <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                  onclick="abrirTela('telaCadastrarTipo', this)">
+                  <div class="icone">➕</div>
+                  <div class="titulo">Cadastrar novo tipo</div>
+              </div>
+            </div>
+    </div>
+
     <!--<div id="telaTiposEquipamentos" class="painel-exportar tela">
-
-      <div class="card-inventario">
-
-        <div class="card-inventario-titulo">
-          ⚙️ Tipos de Equipamentos
-        </div>
-
-        <div class="area-formulario-inventario">
-
-          <input
-            type="hidden"
-            id="idTipoEquipamento"
-          >
-
-          <div class="campo-inventario">
-
-            <label for="tipoEquipamento">
-              Tipo
-            </label>
-
-            <input
-              type="text"
-              id="tipoEquipamento"
-              placeholder="Ex.: Carrinho de Publicações"
-            >
-
-          </div>
-
-
-          <div class="campo-inventario">
-
-            <label for="descricaoTipoEquipamento">
-              Descrição
-            </label>
-
-            <input
-              type="text"
-              id="descricaoTipoEquipamento"
-              placeholder="Descrição do tipo de equipamento"
-            >
-
-          </div>
-
-
-          <div class="campo-inventario">
-
-            <label for="observacoesTipoEquipamento">
-              Observações
-            </label>
-
-            <textarea
-              id="observacoesTipoEquipamento"
-              rows="3"
-              placeholder="Observações opcionais"
-            ></textarea>
-
-          </div>
-
-
-          <div class="acoes-formulario-inventario">
-
-            <button
-              type="button"
-              id="btnSalvarTipoEquipamento"
-              onclick="salvarTipoEquipamentoFrontend()"
-            >
-              💾 Salvar
-            </button>
-
-            <button
-              type="button"
-              id="btnCancelarEdicaoTipoEquipamento"
-              onclick="cancelarEdicaoTipoEquipamento()"
-              style="display:none;"
-            >
-              ✖️ Cancelar
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div class="titulo-lista-inventario">
-
-          Tipos cadastrados
-
-        </div>
-
-
-        <div
-          id="listaTiposEquipamentos"
-          class="lista-inventario"
-        >
-
-          <div class="aviso-inventario">
-            Carregando...
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>-->
-    <!--<div id="telaTiposEquipamentos" class="painel-exportar tela">
-
-      <div class="card-inventario">
 
         <div class="card-inventario-titulo">
 
@@ -4608,94 +4519,6 @@
 
         </div>
 
-        <div
-          id="formularioTipoEquipamento"
-          class="area-formulario-inventario"
-          style="display:none;"
-        >
-
-          <input
-            type="hidden"
-            id="idTipoEquipamento"
-          >
-
-
-          <div
-            id="tituloFormularioTipoEquipamento"
-            class="titulo-formulario-inventario"
-          >
-            ➕ Novo tipo de equipamento
-          </div>
-
-
-          <div class="campo-inventario">
-
-            <label for="tipoEquipamento">
-              Tipo
-            </label>
-
-            <input
-              type="text"
-              id="tipoEquipamento"
-              placeholder="Ex.: Carrinho de Publicações"
-            >
-
-          </div>
-
-
-          <div class="campo-inventario">
-
-            <label for="descricaoTipoEquipamento">
-              Descrição
-            </label>
-
-            <input
-              type="text"
-              id="descricaoTipoEquipamento"
-              placeholder="Descrição do tipo de equipamento"
-            >
-
-          </div>
-
-
-          <div class="campo-inventario">
-
-            <label for="observacoesTipoEquipamento">
-              Observações
-            </label>
-
-            <textarea
-              id="observacoesTipoEquipamento"
-              rows="3"
-              placeholder="Observações opcionais"
-            ></textarea>
-
-          </div>
-
-
-          <div class="acoes-formulario-inventario">
-
-            <button
-              type="button"
-              id="btnSalvarTipoEquipamento"
-              onclick="salvarTipoEquipamentoFrontend()"
-            >
-              💾 Salvar
-            </button>
-
-
-            <button
-              type="button"
-              id="btnCancelarEdicaoTipoEquipamento"
-              onclick="cancelarEdicaoTipoEquipamento()"
-            >
-              ✖️ Cancelar
-            </button>
-
-          </div>
-
-        </div>
-
 
         <div class="titulo-lista-inventario">
           Tipos cadastrados
@@ -4713,25 +4536,16 @@
 
         </div>
 
-      </div>
 
     </div>-->
-    
+
     <div id="telaTiposEquipamentos" class="painel-exportar tela">
 
         <div class="card-inventario-titulo">
 
           <span>
-            ⚙️ Tipos de Equipamentos
+            🧰 Tipos de equipamento cadastrados
           </span>
-
-          <button
-            type="button"
-            class="btn-novo-inventario"
-            onclick="novoTipoEquipamentoFrontend()"
-          >
-            ➕ Novo tipo
-          </button>
 
         </div>
 
@@ -4755,9 +4569,60 @@
 
     </div>
 
+    <div id="telaCadastrarTipo" class="painel-exportar tela">
+
+        <div class="card-inventario-titulo">
+
+          <span>
+             ➕ Cadastrar novo tipo de equipamentos
+          </span>
+
+          <button
+            type="button"
+            class="btn-novo-inventario"
+            onclick="novoTipoEquipamentoFrontend()"
+          >
+            ➕ Novo tipo
+          </button>
+
+        </div>
+
+    </div>
+
     <!-- ============================================================
      INVENTÁRIO — EQUIPAMENTOS QTD
      ============================================================ -->
+    <div id="telaEquipamentos" class="painel-exportar tela">
+      <h5>🧰 Equipamentos</h5>
+          <div class="cards-menu">
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaCadastroEquipamentoInventario', this)">
+                <div class="icone">➕</div>
+                <div class="titulo">Cadastrar Equipamento</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaEquipamentosInventario', this)">
+                <div class="icone">🧰</div>
+                <div class="titulo">Equipamentos Cadastrados</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaContagemEquipamentosPorDepositoInventario', this)">
+                <div class="icone">🏢</div>
+                <div class="titulo">Equipamentos Por Depósito</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaContagemEquipamentosPorPessoaInventario', this)">
+                <div class="icone">👤</div>
+                <div class="titulo">Equipamentos Por Pessoa</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaContagemEquipamentosInventario', this)">
+                <div class="icone">📊</div>
+                <div class="titulo">Totais Equipamentos</div>
+            </div>
+          </div>
+    </div>
+
     <div id="telaEquipamentosInventario" class="painel-exportar tela">
 
       <div class="card-inventario">
@@ -4766,21 +4631,12 @@
           🧰 Equipamentos
         </div>
 
-        <!--
-        <button
-          type="button"
-          class="btn-novo-inventario"
-          onclick="novoEquipamentoFrontend()"
-        >
-          ➕ Novo equipamento
-        </button>
-         -->
-        <button
+        <!--<button
           type="button"
            onclick="abrirTela('telaCadastroEquipamentoInventario', this)"
         >
           ➕ Novo equipamento
-        </button>
+        </button>-->
 
 
         <div
@@ -5103,9 +4959,8 @@
 
     </div>
 
-
     <!-- ============================================================
-     INVENTÁRIO — CONTAGEM DE EQUIPAMENTOS TOTAIS
+     INVENTÁRIO — CONTAGEM DE EQUIPAMENTOS POR DEPÓSITO
      ============================================================ -->
     <div id="telaContagemEquipamentosPorDepositoInventario" class="painel-exportar tela">
 
@@ -5130,8 +4985,31 @@
 
     </div>
 
+    <!-- ============================================================
+     INVENTÁRIO — CONTAGEM DE EQUIPAMENTOS POR PESSOA
+     ============================================================ -->
+    <div id="telaContagemEquipamentosPorPessoaInventario" class="painel-exportar tela">
 
+      <div class="card-inventario">
 
+        <div class="card-inventario-titulo">
+          👤 Equipamentos por pessoa
+        </div>
+
+        <div
+          id="listaContagemEquipamentosPorPessoaInventario"
+          class="lista-inventario"
+        >
+
+          <div class="aviso-inventario">
+            Carregando equipamentos...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
     <!-- ============================================================
      INVENTÁRIO — DEPÓSITOS
@@ -5453,7 +5331,6 @@
         </div>
 
       </div>
-
 
       <!-- ============================================================
       TELA — MOVIMENTAR CHAVE

@@ -5877,7 +5877,7 @@ if (campo) {
 
 }
 
-function carregarMapaDepositosFrontend(callback) {
+/*function carregarMapaDepositosFrontend(callback) {
 
   apiJSONP(
     "listarDepositos",
@@ -5936,6 +5936,118 @@ function carregarMapaDepositosFrontend(callback) {
       );
 
       window.mapaDepositosPorId = {};
+
+      if (callback) {
+        callback(false);
+      }
+
+    }
+  );
+
+}*/
+function carregarMapasInventario(callback) {
+
+  apiJSONP(
+    "listarDepositos",
+    {
+      idUsuarioLogado:
+        idUsuarioLogado,
+
+      incluirInativos:
+        false
+    },
+
+    function(res) {
+
+      if (
+        !res ||
+        !res.sucesso
+      ) {
+
+        console.error(
+          "Não foi possível carregar o mapa de depósitos:",
+          res?.mensagem
+        );
+
+        window.mapaDepositosPorId = {};
+
+        if (callback) {
+          callback(false);
+        }
+
+        return;
+      }
+
+
+      // ========================================================
+      // MAPA DE DEPÓSITOS
+      // ========================================================
+
+      window.mapaDepositosPorId = {};
+
+
+      (res.depositos || [])
+        .forEach(function(deposito) {
+
+          const idDeposito =
+            String(
+              deposito.idDeposito || ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+          if (!idDeposito) {
+            return;
+          }
+
+
+          window.mapaDepositosPorId[
+            idDeposito
+          ] =
+            deposito.nome || idDeposito;
+
+        });
+
+
+      // ========================================================
+      // MAPA DE PARTICIPANTES
+      //
+      // Já foi criado pelo carregarOpcoes().
+      // Não fazemos nova chamada ao backend.
+      // ========================================================
+
+      if (
+        !window.mapaParticipantesPorId
+      ) {
+
+        console.warn(
+          "Mapa de participantes ainda não foi carregado."
+        );
+
+        window.mapaParticipantesPorId = {};
+
+      }
+
+
+      if (callback) {
+        callback(true);
+      }
+
+    },
+
+    function(erro) {
+
+      console.error(
+        "Erro ao carregar mapa de depósitos:",
+        erro
+      );
+
+      window.mapaDepositosPorId = {};
+
+      if (!window.mapaParticipantesPorId) {
+        window.mapaParticipantesPorId = {};
+      }
 
       if (callback) {
         callback(false);
@@ -7455,7 +7567,8 @@ function carregarContagemEquipamentosPorDepositoFrontend() {
           }
 
 
-          carregarMapaDepositosFrontend(
+          //carregarMapaDepositosFrontend(
+          carregarMapasInventario(
             function(mapaDepositos) {
 
               renderizarContagemEquipamentosPorDepositoInventario(
@@ -8235,6 +8348,361 @@ function renderizarContagemEquipamentosPorDepositoInventario(
           <div class="nome-equipamento-inventario">
 
             🏢 ${escaparHTML(nomeDeposito)}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        ${htmlTipos}
+
+      </div>
+
+    `;
+
+
+    container.appendChild(card);
+
+  });
+
+}
+
+function carregarContagemEquipamentosPorPessoaFrontend() {
+
+  const container =
+    document.getElementById(
+      "listaContagemEquipamentosPorPessoaInventario"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "listarEquipamentos",
+    {
+      idParticipante:
+        idUsuarioLogado
+    },
+
+    function(resEquipamentos) {
+
+      if (
+        !resEquipamentos ||
+        !resEquipamentos.sucesso
+      ) {
+
+        esconderSpinner();
+
+        container.innerHTML =
+          '<div class="aviso-inventario">⚠️ ' +
+          (
+            resEquipamentos?.mensagem ||
+            "Não foi possível carregar os equipamentos."
+          ) +
+          '</div>';
+
+        return;
+      }
+
+
+      apiJSONP(
+        "listarTiposEquipamento",
+        {
+          idParticipante:
+            idUsuarioLogado,
+
+          incluirInativos:
+            false
+        },
+
+        function(resTipos) {
+
+          if (
+            !resTipos ||
+            !resTipos.sucesso
+          ) {
+
+            esconderSpinner();
+
+            container.innerHTML =
+              '<div class="aviso-inventario">⚠️ ' +
+              (
+                resTipos?.mensagem ||
+                "Não foi possível carregar os tipos."
+              ) +
+              '</div>';
+
+            return;
+          }
+
+
+          renderizarContagemEquipamentosPorPessoaInventario(
+            resEquipamentos.equipamentos || [],
+            resTipos.tipos || []
+          );
+
+          esconderSpinner();
+
+        },
+
+        function(erro) {
+
+          esconderSpinner();
+
+          console.error(
+            "Erro ao carregar tipos:",
+            erro
+          );
+
+          container.innerHTML =
+            '<div class="aviso-inventario">' +
+            '⚠️ Erro ao carregar os tipos de equipamento.' +
+            '</div>';
+
+        }
+      );
+
+    },
+
+    function(erro) {
+
+      esconderSpinner();
+
+      console.error(
+        "Erro ao carregar equipamentos:",
+        erro
+      );
+
+      container.innerHTML =
+        '<div class="aviso-inventario">' +
+        '⚠️ Erro ao carregar os equipamentos.' +
+        '</div>';
+
+    }
+  );
+
+}
+
+function renderizarContagemEquipamentosPorPessoaInventario(
+  equipamentos,
+  tipos
+) {
+
+  const container =
+    document.getElementById(
+      "listaContagemEquipamentosPorPessoaInventario"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+
+  // ==========================================================
+  // MAPA ID DO TIPO -> NOME
+  // ==========================================================
+
+  const mapaTipos = {};
+
+  (tipos || []).forEach(function(tipo) {
+
+    const idTipo =
+      String(tipo.idTipo || "")
+        .trim()
+        .toUpperCase();
+
+    if (!idTipo) {
+      return;
+    }
+
+    mapaTipos[idTipo] =
+      tipo.tipo || idTipo;
+
+  });
+
+
+  // ==========================================================
+  // AGRUPAMENTO
+  //
+  // pessoa -> tipo -> quantidade
+  // ==========================================================
+
+  const agrupamento = {};
+
+  (equipamentos || []).forEach(function(equipamento) {
+
+    const responsavel =
+      String(
+        equipamento.responsavelAtual || ""
+      )
+      .trim()
+      .toUpperCase();
+
+    const idTipo =
+      String(equipamento.idTipo || "")
+        .trim()
+        .toUpperCase();
+
+
+    // Somente equipamentos com pessoa
+    if (
+      !responsavel ||
+      !idTipo
+    ) {
+      return;
+    }
+
+
+    if (!agrupamento[responsavel]) {
+      agrupamento[responsavel] = {};
+    }
+
+
+    if (!agrupamento[responsavel][idTipo]) {
+      agrupamento[responsavel][idTipo] = 0;
+    }
+
+
+    agrupamento[responsavel][idTipo]++;
+
+  });
+
+
+  // ==========================================================
+  // NENHUM RESULTADO
+  // ==========================================================
+
+  if (!Object.keys(agrupamento).length) {
+
+    container.innerHTML =
+      '<div class="aviso-inventario">' +
+      'Nenhum equipamento está com pessoas.' +
+      '</div>';
+
+    return;
+  }
+
+
+  // ==========================================================
+  // CARDS DAS PESSOAS
+  // ==========================================================
+
+  Object.keys(agrupamento)
+  .sort(function(a, b) {
+
+    const nomeA =
+      window.mapaParticipantesPorId[a] ||
+      a;
+
+    const nomeB =
+      window.mapaParticipantesPorId[b] ||
+      b;
+
+    return String(nomeA).localeCompare(
+      String(nomeB),
+      "pt-BR"
+    );
+
+  })
+  .forEach(function(idPessoa) {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "card-equipamento-inventario";
+
+
+    const nomePessoa =
+      window.mapaParticipantesPorId[idPessoa] ||
+      idPessoa;
+
+
+    let htmlTipos = "";
+
+
+    // ========================================================
+    // TIPOS DA PESSOA
+    // ========================================================
+
+    Object.keys(
+      agrupamento[idPessoa]
+    )
+    .sort(function(a, b) {
+
+      const nomeA =
+        mapaTipos[a] ||
+        a;
+
+      const nomeB =
+        mapaTipos[b] ||
+        b;
+
+      return String(nomeA).localeCompare(
+        String(nomeB),
+        "pt-BR"
+      );
+
+    })
+    .forEach(function(idTipo) {
+
+      const nomeTipo =
+        mapaTipos[idTipo] ||
+        idTipo;
+
+      const quantidade =
+        agrupamento[
+          idPessoa
+        ][idTipo];
+
+
+      htmlTipos += `
+
+        <div class="card-equipamento-infos">
+
+          <div>
+
+            ${escaparHTML(nomeTipo)}
+
+          </div>
+
+          <div>
+
+            <strong>
+              ${quantidade}
+            </strong>
+
+          </div>
+
+        </div>
+
+      `;
+
+    });
+
+
+    // ========================================================
+    // CARD
+    // ========================================================
+
+    card.innerHTML = `
+
+      <div class="card-equipamento-topo">
+
+        <div>
+
+          <div class="nome-equipamento-inventario">
+
+            👤 ${escaparHTML(nomePessoa)}
 
           </div>
 

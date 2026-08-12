@@ -5287,8 +5287,38 @@ button#btnVoltarMenu:focus {
 
 }
 
-
 .card-equipamento-infos div {
+
+  background: var(--cor-azulclara);
+
+  color: var(--cor-automatica);
+
+  font-size: .80rem;
+
+  font-weight: 500;
+
+  padding: .35rem .55rem;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+}
+
+.card-equipamento-infos2 {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 5px;
+
+  margin-bottom: 15px;
+
+}
+
+
+.card-equipamento-infos2 div {
 
   background: var(--cor-azulclara);
 

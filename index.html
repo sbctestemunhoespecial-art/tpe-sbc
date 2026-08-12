@@ -4606,6 +4606,11 @@
                 <div class="titulo">Equipamentos Cadastrados</div>
             </div>
             <div class="card-menu btn-relatoriosSubMenu so-organizadores"
+                onclick="abrirTela('telaPesquisarEquipamentoInventario', this)">
+                <div class="icone">🧰</div>
+                <div class="titulo">Equipamentos Por ID</div>
+            </div>
+            <div class="card-menu btn-relatoriosSubMenu so-organizadores"
                 onclick="abrirTela('telaContagemEquipamentosPorDepositoInventario', this)">
                 <div class="icone">🏢</div>
                 <div class="titulo">Equipamentos Por Depósito</div>
@@ -5332,201 +5337,246 @@
 
       </div>
 
-      <!-- ============================================================
-      TELA — MOVIMENTAR CHAVE
-      ============================================================ -->
-      <div id="telaMovimentarChaveInventario" class="painel-exportar tela">
+    <!-- ============================================================
+    TELA — MOVIMENTAR CHAVE
+    ============================================================ -->
+    <div id="telaMovimentarChaveInventario" class="painel-exportar tela">
 
-        <div class="conteudo-tela-inventario">
+      <div class="conteudo-tela-inventario">
 
-          <div class="topo-tela-inventario">
+        <div class="topo-tela-inventario">
 
-            <h2>🔑 Movimentar Chave</h2>
+          <h2>🔑 Movimentar Chave</h2>
 
+        </div>
+
+
+        <!-- ======================================================
+            IDENTIFICAÇÃO DA CHAVE
+            ====================================================== -->
+
+        <div class="area-formulario-inventario">
+
+          <div class="titulo-lista-inventario">
+            Chave selecionada
           </div>
 
 
-          <!-- ======================================================
-              IDENTIFICAÇÃO DA CHAVE
-              ====================================================== -->
+          <div class="campo-inventario">
 
-          <div class="area-formulario-inventario">
+            <label for="idChaveMovimentacaoInventario">
+              ID da chave
+            </label>
 
-            <div class="titulo-lista-inventario">
-              Chave selecionada
-            </div>
-
-
-            <div class="campo-inventario">
-
-              <label for="idChaveMovimentacaoInventario">
-                ID da chave
-              </label>
-
-              <input
-                type="text"
-                id="idChaveMovimentacaoInventario"
-                readonly
-              >
-
-            </div>
-
-
-            <div class="campo-inventario">
-
-              <label for="descricaoChaveMovimentacaoInventario">
-                Descrição
-              </label>
-
-              <input
-                type="text"
-                id="descricaoChaveMovimentacaoInventario"
-                readonly
-              >
-
-            </div>
-
-          </div>
-
-
-          <!-- ======================================================
-              NOVA SITUAÇÃO
-              ====================================================== -->
-
-          <div class="area-formulario-inventario">
-
-            <div class="titulo-lista-inventario">
-              Nova situação
-            </div>
-
-
-            <div class="campo-inventario">
-
-              <label for="situacaoChaveInventario">
-                Situação
-              </label>
-
-              <select
-                id="situacaoChaveInventario"
-                onchange="atualizarResponsavelChaveFrontend()"
-              >
-
-                <option value="NO_DEPOSITO">
-                  🏢 No depósito
-                </option>
-
-                <option value="COM_PESSOA">
-                  👤 Com pessoa
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <!-- ======================================================
-              RESPONSÁVEL
-              ====================================================== -->
-
-          <div class="area-formulario-inventario">
-
-            <div class="titulo-lista-inventario">
-              Responsável
-            </div>
-
-
-            <div class="campo-inventario">
-
-              <label for="responsavelChaveNomeInventario">
-                Pessoa que ficará com a chave
-              </label>
-
-
-              <!-- Nome visível para o usuário -->
-
-              <input
-                type="text"
-                id="responsavelChaveNomeInventario"
-                readonly
-                onclick="abrirSelecaoResponsavelChave()"
-                placeholder="Clique para selecionar"
-              >
-
-
-              <!-- ID utilizado pelo backend -->
-
-              <input
-                type="hidden"
-                id="responsavelChaveInventario"
-              >
-
-            </div>
-
-          </div>
-
-
-          <!-- ======================================================
-              OBSERVAÇÕES
-              ====================================================== -->
-
-          <div class="area-formulario-inventario">
-
-            <div class="titulo-lista-inventario">
-              Observações
-            </div>
-
-
-            <div class="campo-inventario">
-
-              <label
-                for="observacoesMovimentacaoChaveInventario"
-              >
-                Observações da movimentação
-              </label>
-
-
-              <textarea
-                id="observacoesMovimentacaoChaveInventario"
-                rows="4"
-                placeholder="Informe uma observação, se necessário."
-              ></textarea>
-
-            </div>
-
-          </div>
-
-
-          <!-- ======================================================
-              AÇÕES
-              ====================================================== -->
-
-          <div class="acoes-formulario-inventario">
-
-            <button
-              type="button"
-              onclick="salvarMovimentacaoChaveFrontend()"
+            <input
+              type="text"
+              id="idChaveMovimentacaoInventario"
+              readonly
             >
-              💾 Confirmar movimentação
-            </button>
-
-
-            <button
-              type="button"
-              onclick="fecharTelaMovimentacaoChaveInventario()"
-            >
-              ✖ Cancelar
-            </button>
 
           </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="descricaoChaveMovimentacaoInventario">
+              Descrição
+            </label>
+
+            <input
+              type="text"
+              id="descricaoChaveMovimentacaoInventario"
+              readonly
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+            NOVA SITUAÇÃO
+            ====================================================== -->
+
+        <div class="area-formulario-inventario">
+
+          <div class="titulo-lista-inventario">
+            Nova situação
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="situacaoChaveInventario">
+              Situação
+            </label>
+
+            <select
+              id="situacaoChaveInventario"
+              onchange="atualizarResponsavelChaveFrontend()"
+            >
+
+              <option value="NO_DEPOSITO">
+                🏢 No depósito
+              </option>
+
+              <option value="COM_PESSOA">
+                👤 Com pessoa
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+            RESPONSÁVEL
+            ====================================================== -->
+
+        <div class="area-formulario-inventario">
+
+          <div class="titulo-lista-inventario">
+            Responsável
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label for="responsavelChaveNomeInventario">
+              Pessoa que ficará com a chave
+            </label>
+
+
+            <!-- Nome visível para o usuário -->
+
+            <input
+              type="text"
+              id="responsavelChaveNomeInventario"
+              readonly
+              onclick="abrirSelecaoResponsavelChave()"
+              placeholder="Clique para selecionar"
+            >
+
+
+            <!-- ID utilizado pelo backend -->
+
+            <input
+              type="hidden"
+              id="responsavelChaveInventario"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+            OBSERVAÇÕES
+            ====================================================== -->
+
+        <div class="area-formulario-inventario">
+
+          <div class="titulo-lista-inventario">
+            Observações
+          </div>
+
+
+          <div class="campo-inventario">
+
+            <label
+              for="observacoesMovimentacaoChaveInventario"
+            >
+              Observações da movimentação
+            </label>
+
+
+            <textarea
+              id="observacoesMovimentacaoChaveInventario"
+              rows="4"
+              placeholder="Informe uma observação, se necessário."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+            AÇÕES
+            ====================================================== -->
+
+        <div class="acoes-formulario-inventario">
+
+          <button
+            type="button"
+            onclick="salvarMovimentacaoChaveFrontend()"
+          >
+            💾 Confirmar movimentação
+          </button>
+
+
+          <button
+            type="button"
+            onclick="fecharTelaMovimentacaoChaveInventario()"
+          >
+            ✖ Cancelar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+    TELA — PESQUISAR EQUIPAMENTO POR ID
+    ============================================================ -->
+    <div id="telaPesquisarEquipamentoInventario" class="painel-exportar tela">
+
+      <div class="titulo-painel">
+        🔎 Pesquisar equipamento
+      </div>
+
+
+      <div class="formulario-inventario">
+
+        <div class="campo-formulario">
+
+          <label for="idEquipamentoPesquisaInventario">
+            ID do equipamento
+          </label>
+
+          <input
+            type="text"
+            id="idEquipamentoPesquisaInventario"
+            placeholder="Digite o ID do equipamento"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <div class="acoes-formulario">
+
+          <button
+            type="button"
+            onclick="pesquisarEquipamentoPorIdFrontend()"
+          >
+            🔎 Pesquisar
+          </button>
 
         </div>
 
       </div>
 
 
+      <div
+        id="listaPesquisaEquipamentoInventario"
+      ></div>
 
+    </div>
 
 
 </div>

@@ -135,31 +135,6 @@ function alterarModoManutencao(ativo){
 
 }
 
-
-let versaoServidor = "";
-let versaoLocal = "";
-
-const telasInicializadas = {};
-
-const telasSempreAtualizar = new Set([
-  // telas que devem sempre atualizar quando abertas, ou seja, a cada abertura nova, atualiza
-  "painelVagas",
-  "painelVagasRT",
-  "telaVagasDisponiveis",
-  "disponibilidadeContainerUsuarioLogado2h",
-  "disponibilidadeContainerUsuarioLogado4h",
-  "telaVagasDisponiveisRT",
-  "telaMinhasDesignacoesRotativas",
-  "telaDepositos",
-  "telaChavesInventario",
-  "telaEquipamentosInventario",
-  "telaTiposEquipamentos",
-  "telaContagemEquipamentosPorDepositoInventario",
-  "telaContagemEquipamentosPorPessoaInventario",
-
-  "telaDesignacoesRotativas"
-]);
-
 function mostrarErroCarregamento(mensagem, tentarNovamente) {
 
     let modal =
@@ -238,6 +213,28 @@ function mostrarErroCarregamento(mensagem, tentarNovamente) {
         };
 
 }
+
+let versaoServidor = "";
+let versaoLocal = "";
+
+const telasInicializadas = {};
+
+const telasSempreAtualizar = new Set([
+  // telas que devem sempre atualizar quando abertas, ou seja, a cada abertura nova, atualiza
+  "painelVagas",
+  "painelVagasRT",
+  "telaVagasDisponiveis",
+  "disponibilidadeContainerUsuarioLogado2h",
+  "disponibilidadeContainerUsuarioLogado4h",
+  "telaVagasDisponiveisRT",
+  "telaMinhasDesignacoesRotativas",
+  "telaDepositos",
+  "telaChavesInventario",
+  "telaEquipamentosInventario",
+  "telaContagemEquipamentosPorDepositoInventario",
+  "telaContagemEquipamentosPorPessoaInventario",
+  "telaDesignacoesRotativas"
+]);
 
 const inicializadores = {
 
@@ -340,11 +337,6 @@ const inicializadores = {
         carregarAbasEv();
 
     }
-
-
-
-
-
 
 };
 
@@ -14517,6 +14509,16 @@ function copiarMensagemEvento(eventoId) {
   );
 }
 
+function atualizarDadosDosEventos() {
+
+    carregarEventosNoSelectUsuario();
+    carregarEventosNoSelect();
+    carregarEventosInscritos();
+    carregarEventosDesignados();
+    carregarAbasEv();
+
+}
+
   document.getElementById('btnCadastrarEvento').addEventListener('click', () => {
 
   const descricaoEl = document.getElementById('descricaoEvento');
@@ -14620,8 +14622,9 @@ function copiarMensagemEvento(eventoId) {
       mostrarAlertaGlobal("✅ Evento cadastrado com sucesso!");
       esconderSpinner();
 
-      carregarEventosNoSelect();
-      carregarEventosNoSelectUsuario();
+      //carregarEventosNoSelect();
+      //carregarEventosNoSelectUsuario();
+      atualizarDadosDosEventos();
 
       [descricaoEl, ruaEl].forEach(el => el.classList.remove('erro-campo'));
 
@@ -14958,8 +14961,9 @@ document.getElementById('btnSalvarEdicaoEvento').addEventListener('click', () =>
       esconderSpinner();
       mostrarAlertaGlobal("✅ Evento alterado com sucesso!");
 
-      carregarEventosNoSelect();
-      carregarEventosNoSelectUsuario();
+      //carregarEventosNoSelect();
+      //carregarEventosNoSelectUsuario();
+      atualizarDadosDosEventos();
 
       document.getElementById('btnCadastrarEvento').style.display = 'inline-block';
       document.getElementById('btnSalvarEdicaoEvento').style.display = 'none';
@@ -24586,6 +24590,27 @@ function carregarOpcoes() {
       (opcoes.participantes || []).forEach(p => {
 
         window.mapaParticipantesPorId[p.id] = p.nome;
+
+      });
+
+      // ===============================
+      // MAPA IDS COMPLETO
+      // ===============================
+      window.mapaDadosParticipantesPorId = {};
+
+      (opcoes.participantes || []).forEach(p => {
+
+        window.mapaDadosParticipantesPorId[p.id] = {
+
+          nome: p.nome,
+
+          congregacao:
+            p.congregacao || "",
+
+          telefone:
+            p.telefone || ""
+
+        };
 
       });
 

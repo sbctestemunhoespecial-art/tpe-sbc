@@ -1187,149 +1187,6 @@ let emailUsuario = null;
 
       perfilUsuario = res.perfil;
       idUsuarioLogado = res.id;
-      //registrarPush(idUsuarioLogado);
-
-      const saudacaoEl = document.getElementById("saudacaoUsuario");
-      const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
-
-      if (saudacaoEl) {
-        saudacaoEl.textContent = "";
-
-      }
-
-      if (tipoAcessoEl) {
-        tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
-
-      }
-
-      document.getElementById('emailLogin').value = '';
-      document.getElementById('senhaLogin').value = '';
-      document.getElementById('msgLogin').textContent = '';
-
-      localStorage.setItem("usuarioLogado", JSON.stringify({
-        id: res.id,
-        perfil: res.perfil,
-        timestamp: Date.now()
-      }));
-
-      document.getElementById("menuBtn").style.display = "inline-block";
-      document.getElementById('telaLogin').style.display = 'none';
-      document.getElementById('conteudoProtegido').style.display = 'block';
-
-      historico.length = 0;
-
-      document.querySelectorAll('.tela').forEach(el => {
-        el.classList.remove('aberta');
-      });
-
-      document.getElementById('menuCards')?.classList.add('aberta');
-
-      telaAtual = 'menuCards';
-
-      atualizarBotaoVoltar();
-      mostrarSecoesPorPerfil(res.perfil);
-      limparCamposUsuario();
-      restaurarCamposPerfil();
-
-
-      apiJSONP(
-        "buscarNomeDoUsuario",
-        {
-          id: idUsuarioLogado
-        },
-        function(resNome) {
-
-          const saudacaoEl = document.getElementById("saudacaoUsuario");
-          const tipoAcessoEl = document.getElementById("tipoAcessoUsuario");
-
-          if (!saudacaoEl) return;
-
-          if (resNome.sucesso && resNome.nome) {
-            saudacaoEl.textContent = `${resNome.nome}`;
-
-          } else {
-            saudacaoEl.textContent = "";
-          }
-
-          if (tipoAcessoEl) {
-            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
-
-          }
-
-          esconderSpinner();
-
-          registrarPush(idUsuarioLogado);
-          
-          verificarTreinamentoPendente();
-          
-          if (idVagaNotificacao) {
-
-            //console.log("📌 Abrindo vaga da notificação após login:", idVagaNotificacao);
-
-
-            abrirTela("telaVagasDisponiveis");
-
-          }
-
-        },
-        function(err) {
-
-          esconderSpinner();
-
-          if (tipoAcessoEl) {
-            tipoAcessoEl.textContent = `Perfil ${perfilUsuario}`;
-
-          }
-
-          msgErro.textContent = err.message || "❌ Erro ao buscar nome do usuário.";
-
-        }
-      );
-
-    },
-    function(err) {
-
-      esconderSpinner();
-
-     msgErro.textContent =
-      err?.mensagem ||
-      err?.message ||
-      "❌ Não foi possível comunicar com o servidor.";
-
-    }
-  );
-
-}*/
-function fazerLogin() {
-
-  const email = document.getElementById('emailLogin').value.trim();
-  const senha = document.getElementById('senhaLogin').value.trim();
-  const msgErro = document.getElementById('msgLogin');
-
-  msgErro.textContent = '';
-  mostrarSpinner();
-
-  apiJSONP(
-    "login",
-    {
-      email,
-      senha
-    },
-    function(res) {
-
-      if (!res.sucesso) {
-
-        esconderSpinner();
-
-        msgErro.textContent =
-          res.mensagem || "❌ Erro ao fazer login.";
-
-        return;
-
-      }
-
-      perfilUsuario = res.perfil;
-      idUsuarioLogado = res.id;
 
       apiJSONP(
         "verificarManutencao",
@@ -1469,6 +1326,305 @@ function fazerLogin() {
     }
   );
 
+}*/
+
+function fazerLogin() {
+
+  const email =
+    document.getElementById('emailLogin').value.trim();
+
+  const senha =
+    document.getElementById('senhaLogin').value.trim();
+
+  const msgErro =
+    document.getElementById('msgLogin');
+
+  msgErro.textContent = '';
+
+  mostrarSpinner();
+
+  apiJSONP(
+    "login",
+    {
+      email,
+      senha
+    },
+    function(res) {
+
+      if (!res.sucesso) {
+
+        esconderSpinner();
+
+        msgErro.textContent =
+          res.mensagem ||
+          "❌ Erro ao fazer login.";
+
+        return;
+      }
+
+      perfilUsuario = res.perfil;
+      idUsuarioLogado = res.id;
+
+
+      // =====================================================
+      // CRIA MAPAS DOS PARTICIPANTES A PARTIR DO LOGIN
+      // =====================================================
+
+      window.mapaParticipantesPorNome = {};
+
+      window.mapaParticipantesPorId = {};
+
+      window.mapaDadosParticipantesPorId = {};
+
+
+      (res.participantes || []).forEach(p => {
+
+        window.mapaParticipantesPorNome[p.nome] =
+          p.id;
+
+        window.mapaParticipantesPorId[p.id] =
+          p.nome;
+
+        window.mapaDadosParticipantesPorId[p.id] = {
+
+          nome:
+            p.nome,
+
+          congregacao:
+            p.congregacao || "",
+
+          telefone:
+            p.telefone || ""
+
+        };
+
+      });
+
+
+      // =====================================================
+      // VERIFICA MANUTENÇÃO
+      // =====================================================
+
+      apiJSONP(
+        "verificarManutencao",
+        {},
+        function(resManutencao) {
+
+          if (
+            resManutencao.manutencao &&
+            perfilUsuario.trim().toUpperCase() !== "ADMIN"
+          ) {
+
+            esconderSpinner();
+
+            mostrarTelaManutencao();
+
+            return;
+          }
+
+
+          // =================================================
+          // ATUALIZA INTERFACE
+          // =================================================
+
+          const saudacaoEl =
+            document.getElementById(
+              "saudacaoUsuario"
+            );
+
+          const tipoAcessoEl =
+            document.getElementById(
+              "tipoAcessoUsuario"
+            );
+
+
+          if (saudacaoEl) {
+
+            saudacaoEl.textContent = "";
+
+          }
+
+
+          if (tipoAcessoEl) {
+
+            tipoAcessoEl.textContent =
+              `Perfil ${perfilUsuario}`;
+
+          }
+
+
+          document.getElementById(
+            'emailLogin'
+          ).value = '';
+
+          document.getElementById(
+            'senhaLogin'
+          ).value = '';
+
+          document.getElementById(
+            'msgLogin'
+          ).textContent = '';
+
+
+          // =================================================
+          // SALVA SESSÃO
+          // =================================================
+
+          localStorage.setItem(
+            "usuarioLogado",
+            JSON.stringify({
+
+              id:
+                res.id,
+
+              perfil:
+                res.perfil,
+
+              timestamp:
+                Date.now()
+
+            })
+          );
+
+
+          document.getElementById(
+            "menuBtn"
+          ).style.display = "inline-block";
+
+
+          document.getElementById(
+            'telaLogin'
+          ).style.display = 'none';
+
+
+          document.getElementById(
+            'conteudoProtegido'
+          ).style.display = 'block';
+
+
+          const areaNotificacoes =
+            document.getElementById(
+              "areaNotificacoes"
+            );
+
+
+          if (areaNotificacoes) {
+
+            areaNotificacoes.style.display =
+              "flex";
+
+          }
+
+
+          historico.length = 0;
+
+
+          document
+            .querySelectorAll('.tela')
+            .forEach(el => {
+
+              el.classList.remove('aberta');
+
+            });
+
+
+          document
+            .getElementById('menuCards')
+            ?.classList.add('aberta');
+
+
+          telaAtual = 'menuCards';
+
+          atualizarBotaoVoltar();
+
+          mostrarSecoesPorPerfil(
+            res.perfil
+          );
+
+          atualizarBadgeNotificacoes();
+
+          limparCamposUsuario();
+
+          restaurarCamposPerfil();
+
+
+          // =================================================
+          // O NOME AGORA VEM DO MAPA CRIADO NO LOGIN
+          // =================================================
+
+          const nomeUsuario =
+            window.mapaParticipantesPorId[
+              idUsuarioLogado
+            ] || "";
+
+
+          if (saudacaoEl) {
+
+            saudacaoEl.textContent =
+              nomeUsuario;
+
+          }
+
+
+          if (tipoAcessoEl) {
+
+            tipoAcessoEl.textContent =
+              `Perfil ${perfilUsuario}`;
+
+          }
+
+
+          // =================================================
+          // LOGIN CONCLUÍDO
+          // =================================================
+
+          esconderSpinner();
+
+
+          // =================================================
+          // OUTRAS ROTINAS
+          // =================================================
+
+          registrarPush(
+            idUsuarioLogado
+          );
+
+          verificarTreinamentoPendente();
+
+
+          if (idVagaNotificacao) {
+
+            abrirTela(
+              "telaVagasDisponiveis"
+            );
+
+          }
+
+        },
+        function(err) {
+
+          esconderSpinner();
+
+          msgErro.textContent =
+            err?.message ||
+            "❌ Erro ao verificar manutenção.";
+
+        }
+      );
+
+    },
+    function(err) {
+
+      esconderSpinner();
+
+      msgErro.textContent =
+        err?.mensagem ||
+        err?.message ||
+        "❌ Não foi possível comunicar com o servidor.";
+
+    }
+  );
+
 }
 
 function mostrarSecoesPorPerfil(perfil) {
@@ -1499,96 +1655,6 @@ function mostrarSecoesPorPerfil(perfil) {
     }
   });
 }
-
-/*window.addEventListener("DOMContentLoaded", () => {
-
-  verificarVersaoApp();
-
-  const usuarioSalvo = localStorage.getItem("usuarioLogado");
-
-  if (usuarioSalvo) {
-
-    const dados = JSON.parse(usuarioSalvo);
-
-    const expirou =
-      Date.now() - dados.timestamp > 60 * 60 * 1000;
-
-    if (expirou) {
-
-      //localStorage.removeItem("usuarioLogado");
-      //mostrarAlertaGlobal("⏰ Sua sessão expirou. Faça login novamente.");
-      //document.getElementById('telaLogin').style.display = 'block';
-      //document.getElementById('conteudoProtegido').style.display = 'none';
-      //return;
-
-      sairPorExpiracao();
-      return;
-    }
-
-    perfilUsuario = dados.perfil;
-    idUsuarioLogado = dados.id;
-    //registrarPush(idUsuarioLogado);
-
-    document.getElementById("menuBtn").style.display = "inline-block";
-    document.getElementById('telaLogin').style.display = 'none';
-    document.getElementById('conteudoProtegido').style.display = 'block';
-
-    //mostrarSecoesPorPerfil(dados.perfil);
-
-    apiJSONP(
-      "buscarNomeDoUsuario",
-      {
-        id: dados.id
-      },
-      (resNome) => {
-
-        const saudacaoEl =
-          document.getElementById("saudacaoUsuario");
-
-        const tipoAcessoEl =
-          document.getElementById("tipoAcessoUsuario");
-
-        if (saudacaoEl) {
-
-          if (resNome.sucesso && resNome.nome) {
-
-            saudacaoEl.textContent = resNome.nome;
-
-          } else {
-
-            saudacaoEl.textContent = "";
-
-          }
-        }
-
-        if (tipoAcessoEl) {
-
-          tipoAcessoEl.textContent =
-            `Perfil ${dados.perfil}`;
-
-        }
-
-      },
-      (err) => {
-
-        console.error(
-          "Erro ao buscar nome do usuário:",
-          err.mensagem || err.error || err.message
-        );
-
-      }
-    );
-
-  } else {
-
-    document.getElementById('telaLogin').style.display = 'block';
-    document.getElementById('conteudoProtegido').style.display = 'none';
-
-  }
-  tratarNotificacaoAoAbrir();
-
-});*/
-
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -4460,84 +4526,6 @@ function excluirDesignacao(participante, ponto, dia, turno, frequencia, equipame
   );
 
 }
-
-/*function preencherTabelaSemDisponibilidade() {
-
-  const lista =
-    document.getElementById("listaSemDisponibilidade");
-
-  lista.innerHTML = "";
-
-  document.getElementById("totalSemDisponibilidade").textContent =
-    "Participantes sem disponibilidade: " +
-    participantesSemDisponibilidade.length;
-
-  if (!participantesSemDisponibilidade.length) {
-
-    lista.innerHTML =
-      "<div class='card-evento'>🎉 Todos os participantes possuem disponibilidade cadastrada.</div>";
-
-    return;
-
-  }
-
-  participantesSemDisponibilidade.forEach(p => {
-
-    const card = document.createElement("div");
-    card.className = "card-evento";
-
-    card.innerHTML = `
-
-      <div class="titulo-evento">
-        👤 Participante sem disponibilidade
-      </div>
-
-      <div class="evento-detalhes">
-
-        <div>
-          <span class="titulo">👤 Nome</span>
-          <span>${p.nome || "-"}</span>
-        </div>
-
-        <div>
-          <span class="titulo">🏛 Congregação</span>
-          <span>${p.congregacao || "-"}</span>
-        </div>
-
-        <div>
-          <span class="titulo">📱 Telefone</span>
-          <span>${p.telefone || "-"}</span>
-        </div>
-
-        <div>
-          <span class="titulo">✉️ E-mail</span>
-          <span>${p.email || "-"}</span>
-        </div>
-
-      </div>
-
-      <div class="rodape-evento">
-
-        <a href="${p.whatsapp}"
-           target="_blank"
-           title="Conversar pelo WhatsApp">
-
-          <img
-            src="img/whatsapp.svg"
-            class="icone-whatsapp-semdesignacao"
-            alt="WhatsApp">
-
-        </a>
-
-      </div>
-
-    `;
-
-    lista.appendChild(card);
-
-  });
-
-}*/
 
 function preencherTabelaSemDisponibilidade() {
 
@@ -24570,6 +24558,7 @@ function carregarOpcoes() {
     {},
     function(opcoes) {
 
+      /*
       // ===============================
       // MAPA PARTICIPANTES
       // ===============================
@@ -24613,7 +24602,7 @@ function carregarOpcoes() {
         };
 
       });
-
+      */
 
       // ===============================
       // NOMES PARA PESQUISA

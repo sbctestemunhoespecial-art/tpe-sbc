@@ -1371,28 +1371,19 @@ function fazerLogin() {
       // =====================================================
 
       window.mapaParticipantesPorNome = {};
-
       window.mapaParticipantesPorId = {};
-
       window.mapaDadosParticipantesPorId = {};
 
-
       (res.participantes || []).forEach(p => {
-
         window.mapaParticipantesPorNome[p.nome] =
           p.id;
-
         window.mapaParticipantesPorId[p.id] =
           p.nome;
-
         window.mapaDadosParticipantesPorId[p.id] = {
-
           nome:
             p.nome,
-
           congregacao:
             p.congregacao || "",
-
           telefone:
             p.telefone || ""
 
@@ -1400,6 +1391,10 @@ function fazerLogin() {
 
       });
 
+      localStorage.setItem(
+        "participantesSessao",
+        JSON.stringify(res.participantes || [])
+      );
 
       // =====================================================
       // VERIFICA MANUTENÇÃO
@@ -1589,7 +1584,20 @@ function fazerLogin() {
             idUsuarioLogado
           );
 
-          verificarTreinamentoPendente();
+          //verificarTreinamentoPendente();
+          if (res.possuiTreinamento) {
+
+            mostrarAlertaGlobal(
+
+              '🎓 Você possui um treinamento pendente com o candidato:\n\n' +
+
+              res.nomeTreinando +
+
+              '! \n\nAcesse "Meus Treinamentos" para concluir o processo após realizar o treinamento!'
+
+            );
+
+          }
 
 
           if (idVagaNotificacao) {
@@ -1656,7 +1664,7 @@ function mostrarSecoesPorPerfil(perfil) {
   });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+/*window.addEventListener("DOMContentLoaded", () => {
 
   verificarVersaoApp();
 
@@ -1695,7 +1703,6 @@ window.addEventListener("DOMContentLoaded", () => {
     perfilUsuario = dados.perfil;
     idUsuarioLogado = dados.id;
     //registrarPush(idUsuarioLogado);
-
 
     apiJSONP(
       "verificarManutencao",
@@ -1828,6 +1835,161 @@ window.addEventListener("DOMContentLoaded", () => {
           }
         );
 
+
+      }
+    );
+
+
+  } else {
+
+
+    document.getElementById('telaLogin').style.display = 'block';
+    document.getElementById('conteudoProtegido').style.display = 'none';
+
+
+  }
+
+
+  tratarNotificacaoAoAbrir();
+
+
+});*/
+window.addEventListener("DOMContentLoaded", () => {
+
+  verificarVersaoApp();
+
+  const usuarioSalvo = localStorage.getItem("usuarioLogado");
+
+  if (usuarioSalvo) {
+
+    const dados = JSON.parse(usuarioSalvo);
+
+    // Esconde imediatamente a tela de login
+    document.getElementById("telaLogin").style.display = "none";
+    document.getElementById("conteudoProtegido").style.display = "block";
+    document.getElementById("menuBtn").style.display = "inline-block";
+
+    const areaNotificacoes =
+        document.getElementById("areaNotificacoes");
+
+      if (areaNotificacoes) {
+
+        areaNotificacoes.style.display = "flex";
+
+      }
+
+    // Oculta imediatamente os cards que não pertencem ao perfil
+    mostrarSecoesPorPerfil(dados.perfil);
+
+    const expirou =
+      Date.now() - dados.timestamp > 60 * 60 * 1000;
+
+    if (expirou) {
+
+      sairPorExpiracao();
+      return;
+    }
+
+    perfilUsuario = dados.perfil;
+    idUsuarioLogado = dados.id;
+
+    // =====================================================
+    // RECRIA MAPAS DOS PARTICIPANTES APÓS F5
+    // =====================================================
+
+    const participantesSessao =
+      JSON.parse(
+        localStorage.getItem("participantesSessao") || "[]"
+      );
+
+    window.mapaParticipantesPorNome = {};
+    window.mapaParticipantesPorId = {};
+    window.mapaDadosParticipantesPorId = {};
+
+    participantesSessao.forEach(p => {
+      window.mapaParticipantesPorNome[p.nome] =
+        p.id;
+      window.mapaParticipantesPorId[p.id] =
+        p.nome;
+      window.mapaDadosParticipantesPorId[p.id] = {
+        nome:
+          p.nome,
+        congregacao:
+          p.congregacao || "",
+        telefone:
+          p.telefone || ""
+      };
+
+    });
+
+    //registrarPush(idUsuarioLogado);
+
+
+    apiJSONP(
+      "verificarManutencao",
+      {},
+      (resManutencao) => {
+
+
+        if (resManutencao.manutencao) {
+
+          mostrarTelaManutencao();
+          return;
+
+        }
+
+
+        const saudacaoEl =
+          document.getElementById("saudacaoUsuario");
+
+        const tipoAcessoEl =
+          document.getElementById("tipoAcessoUsuario");
+
+        const nomeUsuario =
+          window.mapaParticipantesPorId[idUsuarioLogado] || "";
+
+        if (saudacaoEl) {
+
+          saudacaoEl.textContent =
+            nomeUsuario;
+
+        }
+
+        if (tipoAcessoEl) {
+
+          tipoAcessoEl.textContent =
+            `Perfil ${dados.perfil}`;
+
+        }
+
+
+
+      },
+      (err) => {
+
+
+        const saudacaoEl =
+          document.getElementById("saudacaoUsuario");
+
+        const tipoAcessoEl =
+          document.getElementById("tipoAcessoUsuario");
+
+        const nomeUsuario =
+          window.mapaParticipantesPorId[idUsuarioLogado] || "";
+
+        if (saudacaoEl) {
+
+          saudacaoEl.textContent =
+            nomeUsuario;
+
+        }
+
+        if (tipoAcessoEl) {
+
+          tipoAcessoEl.textContent =
+            `Perfil ${dados.perfil}`;
+
+        }
 
       }
     );

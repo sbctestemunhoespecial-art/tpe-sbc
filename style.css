@@ -1812,6 +1812,10 @@ caption {
   box-sizing: border-box;
 }
 
+#alertaMensagem {
+  white-space: pre-line;
+}
+
 /*modal partiipantes novo inicia aqui*/
 #modalParticipantes {
     position: fixed;

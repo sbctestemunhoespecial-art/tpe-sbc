@@ -1009,9 +1009,23 @@ function enviarCodigo() {
         window.emailRedefinicao = email;
       }
     },
+    /*(err) => {
+      esconderSpinner();
+      console.error("ERRO ENVIAR CÓDIGO:", err);
+
+      if (err && err.mensagem) {
+        msg.textContent = err.mensagem;
+      } else if (err && err.message) {
+        msg.textContent = err.message;
+      }
+    }*/
     (err) => {
       esconderSpinner();
-      console.error(err);
+      console.error("ERRO ENVIAR CÓDIGO:", err);
+
+      if (err?.message) {
+        mostrarAlertaGlobal(err.message);
+      }
     }
   );
 }
@@ -1621,7 +1635,7 @@ function fazerLogin() {
       );
 
     },
-    function(err) {
+    /*function(err) {
 
       esconderSpinner();
 
@@ -1629,6 +1643,17 @@ function fazerLogin() {
         err?.mensagem ||
         err?.message ||
         "❌ Não foi possível comunicar com o servidor.";
+
+    }*/
+    function(err) {
+
+      esconderSpinner();
+
+      mostrarAlertaGlobal(
+        err?.mensagem ||
+        err?.message ||
+        "❌ Não foi possível comunicar com o servidor."
+      );
 
     }
   );

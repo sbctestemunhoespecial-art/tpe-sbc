@@ -3228,7 +3228,7 @@
     <!-- ÁREA DOS BOTÕES ENVIAR -->
         <div id="areaBotoes" style="margin-top: 10px; display: none;">
           <button id="btnRegistrarDesignados">Registrar Designados</button>
-          <div id="botoesEnviarEmails" style="display: flex; gap: 10px; margin-top: 10px;">
+          <div id="botoesEnviarEmails" style="display: none; gap: 10px; margin-top: 10px;">
             <button id="btnEnviarTodos">📧 Enviar designações</button>
             <button id="btnEnviarDaAba">📬 Enviar escalas</button>
           </div>
@@ -3839,7 +3839,7 @@
       <button onclick="buscarIrregulares()">🔍 Ver participantes sem designação</button>
         <!--<div id="resultadoIrregulares"></div>-->
         <div id="resultadoIrregulares"
-            style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+            style="max-height: 800px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
           <!-- Aqui dentro vai o conteúdo longo gerado pelo script -->
         </div>
 
@@ -3857,17 +3857,16 @@
         <input id="turnoIrregulares" hidden>-->
         </div>
 
-        <!-- INÍCIO: Dados do usuário (colocar acima do enviarEmailIrregularesBtn) -->
+      <!--
         <div id="dadosUsuarioContainerIr" style="margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:5px; display: none;">
-          <div style="display: flex; gap: 10px;">
+          <div style="display: none; gap: 10px;">
             <label for="nomeSelectUsuarioIr">Seus dados de contato</label>
-            <!--<div id="loadingDadosUsuarioIr" class="spinner" style="display: none;"></div>-->
             </div>
-              <div style="display: flex; gap: 10px;">
+              <div style="display: none; gap: 10px;">
                 <input type="text" id="telefoneInputUsuarioIr" placeholder="(xx) xxxxx-xxxx" style="width: 50%;">
                 <input type="email" id="emailInputUsuarioIr" placeholder="seuemail@dominio.com" style="width: 50%;">
               </div>
-              <div style="display: flex; gap: 10px;">
+              <div style="display: none; gap: 10px;">
               <select id="nomeSelectUsuarioIr" style="margin-left:10px; min-width:300px;" disabled>
               <option value="">- selecione -</option></select>
               <input type="text" id="nomeInputUsuarioIr" placeholder="Pesquise seus dados..." style="margin-left:10px; width:100%;">  
@@ -3879,8 +3878,8 @@
         <button id="enviarEmailIrregularesBtn" style="display:none; margin-top: 15px;" class="botaomail">
         📧 Enviar email para todos
         </button>
+      -->
 
-        <!--<button onclick="confirmarEnvioEmailsIrregulares()">Enviar email para todos</button>-->
 
         <div id="resultadoTreinadoresTestesI"></div>
 

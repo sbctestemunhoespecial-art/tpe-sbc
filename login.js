@@ -258,7 +258,7 @@ const inicializadores = {
 
     disponibilidadeBuscadaSub: inicializarBuscaUsuarioSb,
 
-    painelIrregulares: inicializarBuscaUsuarioIr,
+    //painelIrregulares: inicializarBuscaUsuarioIr,
 
     disponibilidadeBuscada2h: inicializarBuscaUsuario2h,
 
@@ -22526,200 +22526,6 @@ document.addEventListener('click', function (event) {
   }
 });
 
-document.getElementById('enviarEmailIrregularesBtn').addEventListener('click', function () {
-
-  if (!irregularesEncontrados || irregularesEncontrados.length === 0) {
-    mostrarAlertaGlobal("⚠️ Nenhum participante irregular encontrado para envio de e-mail.");
-    return;
-  }
-
-  const telefone = document.getElementById('telefoneInputUsuarioIr').value.trim();
-  const email = document.getElementById('emailInputUsuarioIr').value.trim();
-  const nomeUsuarioAtual = document.getElementById('nomeSelectUsuarioIr').value;
-
-  if (!nomeUsuarioAtual || !telefone || !email) {
-    mostrarAlertaGlobal(
-      "⚠️ Por favor, verifique se os dados do usuário (nome, telefone e e-mail) foram preenchidos corretamente antes de enviar os e-mails."
-    );
-    return;
-  }
-
-  const assunto = "Participante sem designação no TPE";
-
-  const mensagemBase =
-    "TPE SBC - Informativo\n\n" +
-    "Olá, querido(a) irmão(ã)\n\n" +
-    "Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
-    "Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
-    "Em caso de email ou senha incorretos, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n\n" +
-    "Seus irmãos,\nEquipe do TPE SBC";
-
-  mostrarConfirmacaoGlobal(
-    `📧 Deseja enviar e-mail para todos os <strong>${irregularesEncontrados.length}</strong> participantes irregulares encontrados?`,
-    () => {
-
-      mostrarSpinner();
-
-      const nomes = irregularesEncontrados.map(p => p.nome);
-
-      apiJSONP(
-        "enviarEmailParaIrregularesComUsuario",
-        {
-          nomes: JSON.stringify(nomes),
-          usuario: nomeUsuarioAtual,
-          assunto,
-          mensagem: mensagemBase
-        },
-        () => {
-
-          esconderSpinner();
-
-          mostrarAlertaGlobal("✅ E-mails enviados com sucesso!");
-
-        },
-        (err) => {
-
-          esconderSpinner();
-
-          mostrarAlertaGlobal(
-            "❌ " + (err?.mensagem || err?.error || "Erro ao enviar e-mails.")
-          );
-
-        }
-      );
-
-    }
-  );
-});
-
-document.getElementById('nomeInputUsuarioIr').addEventListener('input', function () {
-
-  setTimeout(() => {
-
-    const nomeSelecionado = document.getElementById('nomeSelectUsuarioIr').value;
-
-    if (nomeSelecionado) {
-      pegarContatosDoUsuarioIr(nomeSelecionado);
-    } else {
-      console.warn("⚠️ Nenhum nome selecionado no select após digitar.");
-    }
-
-  }, 300);
-
-});
-
-/*function pegarContatosDoUsuarioIr(nome) {
-
-  mostrarSpinner();
-
-  const callback = "cb_contato_" + Date.now();
-
-  window[callback] = function(contato) {
-
-    esconderSpinner();
-
-    if (contato) {
-
-      const telefoneInput = document.getElementById('telefoneInputUsuarioIr');
-      const emailInput = document.getElementById('emailInputUsuarioIr');
-      const nomeSelect = document.getElementById('nomeSelectUsuarioIr');
-
-      telefoneInput.value = contato.telefone || '';
-      emailInput.value = contato.email || '';
-
-      telefoneInput.disabled = true;
-      emailInput.disabled = true;
-      nomeSelect.disabled = true;
-
-      const container = document.querySelector('#dadosUsuarioContainerIr > div[style*="display: none"]');
-
-      if (container) {
-        container.style.display = 'block';
-      }
-
-    } else {
-      console.warn("⚠️ Nenhum contato retornado.");
-    }
-
-    delete window[callback];
-  };
-
-  window[callback].failure = function(err) {
-    esconderSpinner();
-    console.error("❌ Erro ao buscar contato do usuário:", err.message);
-    delete window[callback];
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    API_URL +
-    "?acao=pegarContatoUsuario" +
-    "&nome=" + encodeURIComponent(nome) +
-    "&callback=" + callback;
-
-  document.body.appendChild(script);
-}*/
-function pegarContatosDoUsuarioIr(nome) {
-
-  mostrarSpinner();
-
-  apiJSONP(
-    "pegarContatoUsuario",
-    {
-      nome
-    },
-    (contato) => {
-
-      esconderSpinner();
-
-      if (contato) {
-
-        const telefoneInput =
-          document.getElementById('telefoneInputUsuarioIr');
-
-        const emailInput =
-          document.getElementById('emailInputUsuarioIr');
-
-        const nomeSelect =
-          document.getElementById('nomeSelectUsuarioIr');
-
-        telefoneInput.value = contato.telefone || '';
-        emailInput.value = contato.email || '';
-
-        telefoneInput.disabled = true;
-        emailInput.disabled = true;
-        nomeSelect.disabled = true;
-
-        const container = document.querySelector(
-          '#dadosUsuarioContainerIr > div[style*="display: none"]'
-        );
-
-        if (container) {
-          container.style.display = 'block';
-        }
-
-      } else {
-
-        console.warn("⚠️ Nenhum contato retornado.");
-
-      }
-
-    },
-    (err) => {
-
-      esconderSpinner();
-
-      console.error(
-        "❌ Erro ao buscar contato do usuário:",
-        err.mensagem || err.error || err.message
-      );
-
-    }
-  );
-
-}
-
 let vagaContexto = {};
 
 function salvarVaga() {
@@ -25829,7 +25635,7 @@ function carregarResumo() {
 
         ["👥", "Aprovados", resumo.totalDeAprovados],
         ["👥", "Ativos", resumo.totalParticipantesAtivos],  
-        ["⚠️", "Inativos", resumo.totalDeIrregulares],
+        ["⚠️", "Inativos", resumo.totalDeInativos],
 
         ["✅", "Designações", resumo.totalDesignacoes],
         
@@ -25837,6 +25643,7 @@ function carregarResumo() {
         ["📆", "Designações quinzenais", resumo.countQuinzenal],
         ["🗓️", "Designações mensais", resumo.countMensal],
         
+        ["🧑‍🤝‍🧑", "Pessoas sem designação fixa", resumo.totalSemDesignacaoFixa],
         ["🧑‍🤝‍🧑", "Pessoas designadas", resumo.totalComDesignacoes],
         ["1️⃣", "Pessoas com 1 designação", resumo.totalPessoas1Designacao],
         ["➕", "Pessoas com mais de 1 designação", resumo.totalPessoasMais1Designacao],
@@ -28214,7 +28021,7 @@ function buscarIrregulares() {
       const thead = tabela.createTHead();
       const trHead = thead.insertRow();
 
-      ['Nome', 'Congregação', 'Telefone', 'Sexo'].forEach(txt => {
+      ['Nome', 'Congregação', 'Telefone'].forEach(txt => {
         const th = document.createElement('th');
         th.textContent = txt;
         trHead.appendChild(th);
@@ -28232,7 +28039,7 @@ function buscarIrregulares() {
         tdNome.dataset.nome = item.nome || '';
         tdNome.dataset.congregacao = item.congregacao || '';
         tdNome.dataset.telefone = item.telefone || '';
-        tdNome.dataset.sexo = item.sexo || '';
+        //tdNome.dataset.sexo = item.sexo || '';
         tdNome.dataset.diasTurnos = Array.isArray(item.diasTurnos)
           ? JSON.stringify(item.diasTurnos)
           : JSON.stringify(
@@ -28253,12 +28060,21 @@ function buscarIrregulares() {
 
           const nome = item.nome || 'Participante';
 
-          const mensagem =
+          /*const mensagem =
             "*TPE SBC - Informativo*\n\n" +
             "👤 Olá, " + nome + "\n\n" +
             "📋 Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
             "📲 Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
             "👥 Em caso de email ou senha incorreta, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n" +
+            "*Seus irmãos*,\n" +
+            "*Equipe do TPE SBC*";*/
+
+           const mensagem =
+            "*INFORMATIVO TPE SBC*\n\n" +
+            "Olá, " + nome + "\n\n" +
+            "Apreciamos muito sua disposição para participar no TPE.\n" +
+            "Para sentir a alegria dessa atividade especial, considere apoiar a cobertura de mais um evento na cidade.\n" +
+            "Para se inscrever, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal.\n\n" +
             "*Seus irmãos*,\n" +
             "*Equipe do TPE SBC*";
 
@@ -28282,16 +28098,16 @@ function buscarIrregulares() {
           tdTelefone.textContent = telefoneOriginal;
         }
 
-        tr.insertCell().textContent = item.sexo || '';
+        //tr.insertCell().textContent = item.sexo || '';
       });
 
       resultadoDiv.appendChild(tabela);
 
-      document.getElementById('dadosUsuarioContainerIr')
+      /*document.getElementById('dadosUsuarioContainerIr')
         .style.display = 'inline-block';
 
       document.getElementById('enviarEmailIrregularesBtn')
-        .style.display = "inline-block";
+        .style.display = "inline-block";*/
 
     },
     function(err) {
@@ -28329,99 +28145,97 @@ document.addEventListener('click', function (event) {
     }
   });
 
-  document
-  .getElementById('enviarEmailIrregularesBtn')
-  .addEventListener('click', function () {
+/*document.getElementById('enviarEmailIrregularesBtn').addEventListener('click', function () {
 
-    if (!irregularesEncontrados || irregularesEncontrados.length === 0) {
-      mostrarAlertaGlobal(
-        "⚠️ Nenhum participante irregular encontrado para envio de e-mail."
-      );
-      return;
-    }
-
-    const telefone =
-      document.getElementById('telefoneInputUsuarioIr').value.trim();
-
-    const email =
-      document.getElementById('emailInputUsuarioIr').value.trim();
-
-    const nomeUsuarioAtual =
-      document.getElementById('nomeSelectUsuarioIr').value;
-
-    if (!nomeUsuarioAtual || !telefone || !email) {
-      mostrarAlertaGlobal(
-        "⚠️ Por favor, verifique se os dados do usuário (nome, telefone e e-mail) foram preenchidos corretamente antes de enviar os e-mails."
-      );
-      return;
-    }
-
-    const assunto = "Participante sem designação no TPE";
-
-    const mensagemBase =
-      "TPE SBC - Informativo\n\n" +
-      "Olá, querido(a) irmão(ã)\n\n" +
-      "Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
-      "Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
-      "Em caso de email ou senha incorretos, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n\n" +
-      "Seus irmãos,\nEquipe do TPE SBC";
-
-    mostrarConfirmacaoGlobal(
-      `📧 Deseja enviar e-mail para todos os <strong>${irregularesEncontrados.length}</strong> participantes irregulares encontrados?`,
-      () => {
-
-        mostrarSpinner();
-
-        const nomes =
-          irregularesEncontrados.map(p => p.nome);
-
-        apiJSONP(
-          "enviarEmailParaIrregularesComUsuario",
-          {
-            nomes,
-            nomeUsuarioAtual,
-            assunto,
-            mensagemBase
-          },
-          function () {
-
-            esconderSpinner();
-
-            mostrarAlertaGlobal(
-              "✅ E-mails enviados com sucesso!"
-            );
-
-          },
-          function (err) {
-
-            esconderSpinner();
-
-            mostrarAlertaGlobal(
-              `❌ Erro ao enviar e-mails: ${err.message}`
-            );
-
-          }
-        );
-
-      }
+  if (!irregularesEncontrados || irregularesEncontrados.length === 0) {
+    mostrarAlertaGlobal(
+      "⚠️ Nenhum participante irregular encontrado para envio de e-mail."
     );
+    return;
+  }
 
-  });
+  const telefone =
+    document.getElementById('telefoneInputUsuarioIr').value.trim();
 
-  document.getElementById('nomeInputUsuarioIr').addEventListener('input', function () {
+  const email =
+    document.getElementById('emailInputUsuarioIr').value.trim();
 
-    setTimeout(() => {
-      const nomeSelecionado = document.getElementById('nomeSelectUsuarioIr').value;
+  const nomeUsuarioAtual =
+    document.getElementById('nomeSelectUsuarioIr').value;
 
-      if (nomeSelecionado) {
-        pegarContatosDoUsuarioIr(nomeSelecionado);
-      } else {
-        console.warn("⚠️ Nenhum nome selecionado no select após digitar.");
-      }
-    }, 300); // 300ms costuma ser suficiente
-  });
+  if (!nomeUsuarioAtual || !telefone || !email) {
+    mostrarAlertaGlobal(
+      "⚠️ Por favor, verifique se os dados do usuário (nome, telefone e e-mail) foram preenchidos corretamente antes de enviar os e-mails."
+    );
+    return;
+  }
 
-  function pegarContatosDoUsuarioIr(nome) {
+  const assunto = "Participante sem designação no TPE";
+
+  const mensagemBase =
+    "TPE SBC - Informativo\n\n" +
+    "Olá, querido(a) irmão(ã)\n\n" +
+    "Percebemos que você não tem uma designação no TPE, e gostaríamos de informar que é possível apoiar o arranjo em novos pontos com novos turnos de 2 horas, uma ou mais vezes por mês.\n\n" +
+    "Para apoiar, acesse o aplicativo do TPE na descrição do grupo dos participantes usando seu email pessoal e a senha 114514.\n\n" +
+    "Em caso de email ou senha incorretos, ou se você já tem uma designação no TPE, por favor, entre em contato conosco para atualizar.\n\n" +
+    "Seus irmãos,\nEquipe do TPE SBC";
+
+  mostrarConfirmacaoGlobal(
+    `📧 Deseja enviar e-mail para todos os <strong>${irregularesEncontrados.length}</strong> participantes irregulares encontrados?`,
+    () => {
+
+      mostrarSpinner();
+
+      const nomes =
+        irregularesEncontrados.map(p => p.nome);
+
+      apiJSONP(
+        "enviarEmailParaIrregularesComUsuario",
+        {
+          nomes,
+          nomeUsuarioAtual,
+          assunto,
+          mensagemBase
+        },
+        function () {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            "✅ E-mails enviados com sucesso!"
+          );
+
+        },
+        function (err) {
+
+          esconderSpinner();
+
+          mostrarAlertaGlobal(
+            `❌ Erro ao enviar e-mails: ${err.message}`
+          );
+
+        }
+      );
+
+    }
+  );
+
+});*/
+
+/*document.getElementById('nomeInputUsuarioIr').addEventListener('input', function () {
+
+  setTimeout(() => {
+    const nomeSelecionado = document.getElementById('nomeSelectUsuarioIr').value;
+
+    if (nomeSelecionado) {
+      pegarContatosDoUsuarioIr(nomeSelecionado);
+    } else {
+      console.warn("⚠️ Nenhum nome selecionado no select após digitar.");
+    }
+  }, 300); // 300ms costuma ser suficiente
+});*/
+
+/*function pegarContatosDoUsuarioIr(nome) {
 
   mostrarSpinner();
 
@@ -28477,7 +28291,7 @@ document.addEventListener('click', function (event) {
     }
   );
 
-}
+}*/
 
 function definirCampoSelecionado(idCampo, objeto) {
 
@@ -29563,7 +29377,7 @@ function inicializarBuscaUsuarioSb() {
 
 }
 
-function inicializarBuscaUsuarioIr() {
+/*function inicializarBuscaUsuarioIr() {
 
     const input =
         document.getElementById("nomeInputUsuarioIr");
@@ -29590,7 +29404,7 @@ function inicializarBuscaUsuarioIr() {
         input.value
     );
 
-}
+}*/
 
 function inicializarBuscaUsuario2h() {
 

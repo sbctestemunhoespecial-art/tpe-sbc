@@ -29,7 +29,7 @@
   --fonte-grande: clamp(1.5rem, 4vw, 1.75rem);
   --fonte-extraG: clamp(1.75rem, 5vw, 2rem);
 
-  --raio-borda: 0.4em;
+  --raio-borda: 0.8em;
   --raio-borda-botao: 3em;
 }
 
@@ -98,7 +98,7 @@ button {
   color: #fff;
   cursor: pointer;
   border: none;
-  border-radius: var(--raio-borda);
+  border-radius: var(--raio-borda-botao);
   transition: background-color 0.2s ease;
 }
 
